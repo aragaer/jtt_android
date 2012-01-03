@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+            android:title="@string/location">
+		<CheckBoxPreference
+                android:key="auto_location"
+                android:title="@string/auto_lat_long" />
+        <EditTextPreference
+                android:key="posLat"
+                android:numeric="signed|decimal"
+                android:title="@string/latitude" />
+        <EditTextPreference
+                android:key="posLong"
+                android:numeric="signed|decimal"
+                android:title="@string/longitude" />
+    </PreferenceCategory>
+</PreferenceScreen>

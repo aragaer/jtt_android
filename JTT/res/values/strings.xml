@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello, jtt</string>
+    <string name="latlon">Here be latitude and longitude</string>
+    <string name="hour">Here be hour and strikes</string>
+    <string name="app_name">Japanese Traditional Time</string>
+    <string name="auto_lat_long">Use current location</string>
+    <string name="location">Location</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+</resources>
