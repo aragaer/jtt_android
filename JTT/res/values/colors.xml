@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <color name="background">#25000000</color>
+     <color name="tab_active">#FFFFFF</color>
+     <color name="tab">#CCCCCC</color>
+     <color name="stroke">#ff000000</color>
+     <color name="fill">#ffffffff</color>
+</resources>

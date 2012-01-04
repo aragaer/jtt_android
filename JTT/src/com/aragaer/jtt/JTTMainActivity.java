@@ -1,44 +1,46 @@
 package com.aragaer.jtt;
 
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 public class JTTMainActivity extends TabActivity {
+	TabHost mTabHost;
+
+	private void setupTab(final View view, final String tag, final Intent intent) {
+		View tabview = createTabView(mTabHost.getContext(), tag);
+		TabHost.TabSpec setContent = mTabHost.newTabSpec(tag)
+				.setIndicator(tabview).setContent(intent);
+		mTabHost.addTab(setContent);
+	}
+
+	private static View createTabView(final Context context, final String text) {
+		View view = LayoutInflater.from(context)
+				.inflate(R.layout.tabs_bg, null);
+		TextView tv = (TextView) view.findViewById(R.id.tabsText);
+		tv.setText(text);
+		return view;
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		Resources res = getResources(); // Resource object to get Drawables
-		TabHost tabHost = getTabHost(); // The activity TabHost
-		TabHost.TabSpec spec; // Reusable TabSpec for each tab
-		Intent intent; // Reusable intent for each tab
-		
-		// Create an Intent to launch an Activity for the tab (to be reused)
+		mTabHost = getTabHost(); // The activity TabHost
+		Intent intent;
+
 		intent = new Intent().setClass(this, JTTActivity.class);
-
-		// Initialize a TabSpec for each tab and add it to the TabHost
-		spec = tabHost.newTabSpec("Time")
-				.setIndicator("Time", res.getDrawable(R.drawable.ic_tab_time))
-				.setContent(intent);
-		tabHost.addTab(spec);
-
+		setupTab(new TextView(this), "Clock", intent);
 		intent = new Intent().setClass(this, JTTAlarmActivity.class);
 
-		spec = tabHost.newTabSpec("Alarm")
-				.setIndicator("Alarm", res.getDrawable(R.drawable.ic_tab_time))
-				.setContent(intent);
-		tabHost.addTab(spec);
-		
+		setupTab(new TextView(this), "Alarm", intent);
 		intent = new Intent().setClass(this, JTTSettingsActivity.class);
-
-		spec = tabHost.newTabSpec("Settings")
-				.setIndicator("Settings", res.getDrawable(R.drawable.ic_tab_time))
-				.setContent(intent);
-		tabHost.addTab(spec);
-
-		tabHost.setCurrentTab(0);
+		setupTab(new TextView(this), "Settings", intent);
+		mTabHost.setCurrentTab(0);
 	}
 }
