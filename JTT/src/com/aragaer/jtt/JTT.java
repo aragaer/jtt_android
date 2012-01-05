@@ -83,25 +83,25 @@ class SolarObserver {
 
         double M = (0.9856 * t) - 3.289;
         
-        double L = M + (1.916 * Math.sin(deg2rad(M))) + (0.020 * Math.sin(deg2rad(2 * M))) + 282.634;
+        double L = M + (1.916 * Math.sin(Math.toRadians(M))) + (0.020 * Math.sin(Math.toRadians(2 * M))) + 282.634;
         if (L < 0)
         	L += 360.0;
         else if (L > 360.0)
         	L -= 360.0;  
         
-        double RA = rad2deg(Math.atan(0.91764 * Math.tan(deg2rad(L))));
+        double RA = Math.toDegrees(Math.atan(0.91764 * Math.tan(Math.toRadians(L))));
     	RA = RA/15 + (Math.floor(L/90) - Math.floor(RA/90)) * 6;
         
-    	double sinDec = 0.39782 * Math.sin(deg2rad(L));
+    	double sinDec = 0.39782 * Math.sin(Math.toRadians(L));
     	double cosDec = Math.cos(Math.asin(sinDec));
     	
-    	double zenith = deg2rad(useCivilZenith ? zenithCivil : zenithOfficial);
-    	double radlat = deg2rad(latitude);
+    	double zenith = Math.toRadians(useCivilZenith ? zenithCivil : zenithOfficial);
+    	double radlat = Math.toRadians(latitude);
     	double cosH = (Math.cos(zenith) - (sinDec * Math.sin(radlat))) / (cosDec * Math.cos(radlat));
     	if (Math.abs(cosH) > 1)
     		return -1;
         
-        double H = rad2deg(Math.acos(cosH))/15;
+        double H = Math.toDegrees(Math.acos(cosH))/15;
         if (isSunrise)
         	H = 24 - H;
         
@@ -142,7 +142,4 @@ class SolarObserver {
     	
     	return resultTime;
     }
-
-    private double rad2deg(double radians) { return radians*180.0/Math.PI; }
-    private double deg2rad(double degrees) { return degrees*Math.PI/180.0; }
 }
