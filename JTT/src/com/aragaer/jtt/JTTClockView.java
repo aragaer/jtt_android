@@ -13,6 +13,8 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 public class JTTClockView extends TextView {
+    private final static int step = 360 / 12;
+    private final static float gap = 1.5f;
     private final Paint mStrokePaint = new Paint();
     private final Paint mStrokePaint2 = new Paint();
     private final Paint mSolidPaint = new Paint();
@@ -52,7 +54,8 @@ public class JTTClockView extends TextView {
 
         final Matrix m = new Matrix();
         m.setTranslate(v ? 0 : 3 * w / 5 - size, v ? 3 * h / 5 - size : 0);
-        m.preRotate(step * (0.5f - hour.num - hour.fraction), size, size);
+        m.preRotate(step * (0.5f - hour.num) - gap - (step - gap * 2)
+                * hour.fraction, size, size);
         canvas.drawBitmap(clocks[hour.num], m, mStrokePaint2);
 
         mStrokePaint2.setTextSize(v ? w / 20 : w / 15);
@@ -89,9 +92,6 @@ public class JTTClockView extends TextView {
         mSolidPaint2.setColor(Color.parseColor(ctx.getString(R.color.night)));
         mSolidPaint2.setStrokeWidth(1.3f);
     }
-
-    private final static int step = 360 / 12;
-    private final static float gap = 1.5f;
 
     private Bitmap drawBitmap(int num, int c) {
         Bitmap result = Bitmap.createBitmap(c * 2, c * 2,
@@ -157,8 +157,8 @@ public class JTTClockView extends TextView {
             canvas.drawPath(path, mStrokePaint);
 
             final float glyph_y = c - iR - (current ? 5 : 4) * thick / 9;
-            canvas.drawText(JTT.Glyphs[hr], c, glyph_y, mSolidPaint2);
-            canvas.drawText(JTT.Glyphs[hr], c, glyph_y, mStrokePaint);
+            canvas.drawText(JTTHour.Glyphs[hr], c, glyph_y, mSolidPaint2);
+            canvas.drawText(JTTHour.Glyphs[hr], c, glyph_y, mStrokePaint);
             canvas.rotate(step, c, c);
         }
 

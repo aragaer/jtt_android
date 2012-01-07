@@ -6,16 +6,12 @@ import java.util.TimeZone;
 
 public class JTT {
 	private final SolarObserver calculator;
-	public static final String DayHours[] = {"Hare", "Dragon", "Serpent", "Horse", "Ram", "Monkey"};
-	public static final String NightHours[] = {"Cock", "Dog", "Boar", "Rat", "Ox", "Tiger"};
-	public static final String Glyphs[] = {"酉", "戌", "亥", "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申"};
-
 	public JTT(float latitude, float longitude, TimeZone tz) {
 		this.calculator = new SolarObserver(latitude, longitude, tz);
 	}
 	
 	public JTTHour time_to_jtt(Date time) {
-		JTTHour result = new JTTHour();
+	    Boolean isNight = false;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(time);
 		
@@ -25,16 +21,16 @@ public class JTT {
 		long a, b, c = cal.getTimeInMillis();
 
 		if (time.before(sunrise.getTime())) {
-			result.isNight = true;
+			isNight = true;
 			cal.add(Calendar.DAY_OF_YEAR, -1);
 			sunset = calculator.sunset(cal);
 		} else if (time.after(sunset.getTime())) {
-			result.isNight = true;
+			isNight = true;
 			cal.add(Calendar.DAY_OF_YEAR, 1);
 			sunrise = calculator.sunrise(cal);
 		}
 		
-		if (result.isNight) {
+		if (isNight) {
 			a = sunset.getTimeInMillis();
 			b = sunrise.getTimeInMillis();
 		} else {
@@ -42,15 +38,15 @@ public class JTT {
 			b = sunset.getTimeInMillis();
 		}
 		
-		double hour = 6.0 * (c - a) / (b - a);
-		result.num = (int) hour;
-		result.hour = (result.isNight ? NightHours : DayHours)[result.num];
-		result.fraction = (float) (hour - result.num);
-		result.strikes = result.num < 3 ? 6 - result.num : 12 - result.num;
-		if (!result.isNight)
-			result.num += 6;
-		
-		return result;
+		return new JTTHour(6.0f * (c - a) / (b - a));
+	}
+
+	public Date jtt_to_time(JTTHour hour, Date date) {
+	       Calendar cal = (Calendar) date.clone();
+
+
+	       
+	       return cal.getTime();
 	}
 }
 
