@@ -14,6 +14,7 @@
         <item name="android:textColor">@drawable/tab_text_selector</item>
         <item name="android:background">@color/background</item>
         <item name="android:onClick">onToggle</item>
+        <item name="android:padding">5dp</item>
     </style>
 
 </resources>
