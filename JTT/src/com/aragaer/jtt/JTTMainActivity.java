@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView.SavedState;
 import android.widget.Toast;
 
 public class JTTMainActivity extends Activity {
@@ -31,17 +30,6 @@ public class JTTMainActivity extends Activity {
 			R.id.settingsbtn };
 
 	private JTT calculator;
-	private IBinder srv_bind;
-	private ServiceConnection conn = new ServiceConnection() {
-		
-		public void onServiceDisconnected(ComponentName name) {
-			srv_bind = null;
-		}
-		
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			srv_bind = service;
-		}
-	};
 	private final Runnable mUpdateUITimerTask = new Runnable() {
 		public void run() {
 			JTTClockView hh = (JTTClockView) findViewById(R.id.hour);
@@ -74,11 +62,7 @@ public class JTTMainActivity extends Activity {
 		pager = (JTTPager) findViewById(R.id.tabcontent);
 		pager.setTabs(tabs);
 
-		Intent intent = new Intent(this, JTTService.class);
-		if (!((Context) this).bindService(intent, conn, BIND_AUTO_CREATE)) {
-			Toast.makeText(this, R.string.srv_fail, Toast.LENGTH_LONG).show();
-			return;
-		}
+		startService(new Intent(JTTService.class.getName()));
 		mHandler.postDelayed(mUpdateUITimerTask, 100);
 	}
 
