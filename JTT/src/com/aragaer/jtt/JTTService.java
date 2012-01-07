@@ -13,67 +13,69 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class JTTService extends Service {
-	private JTT calculator;
-	private JTTHour hour = new JTTHour(0);
+    private JTT calculator;
+    private JTTHour hour = new JTTHour(0);
 
-	private static final String TAG = JTTService.class.getSimpleName();
-	
-	private IJTTService.Stub apiEndpoint = new IJTTService.Stub() {
-	    public JTTHour getHour() {
-	        synchronized (hour) {
-	            return hour;
-	        }
-	    }
-	};
+    private static final String TAG = JTTService.class.getSimpleName();
 
-	private Timer timer;
-	private TimerTask updateTask = new TimerTask() {
-		@Override
-		public void run() {
-			Log.i(TAG, "Timer task doing work");
-			hour = calculator.time_to_jtt(new Date());
-		}
-	};
-	
-	public JTTHour getHour() {
-	    return hour;
-	}
+    private IJTTService.Stub apiEndpoint = new IJTTService.Stub() {
+        public JTTHour getHour() {
+            synchronized (hour) {
+                return hour;
+            }
+        }
+    };
 
-	@Override
-	public IBinder onBind(Intent intent) {
-	    if (JTTService.class.getName().equals(intent.getAction())) {
-	        Log.d(TAG, "Bound by intent " + intent);
-	        return apiEndpoint;
-	      } else {
-	        return null;
-	      }
-	}
+    private Timer timer;
+    private TimerTask updateTask = new TimerTask() {
+        @Override
+        public void run() {
+            hour = calculator.time_to_jtt(new Date());
+        }
+    };
 
-	@Override
-	public void onStart(Intent intent, int startid) {
-		float latitude, longitude;
-		Log.i(TAG, "Service starting");
-		SharedPreferences settings = PreferenceManager
-				.getDefaultSharedPreferences(getBaseContext());
-		latitude = Float.parseFloat(settings.getString("posLat", "0.0"));
-		longitude = Float.parseFloat(settings.getString("posLong", "0.0"));
+    public JTTHour getHour() {
+        return hour;
+    }
 
-		calculator = new JTT(latitude, longitude, TimeZone.getDefault());
+    @Override
+    public IBinder onBind(Intent intent) {
+        if (JTTService.class.getName().equals(intent.getAction())) {
+            Log.d(TAG, "Bound by intent " + intent);
+            return apiEndpoint;
+        } else {
+            return null;
+        }
+    }
 
-		timer = new Timer("JTTServiceTimer");
-		try {
-		    timer.schedule(updateTask, 1000L, 60 * 1000L);
-		} catch (IllegalStateException e) {
-		    Log.i(TAG, "Timer is already running");
-		}
-	}
+    @Override
+    public void onStart(Intent intent, int startid) {
+        float latitude, longitude;
+        Log.i(TAG, "Service starting");
+        SharedPreferences settings = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+        latitude = Float.parseFloat(settings.getString("posLat", "0.0"));
+        longitude = Float.parseFloat(settings.getString("posLong", "0.0"));
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		Log.i(TAG, "Service destroying");
+        calculator = new JTT(latitude, longitude, TimeZone.getDefault());
+        hour = calculator.time_to_jtt(new Date());
+        Log.d(TAG, "rate = "+calculator.rate);
+        Log.d(TAG, "Next hour at "+calculator.nextHour.toLocaleString());
 
-		timer.cancel();
-		timer = null;
-	}
+        timer = new Timer("JTTServiceTimer");
+        try {
+            timer.scheduleAtFixedRate(updateTask, 0, 60 * 1000L);
+        } catch (IllegalStateException e) {
+            Log.i(TAG, "Timer is already running");
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "Service destroying");
+
+        timer.cancel();
+        timer = null;
+    }
 }
