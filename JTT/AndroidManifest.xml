@@ -26,9 +26,18 @@
             android:theme="@style/JTTTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".JTTService"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="com.aragaer.jtt.JTTService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
