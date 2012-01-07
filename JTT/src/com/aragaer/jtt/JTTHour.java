@@ -1,6 +1,9 @@
 package com.aragaer.jtt;
 
-public class JTTHour {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class JTTHour implements Parcelable {
     public static final String DayHours[] = { "Hare", "Dragon", "Serpent",
             "Horse", "Ram", "Monkey" };
     public static final String NightHours[] = { "Cock", "Dog", "Boar", "Rat",
@@ -26,36 +29,54 @@ public class JTTHour {
                 return i + 6;
         return -1;
     }
-    
+
     private int num_to_strikes(int num) {
-        return (num < 3 ? 6 : 12) - num; 
+        return (num < 3 ? 6 : 12) - num;
     }
 
     public JTTHour(String hour) {
         this(hour, 0);
     }
-    
-    public JTTHour(String hour, float fraction) {
-        this.hour = hour;
-        this.num = name_to_num(hour);
-        this.isNight = this.num < 6;
-        this.strikes = num_to_strikes(this.num);
-        this.fraction = fraction;
+
+    public JTTHour(String h, float f) {
+        hour = h;
+        num = name_to_num(h);
+        isNight = num < 6;
+        strikes = num_to_strikes(num);
+        fraction = f;
     }
-    
+
     public JTTHour(float num) {
-        this((int)num, num - (int) num);
+        this((int) num, num - (int) num);
     }
 
     public JTTHour(int num) {
         this(num, 0);
     }
-    
-    public JTTHour(int num, float fraction) {
-        this.num = num;
-        this.isNight = this.num < 6;
-        this.hour = Hours[num];
-        this.strikes = num_to_strikes(num);
-        this.fraction = fraction;
+
+    public JTTHour(int n, float f) {
+        num = n;
+        isNight = n < 6;
+        hour = Hours[n];
+        strikes = num_to_strikes(n);
+        fraction = f;
     }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeFloat(num + fraction);
+    }
+
+    public static final Parcelable.Creator<JTTHour> CREATOR = new Parcelable.Creator<JTTHour>() {
+        public JTTHour createFromParcel(Parcel in) {
+            return new JTTHour(in.readFloat());
+        }
+
+        public JTTHour[] newArray(int size) {
+            return new JTTHour[size];
+        }
+    };
 }

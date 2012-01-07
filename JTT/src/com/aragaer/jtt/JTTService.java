@@ -14,9 +14,17 @@ import android.util.Log;
 
 public class JTTService extends Service {
 	private JTT calculator;
-	private JTTHour hour;
+	private JTTHour hour = new JTTHour(0);
 
 	private static final String TAG = JTTService.class.getSimpleName();
+	
+	private IJTTService.Stub apiEndpoint = new IJTTService.Stub() {
+	    public JTTHour getHour() {
+	        synchronized (hour) {
+	            return hour;
+	        }
+	    }
+	};
 
 	private Timer timer;
 	private TimerTask updateTask = new TimerTask() {
@@ -26,10 +34,19 @@ public class JTTService extends Service {
 			hour = calculator.time_to_jtt(new Date());
 		}
 	};
+	
+	public JTTHour getHour() {
+	    return hour;
+	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		return null;
+	    if (JTTService.class.getName().equals(intent.getAction())) {
+	        Log.d(TAG, "Bound by intent " + intent);
+	        return apiEndpoint;
+	      } else {
+	        return null;
+	      }
 	}
 
 	@Override
@@ -44,7 +61,11 @@ public class JTTService extends Service {
 		calculator = new JTT(latitude, longitude, TimeZone.getDefault());
 
 		timer = new Timer("JTTServiceTimer");
-		timer.schedule(updateTask, 1000L, 60 * 1000L);
+		try {
+		    timer.schedule(updateTask, 1000L, 60 * 1000L);
+		} catch (IllegalStateException e) {
+		    Log.i(TAG, "Timer is already running");
+		}
 	}
 
 	@Override

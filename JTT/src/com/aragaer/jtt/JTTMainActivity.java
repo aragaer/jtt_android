@@ -1,20 +1,14 @@
 package com.aragaer.jtt;
 
-import java.util.Date;
-import java.util.TimeZone;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
+import android.os.RemoteException;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,228 +17,247 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 public class JTTMainActivity extends Activity {
-	private static final int btn_ids[] = { R.id.clockbtn, R.id.alarmbtn,
-			R.id.settingsbtn };
+    private static final int btn_ids[] = { R.id.clockbtn, R.id.alarmbtn,
+            R.id.settingsbtn };
 
-	private JTT calculator;
-	private final Runnable mUpdateUITimerTask = new Runnable() {
-		public void run() {
-			JTTClockView hh = (JTTClockView) findViewById(R.id.hour);
-			float latitude, longitude;
-			SharedPreferences settings = PreferenceManager
-					.getDefaultSharedPreferences(getBaseContext());
-			latitude = Float.parseFloat(settings.getString("posLat", "0.0"));
-			longitude = Float.parseFloat(settings.getString("posLong", "0.0"));
+    private IJTTService api;
+    private ServiceConnection conn = new ServiceConnection() {
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.i("client", "Service connection established");
+            api = IJTTService.Stub.asInterface(service);
+            mHandler.postDelayed(mUpdateUITimerTask, 1000);
+        }
 
-			calculator = new JTT(latitude, longitude, TimeZone.getDefault());
+        public void onServiceDisconnected(ComponentName name) {
+            Log.i("client", "Service connection closed");
+        }
+    };
 
-			JTTHour hour = calculator.time_to_jtt(new Date());
+    private final Runnable mUpdateUITimerTask = new Runnable() {
+        public void run() {
+            try {
+                ((JTTClockView) findViewById(R.id.hour)).setJTTHour(api
+                        .getHour());
+            } catch (RemoteException e) {
+                Log.d("jtt client", "service killed");
+            }
+        }
+    };
+    private final Handler mHandler = new Handler();
 
-			hh.setJTTHour(hour);
-		}
-	};
-	private final Handler mHandler = new Handler();
+    private JTTPager pager;
 
-	private JTTPager pager;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+        Button tabs[] = new Button[btn_ids.length];
+        for (int i = 0; i < btn_ids.length; i++)
+            tabs[i] = (Button) findViewById(btn_ids[i]);
 
-		Button tabs[] = new Button[btn_ids.length];
-		for (int i = 0; i < btn_ids.length; i++)
-			tabs[i] = (Button) findViewById(btn_ids[i]);
+        pager = (JTTPager) findViewById(R.id.tabcontent);
+        pager.setTabs(tabs);
 
-		pager = (JTTPager) findViewById(R.id.tabcontent);
-		pager.setTabs(tabs);
+        Intent intent = new Intent(JTTService.class.getName());
+        startService(intent);
+        bindService(intent, conn, 0);
+    }
 
-		startService(new Intent(JTTService.class.getName()));
-		mHandler.postDelayed(mUpdateUITimerTask, 100);
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
-	public void onToggle(View view) {
-		pager.btnToggle((Button) view);
-	}
+        try {
+            unbindService(conn);
+        } catch (Throwable t) {
+            Log.w("jtt client", "Failed to unbind from the service", t);
+        }
 
-	static public class JTTPager extends ViewGroup {
-		private static final int SNAP_VELOCITY = 1000;
+        Log.i("jtt client", "Activity destroyed");
+    }
 
-		private boolean mFirstLayout = true;
-		private VelocityTracker mVelocityTracker;
-		private int mMaximumVelocity;
+    public void onToggle(View view) {
+        pager.btnToggle((Button) view);
+    }
 
-		private int mCurrentScreen;
+    static public class JTTPager extends ViewGroup {
+        private static final int SNAP_VELOCITY = 1000;
 
-		private float mLastMotionX;
-		private float mLastMotionY;
-		private int mScrollX;
-		private int mScrollY;
+        private boolean mFirstLayout = true;
+        private VelocityTracker mVelocityTracker;
+        private int mMaximumVelocity;
 
-		private final static int TOUCH_STATE_REST = 0;
-		private final static int TOUCH_STATE_SCROLLING = 1;
-		private int mTouchState = TOUCH_STATE_REST;
+        private int mCurrentScreen;
 
-		private Button[] tabs;
+        private float mLastMotionX;
+        private float mLastMotionY;
+        private int mScrollX;
+        private int mScrollY;
 
-		public JTTPager(Context ctx, AttributeSet attrs) {
-			super(ctx, attrs);
+        private final static int TOUCH_STATE_REST = 0;
+        private final static int TOUCH_STATE_SCROLLING = 1;
+        private int mTouchState = TOUCH_STATE_REST;
 
-			setHapticFeedbackEnabled(false);
+        private Button[] tabs;
 
-			final ViewConfiguration cfg = ViewConfiguration.get(getContext());
-			mMaximumVelocity = cfg.getScaledMaximumFlingVelocity();
-		}
+        public JTTPager(Context ctx, AttributeSet attrs) {
+            super(ctx, attrs);
 
-		@Override
-		protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            setHapticFeedbackEnabled(false);
 
-			final int width = MeasureSpec.getSize(widthMeasureSpec);
+            final ViewConfiguration cfg = ViewConfiguration.get(getContext());
+            mMaximumVelocity = cfg.getScaledMaximumFlingVelocity();
+        }
 
-			// The children are given the same width and height as the workspace
-			final int count = getChildCount();
-			for (int i = 0; i < count; i++)
-				getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
+        @Override
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-			if (mFirstLayout) {
-				setHorizontalScrollBarEnabled(false);
-				scrollTo(mCurrentScreen * width, 0);
-				mFirstLayout = false;
-			}
-		}
+            final int width = MeasureSpec.getSize(widthMeasureSpec);
 
-		@Override
-		protected void onLayout(boolean changed, int left, int top, int right,
-				int bottom) {
-			int childLeft = 0;
+            // The children are given the same width and height as the workspace
+            final int count = getChildCount();
+            for (int i = 0; i < count; i++)
+                getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
 
-			final int count = getChildCount();
-			for (int i = 0; i < count; i++) {
-				final View child = getChildAt(i);
-				final int childWidth = child.getMeasuredWidth();
-				child.layout(childLeft, 0, childLeft + childWidth,
-						child.getMeasuredHeight());
-				childLeft += childWidth;
-			}
-		}
+            if (mFirstLayout) {
+                setHorizontalScrollBarEnabled(false);
+                scrollTo(mCurrentScreen * width, 0);
+                mFirstLayout = false;
+            }
+        }
 
-		protected void setTabs(Button[] newTabs) {
-			tabs = newTabs;
-			tabs[mCurrentScreen].setSelected(true);
-		}
+        @Override
+        protected void onLayout(boolean changed, int left, int top, int right,
+                int bottom) {
+            int childLeft = 0;
 
-		void show() {
-			setVisibility(VISIBLE);
-		}
+            final int count = getChildCount();
+            for (int i = 0; i < count; i++) {
+                final View child = getChildAt(i);
+                final int childWidth = child.getMeasuredWidth();
+                child.layout(childLeft, 0, childLeft + childWidth,
+                        child.getMeasuredHeight());
+                childLeft += childWidth;
+            }
+        }
 
-		@Override
-		public boolean onTouchEvent(MotionEvent ev) {
-			if (mVelocityTracker == null)
-				mVelocityTracker = VelocityTracker.obtain();
-			mVelocityTracker.addMovement(ev);
+        protected void setTabs(Button[] newTabs) {
+            tabs = newTabs;
+            tabs[mCurrentScreen].setSelected(true);
+        }
 
-			final int action = ev.getAction();
-			final float x = ev.getX();
+        void show() {
+            setVisibility(VISIBLE);
+        }
 
-			switch (action) {
-			case MotionEvent.ACTION_DOWN:
-				// Remember where the motion event started
-				mLastMotionX = x;
-				break;
-			case MotionEvent.ACTION_MOVE:
-				int deltaX = (int) (mLastMotionX - x);
-				mTouchState = TOUCH_STATE_SCROLLING;
-				// Scroll to follow the motion event
-				mLastMotionX = x;
+        @Override
+        public boolean onTouchEvent(MotionEvent ev) {
+            if (mVelocityTracker == null)
+                mVelocityTracker = VelocityTracker.obtain();
+            mVelocityTracker.addMovement(ev);
 
-				final int maxWidth = (getChildCount() - 1) * getWidth();
+            final int action = ev.getAction();
+            final float x = ev.getX();
 
-				if (mScrollX + deltaX < 0)
-					deltaX = -mScrollX;
-				else if (mScrollX + deltaX > maxWidth)
-					deltaX = maxWidth - mScrollX;
+            switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                // Remember where the motion event started
+                mLastMotionX = x;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int deltaX = (int) (mLastMotionX - x);
+                mTouchState = TOUCH_STATE_SCROLLING;
+                // Scroll to follow the motion event
+                mLastMotionX = x;
 
-				scrollBy(deltaX, 0);
-				break;
-			case MotionEvent.ACTION_UP:
-				if (mTouchState == TOUCH_STATE_SCROLLING) {
-					final int bump = getWidth() / 2 + 1;
-					final VelocityTracker velocityTracker = mVelocityTracker;
-					velocityTracker.computeCurrentVelocity(1000,
-							mMaximumVelocity);
-					int velocityX = (int) velocityTracker.getXVelocity();
+                final int maxWidth = (getChildCount() - 1) * getWidth();
 
-					if (velocityX > SNAP_VELOCITY && mCurrentScreen > 0)
-						// Fling hard enough to move left
-						scrollBy(-bump, 0);
-					else if (velocityX < -SNAP_VELOCITY
-							&& mCurrentScreen < getChildCount() - 1)
-						// Fling hard enough to move right
-						scrollBy(bump, 0);
+                if (mScrollX + deltaX < 0)
+                    deltaX = -mScrollX;
+                else if (mScrollX + deltaX > maxWidth)
+                    deltaX = maxWidth - mScrollX;
 
-					snapToScreen(mCurrentScreen);
+                scrollBy(deltaX, 0);
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mTouchState == TOUCH_STATE_SCROLLING) {
+                    final int bump = getWidth() / 2 + 1;
+                    final VelocityTracker velocityTracker = mVelocityTracker;
+                    velocityTracker.computeCurrentVelocity(1000,
+                            mMaximumVelocity);
+                    int velocityX = (int) velocityTracker.getXVelocity();
 
-					mVelocityTracker.recycle();
-					mVelocityTracker = null;
-				}
-				mTouchState = TOUCH_STATE_REST;
-				break;
-			case MotionEvent.ACTION_CANCEL:
-				mTouchState = TOUCH_STATE_REST;
-			}
+                    if (velocityX > SNAP_VELOCITY && mCurrentScreen > 0)
+                        // Fling hard enough to move left
+                        scrollBy(-bump, 0);
+                    else if (velocityX < -SNAP_VELOCITY
+                            && mCurrentScreen < getChildCount() - 1)
+                        // Fling hard enough to move right
+                        scrollBy(bump, 0);
 
-			return true;
-		}
+                    snapToScreen(mCurrentScreen);
 
-		@Override
-		public void scrollBy(int scrollX, int scrollY) {
-			mScrollX += scrollX;
-			mScrollY += scrollY;
-			super.scrollBy(scrollX, scrollY);
-			selectDestination();
-		}
+                    mVelocityTracker.recycle();
+                    mVelocityTracker = null;
+                }
+                mTouchState = TOUCH_STATE_REST;
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                mTouchState = TOUCH_STATE_REST;
+            }
 
-		@Override
-		public void scrollTo(int scrollX, int scrollY) {
-			mScrollX = scrollX;
-			mScrollY = scrollY;
-			super.scrollTo(scrollX, scrollY);
-			selectDestination();
-		}
+            return true;
+        }
 
-		private void selectDestination() {
-			final int w = getWidth();
-			if (w == 0)
-				return;
-			final int whichScreen = (int) (mScrollX + w / 2) / w;
+        @Override
+        public void scrollBy(int scrollX, int scrollY) {
+            mScrollX += scrollX;
+            mScrollY += scrollY;
+            super.scrollBy(scrollX, scrollY);
+            selectDestination();
+        }
 
-			selectScreen(whichScreen);
-		}
+        @Override
+        public void scrollTo(int scrollX, int scrollY) {
+            mScrollX = scrollX;
+            mScrollY = scrollY;
+            super.scrollTo(scrollX, scrollY);
+            selectDestination();
+        }
 
-		private void selectScreen(int whichScreen) {
-			tabs[mCurrentScreen].setSelected(false);
-			mCurrentScreen = whichScreen;
-			tabs[mCurrentScreen].setSelected(true);
-		}
+        private void selectDestination() {
+            final int w = getWidth();
+            if (w == 0)
+                return;
+            final int whichScreen = (int) (mScrollX + w / 2) / w;
 
-		public void snapToScreen(int whichScreen) {
-			selectScreen(whichScreen);
-			super.scrollTo(whichScreen * getWidth(), 0);
-			mScrollX = whichScreen * getWidth();
-		}
+            selectScreen(whichScreen);
+        }
 
-		protected void btnToggle(Button btn) {
-			if (btn == tabs[mCurrentScreen])
-				return;
-			for (int i = 0; i < tabs.length; i++)
-				if (tabs[i] == btn) {
-					snapToScreen(i);
-					return;
-				}
-		}
-	}
+        private void selectScreen(int whichScreen) {
+            tabs[mCurrentScreen].setSelected(false);
+            mCurrentScreen = whichScreen;
+            tabs[mCurrentScreen].setSelected(true);
+        }
+
+        public void snapToScreen(int whichScreen) {
+            selectScreen(whichScreen);
+            super.scrollTo(whichScreen * getWidth(), 0);
+            mScrollX = whichScreen * getWidth();
+        }
+
+        protected void btnToggle(Button btn) {
+            if (btn == tabs[mCurrentScreen])
+                return;
+            for (int i = 0; i < tabs.length; i++)
+                if (tabs[i] == btn) {
+                    snapToScreen(i);
+                    return;
+                }
+        }
+    }
 }
