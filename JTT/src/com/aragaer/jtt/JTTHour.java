@@ -31,6 +31,7 @@ public class JTTHour implements Parcelable {
     }
 
     private int num_to_strikes(int num) {
+        num %= 6;
         return (num < 3 ? 6 : 12) - num;
     }
 
