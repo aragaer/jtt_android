@@ -38,31 +38,34 @@ public class JTTMainActivity extends Activity {
     private final Runnable mUpdateUITimerTask = new Runnable() {
         public void run() {
             try {
-                ((JTTClockView) findViewById(R.id.hour)).setJTTHour(api
-                        .getHour());
+                clock.setJTTHour(api.getHour());
             } catch (RemoteException e) {
                 Log.d("jtt client", "service killed");
             }
+            mHandler.postDelayed(mUpdateUITimerTask, 60 * 1000L);
         }
     };
     private final Handler mHandler = new Handler();
 
+    private JTTClockView clock;
     private JTTPager pager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final Intent intent = new Intent(JTTService.class.getName());
+        startService(intent);
+
         setContentView(R.layout.main);
 
         Button tabs[] = new Button[btn_ids.length];
         for (int i = 0; i < btn_ids.length; i++)
             tabs[i] = (Button) findViewById(btn_ids[i]);
 
+        clock = (JTTClockView) findViewById(R.id.hour);
         pager = (JTTPager) findViewById(R.id.tabcontent);
         pager.setTabs(tabs);
 
-        Intent intent = new Intent(JTTService.class.getName());
-        startService(intent);
         bindService(intent, conn, 0);
     }
 
@@ -76,6 +79,7 @@ public class JTTMainActivity extends Activity {
             Log.w("jtt client", "Failed to unbind from the service", t);
         }
 
+        mHandler.removeCallbacks(mUpdateUITimerTask);
         Log.i("jtt client", "Activity destroyed");
     }
 
