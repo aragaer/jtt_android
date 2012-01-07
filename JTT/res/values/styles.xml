@@ -7,5 +7,13 @@
         <item name="android:backgroundDimAmount">0.3</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textSize">15dip</item>
+        <item name="android:buttonStyle">@style/JTTTabButton</item>
     </style>
+
+    <style name="JTTTabButton" parent="@android:style/Widget.Button">
+        <item name="android:textColor">@drawable/tab_text_selector</item>
+        <item name="android:background">@color/background</item>
+        <item name="android:onClick">onToggle</item>
+    </style>
+
 </resources>

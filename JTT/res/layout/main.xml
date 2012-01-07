@@ -1,22 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/tabhost"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/wrap"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <view
+        class="com.aragaer.jtt.JTTMainActivity$JTTPager"
+        android:id="@+id/tabcontent"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1" >
+
+        <com.aragaer.jtt.JTTClockView
+            android:id="@+id/hour"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:gravity="top|center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="top|center_horizontal"
+            android:text="@string/not_impl" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="top|center_horizontal"
+            android:text="@string/settings" />
+    </view>
+
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/tabs"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:padding="5dp">
-        <FrameLayout
-            android:id="@android:id/tabcontent"
-            android:layout_marginTop="-6dp"
-            android:layout_width="fill_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1"/>
-        <TabWidget
-            android:id="@android:id/tabs"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/clockbtn"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/clock" />
+
+        <Button
+            android:id="@+id/alarmbtn"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/alarm" />
+
+        <Button
+            android:id="@+id/settingsbtn"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:text="@string/settings" />
     </LinearLayout>
-</TabHost>
+
+</LinearLayout>
