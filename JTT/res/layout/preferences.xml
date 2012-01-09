@@ -14,4 +14,9 @@
                 android:numeric="signed|decimal"
                 android:title="@string/longitude" />
     </PreferenceCategory>
+    <CheckBoxPreference
+        android:key="jtt_bootup"
+        android:title="@string/bootup"
+        android:summary="@string/bootup_ex"
+        android:defaultValue="true" />
 </PreferenceScreen>
