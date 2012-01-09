@@ -46,7 +46,7 @@
         android:maxLevel="10"
         android:minLevel="10"/>
     <item
-        android:drawable="@drawable/boar"
+        android:drawable="@drawable/monkey"
         android:maxLevel="11"
         android:minLevel="11"/>
 
