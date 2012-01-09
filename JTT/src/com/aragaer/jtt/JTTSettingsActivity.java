@@ -13,101 +13,110 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 public class JTTSettingsActivity extends PreferenceActivity {
-	private Preference prefLocation;
-	private SharedPreferences settings;
-	private LocationManager locationManager;
-	private LocationListener locationListener;
+    private Preference prefLocation;
+    private SharedPreferences settings;
+    private LocationManager lm;
+    private LocationListener ll;
+    private float accuracy = 0;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		addPreferencesFromResource(R.layout.preferences);
-		settings = PreferenceManager
-				.getDefaultSharedPreferences(getBaseContext());
-		prefLocation = (Preference) findPreference("auto_location");
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.layout.preferences);
+        settings = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+        prefLocation = (Preference) findPreference("auto_location");
+        final String strlat = settings.getString("posLat", "0.0");
+        final String strlon = settings.getString("posLong", "0.0");
 
-		Boolean auto = settings.getBoolean("auto_location", false);
-		if (auto)
-			prefLocation.setSummary("Current location "+settings.getString("posLat", "0.0")+":"+settings.getString("posLong", "0.0"));
-		Preference pref;
-		pref = (Preference) findPreference("posLat");
-		pref.setEnabled(!auto);
-		pref.setSummary(settings.getString("posLat", "0.0"));
-		
-		pref = (Preference) findPreference("posLong");
-		pref.setEnabled(!auto);
-		pref.setSummary(settings.getString("posLong", "0.0"));
+        Boolean auto = settings.getBoolean("auto_location", false);
+        if (auto)
+            prefLocation
+                    .setSummary("Current location " + strlat + ":" + strlon);
+        Preference pref;
+        pref = (Preference) findPreference("posLat");
+        pref.setEnabled(!auto);
+        pref.setSummary(strlat);
 
-		OnPreferenceChangeListener changeListener = new OnPreferenceChangeListener() {
-			public boolean onPreferenceChange(Preference pref, Object newVal) {
-				if (pref.equals(prefLocation))
-					return prefLocationChange(newVal);
-				return true;
-			}
-		};
+        pref = (Preference) findPreference("posLong");
+        pref.setEnabled(!auto);
+        pref.setSummary(strlon);
 
-		prefLocation.setOnPreferenceChangeListener(changeListener);
-	}
+        OnPreferenceChangeListener changeListener = new OnPreferenceChangeListener() {
+            public boolean onPreferenceChange(Preference pref, Object newVal) {
+                if (pref.equals(prefLocation))
+                    return prefLocationChange(newVal);
+                return true;
+            }
+        };
 
-	private boolean prefLocationChange(Object newValue) {
-		Boolean auto = (Boolean) newValue;
-		Preference pref;
-		if (!auto) {
-			pref = (Preference) findPreference("posLat");
-			pref.setEnabled(true);
-			pref.setSummary(settings.getString("posLat", "0.0"));
-			
-			pref = (Preference) findPreference("posLong");
-			pref.setEnabled(true);
-			pref.setSummary(settings.getString("posLong", "0.0"));
-			return true;
-		}
+        prefLocation.setOnPreferenceChangeListener(changeListener);
+    }
 
-		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+    private boolean prefLocationChange(Object newValue) {
+        final Boolean auto = (Boolean) newValue;
+        Preference pref;
+        pref = (Preference) findPreference("posLat");
+        pref.setEnabled(!auto);
+        pref.setSummary(settings.getString("posLat", "0.0"));
 
-		locationListener = new LocationListener() {
-			public void onLocationChanged(Location location) {
-				// Called when a new location is found by the network location
-				// provider.
-				makeUseOfNewLocation(location, true);
-			}
+        pref = (Preference) findPreference("posLong");
+        pref.setEnabled(!auto);
+        pref.setSummary(settings.getString("posLong", "0.0"));
+        if (!auto)
+            return true;
 
-			public void onStatusChanged(String provider, int status,
-					Bundle extras) {
-			}
+        lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-			public void onProviderEnabled(String provider) {
-			}
+        ll = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                // Called when a new location is found by the network location
+                // provider.
+                makeUseOfNewLocation(location, true);
+            }
 
-			public void onProviderDisabled(String provider) {
-			}
-		};
+            public void onStatusChanged(String provider, int status,
+                    Bundle extras) {
+            }
 
-		Location last = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		if (last == null) {
-			last = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		}
-		
-		if (last != null) {
-			makeUseOfNewLocation(last, false);
-		}
+            public void onProviderEnabled(String provider) {
+            }
 
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-						
-		return true;
-	}
-	
-	private void makeUseOfNewLocation(Location l, Boolean stopLocating) {
-		Toast.makeText(getBaseContext(), "Current location "+l.getLatitude()+":"+l.getLongitude(),
-				Toast.LENGTH_SHORT).show();
-		prefLocation.setSummary("Current location "+l.getLatitude()+":"+l.getLongitude());
-		SharedPreferences.Editor editor1 = settings.edit();
-		editor1.putString("posLat", ""+l.getLatitude());
-		editor1.putString("posLong", ""+l.getLongitude());
-		editor1.commit();
-		
-		if (stopLocating)
-			locationManager.removeUpdates(locationListener);
-	}
+            public void onProviderDisabled(String provider) {
+            }
+        };
+
+        Location last = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (last == null)
+            last = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        if (last != null)
+            makeUseOfNewLocation(last, false);
+
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
+        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, ll);
+
+        return true;
+    }
+
+    private void makeUseOfNewLocation(Location l, Boolean stopLocating) {
+        if (l.hasAccuracy()) {
+            final float new_acc = l.getAccuracy();
+            if (accuracy > 0 && accuracy < new_acc)
+                return; // this one doesn't have the best accuracy
+            accuracy = new_acc;
+        }
+        final String lat = Double.toString(l.getLatitude());
+        final String lon = Double.toString(l.getLongitude());
+//        Toast.makeText(getBaseContext(), "Current location " + lat + ":" + lon,
+//                Toast.LENGTH_SHORT).show();
+        prefLocation.setSummary("Current location " + lat + ":" + lon);
+        final SharedPreferences.Editor editor1 = settings.edit();
+        editor1.putString("posLat", "" + lat);
+        editor1.putString("posLong", "" + lon);
+        editor1.commit();
+
+        if (stopLocating)
+            lm.removeUpdates(ll);
+    }
 }
