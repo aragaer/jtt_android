@@ -1,6 +1,6 @@
 package com.aragaer.jtt;
 
-import android.app.Activity;
+import android.app.ActivityGroup;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -16,9 +16,10 @@ import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 
-public class JTTMainActivity extends Activity {
+public class JTTMainActivity extends ActivityGroup {
     private static final int btn_ids[] = { R.id.clockbtn, R.id.alarmbtn,
             R.id.settingsbtn };
 
@@ -53,8 +54,8 @@ public class JTTMainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Intent intent = new Intent(JTTService.class.getName());
-        startService(intent);
+        final Intent service = new Intent(JTTService.class.getName());
+        startService(service);
 
         setContentView(R.layout.main);
 
@@ -64,9 +65,21 @@ public class JTTMainActivity extends Activity {
 
         clock = (JTTClockView) findViewById(R.id.hour);
         pager = (JTTPager) findViewById(R.id.tabcontent);
+        if (savedInstanceState != null)
+            pager.mCurrentScreen = savedInstanceState.getInt("Screen");
         pager.setTabs(tabs);
 
-        bindService(intent, conn, 0);
+        final Window sw = getLocalActivityManager().startActivity("settings",
+                new Intent(this, JTTSettingsActivity.class));
+        pager.addView(sw.getDecorView());
+
+        bindService(service, conn, 0);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt("Screen", pager.mCurrentScreen);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -93,13 +106,14 @@ public class JTTMainActivity extends Activity {
         private boolean mFirstLayout = true;
         private VelocityTracker mVelocityTracker;
         private int mMaximumVelocity;
+        private int mTouchSlop;
 
-        private int mCurrentScreen;
+        protected int mCurrentScreen;
 
         private float mLastMotionX;
-        private float mLastMotionY;
+        // private float mLastMotionY;
         private int mScrollX;
-        private int mScrollY;
+        // private int mScrollY;
 
         private final static int TOUCH_STATE_REST = 0;
         private final static int TOUCH_STATE_SCROLLING = 1;
@@ -114,6 +128,7 @@ public class JTTMainActivity extends Activity {
 
             final ViewConfiguration cfg = ViewConfiguration.get(getContext());
             mMaximumVelocity = cfg.getScaledMaximumFlingVelocity();
+            mTouchSlop = cfg.getScaledTouchSlop();
         }
 
         @Override
@@ -127,7 +142,7 @@ public class JTTMainActivity extends Activity {
             for (int i = 0; i < count; i++)
                 getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
 
-            if (mFirstLayout) {
+            if (width > 0 && mFirstLayout) {
                 setHorizontalScrollBarEnabled(false);
                 scrollTo(mCurrentScreen * width, 0);
                 mFirstLayout = false;
@@ -156,6 +171,49 @@ public class JTTMainActivity extends Activity {
 
         void show() {
             setVisibility(VISIBLE);
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(MotionEvent ev) {
+            final int action = ev.getAction();
+            if (action == MotionEvent.ACTION_MOVE
+                    && mTouchState != TOUCH_STATE_REST)
+                return true;
+
+            final float x = ev.getX();
+            // final float y = ev.getY();
+            switch (action) {
+            case MotionEvent.ACTION_MOVE:
+                final int xDiff = (int) Math.abs(x - mLastMotionX);
+                // final int yDiff = (int) Math.abs(y - mLastMotionY);
+
+                final int touchSlop = mTouchSlop;
+                final boolean xMoved = xDiff > touchSlop;
+                // final boolean yMoved = yDiff > touchSlop;
+
+                if (xMoved)
+                    mTouchState = TOUCH_STATE_SCROLLING;
+                break;
+
+            case MotionEvent.ACTION_DOWN:
+                // Remember location of down touch
+                mLastMotionX = x;
+                // mLastMotionY = y;
+                mTouchState = TOUCH_STATE_REST;
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                // Release the drag
+                mTouchState = TOUCH_STATE_REST;
+                break;
+            }
+
+            /*
+             * The only time we want to intercept motion events is if we are in
+             * the drag mode.
+             */
+            return mTouchState != TOUCH_STATE_REST;
         }
 
         @Override
@@ -220,7 +278,7 @@ public class JTTMainActivity extends Activity {
         @Override
         public void scrollBy(int scrollX, int scrollY) {
             mScrollX += scrollX;
-            mScrollY += scrollY;
+            // mScrollY += scrollY;
             super.scrollBy(scrollX, scrollY);
             selectDestination();
         }
@@ -228,7 +286,7 @@ public class JTTMainActivity extends Activity {
         @Override
         public void scrollTo(int scrollX, int scrollY) {
             mScrollX = scrollX;
-            mScrollY = scrollY;
+            // mScrollY = scrollY;
             super.scrollTo(scrollX, scrollY);
             selectDestination();
         }
@@ -249,9 +307,10 @@ public class JTTMainActivity extends Activity {
         }
 
         public void snapToScreen(int whichScreen) {
+            final int x = getWidth() * whichScreen;
             selectScreen(whichScreen);
-            super.scrollTo(whichScreen * getWidth(), 0);
-            mScrollX = whichScreen * getWidth();
+            super.scrollTo(x, 0);
+            mScrollX = x;
         }
 
         protected void btnToggle(Button btn) {

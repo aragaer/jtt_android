@@ -22,6 +22,8 @@ public class JTTService extends Service {
     private Notification notification;
     private NotificationManager nm;
     private static final int APP_ID = 0;
+    private Intent JTTMain;
+    private PendingIntent pending_main;
 
     private static final String TAG = JTTService.class.getSimpleName();
 
@@ -37,14 +39,12 @@ public class JTTService extends Service {
     private TimerTask updateTask = new TimerTask() {
         @Override
         public void run() {
-            final Intent intent = new Intent(JTTMainActivity.class.getName());
             final Context ctx = getBaseContext();
             hour = calculator.time_to_jtt(new Date());
             notification.setLatestEventInfo(JTTService.this,
                     ctx.getString(R.string.hr_of)+" "+hour.hour,
                     Math.round(hour.fraction * 100)+"%",
-                    PendingIntent.getActivity(ctx, 0, intent,
-                    Intent.FLAG_ACTIVITY_NEW_TASK));
+                    pending_main);
             notification.when = System.currentTimeMillis();
             notification.iconLevel = hour.num;
             nm.notify(APP_ID, notification);
@@ -78,6 +78,9 @@ public class JTTService extends Service {
         hour = calculator.time_to_jtt(new Date());
         Log.d(TAG, "rate = "+calculator.rate);
         Log.d(TAG, "Next hour at "+calculator.nextHour.toLocaleString());
+
+        JTTMain = new Intent(getBaseContext(), JTTMainActivity.class);
+        pending_main = PendingIntent.getActivity(getBaseContext(), 0, JTTMain, 0);
 
         nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notification = new Notification(R.drawable.notification_icon,
