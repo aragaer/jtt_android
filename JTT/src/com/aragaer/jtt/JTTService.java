@@ -102,5 +102,13 @@ public class JTTService extends Service {
 
         timer.cancel();
         timer = null;
+
+        notification.setLatestEventInfo(JTTService.this,
+                getBaseContext().getString(R.string.srv_fail),
+                getBaseContext().getString(R.string.srv_fail_ex),
+                pending_main);
+        notification.when = System.currentTimeMillis();
+        notification.iconLevel = hour.num;
+        nm.notify(APP_ID, notification);
     }
 }
