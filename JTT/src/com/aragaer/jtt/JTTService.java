@@ -5,7 +5,11 @@ import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
@@ -15,6 +19,9 @@ import android.util.Log;
 public class JTTService extends Service {
     private JTT calculator;
     private JTTHour hour = new JTTHour(0);
+    private Notification notification;
+    private NotificationManager nm;
+    private static final int APP_ID = 0;
 
     private static final String TAG = JTTService.class.getSimpleName();
 
@@ -30,7 +37,17 @@ public class JTTService extends Service {
     private TimerTask updateTask = new TimerTask() {
         @Override
         public void run() {
+            final Intent intent = new Intent(JTTMainActivity.class.getName());
+            final Context ctx = getBaseContext();
             hour = calculator.time_to_jtt(new Date());
+            notification.setLatestEventInfo(JTTService.this,
+                    ctx.getString(R.string.hr_of)+" "+hour.hour,
+                    Math.round(hour.fraction * 100)+"%",
+                    PendingIntent.getActivity(ctx, 0, intent,
+                    Intent.FLAG_ACTIVITY_NEW_TASK));
+            notification.when = System.currentTimeMillis();
+            notification.iconLevel = hour.num;
+            nm.notify(APP_ID, notification);
         }
     };
 
@@ -62,6 +79,11 @@ public class JTTService extends Service {
         Log.d(TAG, "rate = "+calculator.rate);
         Log.d(TAG, "Next hour at "+calculator.nextHour.toLocaleString());
 
+        nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notification = new Notification(R.drawable.notification_icon,
+                getBaseContext().getString(R.string.app_name), System.currentTimeMillis());
+        notification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
+        
         timer = new Timer("JTTServiceTimer");
         try {
             timer.scheduleAtFixedRate(updateTask, 0, 60 * 1000L);
