@@ -71,7 +71,19 @@ public class JTTMainActivity extends Activity {
         
         try {
             Bitmap bmp = JTTClockView.drawBitmap(-1, 36);
-            FileOutputStream out = new FileOutputStream("/mnt/sdcard/pics/icon.png");
+            FileOutputStream out = new FileOutputStream("/mnt/sdcard/h_icon.png");
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.close();
+            bmp = JTTClockView.drawBitmap(-1, 24);
+            out = new FileOutputStream("/mnt/sdcard/m_icon.png");
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.close();
+            bmp = JTTClockView.drawBitmap(-1, 18);
+            out = new FileOutputStream("/mnt/sdcard/l_icon.png");
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.close();
+            bmp = JTTClockView.drawBitmap(-1, 48);
+            out = new FileOutputStream("/mnt/sdcard/x_icon.png");
             bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.close();
         }  catch (Throwable e) {

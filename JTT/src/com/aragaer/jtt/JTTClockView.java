@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 public class JTTClockView extends TextView {
     private final static int step = 360 / 12;
-    private final static float gap = 1.5f;
+    private final static float gap = 3.5f;
     private static final Paint mStrokePaint = new Paint();
     private static final Paint mStrokePaint2 = new Paint();
     private static final Paint mSolidPaint = new Paint();
