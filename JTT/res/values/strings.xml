@@ -9,6 +9,6 @@
     <string name="clock">Clock</string>
     <string name="alarm">Alarm</string>
     <string name="settings">Settings</string>
-    <string name="srv_fail">Failed to start service</string>
+    <string name="srv_fail">Service killed, touch to restart</string>
     <string name="hr_of">Hour of</string>
 </resources>
