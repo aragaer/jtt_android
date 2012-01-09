@@ -4,8 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import android.util.Log;
-
 public class JTT {
     private final SolarObserver calculator;
     public long rate; // number of millis per 1% of hour
@@ -18,13 +16,15 @@ public class JTT {
         long[] c = new long[2];
         getTrasitions(now, c);
 
-        rate = Math.round(c[1]/600.0);
+        rate = Math.round(c[1] / 600.0);
 
-        now.add(Calendar.SECOND, (int) Math.round(rate/1000.0*Math.ceil(6.0*c[0]/c[1])));
+        now.add(Calendar.SECOND,
+                (int) Math.round(rate / 1000.0 * Math.ceil(6.0 * c[0] / c[1])));
         nextHour = now.getTime();
     }
 
-    /* returns false if day, true if night
+    /* Helper functions
+     * returns false if day, true if night
      * out contains ms from last transition and ms between transitions
      */
     private Boolean getTrasitions(Calendar cal, long[] out) {
@@ -73,9 +73,8 @@ class SolarObserver {
     final private float latitude;
     final private float longitude;
     final private TimeZone timeZone;
-    final private Boolean useCivilZenith = false;
-    final private double zenithCivil = 96;
     final private double zenithOfficial = 90.8333;
+    final private double zenith = Math.toRadians(zenithOfficial);
 
     public SolarObserver(float latitude, float longitude, TimeZone timezone) {
         this.latitude = latitude;
@@ -95,52 +94,37 @@ class SolarObserver {
     private double computeSolarEventTime(Calendar date, boolean isSunrise) {
         date.setTimeZone(this.timeZone);
 
-        double lngHour = longitude / 15;
-        double t = date.get(Calendar.DAY_OF_YEAR)
+        final double lngHour = longitude / 15;
+        final double t = date.get(Calendar.DAY_OF_YEAR)
                 + ((isSunrise ? 6 : 18) - lngHour) / 24;
 
-        double M = (0.9856 * t) - 3.289;
+        final double M = (0.9856 * t) - 3.289;
 
-        double L = M + (1.916 * Math.sin(Math.toRadians(M)))
-                + (0.020 * Math.sin(Math.toRadians(2 * M))) + 282.634;
-        if (L < 0)
-            L += 360.0;
-        else if (L > 360.0)
-            L -= 360.0;
+        final double L = (M + (1.916 * Math.sin(Math.toRadians(M)))
+                + (0.020 * Math.sin(Math.toRadians(2 * M))) + 282.634) % 360.0;
 
-        double RA = Math.toDegrees(Math.atan(0.91764 * Math.tan(Math
-                .toRadians(L))));
+        double RA = Math.toDegrees(Math.atan(0.91764 * Math.tan(Math.toRadians(L))));
         RA = RA / 15 + (Math.floor(L / 90) - Math.floor(RA / 90)) * 6;
 
-        double sinDec = 0.39782 * Math.sin(Math.toRadians(L));
-        double cosDec = Math.cos(Math.asin(sinDec));
+        final double sinDec = 0.39782 * Math.sin(Math.toRadians(L));
+        final double cosDec = Math.cos(Math.asin(sinDec));
 
-        double zenith = Math.toRadians(useCivilZenith ? zenithCivil
-                : zenithOfficial);
-        double radlat = Math.toRadians(latitude);
-        double cosH = (Math.cos(zenith) - (sinDec * Math.sin(radlat)))
+        final double radlat = Math.toRadians(latitude);
+        final double cosH = (Math.cos(zenith) - (sinDec * Math.sin(radlat)))
                 / (cosDec * Math.cos(radlat));
         if (Math.abs(cosH) > 1)
             return -1;
 
-        double H = Math.toDegrees(Math.acos(cosH)) / 15;
-        if (isSunrise)
-            H = 24 - H;
+        final double H = Math.toDegrees(Math.acos(cosH)) / 15;
 
-        double T = H + RA - (0.06571 * t) - 6.622;
-        double UT = T - lngHour;
-        double LocalT = UT
+        final double T = (isSunrise ? 24 - H : H) + RA - (0.06571 * t) - 6.622;
+        final double LocalT = T - lngHour
                 + (date.get(Calendar.ZONE_OFFSET) + date
                         .get(Calendar.DST_OFFSET)) / 3600000.0;
-        if (LocalT < 0)
-            LocalT += 24;
-        else if (LocalT >= 24)
-            LocalT -= 24;
-
-        return LocalT;
+        return LocalT % 24;
     }
 
-    private Calendar getLocalTimeAsCalendar(double localTime, Calendar date) {
+    private static Calendar getLocalTimeAsCalendar(double localTime, Calendar date) {
         if (localTime < 0)
             return null;
         Calendar resultTime = (Calendar) date.clone();
