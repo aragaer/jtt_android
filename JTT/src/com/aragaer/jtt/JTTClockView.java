@@ -15,11 +15,11 @@ import android.widget.TextView;
 public class JTTClockView extends TextView {
     private final static int step = 360 / 12;
     private final static float gap = 1.5f;
-    private final Paint mStrokePaint = new Paint();
-    private final Paint mStrokePaint2 = new Paint();
-    private final Paint mSolidPaint = new Paint();
-    private final Paint mSolidPaint2 = new Paint();
-    private final Bitmap ch[] = new Bitmap[12], cv[] = new Bitmap[12];
+    private static final Paint mStrokePaint = new Paint();
+    private static final Paint mStrokePaint2 = new Paint();
+    private static final Paint mSolidPaint = new Paint();
+    private static final Paint mSolidPaint2 = new Paint();
+    private static final Bitmap ch[] = new Bitmap[12], cv[] = new Bitmap[12];
     private JTTHour hour;
 
     private Context ctx;
@@ -93,7 +93,7 @@ public class JTTClockView extends TextView {
         mSolidPaint2.setStrokeWidth(1.3f);
     }
 
-    private Bitmap drawBitmap(int num, int c) {
+    public static Bitmap drawBitmap(int num, int c) {
         Bitmap result = Bitmap.createBitmap(c * 2, c * 2,
                 Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);
@@ -112,6 +112,7 @@ public class JTTClockView extends TextView {
         final RectF sel = new RectF(c - selR, c - selR, c + selR, c + selR);
         final RectF sun = new RectF(c - sR, c - sR, c + sR, c + sR);
 
+        if (num != -1) {
         canvas.rotate(-step / 2, c, c);
         canvas.translate(-iR * 0.75f, 0);
         canvas.drawArc(sun, 0, 360, false, mSolidPaint);
@@ -131,6 +132,7 @@ public class JTTClockView extends TextView {
         canvas.drawLine(c - sR, c, c + sR, c, mStrokePaint);
         canvas.translate(iR * 0.75f, 0);
         canvas.rotate(90 + step / 2, c, c);
+        }
 
         final int arc_start = -90 - Math.round(step / 2 - gap);
         final int arc_end = -90 + Math.round(step / 2 - gap);
@@ -156,9 +158,11 @@ public class JTTClockView extends TextView {
             canvas.drawPath(path, mSolidPaint);
             canvas.drawPath(path, mStrokePaint);
 
+            if (num!= -1) {
             final float glyph_y = c - iR - (current ? 5 : 4) * thick / 9;
             canvas.drawText(JTTHour.Glyphs[hr], c, glyph_y, mSolidPaint2);
             canvas.drawText(JTTHour.Glyphs[hr], c, glyph_y, mStrokePaint);
+            }
             canvas.rotate(step, c, c);
         }
 

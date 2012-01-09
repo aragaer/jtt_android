@@ -1,10 +1,13 @@
 package com.aragaer.jtt;
 
+import java.io.FileOutputStream;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -65,7 +68,15 @@ public class JTTMainActivity extends Activity {
         clock = (JTTClockView) findViewById(R.id.hour);
         pager = (JTTPager) findViewById(R.id.tabcontent);
         pager.setTabs(tabs);
-
+        
+        try {
+            Bitmap bmp = JTTClockView.drawBitmap(-1, 36);
+            FileOutputStream out = new FileOutputStream("/mnt/sdcard/pics/icon.png");
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.close();
+        }  catch (Throwable e) {
+            Log.e("icon", "Failed to create icon", e);
+        }
         bindService(intent, conn, 0);
     }
 
