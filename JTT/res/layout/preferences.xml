@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <CheckBoxPreference
+        android:key="jtt_bootup"
+        android:title="@string/bootup"
+        android:summary="@string/bootup_ex"
+        android:defaultValue="true" />
     <PreferenceCategory
             android:title="@string/location">
 		<CheckBoxPreference
@@ -14,9 +19,4 @@
                 android:numeric="signed|decimal"
                 android:title="@string/longitude" />
     </PreferenceCategory>
-    <CheckBoxPreference
-        android:key="jtt_bootup"
-        android:title="@string/bootup"
-        android:summary="@string/bootup_ex"
-        android:defaultValue="true" />
 </PreferenceScreen>
