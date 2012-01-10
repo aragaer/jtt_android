@@ -24,6 +24,7 @@ public class JTTService extends Service {
     private static final int APP_ID = 0;
     private Intent JTTMain;
     private PendingIntent pending_main;
+    private SharedPreferences settings;
 
     private static final String TAG = JTTService.class.getSimpleName();
 
@@ -41,13 +42,15 @@ public class JTTService extends Service {
         public void run() {
             final Context ctx = getBaseContext();
             hour = calculator.time_to_jtt(new Date());
-            notification.setLatestEventInfo(JTTService.this,
-                    ctx.getString(R.string.hr_of)+" "+hour.hour,
-                    Math.round(hour.fraction * 100)+"%",
-                    pending_main);
-            notification.when = System.currentTimeMillis();
-            notification.iconLevel = hour.num;
-            nm.notify(APP_ID, notification);
+            if (settings.getBoolean("jtt_notify", true)) {
+                notification.setLatestEventInfo(JTTService.this,
+                        ctx.getString(R.string.hr_of)+" "+hour.hour,
+                        Math.round(hour.fraction * 100)+"%",
+                        pending_main);
+                notification.when = System.currentTimeMillis();
+                notification.iconLevel = hour.num;
+                nm.notify(APP_ID, notification);
+            }
         }
     };
 
@@ -69,10 +72,10 @@ public class JTTService extends Service {
     public void onStart(Intent intent, int startid) {
         float latitude, longitude;
         Log.i(TAG, "Service starting");
-        SharedPreferences settings = PreferenceManager
+        settings = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
-        latitude = Float.parseFloat(settings.getString("posLat", "0.0"));
-        longitude = Float.parseFloat(settings.getString("posLong", "0.0"));
+        latitude = Float.parseFloat(settings.getString("jtt_lat", "0.0"));
+        longitude = Float.parseFloat(settings.getString("jtt_lon", "0.0"));
 
         calculator = new JTT(latitude, longitude, TimeZone.getDefault());
         hour = calculator.time_to_jtt(new Date());

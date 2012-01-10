@@ -14,4 +14,6 @@
     <string name="hr_of">Hour of</string>
     <string name="bootup">Start on bootup</string>
     <string name="bootup_ex">Start the service automatically when the device is turned on.</string>
+    <string name="notify">Display notifications</string>
+    <string name="notify_ex">Display current hour glyph in status bar.</string>
 </resources>

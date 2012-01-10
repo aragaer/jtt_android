@@ -25,20 +25,20 @@ public class JTTSettingsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.layout.preferences);
         settings = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
-        prefLocation = (Preference) findPreference("auto_location");
-        final String strlat = settings.getString("posLat", "0.0");
-        final String strlon = settings.getString("posLong", "0.0");
+        prefLocation = (Preference) findPreference("jtt_auto_loc");
+        final String strlat = settings.getString("jtt_lat", "0.0");
+        final String strlon = settings.getString("jtt_lon", "0.0");
 
         Boolean auto = settings.getBoolean("auto_location", false);
         if (auto)
             prefLocation
                     .setSummary("Current location " + strlat + ":" + strlon);
         Preference pref;
-        pref = (Preference) findPreference("posLat");
+        pref = (Preference) findPreference("jtt_lat");
         pref.setEnabled(!auto);
         pref.setSummary(strlat);
 
-        pref = (Preference) findPreference("posLong");
+        pref = (Preference) findPreference("jtt_lon");
         pref.setEnabled(!auto);
         pref.setSummary(strlon);
 
@@ -56,13 +56,13 @@ public class JTTSettingsActivity extends PreferenceActivity {
     private boolean prefLocationChange(Object newValue) {
         final Boolean auto = (Boolean) newValue;
         Preference pref;
-        pref = (Preference) findPreference("posLat");
+        pref = (Preference) findPreference("jtt_lat");
         pref.setEnabled(!auto);
-        pref.setSummary(settings.getString("posLat", "0.0"));
+        pref.setSummary(settings.getString("jtt_lat", "0.0"));
 
-        pref = (Preference) findPreference("posLong");
+        pref = (Preference) findPreference("jtt_lon");
         pref.setEnabled(!auto);
-        pref.setSummary(settings.getString("posLong", "0.0"));
+        pref.setSummary(settings.getString("jtt_lon", "0.0"));
         if (!auto)
             return true;
 
@@ -112,8 +112,8 @@ public class JTTSettingsActivity extends PreferenceActivity {
 //                Toast.LENGTH_SHORT).show();
         prefLocation.setSummary("Current location " + lat + ":" + lon);
         final SharedPreferences.Editor editor1 = settings.edit();
-        editor1.putString("posLat", "" + lat);
-        editor1.putString("posLong", "" + lon);
+        editor1.putString("jtt_lat", "" + lat);
+        editor1.putString("jtt_lon", "" + lon);
         editor1.commit();
 
         if (stopLocating)

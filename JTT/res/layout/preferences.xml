@@ -5,17 +5,22 @@
         android:title="@string/bootup"
         android:summary="@string/bootup_ex"
         android:defaultValue="true" />
+    <CheckBoxPreference
+        android:key="jtt_notify"
+        android:title="@string/notify"
+        android:summary="@string/notify_ex"
+        android:defaultValue="true" />
     <PreferenceCategory
             android:title="@string/location">
 		<CheckBoxPreference
-                android:key="auto_location"
+                android:key="jtt_auto_loc"
                 android:title="@string/auto_lat_long" />
         <EditTextPreference
-                android:key="posLat"
+                android:key="jtt_lat"
                 android:numeric="signed|decimal"
                 android:title="@string/latitude" />
         <EditTextPreference
-                android:key="posLong"
+                android:key="jtt_lon"
                 android:numeric="signed|decimal"
                 android:title="@string/longitude" />
     </PreferenceCategory>
