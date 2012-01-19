@@ -111,8 +111,6 @@ public class JTTSettingsActivity extends PreferenceActivity {
 
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
         lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, ll);
-
-        return true;
     }
 
     private void makeUseOfNewLocation(Location l, Boolean stopLocating) {
@@ -124,9 +122,9 @@ public class JTTSettingsActivity extends PreferenceActivity {
         }
         final String lat = Double.toString(l.getLatitude());
         final String lon = Double.toString(l.getLongitude());
-//        Toast.makeText(getBaseContext(), "Current location " + lat + ":" + lon,
-//                Toast.LENGTH_SHORT).show();
-        prefLocation.setSummary("Current location " + lat + ":" + lon);
+        // Toast.makeText(getBaseContext(), "Current location " + lat + ":" +
+        // lon,
+        // Toast.LENGTH_SHORT).show();
         final SharedPreferences.Editor editor1 = settings.edit();
         editor1.putString("jtt_lat", "" + lat);
         editor1.putString("jtt_lon", "" + lon);

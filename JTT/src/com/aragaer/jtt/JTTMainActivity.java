@@ -8,6 +8,8 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -23,16 +25,19 @@ public class JTTMainActivity extends ActivityGroup {
     private static final int btn_ids[] = { R.id.clockbtn, R.id.alarmbtn,
             R.id.settingsbtn };
 
-    private IJTTService api;
+    protected IJTTService api;
+    protected Messenger srv;
     private ServiceConnection conn = new ServiceConnection() {
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.i("client", "Service connection established");
             api = IJTTService.Stub.asInterface(service);
             mHandler.postDelayed(mUpdateUITimerTask, 1000);
+            srv = new Messenger(service);
         }
 
         public void onServiceDisconnected(ComponentName name) {
             Log.i("client", "Service connection closed");
+            srv = null;
         }
     };
 

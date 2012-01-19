@@ -9,11 +9,16 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Handler;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
+import android.os.Message;
+import android.os.Messenger;
 import android.util.Log;
 
 public class JTTService extends Service {
@@ -27,12 +32,26 @@ public class JTTService extends Service {
     private SharedPreferences settings;
     private Boolean do_notify;
 
+    static final int MSG_TOGGLE_NOTIFY = 0;
     private static final String TAG = JTTService.class.getSimpleName();
 
     private IJTTService.Stub apiEndpoint = new IJTTService.Stub() {
         public JTTHour getHour() {
             synchronized (hour) {
                 return hour;
+            }
+        }
+        public void startNotifying() {
+            do_notify = true;
+            notify_helper();
+        }
+        public void stopNotifying() {
+            do_notify = false;
+            notify_helper();
+        }
+        public void stopService() {
+            synchronized (timer) {
+                stopSelf();
             }
         }
     };
@@ -77,6 +96,19 @@ public class JTTService extends Service {
         }
     }
 
+    class IncomingHandler extends Handler { // Handler of incoming messages from clients.
+        @Override
+        public void handleMessage(Message msg) {
+            Log.d("service", "message "+msg.what);
+            switch (msg.what) {
+            case MSG_TOGGLE_NOTIFY:
+                do_notify = settings.getBoolean("jtt_notify", true);
+                notify_helper();
+            default:
+                super.handleMessage(msg);
+            }
+        }
+    }
 
     private void set_lat_lon() {
         float latitude, longitude;
