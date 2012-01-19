@@ -25,6 +25,7 @@ public class JTTService extends Service {
     private Intent JTTMain;
     private PendingIntent pending_main;
     private SharedPreferences settings;
+    private Boolean do_notify;
 
     private static final String TAG = JTTService.class.getSimpleName();
 
@@ -36,21 +37,29 @@ public class JTTService extends Service {
         }
     };
 
+    private synchronized void notify_helper() {
+        final Context ctx = getBaseContext();
+        Log.d("service", "notify helper!");
+        if (do_notify) {
+            notification.setLatestEventInfo(JTTService.this,
+                    ctx.getString(R.string.hr_of)+" "+hour.hour,
+                    Math.round(hour.fraction * 100)+"%",
+                    pending_main);
+            notification.when = System.currentTimeMillis();
+            notification.iconLevel = hour.num;
+            nm.notify(APP_ID, notification);
+        } else {
+            nm.cancel(APP_ID);
+        }
+    }
+
     private Timer timer;
     private TimerTask updateTask = new TimerTask() {
         @Override
         public void run() {
-            final Context ctx = getBaseContext();
             hour = calculator.time_to_jtt(new Date());
-            if (settings.getBoolean("jtt_notify", true)) {
-                notification.setLatestEventInfo(JTTService.this,
-                        ctx.getString(R.string.hr_of)+" "+hour.hour,
-                        Math.round(hour.fraction * 100)+"%",
-                        pending_main);
-                notification.when = System.currentTimeMillis();
-                notification.iconLevel = hour.num;
-                nm.notify(APP_ID, notification);
-            }
+            if (do_notify)
+                notify_helper();
         }
     };
 
@@ -68,28 +77,34 @@ public class JTTService extends Service {
         }
     }
 
-    @Override
-    public void onStart(Intent intent, int startid) {
+
+    private void set_lat_lon() {
         float latitude, longitude;
-        Log.i(TAG, "Service starting");
-        settings = PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext());
         latitude = Float.parseFloat(settings.getString("jtt_lat", "0.0"));
         longitude = Float.parseFloat(settings.getString("jtt_lon", "0.0"));
 
         calculator = new JTT(latitude, longitude, TimeZone.getDefault());
         hour = calculator.time_to_jtt(new Date());
+    }
+
+    @Override
+    public void onStart(Intent intent, int startid) {
+        Log.i(TAG, "Service starting");
+        settings = this.getSharedPreferences("JTT", Context.MODE_WORLD_READABLE);
+        set_lat_lon();
         Log.d(TAG, "rate = "+calculator.rate);
         Log.d(TAG, "Next hour at "+calculator.nextHour.toLocaleString());
 
         JTTMain = new Intent(getBaseContext(), JTTMainActivity.class);
         pending_main = PendingIntent.getActivity(getBaseContext(), 0, JTTMain, 0);
 
+        do_notify = settings.getBoolean("jtt_notify", true);
+
         nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notification = new Notification(R.drawable.notification_icon,
                 getBaseContext().getString(R.string.app_name), System.currentTimeMillis());
         notification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
-        
+
         timer = new Timer("JTTServiceTimer");
         try {
             timer.scheduleAtFixedRate(updateTask, 0, 60 * 1000L);
@@ -112,6 +127,10 @@ public class JTTService extends Service {
                 pending_main);
         notification.when = System.currentTimeMillis();
         notification.iconLevel = hour.num;
+        if (do_notify)
+            notification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
+        else
+            notification.flags = 0;
         nm.notify(APP_ID, notification);
     }
 }

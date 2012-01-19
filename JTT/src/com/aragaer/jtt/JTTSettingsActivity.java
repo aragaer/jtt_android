@@ -1,71 +1,87 @@
 package com.aragaer.jtt;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 
 public class JTTSettingsActivity extends PreferenceActivity {
-    private Preference prefLocation;
     private SharedPreferences settings;
     private LocationManager lm;
     private LocationListener ll;
     private float accuracy = 0;
+    static final int MSG_TOGGLE_NOTIFY = 0;
+    private Messenger srv;
+    private ServiceConnection conn = new ServiceConnection() {
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.i("settings", "Service connection established");
+            srv = new Messenger(service);
+        }
+
+        public void onServiceDisconnected(ComponentName name) {
+            Log.i("settings", "Service connection closed");
+            srv = null;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        PreferenceManager prefMgr = getPreferenceManager();
+        prefMgr.setSharedPreferencesName("JTT");
+        prefMgr.setSharedPreferencesMode(MODE_WORLD_READABLE);
+        
         addPreferencesFromResource(R.layout.preferences);
-        settings = PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext());
-        prefLocation = (Preference) findPreference("jtt_auto_loc");
+        settings = prefMgr.getSharedPreferences();
         final String strlat = settings.getString("jtt_lat", "0.0");
         final String strlon = settings.getString("jtt_lon", "0.0");
 
-        Boolean auto = settings.getBoolean("auto_location", false);
-        if (auto)
-            prefLocation
-                    .setSummary("Current location " + strlat + ":" + strlon);
         Preference pref;
         pref = (Preference) findPreference("jtt_lat");
-        pref.setEnabled(!auto);
         pref.setSummary(strlat);
 
         pref = (Preference) findPreference("jtt_lon");
-        pref.setEnabled(!auto);
         pref.setSummary(strlon);
 
         OnPreferenceChangeListener changeListener = new OnPreferenceChangeListener() {
             public boolean onPreferenceChange(Preference pref, Object newVal) {
-                if (pref.equals(prefLocation))
-                    return prefLocationChange(newVal);
+                Log.d("settings", "Pref "+pref.getKey()+" changed to "+newVal.toString());
+                if (pref.getKey().equals("jtt_notify")) {
+                    Log.d("settings", "yo! message!");
+                    Message msg = Message.obtain(null, MSG_TOGGLE_NOTIFY);
+                    try {
+                        srv.send(msg);
+                    } catch (Exception e) {
+                        Log.e("settings", "error toggling notification", e);
+                    }
+                }
                 return true;
             }
         };
-
-        prefLocation.setOnPreferenceChangeListener(changeListener);
+        
+        final Intent service = new Intent(getBaseContext(), JTTMainActivity.class);
+        getBaseContext().startService(service);
+        getBaseContext().bindService(service, conn, 0);
+        
+        ((Preference) findPreference("jtt_notify")).setOnPreferenceChangeListener(changeListener);
     }
 
-    private boolean prefLocationChange(Object newValue) {
-        final Boolean auto = (Boolean) newValue;
-        Preference pref;
-        pref = (Preference) findPreference("jtt_lat");
-        pref.setEnabled(!auto);
-        pref.setSummary(settings.getString("jtt_lat", "0.0"));
-
-        pref = (Preference) findPreference("jtt_lon");
-        pref.setEnabled(!auto);
-        pref.setSummary(settings.getString("jtt_lon", "0.0"));
-        if (!auto)
-            return true;
-
+    private void getloc() {
         lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         ll = new LocationListener() {

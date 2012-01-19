@@ -16,4 +16,5 @@
     <string name="bootup_ex">Start the service automatically when the device is turned on.</string>
     <string name="notify">Display notifications</string>
     <string name="notify_ex">Display current hour glyph in status bar.</string>
+    <string name="status">Startup and notifications</string>
 </resources>
