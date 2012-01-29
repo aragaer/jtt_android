@@ -6,7 +6,7 @@
     android:padding="5dp">
 
     <view
-        class="com.aragaer.jtt.JTTMainActivity$JTTPager"
+        class="com.aragaer.jtt.JTTPager"
         android:id="@+id/tabcontent"
         android:layout_width="0dip"
         android:layout_height="match_parent"
