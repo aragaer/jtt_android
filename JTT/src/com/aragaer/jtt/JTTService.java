@@ -14,7 +14,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.text.format.DateFormat;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 public class JTTService extends Service {
     private JTT calculator;
@@ -40,14 +42,24 @@ public class JTTService extends Service {
     private TimerTask updateTask = new TimerTask() {
         @Override
         public void run() {
+            Date when = new Date();
             final Context ctx = getBaseContext();
-            hour = calculator.time_to_jtt(new Date());
+            hour = calculator.time_to_jtt(when);
             if (settings.getBoolean("jtt_notify", true)) {
+/*                
                 notification.setLatestEventInfo(JTTService.this,
                         ctx.getString(R.string.hr_of)+" "+hour.hour,
                         Math.round(hour.fraction * 100)+"%",
                         pending_main);
-                notification.when = System.currentTimeMillis();
+*/
+                RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification);
+                contentView.setTextViewText(R.id.image, JTTHour.Glyphs[hour.num]);
+                contentView.setTextViewText(R.id.title, ctx.getString(R.string.hr_of)+" "+hour.hour);
+                contentView.setTextViewText(R.id.text, Math.round(hour.fraction * 100)+"%");
+                contentView.setTextViewText(R.id.when, DateFormat.format("hh:mm:ss", when));
+                notification.contentView = contentView;
+                notification.contentIntent = pending_main;
+                
                 notification.iconLevel = hour.num;
                 nm.notify(APP_ID, notification);
             }
