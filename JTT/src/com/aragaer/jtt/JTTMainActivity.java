@@ -2,6 +2,7 @@ package com.aragaer.jtt;
 
 
 import android.app.Activity;
+import android.app.ActivityGroup;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -11,9 +12,10 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 
-public class JTTMainActivity extends Activity {
+public class JTTMainActivity extends ActivityGroup {
     private static final int btn_ids[] = { R.id.clockbtn, R.id.alarmbtn,
             R.id.settingsbtn };
 
@@ -59,6 +61,9 @@ public class JTTMainActivity extends Activity {
 
         clock = (JTTClockView) findViewById(R.id.hour);
         pager = (JTTPager) findViewById(R.id.tabcontent);
+        final Window sw = getLocalActivityManager().startActivity("settings",
+                             new Intent(this, JTTSettingsActivity.class));
+                        pager.addView(sw.getDecorView());
         if (savedInstanceState != null)
             pager.mCurrentScreen = savedInstanceState.getInt("Screen");
         pager.setTabs(tabs);

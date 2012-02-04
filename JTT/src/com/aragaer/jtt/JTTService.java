@@ -74,8 +74,9 @@ public class JTTService extends Service {
         Log.i(TAG, "Service starting");
         settings = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
-        latitude = Float.parseFloat(settings.getString("jtt_lat", "0.0"));
-        longitude = Float.parseFloat(settings.getString("jtt_lon", "0.0"));
+        String[] ll = settings.getString("jtt_loc", "0.0:0.0").split(":");
+        latitude = Float.parseFloat(ll[0]);
+        longitude = Float.parseFloat(ll[1]);
 
         calculator = new JTT(latitude, longitude, TimeZone.getDefault());
         hour = calculator.time_to_jtt(new Date());

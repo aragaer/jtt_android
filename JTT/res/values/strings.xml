@@ -3,6 +3,7 @@
     <string name="app_name">Japanese Traditional Time</string>
     <string name="auto_lat_long">Use current location</string>
     <string name="location">Location</string>
+    <string name="location_ex">Change stored location</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="not_impl">Not implemented yet</string>
@@ -16,4 +17,5 @@
     <string name="bootup_ex">Start the service automatically when the device is turned on.</string>
     <string name="notify">Display notifications</string>
     <string name="notify_ex">Display current hour glyph in status bar.</string>
+    <string name="status">Startup and notifications</string>
 </resources>

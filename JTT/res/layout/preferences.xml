@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    <CheckBoxPreference
-        android:key="jtt_bootup"
-        android:title="@string/bootup"
-        android:summary="@string/bootup_ex"
-        android:defaultValue="true" />
-    <CheckBoxPreference
-        android:key="jtt_notify"
-        android:title="@string/notify"
-        android:summary="@string/notify_ex"
-        android:defaultValue="true" />
-    <PreferenceCategory
-            android:title="@string/location">
-		<CheckBoxPreference
-                android:key="jtt_auto_loc"
-                android:title="@string/auto_lat_long" />
-        <EditTextPreference
-                android:key="jtt_lat"
-                android:numeric="signed|decimal"
-                android:title="@string/latitude" />
-        <EditTextPreference
-                android:key="jtt_lon"
-                android:numeric="signed|decimal"
-                android:title="@string/longitude" />
+
+    <PreferenceCategory android:title="@string/status" >
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="jtt_bootup"
+            android:summary="@string/bootup_ex"
+            android:title="@string/bootup" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="jtt_notify"
+            android:summary="@string/notify_ex"
+            android:title="@string/notify" />
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/location" >
+        <com.aragaer.jtt.LocationPreference
+            android:defaultValue="0.0:0.0"
+            android:key="jtt_loc"
+            android:title="@string/location_ex" />
+    </PreferenceCategory>
+
 </PreferenceScreen>
