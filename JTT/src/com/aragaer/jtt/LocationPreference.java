@@ -41,15 +41,15 @@ public class LocationPreference extends DialogPreference implements
         LayoutInflater li = (LayoutInflater) getContext().getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         locView = (LinearLayout) li.inflate(R.layout.location_picker, null);
-        ((Button) locView.findViewById(R.id.jtt_auto_loc))
+        ((Button) locView.findViewById(R.id.auto_loc))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
                         acquireLocation();
                     }
                 });
 
-        lat = (TextView) locView.findViewById(R.id.jtt_lat);
-        lon = (TextView) locView.findViewById(R.id.jtt_lon);
+        lat = (TextView) locView.findViewById(R.id.lat);
+        lon = (TextView) locView.findViewById(R.id.lon);
 
         if (latlon == null)
             latlon = getPersistedString("0.0:0.0");

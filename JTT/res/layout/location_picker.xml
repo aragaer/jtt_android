@@ -10,7 +10,7 @@
         android:text="@string/latitude" />
 
     <EditText
-        android:id="@+id/jtt_lat"
+        android:id="@+id/lat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numeric="signed|decimal" />
@@ -21,13 +21,13 @@
         android:text="@string/longitude" />
 
     <EditText
-        android:id="@+id/jtt_lon"
+        android:id="@+id/lon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:numeric="signed|decimal" />
 
     <Button
-        android:id="@+id/jtt_auto_loc"
+        android:id="@+id/auto_loc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/auto_lat_long"
