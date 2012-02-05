@@ -20,6 +20,7 @@ public class JTTSettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.layout.preferences);
+        setContentView(R.layout.pref_layout);
         prefLocation = (Preference) findPreference("jtt_loc");
 
         Log.d(TAG, "settings created");
