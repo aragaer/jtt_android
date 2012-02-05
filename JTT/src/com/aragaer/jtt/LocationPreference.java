@@ -78,7 +78,7 @@ public class LocationPreference extends DialogPreference implements
     }
 
     private void doSet(String l) {
-        latlon = l;
+        latlon = l.replace(',', '.'); // force dot as a separator
         persistString(latlon);
         callChangeListener(new String(latlon));
         setSummary(latlon);
@@ -92,8 +92,8 @@ public class LocationPreference extends DialogPreference implements
             accuracy = new_acc;
         }
 
-        lat.setText(String.format(fmt1, l.getLatitude()));
-        lon.setText(String.format(fmt1, l.getLongitude()));
+        lat.setText(String.format(fmt1, l.getLatitude()).replace(',', '.'));
+        lon.setText(String.format(fmt1, l.getLongitude()).replace(',', '.'));
         doSet(String.format(fmt3, l.getLatitude(), l.getLongitude()));
 
         if (stopLocating)
