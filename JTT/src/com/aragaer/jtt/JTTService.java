@@ -46,29 +46,23 @@ public class JTTService extends Service {
             final Context ctx = getBaseContext();
             hour = calculator.time_to_jtt(when);
             if (settings.getBoolean("jtt_notify", true)) {
-/*                
-                notification.setLatestEventInfo(JTTService.this,
-                        ctx.getString(R.string.hr_of)+" "+hour.hour,
-                        Math.round(hour.fraction * 100)+"%",
-                        pending_main);
-*/
-                RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification);
-                contentView.setTextViewText(R.id.image, JTTHour.Glyphs[hour.num]);
-                contentView.setTextViewText(R.id.title, ctx.getString(R.string.hr_of)+" "+hour.hour);
-                contentView.setTextViewText(R.id.text, Math.round(hour.fraction * 100)+"%");
-                contentView.setTextViewText(R.id.when, DateFormat.format("hh:mm:ss", when));
-                notification.contentView = contentView;
-                notification.contentIntent = pending_main;
+                if (notification.contentView == null) {
+                    RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification);
+                    notification.contentView = contentView;
+                }
+                if (notification.contentIntent == null)
+                    notification.contentIntent = pending_main;
+
+                notification.contentView.setTextViewText(R.id.image, JTTHour.Glyphs[hour.num]);
+                notification.contentView.setTextViewText(R.id.title, ctx.getString(R.string.hr_of)+" "+hour.hour);
+                notification.contentView.setTextViewText(R.id.text, Math.round(hour.fraction * 100)+"%");
+                notification.contentView.setTextViewText(R.id.when, DateFormat.format("hh:mm", when));
                 
                 notification.iconLevel = hour.num;
                 nm.notify(APP_ID, notification);
             }
         }
     };
-
-    public JTTHour getHour() {
-        return hour;
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
