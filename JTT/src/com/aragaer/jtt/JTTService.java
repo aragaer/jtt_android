@@ -29,7 +29,6 @@ public class JTTService extends Service {
     private Notification notification;
     private NotificationManager nm;
     private static final int APP_ID = 0;
-    private Intent JTTMain;
     private PendingIntent pending_main;
     private SharedPreferences settings;
 
@@ -45,7 +44,7 @@ public class JTTService extends Service {
 
     private static final String TAG = JTTService.class.getSimpleName();
 
-    class IncomingHandler extends Handler { // Handler of incoming messages from clients.
+    class IncomingHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -55,15 +54,17 @@ public class JTTService extends Service {
                 break;
             case MSG_UPDATE_LOCATION:
                 String ll[] = msg.getData().getString("latlon").split(":");
-                calculator = new JTT(Float.parseFloat(ll[0]), Float.parseFloat(ll[1]), TimeZone.getDefault());
+                calculator = new JTT(Float.parseFloat(ll[0]),
+                        Float.parseFloat(ll[1]), TimeZone.getDefault());
                 doCalc();
                 break;
             case MSG_REGISTER_CLIENT:
                 try {
-                    msg.replyTo.send(Message.obtain(null, MSG_HOUR, hour.num, Math.round(hour.fraction * 100)));
+                    msg.replyTo.send(Message.obtain(null, MSG_HOUR, hour.num,
+                            Math.round(hour.fraction * 100)));
                     mClients.add(msg.replyTo);
                 } catch (RemoteException e) {
-                    Log.d("jtt service", "Client registered but failed to get data");
+                    Log.w(TAG, "Client registered but failed to get data");
                 }
                 break;
             case MSG_UNREGISTER_CLIENT:
@@ -71,6 +72,7 @@ public class JTTService extends Service {
                 break;
             default:
                 super.handleMessage(msg);
+                break;
             }
         }
     }
@@ -84,13 +86,17 @@ public class JTTService extends Service {
     };
 
     private void init_notification(Date when) {
-        if (notification == null) {
+        if (nm == null)
+            nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (notification == null)
             notification = new Notification(R.drawable.notification_icon,
-                getBaseContext().getString(R.string.app_name), when.getTime());
-        }
+                    getBaseContext().getString(R.string.app_name),
+                    when.getTime());
 
         if (notify)
-            notification.flags = Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
+            notification.flags = Notification.FLAG_ONGOING_EVENT
+                    | Notification.FLAG_NO_CLEAR;
         else
             notification.flags = 0;
 
@@ -98,22 +104,27 @@ public class JTTService extends Service {
 
     private void notify_helper(Date when) {
         final Context ctx = getBaseContext();
+
         if (notification == null && !notify) // do nothing
             return;
 
         init_notification(when);
 
-        if (notification.contentView == null) {
-            RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification);
-            notification.contentView = contentView;
-        }
+        if (notification.contentView == null)
+            notification.contentView = new RemoteViews(getPackageName(),
+                    R.layout.notification);
+        ;
         if (notification.contentIntent == null)
             notification.contentIntent = pending_main;
 
-        notification.contentView.setTextViewText(R.id.image, JTTHour.Glyphs[hour.num]);
-        notification.contentView.setTextViewText(R.id.title, ctx.getString(R.string.hr_of)+" "+hour.hour);
-        notification.contentView.setTextViewText(R.id.text, Math.round(hour.fraction * 100)+"%");
-        notification.contentView.setTextViewText(R.id.when, DateFormat.format("hh:mm", when));
+        notification.contentView.setTextViewText(R.id.image,
+                JTTHour.Glyphs[hour.num]);
+        notification.contentView.setTextViewText(R.id.title,
+                ctx.getString(R.string.hr_of) + " " + hour.hour);
+        notification.contentView.setTextViewText(R.id.text,
+                Math.round(hour.fraction * 100) + "%");
+        notification.contentView.setTextViewText(R.id.when,
+                DateFormat.format("hh:mm", when));
 
         notification.iconLevel = hour.num;
         nm.notify(APP_ID, notification);
@@ -123,16 +134,17 @@ public class JTTService extends Service {
         Date when = new Date();
         hour = calculator.time_to_jtt(when);
         notify_helper(when);
-        Message msg = Message.obtain(null, MSG_HOUR, hour.num, Math.round(hour.fraction * 100));
+        Message msg = Message.obtain(null, MSG_HOUR, hour.num,
+                Math.round(hour.fraction * 100));
 
         for (int i = mClients.size() - 1; i >= 0; i--)
             try {
                 mClients.get(i).send(msg);
             } catch (RemoteException e) {
-                /* The client is dead.
-                 * Remove it from the list;
-                 * we are going through the list from back to front
-                 * so this is safe to do inside the loop.
+                /*
+                 * The client is dead. Remove it from the list; we are going
+                 * through the list from back to front so this is safe to do
+                 * inside the loop.
                  */
                 mClients.remove(i);
             }
@@ -145,26 +157,21 @@ public class JTTService extends Service {
 
     @Override
     public void onStart(Intent intent, int startid) {
-        float latitude, longitude;
         Log.i(TAG, "Service starting");
         settings = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
         String[] ll = settings.getString("jtt_loc", "0.0:0.0").split(":");
-        latitude = Float.parseFloat(ll[0]);
-        longitude = Float.parseFloat(ll[1]);
 
-        calculator = new JTT(latitude, longitude, TimeZone.getDefault());
+        calculator = new JTT(Float.parseFloat(ll[0]), Float.parseFloat(ll[1]),
+                TimeZone.getDefault());
         hour = calculator.time_to_jtt(new Date());
-        Log.d(TAG, "rate = "+calculator.rate);
-        Log.d(TAG, "Next hour at "+calculator.nextHour.toLocaleString());
+        Log.d(TAG, "rate = " + calculator.rate);
+        Log.d(TAG, "Next hour at " + calculator.nextHour.toLocaleString());
 
-        JTTMain = new Intent(getBaseContext(), JTTMainActivity.class);
-        pending_main = PendingIntent.getActivity(getBaseContext(), 0, JTTMain, 0);
-
-        nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
+        Intent JTTMain = new Intent(getBaseContext(), JTTMainActivity.class);
+        pending_main = PendingIntent.getActivity(this, 0, JTTMain, 0);
         notify = settings.getBoolean("jtt_notify", true);
-        
+
         timer = new Timer("JTTServiceTimer");
         try {
             timer.scheduleAtFixedRate(updateTask, 0, 60 * 1000L);
@@ -184,8 +191,8 @@ public class JTTService extends Service {
         if (settings.getBoolean("jtt_bootup", true)) {
             init_notification(new Date());
 
-            notification.setLatestEventInfo(JTTService.this,
-                    getBaseContext().getString(R.string.srv_fail),
+            notification.setLatestEventInfo(JTTService.this, getBaseContext()
+                    .getString(R.string.srv_fail),
                     getBaseContext().getString(R.string.srv_fail_ex),
                     pending_main);
             notification.when = System.currentTimeMillis();
