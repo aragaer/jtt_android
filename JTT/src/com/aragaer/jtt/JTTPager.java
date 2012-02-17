@@ -212,8 +212,10 @@ public class JTTPager extends ViewGroup {
 
     private void selectScreen(int whichScreen) {
         tabs[mCurrentScreen].setSelected(false);
+        tabs[mCurrentScreen].setShadowLayer(10f, 0f, 0f, R.color.night);
         mCurrentScreen = whichScreen;
         tabs[mCurrentScreen].setSelected(true);
+        tabs[mCurrentScreen].setShadowLayer(10f, 0f, 0f, R.color.fill);
     }
 
     public void snapToScreen(int whichScreen) {
