@@ -16,7 +16,9 @@
             android:label="@string/app_name" />
         <activity
             android:name=".JTTAlarmActivity"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:theme="@style/DialogNoTitle" />
         <activity
             android:name=".JTTSettingsActivity"
             android:label="@string/app_name" />

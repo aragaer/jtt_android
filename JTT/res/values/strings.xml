@@ -24,5 +24,6 @@
     <string name="stop_ask">This will stop service and close the application. The service will be restarted when application is started again. Continue?</string>
     <string name="alarm_off">Close</string>
     <string name="snooze">Snooze</string>
+    <string name="unknown_alarm">Unknown alarm</string>
 
 </resources>
