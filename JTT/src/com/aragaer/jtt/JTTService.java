@@ -169,7 +169,8 @@ public class JTTService extends Service {
         Log.d(TAG, "rate = " + calculator.rate);
         Log.d(TAG, "Next hour at " + calculator.nextHour.toLocaleString());
 
-        Intent JTTMain = new Intent(getBaseContext(), JTTMainActivity.class);
+        Intent JTTMain = new Intent(getBaseContext(), JTTAlarmActivity.class)
+                .putExtra("alarm_id", 0);
         pending_main = PendingIntent.getActivity(this, 0, JTTMain, 0);
         notify = settings.getBoolean("jtt_notify", true);
 
