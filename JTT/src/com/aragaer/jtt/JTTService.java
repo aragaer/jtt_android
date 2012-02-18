@@ -1,5 +1,7 @@
 package com.aragaer.jtt;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
@@ -19,7 +21,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -31,6 +32,7 @@ public class JTTService extends Service {
     private static final int APP_ID = 0;
     private PendingIntent pending_main;
     private SharedPreferences settings;
+    private static final DateFormat df = new SimpleDateFormat("HH:mm");
 
     private Boolean notify;
 
@@ -123,8 +125,7 @@ public class JTTService extends Service {
                 ctx.getString(R.string.hr_of) + " " + hour.hour);
         notification.contentView.setTextViewText(R.id.text,
                 Math.round(hour.fraction * 100) + "%");
-        notification.contentView.setTextViewText(R.id.when,
-                DateFormat.format("hh:mm", when));
+        notification.contentView.setTextViewText(R.id.when, df.format(when));
 
         notification.iconLevel = hour.num;
         nm.notify(APP_ID, notification);
