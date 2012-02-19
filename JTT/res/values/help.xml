@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="categories">
+        <item>@array/category_basic</item>
+    </array>
+    <array name="category_basic">
+        <item name="name">Basics</item>
+        <item>@array/topic1</item>
+    </array>
+    <array name="topic1">
+        <item name="name">What is this?</item>
+        <item name="view">This application is a clock. But it is not a common clock, it shows <a href="">Japanese Traditional Time</a> instead.</item>
+    </array>
+</resources>
