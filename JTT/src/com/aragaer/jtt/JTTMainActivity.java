@@ -4,6 +4,7 @@ import android.app.ActivityGroup;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -11,9 +12,10 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
-import android.view.View;
+import android.view.Gravity;
 import android.view.Window;
-import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 
 public class JTTMainActivity extends ActivityGroup {
     private final static String TAG = "jtt main";
@@ -24,9 +26,6 @@ public class JTTMainActivity extends ActivityGroup {
     private Messenger mService = null;
     boolean mIsBound;
     final Messenger mMessenger = new Messenger(new IncomingHandler());
-
-    private static final int btn_ids[] = { R.id.clockbtn, R.id.alarmbtn,
-            R.id.settingsbtn };
 
     private ServiceConnection conn = new ServiceConnection() {
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -84,28 +83,35 @@ public class JTTMainActivity extends ActivityGroup {
         super.onCreate(savedInstanceState);
         final Intent service = new Intent(JTTService.class.getName());
         startService(service);
+        final LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.FILL_PARENT);
 
-        setContentView(R.layout.main);
+        pager = (JTTPager) new JTTPager(this, null);
+        pager.setLayoutParams(lp);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            pager.setOrientation(LinearLayout.VERTICAL);
+        pager.setPadding(5, 5, 5, 5);
 
-        Button tabs[] = new Button[btn_ids.length];
-        for (int i = 0; i < btn_ids.length; i++)
-            tabs[i] = (Button) findViewById(btn_ids[i]);
+        clock = new JTTClockView(this);
+        clock.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+        clock.setLayoutParams(lp);
+        pager.addTab(clock, getString(R.string.clock));
 
-        clock = (JTTClockView) findViewById(R.id.hour);
-        pager = (JTTPager) findViewById(R.id.tabcontent);
         final Window sw = getLocalActivityManager().startActivity("settings",
                 new Intent(this, JTTSettingsActivity.class));
-        pager.addView(sw.getDecorView());
+        pager.addTab(sw.getDecorView(), getString(R.string.settings));
+
+        setContentView(pager);
+
         if (savedInstanceState != null)
-            pager.mCurrentScreen = savedInstanceState.getInt("Screen");
-        pager.setTabs(tabs);
+            pager.scrollToScreen(savedInstanceState.getInt("Screen"));
 
         bindService(service, conn, 0);
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putInt("Screen", pager.mCurrentScreen);
+        savedInstanceState.putInt("Screen", pager.getScreen());
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -120,9 +126,5 @@ public class JTTMainActivity extends ActivityGroup {
         }
 
         Log.i(TAG, "Activity destroyed");
-    }
-
-    public void onToggle(View view) {
-        pager.btnToggle((Button) view);
     }
 }
