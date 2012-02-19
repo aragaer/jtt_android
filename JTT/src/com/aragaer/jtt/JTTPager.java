@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 public class JTTPager extends LinearLayout {
-    private JTTPageView pageview;
+    protected JTTPageView pageview;
     private LinearLayout tablist;
     private Context ctx;
     protected final ArrayList<Button> tabs = new ArrayList<Button>();
@@ -101,7 +101,7 @@ public class JTTPager extends LinearLayout {
         return pageview.mCurrentScreen;
     }
 
-    private final class JTTPageView extends ViewGroup {
+    protected final class JTTPageView extends ViewGroup {
         private static final int SNAP_VELOCITY = 1000;
 
         private boolean mFirstLayout = true;
