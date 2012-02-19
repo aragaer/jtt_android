@@ -22,6 +22,7 @@ public class JTTMainActivity extends ActivityGroup {
 
     private JTTClockView clock;
     private JTTPager pager;
+    private JTTHelp help;
 
     private Messenger mService = null;
     boolean mIsBound;
@@ -100,6 +101,10 @@ public class JTTMainActivity extends ActivityGroup {
         final Window sw = getLocalActivityManager().startActivity("settings",
                 new Intent(this, JTTSettingsActivity.class));
         pager.addTab(sw.getDecorView(), getString(R.string.settings));
+
+        help = new JTTHelp(this);
+        help.setLayoutParams(lp);
+        pager.addTab(help, getString(R.string.help));
 
         setContentView(pager);
 
