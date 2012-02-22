@@ -3,6 +3,7 @@
      <color name="background">#25000000</color>
      <color name="tab_active">#FFFFFF</color>
      <color name="tab">#AAAAAA</color>
+     <color name="link">#CCCCFF</color>
      <color name="stroke">#C0000000</color>
      <color name="fill">#80ffffff</color>
      <color name="night">#80808080</color>

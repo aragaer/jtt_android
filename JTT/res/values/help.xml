@@ -2,13 +2,27 @@
 <resources>
     <array name="categories">
         <item>@array/category_basic</item>
-    </array>
+        <item>@array/category_adv</item>
+        </array>
     <array name="category_basic">
         <item name="name">Basics</item>
         <item>@array/topic1</item>
+        <item>@array/topic2</item>
     </array>
     <array name="topic1">
         <item name="name">What is this?</item>
-        <item name="view">This application is a clock. But it is not a common clock, it shows <a href="">Japanese Traditional Time</a> instead.</item>
+        <item name="view"><![CDATA[This application is a clock. But it is not a common clock, it shows <a href="http://en.wikipedia.org/wiki/Japanese_clock#The_traditional_Japanese_time_system">Japanese Traditional Time</a> instead.]]></item>
+    </array>
+    <array name="topic2">
+        <item name="name">Setting up</item>
+        <item name="view">The single most important information this application needs is your location. Once that is set up you don\'t have to update it unless you\'re moving to a different city. The accuracy within several kilometers is enough assuming the rounding errors.</item>
+    </array>
+    <array name="category_adv">
+        <item name="name">Advanced topics</item>
+        <item>@array/topic3</item>
+    </array>
+    <array name="topic3">
+        <item name="name">Can I get the source?</item>
+        <item name="view">This application is completely open-source. You can find everything on <a href="https://github.com/aragaer/jtt_android">github</a>.</item>
     </array>
 </resources>

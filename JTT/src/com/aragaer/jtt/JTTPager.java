@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -13,26 +14,50 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 public class JTTPager extends LinearLayout {
+    private static final String TAG = JTTPager.class.getSimpleName();
     protected JTTPageView pageview;
     private LinearLayout tablist;
     private Context ctx;
     protected final ArrayList<Button> tabs = new ArrayList<Button>();
     private LayoutParams btnlp;
 
-    public JTTPager(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public static final int TABS_BACK = 0;
+    public static final int TABS_FRONT = 1;
+    public static final int TABS_STRETCH = 0;
+    public static final int TABS_WRAP = 2;
 
+    private int fill_or_wrap;
+
+    public JTTPager(Context context, int flags) {
+        this(context, null, flags);
+    }
+
+    public JTTPager(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public JTTPager(Context context, AttributeSet attrs, int flags) {
+        super(context, attrs);
         ctx = context;
+        if ((flags & TABS_WRAP) > 0)
+            fill_or_wrap = LayoutParams.WRAP_CONTENT;
+        else
+            fill_or_wrap = LayoutParams.FILL_PARENT;
         btnlp = new LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.FILL_PARENT, 1.0f);
 
-        pageview = new JTTPageView(context, attrs);
+        pageview = new JTTPageView(ctx);
         pageview.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.FILL_PARENT, 1.0f));
 
-        tablist = new LinearLayout(context, attrs);
-        addView(pageview);
-        addView(tablist);
+        tablist = new LinearLayout(ctx);
+        if ((flags & TABS_FRONT) > 0) {
+            addView(tablist);
+            addView(pageview);
+        } else {
+            addView(pageview);
+            addView(tablist);
+        }
 
         setOrientation(getOrientation());
     }
@@ -43,15 +68,15 @@ public class JTTPager extends LinearLayout {
         if (orientation == LinearLayout.HORIZONTAL) {
             tablist.setOrientation(LinearLayout.VERTICAL);
             tablist.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-                    LayoutParams.FILL_PARENT, 0.0f));
-            btnlp = new LayoutParams(LayoutParams.FILL_PARENT,
-                    LayoutParams.WRAP_CONTENT, 1.0f);
+                    fill_or_wrap, 0.0f));
+            btnlp.width = LayoutParams.WRAP_CONTENT;
+            btnlp.height = fill_or_wrap;
         } else {
             tablist.setOrientation(LinearLayout.HORIZONTAL);
-            tablist.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
+            tablist.setLayoutParams(new LayoutParams(fill_or_wrap,
                     LayoutParams.WRAP_CONTENT, 0.0f));
-            btnlp = new LayoutParams(LayoutParams.WRAP_CONTENT,
-                    LayoutParams.FILL_PARENT, 1.0f);
+            btnlp.height = LayoutParams.WRAP_CONTENT;
+            btnlp.width = fill_or_wrap;
         }
 
         for (Button b : tabs)
@@ -83,6 +108,22 @@ public class JTTPager extends LinearLayout {
         }
 
         return id;
+    }
+
+    public void removeTabsStartingFrom(int id) {
+        int i = tabs.size();
+        if (pageview.mCurrentScreen > id)
+            pageview.snapToScreen(id - 1);
+        while (--i > id) {
+            Log.d(TAG, "removing tab "+tabs.get(i).getText());
+            tabs.remove(i);
+            tablist.removeViewAt(id + 1);
+            pageview.removeViewAt(id + 1);
+        }
+    }
+
+    public void renameTabAt(int pos, String name) {
+        tabs.get(pos).setText(name);
     }
 
     protected void deselect_tab(int num) {
@@ -120,6 +161,9 @@ public class JTTPager extends LinearLayout {
         private final static int TOUCH_STATE_SCROLLING = 1;
         private int mTouchState = TOUCH_STATE_REST;
 
+        public JTTPageView(Context ctx) {
+            this(ctx, null);
+        }
         public JTTPageView(Context ctx, AttributeSet attrs) {
             super(ctx, attrs);
 
