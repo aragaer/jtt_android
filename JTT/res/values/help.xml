@@ -23,6 +23,6 @@
     </array>
     <array name="topic3">
         <item name="name">Can I get the source?</item>
-        <item name="view">This application is completely open-source. You can find everything on <a href="https://github.com/aragaer/jtt_android">github</a>.</item>
+        <item name="view"><![CDATA[This application is completely open-source. You can find everything on <a href="https://github.com/aragaer/jtt_android">github</a>.]]></item>
     </array>
 </resources>

@@ -91,7 +91,6 @@ public class JTTMainActivity extends ActivityGroup {
         pager.setLayoutParams(lp);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             pager.setOrientation(LinearLayout.VERTICAL);
-        pager.setPadding(5, 5, 5, 5);
 
         clock = new JTTClockView(this);
         clock.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);

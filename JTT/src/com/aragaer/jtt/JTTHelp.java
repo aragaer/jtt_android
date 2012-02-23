@@ -31,7 +31,7 @@ public class JTTHelp extends JTTPager {
     private Context ctx;
 
     public JTTHelp(Context context) {
-        super(context, JTTPager.TABS_FRONT | JTTPager.TABS_WRAP);
+        super(context, JTTPager.TABS_FRONT | JTTPager.TABS_WRAP | JTTPager.TAB_TEXT_LEFT);
         ctx = context;
         setOrientation(LinearLayout.VERTICAL);
 
@@ -41,8 +41,7 @@ public class JTTHelp extends JTTPager {
         for (int i = 0; i < cats.length(); i++) {
             int cid = cats.getResourceId(i, 0);
             if (cid == 0) {
-                Log.w(TAG, "Expected category id, got spomething strange at "
-                        + i);
+                Log.w(TAG, "Expected category id, got something strange at " + i);
                 continue;
             }
 
@@ -98,41 +97,57 @@ public class JTTHelp extends JTTPager {
     }
 
     private void switchToCat(String cn) {
+        final int ntabs = shown.size();
         /* check if the category is already opened */
-        if (shown.size() > 1 && shown.get(1) == cn) {
-            Log.d(TAG, "category "+cn+" is already opened, switch to it");
+        if (ntabs > 1 && shown.get(1) == cn) {
             pageview.snapToScreen(1);
             return;
         }
 
-        removeTabsStartingFrom(1);
-        while (shown.size() > 2)
-            shown.remove(1);
-
         c_toc.setAdapter(new ArrayAdapter<String>(ctx,
                 android.R.layout.simple_list_item_1, topics.get(cn)));
-        if (shown.size() == 1)
-            addTab(c_toc, cn);
-        else
+
+        switch (ntabs) {
+        case 3:
+            shown.remove(2);
+            removeTabAt(2);
+            /* fall-through */
+        case 2:
             renameTabAt(1, cn);
+            shown.remove(1);
+            break;
+        case 1:
+            addTab(c_toc, cn);
+            break;
+        default:
+            Log.e(TAG, "Inconsistent tabs!");
+        }
+
         shown.add(cn);
         pageview.snapToScreen(1);
     }
 
     private void switchToTopic(String tn) {
-        /* check if the topic is already opened */
-        if (shown.size() == 3 && shown.get(2) == tn) {
+        final int ntabs = shown.size();
+
+        if (ntabs == 3 && shown.get(2) == tn) {
             pageview.snapToScreen(2);
             return;
         }
 
         t_cont.setText(Html.fromHtml(t_views.get(tn)), BufferType.SPANNABLE);
-        if (shown.size() <= 2)
-            addTab(t_cont, tn);
-        else
+
+        switch (ntabs) {
+        case 3:
             renameTabAt(2, tn);
-        if (shown.size() == 3)
             shown.remove(2);
+            break;
+        case 2:
+            addTab(t_cont, tn);
+            break;
+        default:
+            Log.e(TAG, "Inconsistent tabs!");
+        }
         shown.add(tn);
         pageview.snapToScreen(2);
     }
