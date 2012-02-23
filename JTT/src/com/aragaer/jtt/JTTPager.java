@@ -21,8 +21,10 @@ public class JTTPager extends LinearLayout {
     private LinearLayout tablist;
     private Context ctx;
     protected final ArrayList<Button> tabs = new ArrayList<Button>();
+    private final ArrayList<Integer> measures = new ArrayList<Integer>();
     private LayoutParams btnlp;
     private int flags;
+    private static final int m = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
 
     public static final int TABS_BACK = 0;
     public static final int TABS_FRONT = 1;
@@ -32,6 +34,7 @@ public class JTTPager extends LinearLayout {
     public static final int TAB_TEXT_LEFT = 4;
 
     private int fill_or_wrap;
+    private Boolean isVertical;
 
     public JTTPager(Context context, int flags) {
         this(context, null, flags);
@@ -64,19 +67,27 @@ public class JTTPager extends LinearLayout {
             addView(tablist);
         }
 
-        setOrientation(getOrientation());
+        doSetOrientation(getOrientation());
     }
 
     @Override
-    public void setOrientation(int orientation) {
-        super.setOrientation(orientation);
+    public void setOrientation(int o) {
+        final int oo = getOrientation();
+        super.setOrientation(o);
+        if (o != oo)
+            doSetOrientation(o);
+    }
+
+    private void doSetOrientation(int orientation) {
         if (orientation == LinearLayout.HORIZONTAL) {
+            isVertical = false;
             tablist.setOrientation(LinearLayout.VERTICAL);
             tablist.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
                     fill_or_wrap, 0.0f));
             btnlp.width = LayoutParams.WRAP_CONTENT;
             btnlp.height = fill_or_wrap;
         } else {
+            isVertical = true;
             tablist.setOrientation(LinearLayout.HORIZONTAL);
             tablist.setLayoutParams(new LayoutParams(fill_or_wrap,
                     LayoutParams.WRAP_CONTENT, 0.0f));
@@ -111,6 +122,8 @@ public class JTTPager extends LinearLayout {
         view.setPadding(5, 5, 5, 5);
         pageview.addView(view);
 
+        doMeasure(id);
+
         if (pageview.mCurrentScreen == -1) {
             pageview.mCurrentScreen = 0;
             select_tab(0);
@@ -126,10 +139,12 @@ public class JTTPager extends LinearLayout {
             pageview.snapToScreen(id - 1);
         tablist.removeView(tab);
         pageview.removeViewAt(id);
+        measures.remove(id);
     }
 
     public void renameTabAt(int pos, String name) {
         tabs.get(pos).setText(name);
+        doMeasure(pos);
     }
 
     protected void deselect_tab(int num) {
@@ -142,7 +157,48 @@ public class JTTPager extends LinearLayout {
         final Button b = tabs.get(num);
         b.setEllipsize(null);
         b.setSelected(true);
-        tablist.requestLayout();
+        if (isVertical)
+            doResizeAround(num);
+    }
+
+    private void doMeasure(int pos) {
+        final Button b = tabs.get(pos);
+        b.measure(m, m);
+        Log.d(TAG, "Button "+b.getText()+" will use "+b.getMeasuredWidth()+":"+b.getMeasuredHeight());
+        if (measures.size() < pos)
+            measures.set(pos, b.getMeasuredWidth());
+        else
+            measures.add(pos, b.getMeasuredWidth());
+    }
+
+    private void doResizeAround(int pos) {
+        final int fixed = measures.get(pos);
+        final int totalWidth = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
+        int totalWanted = 0;
+        Log.d(TAG, "We want to see "+tabs.get(pos).getText()+" having size "+measures.get(pos));
+        for (Integer i : measures)
+            totalWanted += i;
+        Log.d(TAG, "Total available width is "+totalWidth+", we want "+totalWanted+", with "+fixed+" being shown fully");
+        float proportion = (float) (totalWidth - fixed) / (totalWanted - fixed);
+        if (proportion > 1)
+            proportion = (float) totalWidth / totalWanted;
+        Log.d(TAG, "Reduce all inactive tabs to "+Math.round(proportion*100)+"%");
+        for (int i = 0; i < tabs.size(); i++) {
+            final Button b = tabs.get(i);
+            int w = measures.get(i);
+            if (proportion > 1 || i != pos)
+                w *= proportion;
+            b.measure(MeasureSpec.makeMeasureSpec(w, MeasureSpec.EXACTLY), m);
+            Log.d(TAG, "Button "+b.getText()+" gets shrinked from "+measures.get(i)+" to "+b.getMeasuredWidth()+" (wanted "+w+")");
+        }
+
+        int left = 0;
+        for (Button b : tabs) {
+            final int w = b.getMeasuredWidth();
+            b.layout(left, 0, left+w, b.getMeasuredHeight());
+            left += w;
+        }
+        tablist.layout(0, 0, getMeasuredWidth(), tablist.getMeasuredHeight());
     }
 
     public void scrollToScreen(int num) {
