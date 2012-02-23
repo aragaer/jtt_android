@@ -3,8 +3,10 @@ package com.aragaer.jtt;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -20,11 +22,14 @@ public class JTTPager extends LinearLayout {
     private Context ctx;
     protected final ArrayList<Button> tabs = new ArrayList<Button>();
     private LayoutParams btnlp;
+    private int flags;
 
     public static final int TABS_BACK = 0;
     public static final int TABS_FRONT = 1;
     public static final int TABS_STRETCH = 0;
     public static final int TABS_WRAP = 2;
+    public static final int TAB_TEXT_CENTER = 0;
+    public static final int TAB_TEXT_LEFT = 4;
 
     private int fill_or_wrap;
 
@@ -98,28 +103,29 @@ public class JTTPager extends LinearLayout {
         b.setOnClickListener(click);
         b.setId(id);
         b.setLayoutParams(btnlp);
+        b.setSingleLine();
+        if ((flags & TAB_TEXT_LEFT) > 0)
+            b.setGravity(Gravity.LEFT);
         tabs.add(b);
         tablist.addView(b);
+        view.setPadding(5, 5, 5, 5);
         pageview.addView(view);
 
         if (pageview.mCurrentScreen == -1) {
             pageview.mCurrentScreen = 0;
             select_tab(0);
-        }
+        } else
+            deselect_tab(id);
 
         return id;
     }
 
-    public void removeTabsStartingFrom(int id) {
-        int i = tabs.size();
-        if (pageview.mCurrentScreen > id)
+    public void removeTabAt(int id) {
+        final View tab = tabs.remove(id);
+        if (pageview.mCurrentScreen == id && id > 0)
             pageview.snapToScreen(id - 1);
-        while (--i > id) {
-            Log.d(TAG, "removing tab "+tabs.get(i).getText());
-            tabs.remove(i);
-            tablist.removeViewAt(id + 1);
-            pageview.removeViewAt(id + 1);
-        }
+        tablist.removeView(tab);
+        pageview.removeViewAt(id);
     }
 
     public void renameTabAt(int pos, String name) {
@@ -127,11 +133,16 @@ public class JTTPager extends LinearLayout {
     }
 
     protected void deselect_tab(int num) {
-        tabs.get(num).setSelected(false);
+        final Button b = tabs.get(num);
+        b.setEllipsize(TruncateAt.END);
+        b.setSelected(false);
     }
 
     protected void select_tab(int num) {
-        tabs.get(num).setSelected(true);
+        final Button b = tabs.get(num);
+        b.setEllipsize(null);
+        b.setSelected(true);
+        tablist.requestLayout();
     }
 
     public void scrollToScreen(int num) {
@@ -164,6 +175,7 @@ public class JTTPager extends LinearLayout {
         public JTTPageView(Context ctx) {
             this(ctx, null);
         }
+
         public JTTPageView(Context ctx, AttributeSet attrs) {
             super(ctx, attrs);
 
