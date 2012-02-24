@@ -209,6 +209,21 @@ public class JTTPager extends LinearLayout {
         return pageview.mCurrentScreen;
     }
 
+    protected final class JTTTabList extends ViewGroup {
+        public JTTTabList(Context ctx) {
+            this(ctx, null);
+        }
+
+        public JTTTabList(Context ctx, AttributeSet attrs) {
+            super(ctx, attrs);
+            setHapticFeedbackEnabled(false);
+        }
+
+        @Override
+        protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        }
+    }
+
     protected final class JTTPageView extends ViewGroup {
         private static final int SNAP_VELOCITY = 1000;
 
