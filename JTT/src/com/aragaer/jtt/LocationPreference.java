@@ -7,6 +7,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -55,7 +57,10 @@ public class LocationPreference extends DialogPreference implements
             latlon = getPersistedString("0.0:0.0");
         String[] ll = latlon.split(":");
         lat.setText(ll[0]);
+        lat.setFilters(new InputFilter[]{ new InputFilterMinMax(-90.0f, 90.0f) });
+
         lon.setText(ll[1]);
+        lon.setFilters(new InputFilter[]{ new InputFilterMinMax(-180.0f, 180.0f) });
 
         lat.addTextChangedListener(this);
         lon.addTextChangedListener(this);
@@ -79,9 +84,6 @@ public class LocationPreference extends DialogPreference implements
 
     private void doSet(String l) {
         latlon = l.replace(',', '.'); // force dot as a separator
-        persistString(latlon);
-        callChangeListener(new String(latlon));
-        setSummary(latlon);
     }
 
     private void makeUseOfNewLocation(Location l, Boolean stopLocating) {
@@ -141,5 +143,45 @@ public class LocationPreference extends DialogPreference implements
     }
 
     public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+    }
+
+    @Override
+    protected void onDialogClosed (boolean positiveResult) {
+        if (positiveResult) {
+            doSet(latlon);
+            persistString(latlon);
+            callChangeListener(new String(latlon));
+            setSummary(latlon);
+            // add here the check for correct coordinates
+        } else {
+            latlon = getPersistedString("0.0:0.0");
+        }
+    }
+
+    private class InputFilterMinMax implements InputFilter {
+        private float min, max;
+     
+        public InputFilterMinMax(float min, float max) {
+            this.min = min;
+            this.max = max;
+        }
+     
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            String checkedText = dest.subSequence(0, dstart).toString() +
+                    source.subSequence(start, end) +
+                    dest.subSequence(dend,dest.length()).toString();
+            if (checkedText.equals("-"))
+                return null;
+            try {
+                float input = Float.parseFloat(checkedText);
+                if (isInRange(min, max, input))
+                    return null;
+            } catch (NumberFormatException nfe) { }
+            return "";
+        }
+     
+        private boolean isInRange(float a, float b, float c) {
+            return b > a ? c >= a && c <= b : c >= b && c <= a;
+        }
     }
 }
