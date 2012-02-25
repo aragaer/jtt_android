@@ -16,6 +16,7 @@ public class JTTClockView extends TextView {
     private final static int step = 360 / 12;
     private final static float gap = 1.5f;
     private final Paint mStrokePaint = new Paint();
+    private final Paint mHlPaint = new Paint();
     private final Paint mStrokePaint2 = new Paint();
     private final Paint mSolidPaint = new Paint();
     private final Paint mSolidPaint2 = new Paint();
@@ -71,6 +72,11 @@ public class JTTClockView extends TextView {
         mStrokePaint.setStyle(Paint.Style.STROKE);
         mStrokePaint.setTextAlign(Paint.Align.CENTER);
         mStrokePaint.setColor(Color.parseColor(ctx.getString(R.color.stroke)));
+        mHlPaint.setAntiAlias(true);
+        mHlPaint.setStyle(Paint.Style.STROKE);
+        mHlPaint.setTextAlign(Paint.Align.CENTER);
+        mHlPaint.setColor(Color.parseColor(ctx.getString(R.color.tab_active)));
+        mHlPaint.setStrokeWidth(1.3f);
 
         mStrokePaint2.setAntiAlias(true);
         mStrokePaint2.setFilterBitmap(true);
@@ -105,6 +111,7 @@ public class JTTClockView extends TextView {
         final float sR = iR * 0.2f;
 
         mStrokePaint.setTextSize(thick / 3);
+        mHlPaint.setTextSize(thick / 3);
         mSolidPaint2.setTextSize(thick / 3);
 
         final RectF outer = new RectF(c - oR, c - oR, c + oR, c + oR);
@@ -157,7 +164,11 @@ public class JTTClockView extends TextView {
             canvas.drawPath(path, mStrokePaint);
 
             final float glyph_y = c - iR - (current ? 5 : 4) * thick / 9;
-            canvas.drawText(JTTHour.Glyphs[hr], c, glyph_y, mSolidPaint2);
+            final double da = Math.toRadians(((hr - num + 11) % 12) * step);
+            final float dx = 1.3f * (float) Math.cos(da);
+            final float dy = 1.3f * (float) Math.sin(da);
+            canvas.drawText(JTTHour.Glyphs[hr], c - dx, glyph_y + dy, mSolidPaint2);
+            canvas.drawText(JTTHour.Glyphs[hr], c + dx, glyph_y - dy, mHlPaint);
             canvas.drawText(JTTHour.Glyphs[hr], c, glyph_y, mStrokePaint);
             canvas.rotate(step, c, c);
         }

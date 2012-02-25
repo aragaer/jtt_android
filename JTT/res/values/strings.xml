@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Japanese Traditional Time</string>
+    <string name="abbr_app_name">JTT</string>
     <string name="auto_lat_long">Use current location</string>
     <string name="location">Location</string>
     <string name="location_ex">Change stored location</string>
