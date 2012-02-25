@@ -10,12 +10,14 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.TextView;
 
 public class JTTClockView extends TextView {
     private final static int step = 360 / 12;
     private final static float gap = 3.5f;
-    private static final Paint mStrokePaint = new Paint();
+    private static final Paint mShPaint = new Paint();
+    private static final Paint mHlPaint = new Paint();
     private static final Paint mStrokePaint2 = new Paint();
     private static final Paint mSolidPaint = new Paint();
     private static final Paint mSolidPaint2 = new Paint();
@@ -67,10 +69,14 @@ public class JTTClockView extends TextView {
 
     private final void setupPaint() {
         LightingColorFilter f = new LightingColorFilter(0xFFFFFFFF, 0xFFCCCCCC);
-        mStrokePaint.setAntiAlias(true);
-        mStrokePaint.setStyle(Paint.Style.STROKE);
-        mStrokePaint.setTextAlign(Paint.Align.CENTER);
-        mStrokePaint.setColor(Color.parseColor(ctx.getString(R.color.stroke)));
+        mShPaint.setAntiAlias(true);
+        mShPaint.setStyle(Paint.Style.STROKE);
+        mShPaint.setTextAlign(Paint.Align.CENTER);
+        mShPaint.setColor(Color.parseColor(ctx.getString(R.color.stroke)));
+        mHlPaint.setAntiAlias(true);
+        mHlPaint.setStyle(Paint.Style.STROKE);
+        mHlPaint.setTextAlign(Paint.Align.CENTER);
+        mHlPaint.setColor(Color.parseColor(ctx.getString(R.color.hl)));
 
         mStrokePaint2.setAntiAlias(true);
         mStrokePaint2.setFilterBitmap(true);
@@ -84,7 +90,7 @@ public class JTTClockView extends TextView {
         mSolidPaint.setStyle(Paint.Style.FILL);
         mSolidPaint.setTextAlign(Paint.Align.CENTER);
         mSolidPaint.setColor(Color.parseColor(ctx.getString(R.color.fill)));
-        mSolidPaint.setColorFilter(f);
+//        mSolidPaint.setColorFilter(f);
 
         mSolidPaint2.setAntiAlias(true);
         mSolidPaint2.setStyle(Paint.Style.FILL);
@@ -104,7 +110,7 @@ public class JTTClockView extends TextView {
         final int selR = oR + thick / 4;
         final float sR = iR * 0.2f;
 
-        mStrokePaint.setTextSize(thick / 3);
+        mShPaint.setTextSize(thick / 3);
         mSolidPaint2.setTextSize(thick / 3);
 
         final RectF outer = new RectF(c - oR, c - oR, c + oR, c + oR);
@@ -112,6 +118,7 @@ public class JTTClockView extends TextView {
         final RectF sel = new RectF(c - selR, c - selR, c + selR, c + selR);
         final RectF sun = new RectF(c - sR, c - sR, c + sR, c + sR);
 
+        /*
         if (num != -1) {
         canvas.rotate(-step / 2, c, c);
         canvas.translate(-iR * 0.75f, 0);
@@ -133,6 +140,7 @@ public class JTTClockView extends TextView {
         canvas.translate(iR * 0.75f, 0);
         canvas.rotate(90 + step / 2, c, c);
         }
+        */
 
         final int arc_start = -90 - Math.round(step / 2 - gap);
         final int arc_end = -90 + Math.round(step / 2 - gap);
@@ -156,12 +164,23 @@ public class JTTClockView extends TextView {
             path.addArc(current ? sel : outer, arc_end, -arc_len);
             path.lineTo(l2x, l2y);
             canvas.drawPath(path, mSolidPaint);
-            canvas.drawPath(path, mStrokePaint);
+            if (num == -1) {
+                canvas.drawPath(path, mShPaint);
+            } else {
+                final int hdiff = (hr - num + 12) % 12;
+                final Boolean sh = hdiff > 7 || hdiff < 2;
+                final Boolean sh2 = hdiff == 11 || hdiff < 5;
+                final Boolean sh3 = hdiff > 3 && hdiff < 10;
+                canvas.drawArc(inner, arc_start, arc_len, false, sh ? mShPaint : mHlPaint);
+                canvas.drawArc(current ? sel : outer, arc_start, arc_len, false, sh ? mHlPaint : mShPaint);
+                canvas.drawLine(c + (float) Math.cos(start) * iR, c + (float) Math.sin(start) * iR, c + (float) Math.cos(start) * (current ? selR : oR), c + (float) Math.sin(start) * (current ? selR : oR), sh2 ? mHlPaint : mShPaint);
+                canvas.drawLine(c + (float) Math.cos(end) * iR, c + (float) Math.sin(end) * iR, c + (float) Math.cos(end) * (current ? selR : oR), c + (float) Math.sin(end) * (current ? selR : oR), sh3 ? mHlPaint : mShPaint);
+            }
 
             if (num!= -1) {
             final float glyph_y = c - iR - (current ? 5 : 4) * thick / 9;
             canvas.drawText(JTTHour.Glyphs[hr], c, glyph_y, mSolidPaint2);
-            canvas.drawText(JTTHour.Glyphs[hr], c, glyph_y, mStrokePaint);
+            canvas.drawText(JTTHour.Glyphs[hr], c, glyph_y, mShPaint);
             }
             canvas.rotate(step, c, c);
         }

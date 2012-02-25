@@ -4,6 +4,7 @@
      <color name="tab_active">#FFFFFF</color>
      <color name="tab">#AAAAAA</color>
      <color name="stroke">#C0000000</color>
-     <color name="fill">#80ffffff</color>
+     <color name="fill">#80C0C0C0</color>
+     <color name="hl">#C0ffffff</color>
      <color name="night">#80808080</color>
 </resources>
