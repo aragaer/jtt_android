@@ -93,7 +93,7 @@ public class JTTClockView extends TextView {
         mSolidPaint2.setStrokeWidth(1.3f);
     }
 
-    private Bitmap drawBitmap(int num, int c) {
+    public Bitmap drawBitmap(int num, int c) {
         Bitmap result = Bitmap.createBitmap(c * 2, c * 2,
                 Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);

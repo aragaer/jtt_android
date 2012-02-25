@@ -12,9 +12,12 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -29,6 +32,8 @@ public class JTTService extends Service {
     private JTTHour hour = new JTTHour(0);
     private Notification notification;
     private NotificationManager nm;
+    private AppWidgetManager awm;
+    private RemoteViews rv;
     private static final int APP_ID = 0;
     private PendingIntent pending_main;
     private SharedPreferences settings;
@@ -130,6 +135,8 @@ public class JTTService extends Service {
         notification.iconLevel = hour.num;
         nm.notify(APP_ID, notification);
     }
+    
+    private static final ComponentName JTT_WIDGET =new ComponentName("com.aragaer.jtt", "com.aragaer.jtt.JTTWidgetProvider");
 
     private void doCalc() {
         Date when = new Date();
@@ -149,6 +156,14 @@ public class JTTService extends Service {
                  */
                 mClients.remove(i);
             }
+
+        final Bitmap bmp = (new JTTClockView(this)).drawBitmap(hour.num, Math.round(40 * getResources().getDisplayMetrics().density));
+        rv.setTextViewText(R.id.glyph, JTTHour.Glyphs[hour.num]);
+        rv.setImageViewBitmap(R.id.clock, bmp);
+        final int[] ids = awm.getAppWidgetIds(JTT_WIDGET);
+        final int N = ids.length;
+        for (int i = 0; i < N; i++)
+            awm.updateAppWidget(ids[i], rv);
     }
 
     @Override
@@ -172,6 +187,10 @@ public class JTTService extends Service {
         Intent JTTMain = new Intent(getBaseContext(), JTTMainActivity.class);
         pending_main = PendingIntent.getActivity(this, 0, JTTMain, 0);
         notify = settings.getBoolean("jtt_notify", true);
+        
+        awm = AppWidgetManager.getInstance(getApplicationContext());
+        rv = new RemoteViews(getApplicationContext().getPackageName(), R.layout.widget);
+        rv.setOnClickPendingIntent(R.id.clock, pending_main);
 
         timer = new Timer("JTTServiceTimer");
         try {
