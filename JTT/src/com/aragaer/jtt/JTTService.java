@@ -33,6 +33,7 @@ public class JTTService extends Service {
     private PendingIntent pending_main;
     private SharedPreferences settings;
     private static final DateFormat df = new SimpleDateFormat("HH:mm");
+    private JTTHourStringsHelper hs;
 
     private Boolean notify;
 
@@ -122,7 +123,7 @@ public class JTTService extends Service {
         notification.contentView.setTextViewText(R.id.image,
                 JTTHour.Glyphs[hour.num]);
         notification.contentView.setTextViewText(R.id.title,
-                ctx.getString(R.string.hr_of) + " " + hour.hour);
+                hs.getHrOf(hour.num));
         notification.contentView.setTextViewText(R.id.text,
                 Math.round(hour.fraction * 100) + "%");
         notification.contentView.setTextViewText(R.id.when, df.format(when));
@@ -159,6 +160,7 @@ public class JTTService extends Service {
     @Override
     public void onStart(Intent intent, int startid) {
         Log.i(TAG, "Service starting");
+        hs = new JTTHourStringsHelper(this);
         settings = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
         String[] ll = settings.getString("jtt_loc", "0.0:0.0").split(":");
