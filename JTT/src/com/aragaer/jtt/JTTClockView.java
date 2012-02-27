@@ -21,6 +21,7 @@ public class JTTClockView extends TextView {
     private final Paint mSolidPaint2 = new Paint();
     private final Bitmap ch[] = new Bitmap[12], cv[] = new Bitmap[12];
     private JTTHour hour;
+    private JTTHourStringsHelper hs;
 
     private Context ctx;
 
@@ -35,6 +36,7 @@ public class JTTClockView extends TextView {
     public JTTClockView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         ctx = context;
+        hs = new JTTHourStringsHelper(ctx);
         setupPaint();
     }
 
@@ -60,8 +62,8 @@ public class JTTClockView extends TextView {
 
         mStrokePaint2.setTextSize(v ? w / 20 : w / 15);
 
-        final String s = (v ? ctx.getString(R.string.hr_of) + " " : "");
-        canvas.drawText(s + hour.hour, v ? size : w / 5, v ? h / 10 : size,
+        final String s = v ? hs.getHrOf(hour.num) : hs.getHour(hour.num);
+        canvas.drawText(s, v ? size : w / 5, v ? h / 10 : size,
                 mStrokePaint2);
     }
 

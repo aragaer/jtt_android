@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Japanese Traditional Time</string>
+    <string name="abbr_app_name">JTT</string>
     <string name="auto_lat_long">Use current location</string>
     <string name="location">Location</string>
     <string name="location_ex">Change stored location</string>
@@ -13,7 +14,6 @@
     <string name="settings">Settings</string>
     <string name="srv_fail">Service killed</string>
     <string name="srv_fail_ex">Touch to restart the service.</string>
-    <string name="hr_of">Hour of</string>
     <string name="bootup">Start on bootup</string>
     <string name="bootup_ex">Start the service automatically when the device is turned on.</string>
     <string name="notify">Display notifications</string>
@@ -25,4 +25,28 @@
     <string name="alarm_off">Close</string>
     <string name="snooze">Snooze</string>
 
+    <string name="cock">Cock</string>
+    <string name="dog">Dog</string>
+    <string name="boar">Boar</string>
+    <string name="rat">Rat</string>
+    <string name="ox">Ox</string>
+    <string name="tiger">Tiger</string>
+    <string name="hare">Hare</string>
+    <string name="dragon">Dragon</string>
+    <string name="serpent">Serpent</string>
+    <string name="horse">Horse</string>
+    <string name="ram">Ram</string>
+    <string name="monkey">Monkey</string>
+    <string name="hour_of_cock">Hour of Cock</string>
+    <string name="hour_of_dog">Hour of Dog</string>
+    <string name="hour_of_boar">Hour of Boar</string>
+    <string name="hour_of_rat">Hour of Rat</string>
+    <string name="hour_of_ox">Hour of Ox</string>
+    <string name="hour_of_tiger">Hour of Tiger</string>
+    <string name="hour_of_hare">Hour of Hare</string>
+    <string name="hour_of_dragon">Hour of Dragon</string>
+    <string name="hour_of_serpent">Hour of Serpent</string>
+    <string name="hour_of_horse">Hour of Horse</string>
+    <string name="hour_of_ram">Hour of Ram</string>
+    <string name="hour_of_monkey">Hour of Monkey</string>
 </resources>
