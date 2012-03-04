@@ -30,12 +30,14 @@ public class JTTAlarmDB {
             ALARM_STATE_FIELD };
 
     private JTTAlarmDBHelper db;
+    private JTTHourStringsHelper sh;
 
     public JTTAlarmDB(Context ctx) {
         db = new JTTAlarmDBHelper(ctx);
+        sh = new JTTHourStringsHelper(ctx);
 
         if (loadAlarm(0) == null)
-            saveAlarm(new JTTAlarm(new JTTHour("Tiger"), "Samurai wake up time"));
+            saveAlarm(new JTTAlarm(sh.makeHour("Tiger"), "Samurai wake up time"));
     }
 
     public void saveAlarm(JTTAlarm alarm) {

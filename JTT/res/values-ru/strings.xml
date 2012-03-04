@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Традиционное Японское Время</string>
+    <string name="abbr_app_name">JTT</string>
+    <string name="auto_lat_long">Использовать текущее</string>
+    <string name="location">Координаты</string>
+    <string name="location_ex">Изменить сохраненные координаты</string>
+    <string name="latitude">Широта</string>
+    <string name="longitude">Долгота</string>
+    <string name="not_impl">Not implemented yet</string>
+    <string name="clock">Часы</string>
+    <string name="alarm">Будильник</string>
+    <string name="settings">Настройки</string>
+    <string name="srv_fail">Сервис остановлен</string>
+    <string name="srv_fail_ex">Нажмите для перезапуска сервиса.</string>
+    <string name="bootup">Автозапуск</string>
+    <string name="bootup_ex">Автоматически запускать сервис при загрузке устройства.</string>
+    <string name="notify">Оповещения</string>
+    <string name="notify_ex">Показывать иероглиф текущего часа в строке статуса.</string>
+    <string name="status">Запуск и оповещения</string>
+    <string name="stop">Остановить сервис</string>
+    <string name="stop_ex">Нажмите для остановки сервиса и выхода из приложения.</string>
+    <string name="stop_ask">Сервис будет остановлен, а приложение закрыто. При следующем запуске приложения сервис автоматически будет запущен. Продолжить?</string>
+
+    <string name="cock">Петух</string>
+    <string name="dog">Собака</string>
+    <string name="boar">Кабан</string>
+    <string name="rat">Крыса</string>
+    <string name="ox">Бык</string>
+    <string name="tiger">Тигр</string>
+    <string name="hare">Заяц</string>
+    <string name="dragon">Дракон</string>
+    <string name="serpent">Змея</string>
+    <string name="horse">Лошадь</string>
+    <string name="ram">Овца</string>
+    <string name="monkey">Обезьяна</string>
+    <string name="hour_of_cock">Час Петуха</string>
+    <string name="hour_of_dog">Час Собаки</string>
+    <string name="hour_of_boar">Час Кабана</string>
+    <string name="hour_of_rat">Час Крысы</string>
+    <string name="hour_of_ox">Час Быка</string>
+    <string name="hour_of_tiger">Час Тигра</string>
+    <string name="hour_of_hare">Час Зайца</string>
+    <string name="hour_of_dragon">Час Дракона</string>
+    <string name="hour_of_serpent">Час Змеи</string>
+    <string name="hour_of_horse">Час Лошади</string>
+    <string name="hour_of_ram">Час Овцы</string>
+    <string name="hour_of_monkey">Час Обезьяны</string>
+</resources>
