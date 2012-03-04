@@ -21,7 +21,7 @@ public class JTTClockView extends TextView {
     private final Paint mSolidPaint2 = new Paint();
     private final Bitmap ch[] = new Bitmap[12], cv[] = new Bitmap[12];
     private JTTHour hour;
-    private JTTHourStringsHelper hs;
+    private JTTHour.StringsHelper hs;
 
     private Context ctx;
 
@@ -36,7 +36,7 @@ public class JTTClockView extends TextView {
     public JTTClockView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         ctx = context;
-        hs = new JTTHourStringsHelper(ctx);
+        hs = new JTTHour.StringsHelper(ctx);
         setupPaint();
     }
 

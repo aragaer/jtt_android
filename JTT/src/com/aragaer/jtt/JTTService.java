@@ -12,6 +12,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,7 +34,7 @@ public class JTTService extends Service {
     private PendingIntent pending_main;
     private SharedPreferences settings;
     private static final DateFormat df = new SimpleDateFormat("HH:mm");
-    private JTTHourStringsHelper hs;
+    private JTTHour.StringsHelper hs;
 
     private Boolean notify;
 
@@ -160,7 +161,7 @@ public class JTTService extends Service {
     @Override
     public void onStart(Intent intent, int startid) {
         Log.i(TAG, "Service starting");
-        hs = new JTTHourStringsHelper(this);
+        hs = new JTTHour.StringsHelper(this);
         settings = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
         String[] ll = settings.getString("jtt_loc", "0.0:0.0").split(":");
@@ -201,6 +202,15 @@ public class JTTService extends Service {
             notification.when = System.currentTimeMillis();
             notification.iconLevel = hour.num;
             nm.notify(APP_ID, notification);
+        }
+    }
+
+    public static class JTTStartupReceiver extends BroadcastReceiver {
+        public void onReceive(Context context, Intent intent) {
+        if (PreferenceManager
+                .getDefaultSharedPreferences(context)
+                .getBoolean("jtt_bootup", true))
+            context.startService(new Intent(context, JTTService.class));
         }
     }
 }

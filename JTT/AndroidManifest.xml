@@ -41,7 +41,7 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".JTTStartupReceiver" >
+        <receiver android:name=".JTTService$JTTStartupReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
