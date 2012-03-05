@@ -69,7 +69,7 @@ public class JTTMainActivity extends ActivityGroup {
             switch (msg.what) {
             case JTTService.MSG_HOUR:
                 JTTHour hour = new JTTHour(msg.arg1);
-                hour.fraction = msg.arg2 / 100.0f;
+                hour.fraction = msg.arg2;
                 clock.setJTTHour(hour);
                 break;
             default:
