@@ -19,11 +19,9 @@ public class JTTClockView extends TextView {
     private final Paint mStrokePaint2 = new Paint();
     private final Paint mSolidPaint = new Paint();
     private final Paint mSolidPaint2 = new Paint();
-    private final Bitmap ch[] = new Bitmap[12], cv[] = new Bitmap[12];
-    private JTTHour hour;
+    private Bitmap ch, cv;
+    private JTTHour hour = new JTTHour(0);
     private JTTHour.StringsHelper hs;
-
-    private Context ctx;
 
     public JTTClockView(Context context) {
         this(context, null, 0);
@@ -33,11 +31,15 @@ public class JTTClockView extends TextView {
         this(context, attrs, 0);
     }
 
-    public JTTClockView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        ctx = context;
+    public JTTClockView(Context ctx, AttributeSet attrs, int defStyle) {
+        super(ctx, attrs, defStyle);
         hs = new JTTHour.StringsHelper(ctx);
-        setupPaint();
+        setupPaint(ctx);
+
+        /* make them non-null */
+        cv = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        cv.recycle();
+        ch = cv;
     }
 
     @Override
@@ -48,17 +50,20 @@ public class JTTClockView extends TextView {
         final int w = getWidth();
         final int h = getHeight();
         final Boolean v = h > w;
-        final Bitmap[] clocks = v ? cv : ch;
         final int size = v ? w / 2 : h / 2;
 
-        if (clocks[hour.num] == null)
-            clocks[hour.num] = drawBitmap(hour.num, size);
+        if (v && cv.isRecycled())
+            cv = drawBitmap(hour.num, size);
 
+        if (!v && ch.isRecycled())
+            ch = drawBitmap(hour.num, size);
+
+        final Bitmap clock = v ? cv : ch;
         final Matrix m = new Matrix();
         m.setTranslate(v ? 0 : 3 * w / 5 - size, v ? 3 * h / 5 - size : 0);
         m.preRotate(step * (0.5f - hour.num) - gap - (step - gap * 2)
                 * hour.fraction / 100.0f, size, size);
-        canvas.drawBitmap(clocks[hour.num], m, mStrokePaint2);
+        canvas.drawBitmap(clock, m, mStrokePaint2);
 
         mStrokePaint2.setTextSize(v ? w / 20 : w / 15);
 
@@ -67,7 +72,7 @@ public class JTTClockView extends TextView {
                 mStrokePaint2);
     }
 
-    private final void setupPaint() {
+    private final void setupPaint(Context ctx) {
         LightingColorFilter f = new LightingColorFilter(0xFFFFFFFF, 0xFFCCCCCC);
         mStrokePaint.setAntiAlias(true);
         mStrokePaint.setStyle(Paint.Style.STROKE);
@@ -168,6 +173,10 @@ public class JTTClockView extends TextView {
     }
 
     public void setJTTHour(JTTHour new_hour) {
+        if (hour.num != new_hour.num) {
+            cv.recycle();
+            ch.recycle();
+        }
         hour = new_hour;
         invalidate();
     }
