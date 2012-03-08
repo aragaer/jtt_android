@@ -57,7 +57,7 @@ public class JTTClockView extends TextView {
         final Matrix m = new Matrix();
         m.setTranslate(v ? 0 : 3 * w / 5 - size, v ? 3 * h / 5 - size : 0);
         m.preRotate(step * (0.5f - hour.num) - gap - (step - gap * 2)
-                * hour.fraction, size, size);
+                * hour.fraction / 100.0f, size, size);
         canvas.drawBitmap(clocks[hour.num], m, mStrokePaint2);
 
         mStrokePaint2.setTextSize(v ? w / 20 : w / 15);

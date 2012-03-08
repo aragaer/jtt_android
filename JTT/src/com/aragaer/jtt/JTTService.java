@@ -15,11 +15,13 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.PowerManager;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -58,14 +60,15 @@ public class JTTService extends Service {
                 break;
             case MSG_UPDATE_LOCATION:
                 String ll[] = msg.getData().getString("latlon").split(":");
-                calculator = new JTT(Float.parseFloat(ll[0]),
+                calculator.stop_ticking();
+                calculator.move(Float.parseFloat(ll[0]),
                         Float.parseFloat(ll[1]), TimeZone.getDefault());
-                doCalc();
+                calculator.start_ticking();
                 break;
             case MSG_REGISTER_CLIENT:
                 try {
                     msg.replyTo.send(Message.obtain(null, MSG_HOUR, hour.num,
-                            Math.round(hour.fraction * 100)));
+                            hour.fraction));
                     mClients.add(msg.replyTo);
                 } catch (RemoteException e) {
                     Log.w(TAG, "Client registered but failed to get data");
@@ -80,14 +83,6 @@ public class JTTService extends Service {
             }
         }
     }
-
-    private Timer timer;
-    private TimerTask updateTask = new TimerTask() {
-        @Override
-        public void run() {
-            doCalc();
-        }
-    };
 
     private void init_notification(Date when) {
         if (nm == null)
@@ -107,8 +102,6 @@ public class JTTService extends Service {
     }
 
     private void notify_helper(Date when) {
-        final Context ctx = getBaseContext();
-
         if (notification == null && !notify) // do nothing
             return;
 
@@ -117,6 +110,7 @@ public class JTTService extends Service {
         if (notification.contentView == null)
             notification.contentView = new RemoteViews(getPackageName(),
                     R.layout.notification);
+
         if (notification.contentIntent == null)
             notification.contentIntent = pending_main;
 
@@ -132,12 +126,11 @@ public class JTTService extends Service {
         nm.notify(APP_ID, notification);
     }
 
-    private void doCalc() {
+    private void doNotify(JTTHour h) {
         Date when = new Date();
-        hour = calculator.time_to_jtt(when);
+        hour = h;
         notify_helper(when);
-        Message msg = Message.obtain(null, MSG_HOUR, hour.num,
-                Math.round(hour.fraction * 100));
+        Message msg = Message.obtain(null, MSG_HOUR, h.num, h.fraction);
 
         for (int i = mClients.size() - 1; i >= 0; i--)
             try {
@@ -156,6 +149,26 @@ public class JTTService extends Service {
     public IBinder onBind(Intent intent) {
         return mMessenger.getBinder();
     }
+    
+    private final BroadcastReceiver on = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            calculator.start_ticking();
+        }
+    };
+    private final BroadcastReceiver off = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            calculator.stop_ticking();
+        }
+    };
+    private final BroadcastReceiver timeset = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            calculator.stop_ticking();
+            calculator.start_ticking();
+        }
+    };
 
     @Override
     public void onStart(Intent intent, int startid) {
@@ -167,20 +180,24 @@ public class JTTService extends Service {
 
         calculator = new JTT(Float.parseFloat(ll[0]), Float.parseFloat(ll[1]),
                 TimeZone.getDefault());
-        hour = calculator.time_to_jtt(new Date());
-        Log.d(TAG, "rate = " + calculator.rate);
-        Log.d(TAG, "Next hour at " + calculator.nextHour.toLocaleString());
+        calculator.registerTicker(new JTT.TickHandler() {
+            public void handle(JTTHour h) {
+                doNotify(h);
+            }
+        });
 
         Intent JTTMain = new Intent(getBaseContext(), JTTMainActivity.class);
         pending_main = PendingIntent.getActivity(this, 0, JTTMain, 0);
         notify = settings.getBoolean("jtt_notify", true);
 
-        timer = new Timer("JTTServiceTimer");
-        try {
-            timer.scheduleAtFixedRate(updateTask, 0, 60 * 1000L);
-        } catch (IllegalStateException e) {
-            Log.i(TAG, "Timer is already running");
-        }
+        registerReceiver(on, new IntentFilter(Intent.ACTION_SCREEN_ON));
+        registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+        registerReceiver(timeset, new IntentFilter(Intent.ACTION_TIME_CHANGED));
+
+        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        
+        if (pm.isScreenOn())
+            calculator.start_ticking();
     }
 
     @Override
@@ -188,8 +205,11 @@ public class JTTService extends Service {
         super.onDestroy();
         Log.i(TAG, "Service destroying");
 
-        timer.cancel();
-        timer = null;
+        unregisterReceiver(on);
+        unregisterReceiver(off);
+        unregisterReceiver(timeset);
+
+        calculator.stop_ticking();
 
         if (settings.getBoolean("jtt_bootup", true)) {
             init_notification(new Date());
@@ -206,10 +226,9 @@ public class JTTService extends Service {
 
     public static class JTTStartupReceiver extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
-        if (PreferenceManager
-                .getDefaultSharedPreferences(context)
-                .getBoolean("jtt_bootup", true))
-            context.startService(new Intent(context, JTTService.class));
+            if (PreferenceManager.getDefaultSharedPreferences(context)
+                    .getBoolean("jtt_bootup", true))
+                context.startService(new Intent(context, JTTService.class));
         }
     }
 }
