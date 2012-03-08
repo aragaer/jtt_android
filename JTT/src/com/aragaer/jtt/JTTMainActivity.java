@@ -24,7 +24,6 @@ public class JTTMainActivity extends ActivityGroup {
     private JTTPager pager;
 
     private Messenger mService = null;
-    boolean mIsBound;
     final Messenger mMessenger = new Messenger(new IncomingHandler());
 
     private ServiceConnection conn = new ServiceConnection() {
@@ -95,11 +94,11 @@ public class JTTMainActivity extends ActivityGroup {
         clock = new JTTClockView(this);
         clock.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
         clock.setLayoutParams(lp);
-        pager.addTab(clock, getString(R.string.clock));
+        pager.addTab(this, clock, getString(R.string.clock));
 
         final Window sw = getLocalActivityManager().startActivity("settings",
                 new Intent(this, JTTSettingsActivity.class));
-        pager.addTab(sw.getDecorView(), getString(R.string.settings));
+        pager.addTab(this, sw.getDecorView(), getString(R.string.settings));
 
         setContentView(pager);
 

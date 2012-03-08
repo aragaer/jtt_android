@@ -15,14 +15,12 @@ import android.widget.LinearLayout;
 public class JTTPager extends LinearLayout {
     private JTTPageView pageview;
     private LinearLayout tablist;
-    private Context ctx;
     protected final ArrayList<Button> tabs = new ArrayList<Button>();
     private LayoutParams btnlp;
 
     public JTTPager(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        ctx = context;
         btnlp = new LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.FILL_PARENT, 1.0f);
 
@@ -60,13 +58,13 @@ public class JTTPager extends LinearLayout {
 
     OnClickListener click = new OnClickListener() {
         public void onClick(View v) {
-            final Button btn = (Button) v;
-            if (pageview.mCurrentScreen != btn.getId())
-                pageview.snapToScreen(btn.getId());
+            final int btn_id = v.getId();
+            if (pageview.mCurrentScreen != btn_id)
+                pageview.snapToScreen(btn_id);
         }
     };
 
-    public int addTab(View view, String btn) {
+    public int addTab(Context ctx, View view, String btn) {
         final int id = tabs.size();
         final Button b = new Button(ctx, null);
         b.setText(btn);
