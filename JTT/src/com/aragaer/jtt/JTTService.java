@@ -117,7 +117,6 @@ public class JTTService extends Service {
         if (notification.contentView == null)
             notification.contentView = new RemoteViews(getPackageName(),
                     R.layout.notification);
-        ;
         if (notification.contentIntent == null)
             notification.contentIntent = pending_main;
 
@@ -125,9 +124,9 @@ public class JTTService extends Service {
                 JTTHour.Glyphs[hour.num]);
         notification.contentView.setTextViewText(R.id.title,
                 hs.getHrOf(hour.num));
-        notification.contentView.setTextViewText(R.id.text,
-                Math.round(hour.fraction * 100) + "%");
-        notification.contentView.setTextViewText(R.id.when, df.format(when));
+        notification.contentView.setProgressBar(R.id.fraction, 100, Math.round(hour.fraction * 100), false);
+        notification.contentView.setTextViewText(R.id.start, df.format(when));
+        notification.contentView.setTextViewText(R.id.end, df.format(when));
 
         notification.iconLevel = hour.num;
         nm.notify(APP_ID, notification);
