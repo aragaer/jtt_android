@@ -118,9 +118,10 @@ public class JTTService extends Service {
                 JTTHour.Glyphs[hour.num]);
         notification.contentView.setTextViewText(R.id.title,
                 hs.getHrOf(hour.num));
-        notification.contentView.setProgressBar(R.id.fraction, 100, Math.round(hour.fraction * 100), false);
-        notification.contentView.setTextViewText(R.id.start, df.format(when));
-        notification.contentView.setTextViewText(R.id.end, df.format(when));
+        notification.contentView.setTextViewText(R.id.percent, hour.fraction+"%");
+        notification.contentView.setProgressBar(R.id.fraction, 100, hour.fraction, false);
+        notification.contentView.setTextViewText(R.id.start, df.format(calculator.start));
+        notification.contentView.setTextViewText(R.id.end, df.format(calculator.end));
 
         notification.iconLevel = hour.num;
         nm.notify(APP_ID, notification);

@@ -25,6 +25,14 @@
             android:layout_alignParentLeft="true" />
 
         <TextView
+            android:id="@+id/percent"
+            style="@style/NotificationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dip"
+            android:layout_toRightOf="@id/title" />
+
+        <TextView
             android:id="@+id/start"
             style="@style/NotificationText"
             android:layout_width="wrap_content"
@@ -49,7 +57,8 @@
             android:indeterminate="false"
             android:indeterminateOnly="false"
             android:layout_below="@id/title"
-            android:padding="5dip"
+            android:padding="4dip"
+            android:layout_centerVertical="true"
             android:progressDrawable="@android:drawable/progress_horizontal" />
 
     </RelativeLayout>

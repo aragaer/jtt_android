@@ -11,6 +11,7 @@ import android.util.Log;
 
 public class JTT {
     private final static int MSG = 1;
+    public Date start, end;
     TickHandler tick;
     private JTTHour now;
 
@@ -99,6 +100,9 @@ public class JTT {
         long[] c = new long[2];
         now = transitionsToHour(c, getTransitions(cal, c));
         rate = Math.round(c[1] / 600.0);
+        final long start_ms = cal.getTimeInMillis() - now.fraction * rate;
+        start = new Date(start_ms);
+        end = new Date(start_ms + rate * 100);
         long offset = rate - c[0] % rate;
         return offset;
     }
