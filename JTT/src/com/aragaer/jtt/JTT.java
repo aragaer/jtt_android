@@ -57,8 +57,8 @@ public class JTT {
     }
 
     private JTTHour transitionsToHour(long c[], Boolean isNight) {
-        final float h = 6.0f * c[0] / c[1] + (isNight ? 0 : 6);
-        return new JTTHour((int) h, Math.round((h - (int) h) * 100));
+        final long h = (600 * c[0] / c[1] + (isNight ? 0 : 600)) % 1200;
+        return new JTTHour((int) h / 100, (int) h % 100);
     }
 
     public JTTHour time_to_jtt(Date time) {
