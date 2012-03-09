@@ -13,22 +13,24 @@ public class JTT {
     private final static int MSG = 1;
     public Date start, end;
     TickHandler tick;
-    private JTTHour now;
+    public JTTHour now;
 
     private SolarObserver calculator;
     private long rate; // number of millis per 1% of hour
 
     public JTT(float latitude, float longitude, TimeZone tz) {
         this.calculator = new SolarObserver(latitude, longitude, tz);
+        now = time_to_jtt(new Date());
     }
 
     public void move(float latitude, float longitude, TimeZone tz) {
         this.calculator = new SolarObserver(latitude, longitude, tz);
+        now = time_to_jtt(new Date());
     }
 
     /*
-     * Helper functions returns false if day, true if night out contains ms from
-     * last transition and ms between transitions
+     * Helper functions returns false if day, true if night. Out contains ms
+     * from last transition and ms between transitions
      */
     private Boolean getTransitions(Calendar cal, long[] out) {
         Boolean isNight = true;
@@ -56,7 +58,7 @@ public class JTT {
         return isNight;
     }
 
-    private JTTHour transitionsToHour(long c[], Boolean isNight) {
+    private static JTTHour transitionsToHour(long c[], Boolean isNight) {
         final long h = (600 * c[0] / c[1] + (isNight ? 0 : 600)) % 1200;
         return new JTTHour((int) h / 100, (int) h % 100);
     }
@@ -103,18 +105,18 @@ public class JTT {
         final long start_ms = cal.getTimeInMillis() - now.fraction * rate;
         start = new Date(start_ms);
         end = new Date(start_ms + rate * 100);
-        long offset = rate - c[0] % rate;
-        return offset;
+        return rate - c[0] % rate;
     }
 
     public synchronized final void start_ticking() {
         long delay = resync_tick();
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG), delay);
-        if (delay > 1000) // arbitrary threshold for doing a callback immediately
+        if (delay > 1000) // arbitrary threshold for doing a callback
+                          // immediately
             tick.handle(now);
     }
 
-    public void stop_ticking() {
+    public final void stop_ticking() {
         mHandler.removeMessages(MSG);
     }
 
@@ -149,8 +151,8 @@ class SolarObserver {
     final private float latitude;
     final private float longitude;
     final private TimeZone timeZone;
-    final private double zenithOfficial = 90.8333;
-    final private double zenith = Math.toRadians(zenithOfficial);
+    final private static double zenithOfficial = 90.8333;
+    final private static double zenith = Math.toRadians(zenithOfficial);
 
     public SolarObserver(float latitude, float longitude, TimeZone timezone) {
         this.latitude = latitude;

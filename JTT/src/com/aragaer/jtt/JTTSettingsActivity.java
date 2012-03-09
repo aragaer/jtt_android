@@ -58,10 +58,6 @@ public class JTTSettingsActivity extends PreferenceActivity {
         builder.setMessage(R.string.stop_ask).setCancelable(true)
         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Bundle b = new Bundle();
-                b.putBoolean("notify", false);
-                doSendMessage(JTTService.MSG_TOGGLE_NOTIFY, b);
-
                 stopService(new Intent(JTTService.class.getName()));
                 ((JTTMainActivity) JTTSettingsActivity.this.getParent()).finish();
             }
