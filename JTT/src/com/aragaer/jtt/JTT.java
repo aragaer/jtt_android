@@ -12,24 +12,24 @@ import android.util.Log;
 public class JTT {
     private final static int MSG = 1;
     public Date start, end;
-    TickHandler tick;
+    private TickHandler tick;
     public JTTHour now;
 
     private SolarObserver calculator;
     private long rate; // number of millis per 1% of hour
 
     public JTT(float latitude, float longitude, TimeZone tz) {
-        this.calculator = new SolarObserver(latitude, longitude, tz);
-        now = time_to_jtt(new Date());
+        calculator = new SolarObserver(latitude, longitude, tz);
+        now = time_to_jtt(null);
     }
 
     public void move(float latitude, float longitude, TimeZone tz) {
-        this.calculator = new SolarObserver(latitude, longitude, tz);
-        now = time_to_jtt(new Date());
+        calculator = new SolarObserver(latitude, longitude, tz);
+        now = time_to_jtt(null);
     }
 
     /*
-     * Helper functions returns false if day, true if night. Out contains ms
+     * Helper function. Returns false if day, true if night. Out contains ms
      * from last transition and ms between transitions
      */
     private Boolean getTransitions(Calendar cal, long[] out) {
@@ -66,7 +66,8 @@ public class JTT {
     public JTTHour time_to_jtt(Date time) {
         Calendar cal = Calendar.getInstance();
         long[] c = new long[2];
-        cal.setTime(time);
+        if (time != null)
+            cal.setTime(time);
         return transitionsToHour(c, getTransitions(cal, c));
     }
 
