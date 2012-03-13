@@ -102,7 +102,6 @@ public class JTTPager extends LinearLayout {
     private final class JTTPageView extends ViewGroup {
         private static final int SNAP_VELOCITY = 1000;
 
-        private boolean mFirstLayout = true;
         private VelocityTracker mVelocityTracker;
         private int mMaximumVelocity;
         private int mTouchSlop;
@@ -139,10 +138,9 @@ public class JTTPager extends LinearLayout {
             for (int i = 0; i < count; i++)
                 getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
 
-            if (width > 0 && mFirstLayout) {
+            if (width > 0) {
                 setHorizontalScrollBarEnabled(false);
                 scrollTo(mCurrentScreen * width, 0);
-                mFirstLayout = false;
             }
         }
 
