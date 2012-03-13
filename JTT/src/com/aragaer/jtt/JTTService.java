@@ -34,7 +34,7 @@ public class JTTService extends Service {
     private PendingIntent pending_main;
     private JTTHour.StringsHelper hs;
 
-    private Boolean notify, n_ongoing = false;
+    private Boolean notify, force_stop = false;
 
     ArrayList<Messenger> mClients = new ArrayList<Messenger>();
     public static final int MSG_TOGGLE_NOTIFY = 0;
@@ -42,6 +42,7 @@ public class JTTService extends Service {
     public static final int MSG_REGISTER_CLIENT = 2;
     public static final int MSG_UNREGISTER_CLIENT = 3;
     public static final int MSG_HOUR = 4;
+    public static final int MSG_STOP = 5;
 
     final Messenger mMessenger = new Messenger(new Handler() {
         @Override
@@ -49,7 +50,10 @@ public class JTTService extends Service {
             switch (msg.what) {
             case MSG_TOGGLE_NOTIFY:
                 notify = msg.getData().getBoolean("notify");
-                notify_helper(calculator.now);
+                if (notify)
+                    notify_helper(calculator.now);
+                else
+                    nm.cancel(APP_ID);
                 break;
             case MSG_UPDATE_LOCATION:
                 String ll[] = msg.getData().getString("latlon").split(":");
@@ -71,6 +75,10 @@ public class JTTService extends Service {
             case MSG_UNREGISTER_CLIENT:
                 mClients.remove(msg.replyTo);
                 break;
+            case MSG_STOP:
+                force_stop = true;
+                stopSelf();
+                break;
             default:
                 super.handleMessage(msg);
                 break;
@@ -80,9 +88,6 @@ public class JTTService extends Service {
 
     private String app_name;
     private Notification init_notification() {
-        if (nm == null)
-            nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
         Notification n = new Notification(R.drawable.notification_icon,
                 app_name, System.currentTimeMillis());
 
@@ -93,9 +98,6 @@ public class JTTService extends Service {
 
     private static final DateFormat df = new SimpleDateFormat("HH:mm");
     private void notify_helper(JTTHour h) {
-        if (!notify && !n_ongoing) // do nothing
-            return;
-
         Notification n = init_notification();
         RemoteViews rv = new RemoteViews(getPackageName(),
                 R.layout.notification);
@@ -110,11 +112,11 @@ public class JTTService extends Service {
         n.contentIntent = pending_main;
         n.contentView = rv;
         nm.notify(APP_ID, n);
-        n_ongoing = notify;
     }
 
     private void doNotify(JTTHour h) {
-        notify_helper(h);
+        if (notify)
+            notify_helper(h);
         Message msg = Message.obtain(null, MSG_HOUR, h.num, h.fraction);
         int i = mClients.size();
         while (i-- > 0)
@@ -175,6 +177,9 @@ public class JTTService extends Service {
         pending_main = PendingIntent.getActivity(this, 0, JTTMain, 0);
         notify = settings.getBoolean("jtt_notify", true);
         app_name = getString(R.string.app_name);
+        nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (!notify)
+            nm.cancel(APP_ID);
 
         registerReceiver(on, new IntentFilter(Intent.ACTION_SCREEN_ON));
         registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
@@ -196,16 +201,20 @@ public class JTTService extends Service {
 
         calculator.stop_ticking();
 
-        SharedPreferences settings = PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext());
-        final Boolean boot = settings.getBoolean("jtt_bootup", true);
-        if (boot || notify) {
-            Notification n = init_notification();
+        if (force_stop)
+            nm.cancel(APP_ID);
+        else {
+            SharedPreferences settings = PreferenceManager
+                    .getDefaultSharedPreferences(getBaseContext());
+            final Boolean boot = settings.getBoolean("jtt_bootup", true);
+            if (notify || boot) {
+                Notification n = init_notification();
 
-            n.setLatestEventInfo(JTTService.this, getString(R.string.srv_fail),
-                    getString(R.string.srv_fail_ex), pending_main);
-            n.flags = boot ? flags_ongoing : 0;
-            nm.notify(APP_ID, n);
+                n.setLatestEventInfo(JTTService.this, getString(R.string.srv_fail),
+                        getString(R.string.srv_fail_ex), pending_main);
+                n.flags = boot ? flags_ongoing : 0;
+                nm.notify(APP_ID, n);
+            }
         }
     }
 
