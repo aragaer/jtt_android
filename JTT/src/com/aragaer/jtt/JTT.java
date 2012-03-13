@@ -58,6 +58,14 @@ public class JTT {
         return isNight;
     }
 
+    public Calendar sunrise(Calendar cal) {
+        return calculator.sunrise(cal);
+    }
+
+    public Calendar sunset(Calendar cal) {
+        return calculator.sunset(cal);
+    }
+
     private static JTTHour transitionsToHour(long c[], Boolean isNight) {
         final long h = (600 * c[0] / c[1] + (isNight ? 0 : 600)) % 1200;
         return new JTTHour((int) h / 100, (int) h % 100);

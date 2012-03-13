@@ -22,6 +22,7 @@ public class JTTMainActivity extends ActivityGroup {
 
     private JTTClockView clock;
     private JTTPager pager;
+    private JTTTodayList today;
 
     private Messenger mService = null;
     final Messenger mMessenger = new Messenger(new IncomingHandler());
@@ -35,6 +36,7 @@ public class JTTMainActivity extends ActivityGroup {
                 msg.replyTo = mMessenger;
                 mService.send(msg);
                 Log.i(TAG, "Service connection established");
+                send_msg_to_service(JTTService.MSG_DOUBLE_TRANSITIONS, null);
             } catch (RemoteException e) {
                 // In this case the service has crashed before we could even do
                 // anything with it
@@ -70,6 +72,9 @@ public class JTTMainActivity extends ActivityGroup {
                 JTTHour hour = new JTTHour(msg.arg1, msg.arg2);
                 clock.setJTTHour(hour);
                 break;
+            case JTTService.MSG_DOUBLE_TRANSITIONS:
+                today.set_transitions(msg.getData());
+                break;
             default:
                 super.handleMessage(msg);
             }
@@ -94,6 +99,10 @@ public class JTTMainActivity extends ActivityGroup {
         clock.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
         clock.setLayoutParams(lp);
         pager.addTab(this, clock, getString(R.string.clock));
+
+        today = new JTTTodayList(this);
+        today.setLayoutParams(lp);
+        pager.addTab(this, today, getString(R.string.today));
 
         final Window sw = getLocalActivityManager().startActivity("settings",
                 new Intent(this, JTTSettingsActivity.class));

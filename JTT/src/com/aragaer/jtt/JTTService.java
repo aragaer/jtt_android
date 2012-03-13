@@ -3,6 +3,7 @@ package com.aragaer.jtt;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.TimeZone;
 
 import android.app.Notification;
@@ -14,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -43,6 +45,7 @@ public class JTTService extends Service {
     public static final int MSG_UNREGISTER_CLIENT = 3;
     public static final int MSG_HOUR = 4;
     public static final int MSG_STOP = 5;
+    public static final int MSG_DOUBLE_TRANSITIONS = 6;
 
     final Messenger mMessenger = new Messenger(new Handler() {
         @Override
@@ -79,12 +82,53 @@ public class JTTService extends Service {
                 force_stop = true;
                 stopSelf();
                 break;
+            case MSG_DOUBLE_TRANSITIONS:
+                try {
+                    msg.replyTo.send(d_trans_msg());
+                } catch (RemoteException e) {
+                    Log.w(TAG, "Client requested double transitions data but failed to get answer");
+                }
+                break;
             default:
                 super.handleMessage(msg);
                 break;
             }
         }
     });
+
+    private Message d_trans_msg() {
+        Calendar cal = Calendar.getInstance();
+        long sunrise = calculator.sunrise(cal).getTimeInMillis();
+        long sunset = calculator.sunset(cal).getTimeInMillis();
+        long now = System.currentTimeMillis();
+        Bundle b = new Bundle(5);
+        if (now > sunset) { // night after sunset
+            b.putLong("prev_sunrise", sunrise);
+            b.putLong("prev_sunset", sunset);
+            cal.add(Calendar.DATE, 1);
+            b.putLong("next_sunrise", calculator.sunrise(cal).getTimeInMillis());
+            b.putLong("next_sunset", calculator.sunset(cal).getTimeInMillis());
+            b.putBoolean("is_night", true);
+        } else if (now < sunrise) { // night before sunrise
+            b.putLong("next_sunrise", sunrise);
+            b.putLong("next_sunset", sunset);
+            cal.add(Calendar.DATE, -1);
+            b.putLong("prev_sunrise", calculator.sunrise(cal).getTimeInMillis());
+            b.putLong("prev_sunset", calculator.sunset(cal).getTimeInMillis());
+            b.putBoolean("is_night", true);
+        } else { // day
+            b.putLong("prev_sunrise", sunrise);
+            b.putLong("next_sunset", sunset);
+            cal.add(Calendar.DATE, -1);
+            b.putLong("prev_sunset", calculator.sunset(cal).getTimeInMillis());
+            cal.add(Calendar.DATE, 2);
+            b.putLong("next sunrise", calculator.sunrise(cal).getTimeInMillis());
+            b.putBoolean("is_night", false);
+        }
+        Message res = Message.obtain(null, MSG_DOUBLE_TRANSITIONS);
+        res.setData(b);
+        return res;
+    }
 
     private String app_name;
     private Notification init_notification() {
@@ -117,8 +161,10 @@ public class JTTService extends Service {
     private void doNotify(JTTHour h) {
         if (notify)
             notify_helper(h);
-        Message msg = Message.obtain(null, MSG_HOUR, h.num, h.fraction);
         int i = mClients.size();
+        if (i == 0)
+            return;
+        Message msg = Message.obtain(null, MSG_HOUR, h.num, h.fraction);
         while (i-- > 0)
             try {
                 mClients.get(i).send(msg);
