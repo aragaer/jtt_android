@@ -40,7 +40,7 @@ public class JTTTodayList extends ListView {
         private int day_count;
         // 19 hour records
         private ArrayList<Date> dates = new ArrayList<Date>(19);
-        private Boolean isNight;
+        private boolean isNight;
 
         public TodayAdapter(Context c, int layout_id) {
             super(c, layout_id);
@@ -94,7 +94,7 @@ public class JTTTodayList extends ListView {
             LayoutInflater li = (LayoutInflater) parent.getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            Boolean isHour = true;
+            boolean isHour = true;
             int d = 0;
             for (int p : day_pos) {
                 if (p < position) {
@@ -127,6 +127,11 @@ public class JTTTodayList extends ListView {
         @Override
         public int getCount() {
             return /* dates.size() */ 19 + day_count;
+        }
+
+        @Override
+        public boolean isEnabled(int pos) {
+            return false;
         }
     }
 }
