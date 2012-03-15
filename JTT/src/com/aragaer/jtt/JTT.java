@@ -2,7 +2,8 @@ package com.aragaer.jtt;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
+//import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import android.os.Handler;
 import android.os.Message;
@@ -18,13 +19,13 @@ public class JTT {
     private SolarObserver calculator;
     private long rate; // number of millis per 1% of hour
 
-    public JTT(float latitude, float longitude, TimeZone tz) {
-        calculator = new SolarObserver(latitude, longitude, tz);
+    public JTT(float latitude, float longitude/*, TimeZone tz*/) {
+        calculator = new SolarObserver(latitude, longitude/*, tz*/);
         now = time_to_jtt(null);
     }
 
-    public void move(float latitude, float longitude, TimeZone tz) {
-        calculator = new SolarObserver(latitude, longitude, tz);
+    public void move(float latitude, float longitude/*, TimeZone tz*/) {
+        calculator = new SolarObserver(latitude, longitude/*, tz*/);
         now = time_to_jtt(null);
     }
 
@@ -32,33 +33,35 @@ public class JTT {
      * Helper function. Returns false if day, true if night. Out contains ms
      * from last transition and ms between transitions
      */
-    private Boolean getTransitions(Calendar cal, long[] out) {
-        Boolean isNight = true;
-        final Calendar sunrise = calculator.sunrise(cal);
-        final Calendar sunset = calculator.sunset(cal);
+    private boolean getTransitions(Calendar cal, long[] out) {
+        boolean isNight = true;
         long a, b, c;
-
-        b = cal.getTimeInMillis();
-        if (cal.before(sunrise)) {
-            cal.add(Calendar.DAY_OF_YEAR, -1);
-            a = calculator.sunset(cal).getTimeInMillis();
-            c = sunrise.getTimeInMillis();
-        } else if (cal.after(sunset)) {
-            cal.add(Calendar.DAY_OF_YEAR, 1);
-            c = calculator.sunrise(cal).getTimeInMillis();
-            a = sunset.getTimeInMillis();
+        b = cal.getTimeInMillis() % SolarObserver.ms_per_day;
+        int d = cal.get(Calendar.DAY_OF_YEAR);
+        final long sunrise = calculator.sunrise(d);
+        final long sunset = calculator.sunset(d);
+        Log.d("transitions", "sunrise "+sunrise+", time "+b+", sunset "+sunset);
+        if (b < sunrise) {
+            a = calculator.sunset((d + 364) % 365);
+            c = sunrise + SolarObserver.ms_per_day;
+        } else if (b > sunset) {
+            c = calculator.sunrise((d + 1) % 365);
+            a = sunset - SolarObserver.ms_per_day;
         } else {
             isNight = false;
-            a = sunrise.getTimeInMillis();
-            c = sunset.getTimeInMillis();
+            a = sunrise;
+            c = sunset;
         }
+        Log.d("transitions", "= "+a+", "+b+", "+c);
+        
         out[0] = b - a;
         out[1] = c - a;
+        Log.d("transitions", (isNight ? "night ": "day ")+out[0]+":"+out[1]);
 
         return isNight;
     }
 
-    private static JTTHour transitionsToHour(long c[], Boolean isNight) {
+    private static JTTHour transitionsToHour(long c[], boolean isNight) {
         final long h = (600 * c[0] / c[1] + (isNight ? 0 : 600)) % 1200;
         return new JTTHour((int) h / 100, (int) h % 100);
     }
@@ -151,16 +154,24 @@ public class JTT {
 class SolarObserver {
     final private float latitude;
     final private float longitude;
-    final private TimeZone timeZone;
+//    final private TimeZone timeZone;
     final private static double zenithOfficial = 90.8333;
     final private static double zenith = Math.toRadians(zenithOfficial);
 
-    public SolarObserver(float latitude, float longitude, TimeZone timezone) {
+/*
+    private static final int longToDay(long l) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(l);
+        return cal.get(Calendar.DAY_OF_YEAR);
+    }
+    */
+
+    public SolarObserver(float latitude, float longitude/*, TimeZone timezone*/) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.timeZone = timezone;
+//        this.timeZone = timezone;
     }
-
+/*
     public Calendar sunrise(Calendar date) {
         return getLocalTimeAsCalendar(computeSolarEventTime(date, true), date);
     }
@@ -168,14 +179,37 @@ class SolarObserver {
     public Calendar sunset(Calendar date) {
         return getLocalTimeAsCalendar(computeSolarEventTime(date, false), date);
     }
+    */
+/*
+    public long sunrise(long date) {
+        date += timeZone.getRawOffset();
+        return getLocalTimeAsLong(computeSolarEventTime2(longToDay(date), true), date);
+    }
+
+    public long sunset(long date) {
+        date += timeZone.getRawOffset();
+        return getLocalTimeAsLong(computeSolarEventTime2(longToDay(date), false), date);
+    }
+*/
+    public long sunrise(int day_of_year) {
+        return (long) (computeSolarEventTime2(day_of_year, true) * ms_per_hour);
+    }
+
+    public long sunset(int day_of_year) {
+        return (long) (computeSolarEventTime2(day_of_year, false) * ms_per_hour);
+    }
 
     // using this: http://williams.best.vwh.net/sunrise_sunset_algorithm.htm
+/*
     private double computeSolarEventTime(Calendar date, boolean isSunrise) {
-        date.setTimeZone(this.timeZone);
-
+        final double LocalT = computeSolarEventTime2(date.get(Calendar.DAY_OF_YEAR), isSunrise)
+                + timeZone.getRawOffset() / ms_per_hour;
+        return LocalT % 24;
+    }
+*/
+    private double computeSolarEventTime2(int day, boolean isSunrise) {
         final double lngHour = longitude / 15;
-        final double t = date.get(Calendar.DAY_OF_YEAR)
-                + ((isSunrise ? 6 : 18) - lngHour) / 24;
+        final double t = day + ((isSunrise ? 6 : 18) - lngHour) / 24;
 
         final double M = (0.9856 * t) - 3.289;
 
@@ -198,17 +232,15 @@ class SolarObserver {
         final double H = Math.toDegrees(Math.acos(cosH)) / 15;
 
         final double T = (isSunrise ? 24 - H : H) + RA - (0.06571 * t) - 6.622;
-        final double LocalT = T
-                - lngHour
-                + (date.get(Calendar.ZONE_OFFSET) + date
-                        .get(Calendar.DST_OFFSET)) / 3600000.0;
+        final double LocalT = T - lngHour;
         return LocalT % 24;
     }
-
+/*
     private static Calendar getLocalTimeAsCalendar(double localTime,
             Calendar date) {
         if (localTime < 0)
             return null;
+
         Calendar resultTime = (Calendar) date.clone();
         int hour = (int) localTime;
         localTime = (localTime - hour) * 60;
@@ -232,4 +264,16 @@ class SolarObserver {
 
         return resultTime;
     }
+*/
+    public static final long ms_per_minute = TimeUnit.SECONDS.toMillis(60);
+    public static final long ms_per_hour = TimeUnit.SECONDS.toMillis(60 * 60); 
+    public static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
+    /*
+    private static long getLocalTimeAsLong(double time,
+            long date) {
+        if (time < 0)
+            return 0;
+        return date - (date % ms_per_day) + (long) (time * ms_per_hour);
+    }
+    */
 }
