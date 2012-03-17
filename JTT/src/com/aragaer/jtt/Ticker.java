@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.util.Log;
 
 public abstract class Ticker {
     public Date start, end;
@@ -93,10 +92,6 @@ public abstract class Ticker {
         final long start_ms = ms - sub * rate;
         start = new Date(start_ms);
         end = new Date(start_ms + rate * subs);
-//        Log.d("ticker", "tr0 = "+(new Date(tr0)).toLocaleString()+" ["+JTT.longToJDN(tr0));
-//        Log.d("ticker", "start = "+start.toLocaleString()+" ["+JTT.longToJDN(start_ms));
-//        Log.d("ticker", "end = "+end.toLocaleString()+" ["+JTT.longToJDN(start_ms + rate * subs));
-//        Log.d("ticker", "tr1 = "+(new Date(tr1)).toLocaleString()+" ["+JTT.longToJDN(tr1));
         return rate - (ms - tr0) % rate;
     }
 
