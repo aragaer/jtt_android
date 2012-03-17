@@ -33,15 +33,21 @@ public abstract class Ticker {
         public void handleMessage(Message msg) {
             synchronized (Ticker.this) {
                 long lastTickStart = SystemClock.elapsedRealtime();
+                int o_tick = tick;
                 if (++sub >= subs) {
                     sub %= subs;
                     if (++tick >= ticks)
                         lastTickStart += resync_tick();
-                    handleTick(tick, sub);
-                    start = end;
-                    end = new Date(start.getTime() + subs * rate);
-                } else
+                    else {
+                        start = end;
+                        end = new Date(start.getTime() + subs * rate);
+                    }
+                }
+
+                if (o_tick == tick)
                     handleSub(tick, sub);
+                else
+                    handleTick(tick, sub);
 
                 // take into account user's onTick taking time to execute
                 long delay = lastTickStart - SystemClock.elapsedRealtime() + rate;
@@ -89,7 +95,7 @@ public abstract class Ticker {
         double h = total * (ms - tr0) / (tr1 - tr0);
         tick = (int) h / subs;
         sub = (int) h % subs;
-        final long start_ms = ms - sub * rate;
+        final long start_ms = tr0 + rate * subs * tick;
         start = new Date(start_ms);
         end = new Date(start_ms + rate * subs);
         return rate - (ms - tr0) % rate;

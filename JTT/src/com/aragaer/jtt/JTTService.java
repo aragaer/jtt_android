@@ -51,7 +51,7 @@ public class JTTService extends Service {
             case MSG_TOGGLE_NOTIFY:
                 notify = msg.getData().getBoolean("notify");
                 if (notify)
-                    notify_helper(ticker.now);
+                    notify_helper(ticker.hn, ticker.hf);
                 else
                     nm.cancel(APP_ID);
                 break;
@@ -63,9 +63,8 @@ public class JTTService extends Service {
                 break;
             case MSG_REGISTER_CLIENT:
                 try {
-                    JTTHour h = ticker.now;
-                    msg.replyTo.send(Message.obtain(null, MSG_HOUR, h.num,
-                            h.fraction));
+                    msg.replyTo.send(Message.obtain(null, MSG_HOUR, ticker.hn,
+                            ticker.hf));
                     mClients.add(msg.replyTo);
                 } catch (RemoteException e) {
                     Log.w(TAG, "Client registered but failed to get data");
@@ -86,25 +85,19 @@ public class JTTService extends Service {
     });
 
     private String app_name;
-    private Notification init_notification() {
+    private static final DateFormat df = new SimpleDateFormat("HH:mm");
+    private void notify_helper(int hn, int hf) {
         Notification n = new Notification(R.drawable.notification_icon,
                 app_name, System.currentTimeMillis());
-
-        n.flags = flags_ongoing;
-        n.iconLevel = ticker.now.num;
-        return n;
-    }
-
-    private static final DateFormat df = new SimpleDateFormat("HH:mm");
-    private void notify_helper(JTTHour h) {
-        Notification n = init_notification();
         RemoteViews rv = new RemoteViews(getPackageName(),
                 R.layout.notification);
 
-        rv.setTextViewText(R.id.image, JTTHour.Glyphs[h.num]);
-        rv.setTextViewText(R.id.title, hs.getHrOf(h.num));
-        rv.setTextViewText(R.id.percent, String.format("%d%%", h.fraction));
-        rv.setProgressBar(R.id.fraction, 100, h.fraction, false);
+        n.flags = flags_ongoing;
+        n.iconLevel = hn;
+        rv.setTextViewText(R.id.image, JTTHour.Glyphs[hn]);
+        rv.setTextViewText(R.id.title, hs.getHrOf(hn));
+        rv.setTextViewText(R.id.percent, String.format("%d%%", hf));
+        rv.setProgressBar(R.id.fraction, 100, hf, false);
         rv.setTextViewText(R.id.start, df.format(ticker.start));
         rv.setTextViewText(R.id.end, df.format(ticker.end));
 
@@ -113,13 +106,13 @@ public class JTTService extends Service {
         nm.notify(APP_ID, n);
     }
 
-    private void doNotify(JTTHour h) {
+    private void doNotify(int n, int f) {
         if (notify)
-            notify_helper(h);
+            notify_helper(n, f);
         int i = mClients.size();
         if (i == 0)
             return;
-        Message msg = Message.obtain(null, MSG_HOUR, h.num, h.fraction);
+        Message msg = Message.obtain(null, MSG_HOUR, n, f);
         while (i-- > 0)
             try {
                 mClients.get(i).send(msg);
@@ -154,6 +147,7 @@ public class JTTService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             ticker.stop_ticking();
+            ticker.reset();
             ticker.start_ticking();
         }
     };
@@ -203,7 +197,8 @@ public class JTTService extends Service {
                     .getDefaultSharedPreferences(getBaseContext());
             final boolean boot = settings.getBoolean("jtt_bootup", true);
             if (notify || boot) {
-                Notification n = init_notification();
+                Notification n = new Notification(R.drawable.notification_icon,
+                        app_name, System.currentTimeMillis());
 
                 n.setLatestEventInfo(JTTService.this, getString(R.string.srv_fail),
                         getString(R.string.srv_fail_ex), pending_main);
@@ -223,7 +218,7 @@ public class JTTService extends Service {
 
     private final class JTTTicker extends Ticker {
         protected int day;
-        public JTTHour now;
+        public int hn, hf;
 
         public JTTTicker() {
             super(6, 100);
@@ -243,8 +238,7 @@ public class JTTService extends Service {
         }
         @Override
         public void handleSub(int tick, int sub) {
-            now.fraction = sub;
-            doNotify(now);
+            doNotify(hn, hf = sub);
         }
         @Override
         public void handleTick(int tick, int sub) {
@@ -252,8 +246,7 @@ public class JTTService extends Service {
             // during day tr[0] is sunrise and total number is even
             // on sunset it is discarded and total number is odd 
             int isDay = 1 - tr.size() % 2;
-            now = new JTTHour(tick + isDay * 6, sub);
-            doNotify(now);
+            doNotify(hn = tick + isDay * 6, hf = sub);
         }
     };
 }
