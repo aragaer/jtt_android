@@ -3,7 +3,6 @@ package com.aragaer.jtt;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.TimeZone;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -33,8 +32,9 @@ public class JTTService extends Service {
     private static final int APP_ID = 0;
     private PendingIntent pending_main;
     private JTTHour.StringsHelper hs;
+    private JTTTicker ticker = new JTTTicker();
 
-    private Boolean notify, force_stop = false;
+    private boolean notify, force_stop = false;
 
     ArrayList<Messenger> mClients = new ArrayList<Messenger>();
     public static final int MSG_TOGGLE_NOTIFY = 0;
@@ -51,20 +51,19 @@ public class JTTService extends Service {
             case MSG_TOGGLE_NOTIFY:
                 notify = msg.getData().getBoolean("notify");
                 if (notify)
-                    notify_helper(calculator.now);
+                    notify_helper(ticker.now);
                 else
                     nm.cancel(APP_ID);
                 break;
             case MSG_UPDATE_LOCATION:
                 String ll[] = msg.getData().getString("latlon").split(":");
-                calculator.stop_ticking();
                 calculator.move(Float.parseFloat(ll[0]),
-                        Float.parseFloat(ll[1]), TimeZone.getDefault());
-                calculator.start_ticking();
+                        Float.parseFloat(ll[1]));
+                ticker.reset();
                 break;
             case MSG_REGISTER_CLIENT:
                 try {
-                    JTTHour h = calculator.now;
+                    JTTHour h = ticker.now;
                     msg.replyTo.send(Message.obtain(null, MSG_HOUR, h.num,
                             h.fraction));
                     mClients.add(msg.replyTo);
@@ -91,8 +90,8 @@ public class JTTService extends Service {
         Notification n = new Notification(R.drawable.notification_icon,
                 app_name, System.currentTimeMillis());
 
-        n.flags = notify ? flags_ongoing : 0;
-        n.iconLevel = calculator.now.num;
+        n.flags = flags_ongoing;
+        n.iconLevel = ticker.now.num;
         return n;
     }
 
@@ -106,8 +105,8 @@ public class JTTService extends Service {
         rv.setTextViewText(R.id.title, hs.getHrOf(h.num));
         rv.setTextViewText(R.id.percent, String.format("%d%%", h.fraction));
         rv.setProgressBar(R.id.fraction, 100, h.fraction, false);
-        rv.setTextViewText(R.id.start, df.format(calculator.start));
-        rv.setTextViewText(R.id.end, df.format(calculator.end));
+        rv.setTextViewText(R.id.start, df.format(ticker.start));
+        rv.setTextViewText(R.id.end, df.format(ticker.end));
 
         n.contentIntent = pending_main;
         n.contentView = rv;
@@ -117,8 +116,10 @@ public class JTTService extends Service {
     private void doNotify(JTTHour h) {
         if (notify)
             notify_helper(h);
-        Message msg = Message.obtain(null, MSG_HOUR, h.num, h.fraction);
         int i = mClients.size();
+        if (i == 0)
+            return;
+        Message msg = Message.obtain(null, MSG_HOUR, h.num, h.fraction);
         while (i-- > 0)
             try {
                 mClients.get(i).send(msg);
@@ -140,20 +141,20 @@ public class JTTService extends Service {
     private final BroadcastReceiver on = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            calculator.start_ticking();
+            ticker.start_ticking();
         }
     };
     private final BroadcastReceiver off = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            calculator.stop_ticking();
+            ticker.stop_ticking();
         }
     };
     private final BroadcastReceiver timeset = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            calculator.stop_ticking();
-            calculator.start_ticking();
+            ticker.stop_ticking();
+            ticker.start_ticking();
         }
     };
 
@@ -165,13 +166,7 @@ public class JTTService extends Service {
                 .getDefaultSharedPreferences(getBaseContext());
         String[] ll = settings.getString("jtt_loc", "0.0:0.0").split(":");
 
-        calculator = new JTT(Float.parseFloat(ll[0]), Float.parseFloat(ll[1]),
-                TimeZone.getDefault());
-        calculator.registerTicker(new JTT.TickHandler() {
-            public void handle(JTTHour h) {
-                doNotify(h);
-            }
-        });
+        calculator = new JTT(Float.parseFloat(ll[0]), Float.parseFloat(ll[1]));
 
         Intent JTTMain = new Intent(getBaseContext(), JTTMainActivity.class);
         pending_main = PendingIntent.getActivity(this, 0, JTTMain, 0);
@@ -187,7 +182,7 @@ public class JTTService extends Service {
 
         final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (pm.isScreenOn())
-            calculator.start_ticking();
+            ticker.start_ticking();
     }
 
     @Override
@@ -199,14 +194,14 @@ public class JTTService extends Service {
         unregisterReceiver(off);
         unregisterReceiver(timeset);
 
-        calculator.stop_ticking();
+        ticker.stop_ticking();
 
         if (force_stop)
             nm.cancel(APP_ID);
         else {
             SharedPreferences settings = PreferenceManager
                     .getDefaultSharedPreferences(getBaseContext());
-            final Boolean boot = settings.getBoolean("jtt_bootup", true);
+            final boolean boot = settings.getBoolean("jtt_bootup", true);
             if (notify || boot) {
                 Notification n = init_notification();
 
@@ -225,4 +220,40 @@ public class JTTService extends Service {
                 context.startService(new Intent(context, JTTService.class));
         }
     }
+
+    private final class JTTTicker extends Ticker {
+        protected int day;
+        public JTTHour now;
+
+        public JTTTicker() {
+            super(6, 100);
+            day = JTT.longToJDN(System.currentTimeMillis());
+        }
+
+        @Override
+        public void exhausted() {
+            long[] t = calculator.computeTr(day++);
+            for (long l : t)
+                tr.add(l);
+        }
+        @Override
+        public void reset() {
+            day = JTT.longToJDN(System.currentTimeMillis());
+            super.reset();
+        }
+        @Override
+        public void handleSub(int tick, int sub) {
+            now.fraction = sub;
+            doNotify(now);
+        }
+        @Override
+        public void handleTick(int tick, int sub) {
+            // we're always adding 2 times to tr - 1 sunrise and 1 sunset
+            // during day tr[0] is sunrise and total number is even
+            // on sunset it is discarded and total number is odd 
+            int isDay = 1 - tr.size() % 2;
+            now = new JTTHour(tick + isDay * 6, sub);
+            doNotify(now);
+        }
+    };
 }
