@@ -20,53 +20,40 @@ public class JTT {
     static final long ms_per_hour = TimeUnit.SECONDS.toMillis(60 * 60);
     static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
 
-    /*
-     * Helper function. Returns false if day, true if night. Out contains ms
-     * from last transition and ms between transitions
-     */
-    private boolean getTransitions(long b, long[] out) {
-        boolean isNight = true;
-        int d = longToJDN(b);
-        long tr[] = computeTr(d);
-        if (b < tr[0]) { // before sunrise. Get prev sunset
-            tr[1] = tr[0];
-            tr[0] = computeTr(d - 1)[1];
-        } else if (b > tr[1]) { // after sunset. Get next sunrise
-            tr[0] = tr[1];
-            tr[1] = computeTr(d + 1)[0];
-        } else {
-            isNight = false;
-        }
-
-        out[0] = b - tr[0];
-        out[1] = tr[1] - tr[0];
-
-        return isNight;
-    }
-
-    private static JTTHour transitionsToHour(long c[], boolean isNight) {
-        final long h = (600 * c[0] / c[1] + (isNight ? 0 : 600)) % 1200;
-        return new JTTHour((int) h / 100, (int) h % 100);
-    }
-
     public JTTHour time_to_jtt(Date d) {
         long time = d == null ? System.currentTimeMillis() : d.getTime();
-        long[] c = new long[2];
-        return transitionsToHour(c, getTransitions(time, c));
+        int day = longToJDN(time);
+        long[] tr = computeTr(day);
+        int dayAdd = 0;
+        if (time < tr[0]) { // before sunrise. Get prev sunset
+            tr[1] = tr[0];
+            tr[0] = computeTr(day - 1)[1];
+        } else if (time > tr[1]) { // after sunset. Get next sunrise
+            tr[0] = tr[1];
+            tr[1] = computeTr(day + 1)[0];
+        } else {
+            dayAdd = 6;
+        }
+        long h = 600 * (time - tr[0]) / (tr[1] - tr[0]);
+        return new JTTHour((int) (h / 100) % 6 + dayAdd, (int) h % 100);
     }
 
     public Date jtt_to_time(JTTHour hour, Date date) {
+        return jtt_to_time(hour.num, hour.fraction, date);
+    }
+
+    public Date jtt_to_time(int n, int f, Date date) {
         long t = date == null ? System.currentTimeMillis() : date.getTime();
         int d = longToJDN(t);
         long tr[] = computeTr(d);
-        if (hour.num < 3) {// get prev sunset
+        if (n < 3) {// get prev sunset
             tr[1] = tr[0];
             tr[0] = computeTr(d - 1)[1];
-        } else if (hour.num > 8) {// get next sunrise
+        } else if (n > 8) {// get next sunrise
             tr[0] = tr[1];
             tr[1] = computeTr(d + 1)[0];
         }
-        long offset = (tr[1] - tr[0]) * (hour.num * 100 + hour.fraction) / 600;
+        long offset = (tr[1] - tr[0]) * (n * 100 + f) / 600;
 
         return new Date(tr[0] + offset);
     }

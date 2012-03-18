@@ -57,7 +57,8 @@ public class LocationPreference extends DialogPreference implements
             latlon = getPersistedString("0.0:0.0");
         String[] ll = latlon.split(":");
         lat.setText(ll[0]);
-        lat.setFilters(new InputFilter[]{ new InputFilterMinMax(-90.0f, 90.0f) });
+        // 66.562222 is the latitude of arctic circle
+        lat.setFilters(new InputFilter[]{ new InputFilterMinMax(-66.562222f, 66.562222f) });
 
         lon.setText(ll[1]);
         lon.setFilters(new InputFilter[]{ new InputFilterMinMax(-180.0f, 180.0f) });
@@ -86,7 +87,7 @@ public class LocationPreference extends DialogPreference implements
         latlon = l.replace(',', '.'); // force dot as a separator
     }
 
-    private void makeUseOfNewLocation(Location l, Boolean stopLocating) {
+    private void makeUseOfNewLocation(Location l, boolean stopLocating) {
         if (l.hasAccuracy()) {
             final float new_acc = l.getAccuracy();
             if (accuracy > 0 && accuracy < new_acc)

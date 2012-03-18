@@ -246,7 +246,7 @@ public class JTTService extends Service {
             // during day tr[0] is sunrise and total number is even
             // on sunset it is discarded and total number is odd 
             int isDay = 1 - tr.size() % 2;
-            doNotify(hn = tick + isDay * 6, hf = sub);
+            doNotify(hn = (tick + isDay * 6) % 12, hf = sub);
         }
     };
 }
