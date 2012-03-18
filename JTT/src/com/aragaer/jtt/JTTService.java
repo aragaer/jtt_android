@@ -59,7 +59,9 @@ public class JTTService extends Service {
                 String ll[] = msg.getData().getString("latlon").split(":");
                 calculator.move(Float.parseFloat(ll[0]),
                         Float.parseFloat(ll[1]));
+                ticker.stop_ticking();
                 ticker.reset();
+                ticker.start_ticking();
                 break;
             case MSG_REGISTER_CLIENT:
                 try {
