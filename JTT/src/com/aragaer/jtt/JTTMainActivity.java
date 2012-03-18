@@ -4,6 +4,7 @@ import android.app.ActivityGroup;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,8 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
@@ -105,6 +108,24 @@ public class JTTMainActivity extends ActivityGroup {
             pager.scrollToScreen(savedInstanceState.getInt("Screen"));
 
         bindService(service, conn, 0);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        int settings_tab = 1;
+        SharedPreferences settings = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        final boolean is_first_run = settings.getBoolean("jtt_first", true);
+        if (is_first_run) {
+            settings.edit().putBoolean("jtt_first", false).commit();
+            // Log.d(TAG, "and now snapping to "+settings_tab);
+            pager.scrollToScreen(settings_tab);
+            PreferenceActivity pa = (PreferenceActivity) getLocalActivityManager()
+                    .getActivity("settings");
+            ((LocationPreference) pa.findPreference("jtt_loc")).showMe();
+        }
+
     }
 
     @Override
