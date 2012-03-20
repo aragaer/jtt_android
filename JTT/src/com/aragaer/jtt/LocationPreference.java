@@ -30,6 +30,10 @@ public class LocationPreference extends DialogPreference implements
     private final static String fmt2 = "%s:%s";
     private final static String fmt3 = "%.2f:%.2f";
 
+    public void showMe() {
+        showDialog(null);
+    }
+
     public LocationPreference(Context ctx, AttributeSet attrs, int defStyle) {
         super(ctx, attrs, defStyle);
     }
