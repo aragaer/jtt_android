@@ -198,7 +198,7 @@ class SolarObserver {
         final double H = Math.toDegrees(Math.acos(cosH)) / 15;
 
         final double T = (isSunrise ? 24 - H : H) + RA - (0.06571 * t) - 6.622;
-        final double LocalT = T
+        final double LocalT = 24 + T
                 - lngHour
                 + (date.get(Calendar.ZONE_OFFSET) + date
                         .get(Calendar.DST_OFFSET)) / 3600000.0;
