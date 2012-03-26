@@ -49,7 +49,7 @@ public class JTTClockView extends TextView {
 
         final int w = getWidth();
         final int h = getHeight();
-        final Boolean v = h > w;
+        final boolean v = h > w;
         final int size = v ? w / 2 : h / 2;
 
         if (v && cv.isRecycled())
@@ -154,7 +154,7 @@ public class JTTClockView extends TextView {
 
         for (int hr = 0; hr < 12; hr++) {
             final Path path = new Path();
-            final Boolean current = hr == num;
+            final boolean current = hr == num;
 
             path.addArc(inner, arc_start, arc_len);
             path.lineTo(current ? l1xs : l1x, current ? l1ys : l1y);

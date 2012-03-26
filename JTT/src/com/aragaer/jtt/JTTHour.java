@@ -7,7 +7,7 @@ public class JTTHour {
     public static final String Glyphs[] = { "酉", "戌", "亥", "子", "丑", "寅", "卯",
             "辰", "巳", "午", "未", "申" };
 
-    public final Boolean isNight;
+    public final boolean isNight;
     public final int num; // 0 to 11, where 0 is hour of Cock and 11 is hour of Monkey
     public final int strikes;
     public int fraction; // 0 to 99

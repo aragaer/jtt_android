@@ -1,5 +1,8 @@
 package com.aragaer.jtt;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+
 import android.app.ActivityGroup;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -26,6 +29,7 @@ public class JTTMainActivity extends ActivityGroup {
     private JTTClockView clock;
     private JTTPager pager;
     private JTTTodayList today;
+    protected LinkedList<Long> tr = new LinkedList<Long>();
 
     private Messenger mService = null;
     final Messenger mMessenger = new Messenger(new IncomingHandler());
@@ -39,7 +43,6 @@ public class JTTMainActivity extends ActivityGroup {
                 msg.replyTo = mMessenger;
                 mService.send(msg);
                 Log.i(TAG, "Service connection established");
-                send_msg_to_service(JTTService.MSG_DOUBLE_TRANSITIONS, null);
             } catch (RemoteException e) {
                 // In this case the service has crashed before we could even do
                 // anything with it
@@ -53,18 +56,28 @@ public class JTTMainActivity extends ActivityGroup {
         }
     };
 
-    protected void send_msg_to_service(int what, Bundle b) {
+    protected int send_msg_to_service(int what, Bundle b) {
         Message msg = Message.obtain(null, what);
-        msg.replyTo = mMessenger;
         if (b != null)
             msg.setData(b);
+        return send_msg(msg);
+    }
+
+    protected int send_msg_to_service(int what, int arg) {
+        return send_msg(Message.obtain(null, what, arg, 0));
+    }
+
+    private int send_msg(Message msg) {
+        msg.replyTo = mMessenger;
         try {
             mService.send(msg);
+            return 0;
         } catch (RemoteException e) {
             Log.i(TAG, "Service connection broken");
         } catch (NullPointerException e) {
             Log.i(TAG, "Service not connected");
         }
+        return 1;
     }
 
     class IncomingHandler extends Handler {
@@ -75,8 +88,10 @@ public class JTTMainActivity extends ActivityGroup {
                 JTTHour hour = new JTTHour(msg.arg1, msg.arg2);
                 clock.setJTTHour(hour);
                 break;
-            case JTTService.MSG_DOUBLE_TRANSITIONS:
-                today.set_transitions(msg.getData());
+            case JTTService.MSG_TRANSITIONS:
+                long[] st = msg.getData().getLongArray("tr");
+                for (long t : st)
+                    tr.add(t);
                 break;
             default:
                 super.handleMessage(msg);
@@ -113,8 +128,14 @@ public class JTTMainActivity extends ActivityGroup {
 
         setContentView(pager);
 
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             pager.scrollToScreen(savedInstanceState.getInt("Screen"));
+            long st[] = savedInstanceState.getLongArray("tr");
+            if (st != null) {
+                for (long t : st)
+                    tr.add(t);
+            }
+        }
 
         bindService(service, conn, 0);
     }
@@ -122,13 +143,14 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     protected void onStart() {
         super.onStart();
-        int settings_tab = 1;
+        int settings_tab = 2; // FIXME: need a proper way of getting this number
         SharedPreferences settings = PreferenceManager
                 .getDefaultSharedPreferences(this);
         final boolean is_first_run = settings.getBoolean("jtt_first", true);
         if (is_first_run) {
             settings.edit().putBoolean("jtt_first", false).commit();
-            // Log.d(TAG, "and now snapping to "+settings_tab);
+            if (settings.contains("jtt_loc")) // it's already configured
+                return;
             pager.scrollToScreen(settings_tab);
             PreferenceActivity pa = (PreferenceActivity) getLocalActivityManager()
                     .getActivity("settings");
@@ -140,6 +162,10 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt("Screen", pager.getScreen());
+        long[] t = new long[tr.size()];
+        for (int i = 0; i < tr.size(); i++)
+            t[i] = tr.get(i);
+        savedInstanceState.putLongArray("tr", t);
         super.onSaveInstanceState(savedInstanceState);
     }
 
