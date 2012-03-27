@@ -22,7 +22,23 @@
     <string name="stop">Stop service</string>
     <string name="stop_ex">Tap to stop service and close application.</string>
     <string name="stop_ask">This will stop service and close the application. The service will be restarted when application is started again. Continue?</string>
-
+    <string name="today">Today</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+    <string name="midday">Midday</string>
+    <string name="midnight">Midnight</string>
+    <string name="day_prev">Yesterday</string>
+    <string name="day_curr">Today</string>
+    <string name="day_next">Tomorrow</string>
+    <plurals name="days_past">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+    <plurals name="days_future">
+        <item quantity="one">In %d day</item>
+        <item quantity="other">In %d days</item>
+    </plurals>
+    
     <string name="cock">The Cock</string>
     <string name="dog">The Dog</string>
     <string name="boar">The Boar</string>

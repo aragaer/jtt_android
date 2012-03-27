@@ -2,7 +2,6 @@
 <resources>
 
     <style name="JTTTheme" parent="android:style/Theme.NoTitleBar">
-        <item name="android:windowBackground">@color/background</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:shadowColor">#FF000000</item>
         <item name="android:shadowRadius">0.5</item>

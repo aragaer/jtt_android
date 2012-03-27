@@ -2,7 +2,6 @@ package com.aragaer.jtt;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -53,7 +52,7 @@ public class JTTSettingsActivity extends PreferenceActivity {
         ((JTTMainActivity) getParent()).send_msg_to_service(what, data);
     }
 
-    private Boolean tryStop() {
+    private boolean tryStop() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.stop_ask).setCancelable(true)
         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
