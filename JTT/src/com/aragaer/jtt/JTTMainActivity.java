@@ -1,6 +1,5 @@
 package com.aragaer.jtt;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 
 import android.app.ActivityGroup;
@@ -43,6 +42,7 @@ public class JTTMainActivity extends ActivityGroup {
                 msg.replyTo = mMessenger;
                 mService.send(msg);
                 Log.i(TAG, "Service connection established");
+                today.onServiceConnect();
             } catch (RemoteException e) {
                 // In this case the service has crashed before we could even do
                 // anything with it
@@ -92,6 +92,7 @@ public class JTTMainActivity extends ActivityGroup {
                 long[] st = msg.getData().getLongArray("tr");
                 for (long t : st)
                     tr.add(t);
+                today.addTr(st);
                 break;
             default:
                 super.handleMessage(msg);

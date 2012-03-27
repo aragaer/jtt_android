@@ -30,6 +30,16 @@
     <string name="day_prev">Вчера</string>
     <string name="day_curr">Сегодня</string>
     <string name="day_next">Завтра</string>
+    <plurals name="days_past">
+        <item quantity="one">%d день назад</item>
+        <item quantity="few">%d дня назад</item>
+        <item quantity="other">%d дней назад</item>
+    </plurals>
+    <plurals name="days_future">
+        <item quantity="one">Через %d день</item>
+        <item quantity="few">Через %d дня</item>
+        <item quantity="other">Через %d дней</item>
+    </plurals>
 
     <string name="cock">Петух</string>
     <string name="dog">Собака</string>

@@ -30,7 +30,15 @@
     <string name="day_prev">Yesterday</string>
     <string name="day_curr">Today</string>
     <string name="day_next">Tomorrow</string>
-
+    <plurals name="days_past">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+    <plurals name="days_future">
+        <item quantity="one">In %d day</item>
+        <item quantity="other">In %d days</item>
+    </plurals>
+    
     <string name="cock">Cock</string>
     <string name="dog">Dog</string>
     <string name="boar">Boar</string>
