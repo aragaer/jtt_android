@@ -9,6 +9,7 @@ import java.util.TimeZone;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,6 +101,20 @@ public class JTTTodayList extends ListView {
                 else
                     t(v, R.id.extra, "");
 
+                Item next = null;
+                int i;
+                for (i = position + 1; i < items.size(); i++) {
+                    next = items.get(i);
+                    if (next.hnum >= 0)
+                        break;
+                }
+                if (i == items.size())
+                    next = null;
+
+                long now = System.currentTimeMillis();
+                if (next != null
+                        && (now >= item.time && now < next.time))
+                    v.setBackgroundColor(R.color.fill);
             }
             return v;
         }
