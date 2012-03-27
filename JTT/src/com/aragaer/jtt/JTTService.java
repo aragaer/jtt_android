@@ -18,7 +18,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.PowerManager;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -185,9 +184,7 @@ public class JTTService extends Service {
         registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
         registerReceiver(timeset, new IntentFilter(Intent.ACTION_TIME_CHANGED));
 
-        final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        if (pm.isScreenOn())
-            calculator.start_ticking();
+        calculator.start_ticking();
     }
 
     @Override
