@@ -56,14 +56,14 @@ public class JTTSettingsActivity extends PreferenceActivity {
     private Boolean tryStop() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.stop_ask).setCancelable(true)
-        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 doSendMessage(JTTService.MSG_STOP, null);
 
                 ((JTTMainActivity) JTTSettingsActivity.this.getParent()).finish();
             }
         })
-        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                  dialog.cancel();
             }
