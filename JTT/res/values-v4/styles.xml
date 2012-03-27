@@ -3,8 +3,6 @@
 
     <style name="JTTTheme" parent="android:style/Theme.NoTitleBar">
         <item name="android:windowBackground">@color/background</item>
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.3</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:shadowColor">#FF000000</item>
         <item name="android:shadowRadius">0.5</item>
@@ -19,17 +17,16 @@
     </style>
 
     <style name="NotificationText">
-        <item name="android:textColor">@color/stroke</item>
+        <item name="android:textColor">#FF000000</item>
+        <item name="android:shadowColor">#FFFFFFFF</item>
+        <item name="android:shadowRadius">0.5</item>
     </style>
 
-    <style name="NotificationTitle">
-        <item name="android:textColor">@color/stroke</item>
+    <style name="NotificationTitle" parent="@style/NotificationText">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="NotificationGlyph">
-        <item name="android:textColor">@color/stroke</item>
-        <item name="android:textStyle">bold</item>
+    <style name="NotificationGlyph" parent="@style/NotificationTitle">
         <item name="android:textSize">25dp</item>
     </style>
 
