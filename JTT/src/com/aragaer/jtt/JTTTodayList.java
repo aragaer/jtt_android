@@ -76,8 +76,8 @@ public class JTTTodayList extends ListView {
             long start = inner.getFirst().time;
             long diff = start - tr;
             int add = (day ? 12 : 6);
-            for (int i = 1; i <= 6; i++)
-                inner.addFirst(new Item(start - i * diff / 6, add - i));
+            for (int i = -1; i >= -6; i--)
+                inner.addFirst(new Item(start + i * diff / 6, add + i));
         } else {
             long start = inner.getLast().time;
             long diff = tr - start;
@@ -106,26 +106,25 @@ public class JTTTodayList extends ListView {
     }
 
     private static class TodayAdapter extends ArrayAdapter<Item> {
-        final HashMap<String, String> daynames = new HashMap<String, String>();
-        final String[] extras;
+        final String[] daynames, extras;
         final JTTHour.StringsHelper sh;
         private LinkedList<Item> items = new LinkedList<Item>();
 
         public TodayAdapter(Context c, int layout_id) {
             super(c, layout_id);
-            daynames.put("prev", c.getString(R.string.day_prev));
-            daynames.put("curr", c.getString(R.string.day_curr));
-            daynames.put("next", c.getString(R.string.day_next));
+            daynames = new String[] { c.getString(R.string.day_prev),
+                    c.getString(R.string.day_curr),
+                    c.getString(R.string.day_next) };
             sh = new JTTHour.StringsHelper(c);
-            extras = new String[] { c.getString(R.string.sunset),
-                    c.getString(R.string.midnight),
-                    c.getString(R.string.sunrise), c.getString(R.string.midday) };
+            extras = new String[] { c.getString(R.string.sunset), "", "",
+                    c.getString(R.string.midnight), "", "",
+                    c.getString(R.string.sunrise), "", "",
+                    c.getString(R.string.midday), "", "" };
         }
 
         private final static void t(View v, int id, String t) {
             ((TextView) v.findViewById(id)).setText(t);
         }
-
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -135,20 +134,17 @@ public class JTTTodayList extends ListView {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             final Item item = items.get(position);
-            if (item.hnum == -1) {
+            final int h = item.hnum;
+            if (h == -1) {
                 v = li.inflate(android.R.layout.preference_category, null);
                 t(v, android.R.id.title, dateToString(item.time, c));
             } else {
-                final int h = item.hnum;
                 v = li.inflate(R.layout.today_item, null);
 
                 t(v, R.id.time, item.date);
                 t(v, R.id.glyph, JTTHour.Glyphs[h]);
                 t(v, R.id.name, sh.getHrOf(h));
-                if (h % 3 == 0)
-                    t(v, R.id.extra, extras[h / 3]);
-                else
-                    t(v, R.id.extra, "");
+                t(v, R.id.extra, extras[h]);
 /* FIXME: works as "darken only"
                 Item next = null;
                 int i;
@@ -171,20 +167,13 @@ public class JTTTodayList extends ListView {
 
         String dateToString(long date, Context c) {
             final long today = ms_to_day(System.currentTimeMillis());
-            final long day = ms_to_day(date);
-            int ddiff = (int) (today - day);
-            switch (ddiff) {
-            case 0:
-                return daynames.get("curr");
-            case 1:
-                return daynames.get("prev");
-            case -1:
-                return daynames.get("next");
-            default:
-                final Resources r = c.getResources();
-                return r.getQuantityString(ddiff > 0 ? R.plurals.days_past
-                        : R.plurals.days_future, ddiff, ddiff);
-            }
+            final int ddiff = (int) (today - ms_to_day(date));
+            if (ddiff < 2 && ddiff > -2)
+                return daynames[ddiff+1];
+            final Resources r = c.getResources();
+            return r.getQuantityString(ddiff > 0
+                ? R.plurals.days_past
+                : R.plurals.days_future, ddiff, ddiff);
         }
 
         private static final long ms_to_day(long t) {
@@ -194,8 +183,7 @@ public class JTTTodayList extends ListView {
 
         private static final long align_to_day(long o) {
             long n = ms_to_day(o) * JTT.ms_per_day;
-            n -= TimeZone.getDefault().getOffset(n);
-            return n;
+            return n - TimeZone.getDefault().getOffset(n);
         }
 
         @Override
