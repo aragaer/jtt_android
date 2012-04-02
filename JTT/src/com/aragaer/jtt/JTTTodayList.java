@@ -18,8 +18,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class JTTTodayList extends ListView {
+    private LinkedList<Item> inner = new LinkedList<Item>();
+
+    static final class Item {
+        public final long time;
+        public final int hnum;
+        public final String date;
+
+        public Item(long t, int h) {
+            time = t;
+            hnum = h % 12;
+            date = h == -1 ? null : df.format(new Date(t));
+        }
+    }
+
     private final TodayAdapter ta;
     private final JTTMainActivity main;
+    int jdn_f, jdn_l;
+    private static final DateFormat df = new SimpleDateFormat("HH:mm");
 
     public JTTTodayList(Context context) {
         super(context);
@@ -29,33 +45,67 @@ public class JTTTodayList extends ListView {
     }
 
     public void addTr(long tr[]) {
-        ta.addTr(tr);
+        boolean day = inner.isEmpty();
+        if (day) {
+            inner.add(new Item(tr[0], 6)); // hour of the hare
+            jdn_f = jdn_l = JTT.longToJDN(tr[0]);
+
+            if (tr.length == 1) // nothing else left to add
+                return;
+            long[] tmp = new long[tr.length - 1];
+            System.arraycopy(tr, 1, tmp, 0, tmp.length);
+            tr = tmp;
+        }
+        if (tr[0] < inner.getFirst().time) {
+            for (int i = tr.length - 1; i >= 0; i--) {
+                add_interval(tr[i], true, day);
+                day = !day;
+            }
+            jdn_f = JTT.longToJDN(tr[0]);
+        } else {
+            for (long t : tr) {
+                add_interval(t, false, day);
+                day = !day;
+            }
+            jdn_l = JTT.longToJDN(tr[tr.length - 1]);
+        }
+    }
+
+    private void add_interval(long tr, boolean front, boolean day) {
+        if (front) {
+            long start = inner.getFirst().time;
+            long diff = start - tr;
+            int add = (day ? 12 : 6);
+            for (int i = 1; i <= 6; i++)
+                inner.addFirst(new Item(start - i * diff / 6, add - i));
+        } else {
+            long start = inner.getLast().time;
+            long diff = tr - start;
+            int add = (day ? 6 : 0);
+            for (int i = 1; i <= 6; i++)
+                inner.addLast(new Item(start + i * diff / 6, add + i));
+        }
     }
 
     public void dropTrs() {
-        ta.reset();
+        inner.removeAll(null);
     }
 
     protected void onServiceConnect() {
         int jdn = JTT.longToJDN(System.currentTimeMillis());
-        main.send_msg_to_service(JTTService.MSG_TRANSITIONS, jdn - 1);
         main.send_msg_to_service(JTTService.MSG_TRANSITIONS, jdn);
         main.send_msg_to_service(JTTService.MSG_TRANSITIONS, jdn + 1);
     }
 
-    private static class TodayAdapter extends ArrayAdapter<Date> {
-        static final class Item {
-            public final long time;
-            public final int hnum;
-            public final Date date;
+    private void getPastDay() {
+        main.send_msg_to_service(JTTService.MSG_TRANSITIONS, jdn_f - 1);
+    }
 
-            public Item(long t, int h) {
-                time = t;
-                hnum = h % 12;
-                date = h == -1 ? null : new Date(t);
-            }
-        }
+    private void getFutureDay() {
+        main.send_msg_to_service(JTTService.MSG_TRANSITIONS, jdn_l + 1);
+    }
 
+    private static class TodayAdapter extends ArrayAdapter<Item> {
         final HashMap<String, String> daynames = new HashMap<String, String>();
         final String[] extras;
         final JTTHour.StringsHelper sh;
@@ -76,7 +126,6 @@ public class JTTTodayList extends ListView {
             ((TextView) v.findViewById(id)).setText(t);
         }
 
-        private static final DateFormat df = new SimpleDateFormat("HH:mm");
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -93,7 +142,7 @@ public class JTTTodayList extends ListView {
                 final int h = item.hnum;
                 v = li.inflate(R.layout.today_item, null);
 
-                t(v, R.id.time, df.format(item.date));
+                t(v, R.id.time, item.date);
                 t(v, R.id.glyph, JTTHour.Glyphs[h]);
                 t(v, R.id.name, sh.getHrOf(h));
                 if (h % 3 == 0)
@@ -147,68 +196,6 @@ public class JTTTodayList extends ListView {
             long n = ms_to_day(o) * JTT.ms_per_day;
             n -= TimeZone.getDefault().getOffset(n);
             return n;
-        }
-
-        void addTr(long tr[]) {
-            boolean day = false;
-            if (items.isEmpty()) {
-                long t = tr[0];
-                items.add(new Item(align_to_day(t), -1));
-                items.add(new Item(t, 6)); // hour of the hare
-
-                if (tr.length == 1) // nothing else left to add
-                    return;
-                long[] tmp = new long[tr.length - 1];
-                System.arraycopy(tr, 1, tmp, 0, tmp.length);
-                tr = tmp;
-                day = true;
-            }
-            if (tr[0] < items.getFirst().time) {
-                for (int i = tr.length - 1; i >= 0; i--) {
-                    add_interval(tr[i], true, day);
-                    day = !day;
-                }
-            } else {
-                for (long t : tr) {
-                    add_interval(t, false, day);
-                    day = !day;
-                }
-            }
-
-            notifyDataSetChanged();
-        }
-
-        private void add_interval(long tr, boolean front, boolean day) {
-            if (front) {
-                long start = items.get(1).time;
-                long diff = start - tr;
-                long last_d = align_to_day(start);
-                for (int i = 1; i <= 6; i++) {
-                    long t = start - i * diff / 6;
-                    if (t < last_d) {
-                        last_d -= JTT.ms_per_day;
-                        items.addFirst(new Item(last_d, -1));
-                    }
-                    items.add(1, new Item(t, -i + (day ? 12 : 6)));
-                }
-            } else {
-                long start = items.getLast().time;
-                long diff = tr - start;
-                long last_d = align_to_day(start + JTT.ms_per_day);
-                for (int i = 1; i <= 6; i++) {
-                    long t = start + i * diff / 6;
-                    if (t >= last_d) {
-                        items.addLast(new Item(last_d, -1));
-                        last_d += JTT.ms_per_day;
-                    }
-                    items.addLast(new Item(t, i + (day ? 6 : 0)));
-                }
-            }
-        }
-
-        void reset() {
-            items.removeAll(null);
-            notifyDataSetChanged();
         }
 
         @Override

@@ -3,8 +3,6 @@ package com.aragaer.jtt;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 import android.app.Notification;
 import android.app.NotificationManager;
