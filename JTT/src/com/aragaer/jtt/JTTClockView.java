@@ -19,7 +19,7 @@ public class JTTClockView extends TextView {
     private final Paint mStrokePaint2 = new Paint();
     private final Paint mSolidPaint = new Paint();
     private final Paint mSolidPaint2 = new Paint();
-    private Bitmap ch, cv;
+    private Bitmap clock;
     private JTTHour hour = new JTTHour(0);
     private JTTHour.StringsHelper hs;
 
@@ -36,10 +36,9 @@ public class JTTClockView extends TextView {
         hs = new JTTHour.StringsHelper(ctx);
         setupPaint(ctx);
 
-        /* make them non-null */
-        cv = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-        cv.recycle();
-        ch = cv;
+        /* make it non-null */
+        clock = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+        clock.recycle();
     }
 
     @Override
@@ -52,13 +51,8 @@ public class JTTClockView extends TextView {
         final boolean v = h > w;
         final int size = v ? w / 2 : h / 2;
 
-        if (v && cv.isRecycled())
-            cv = drawBitmap(hour.num, size);
-
-        if (!v && ch.isRecycled())
-            ch = drawBitmap(hour.num, size);
-
-        final Bitmap clock = v ? cv : ch;
+        if (clock.isRecycled())
+            clock = drawBitmap(hour.num, size);
         final Matrix m = new Matrix();
         m.setTranslate(v ? 0 : 3 * w / 5 - size, v ? 3 * h / 5 - size : 0);
         m.preRotate(step * (0.5f - hour.num) - gap - (step - gap * 2)
@@ -173,10 +167,8 @@ public class JTTClockView extends TextView {
     }
 
     public void setJTTHour(JTTHour new_hour) {
-        if (hour.num != new_hour.num) {
-            cv.recycle();
-            ch.recycle();
-        }
+        if (hour.num != new_hour.num)
+            clock.recycle();
         hour = new_hour;
         invalidate();
     }
