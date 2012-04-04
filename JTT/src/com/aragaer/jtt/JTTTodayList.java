@@ -113,7 +113,7 @@ public class JTTTodayList extends ListView {
                 long now = System.currentTimeMillis();
                 if (next != null
                         && (now >= item.time && now < next.time))
-                    t(v, R.id.curr, "⇒");
+                    t(v, R.id.curr, "▶");
                 else
                     t(v, R.id.curr, "");
             }
