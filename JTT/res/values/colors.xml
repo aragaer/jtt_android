@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
      <color name="background">#25000000</color>
-     <color name="tab_active">#FFFFFF</color>
      <color name="tab">#AAAAAA</color>
      <color name="stroke">#C0000000</color>
      <color name="fill">#80ffffff</color>

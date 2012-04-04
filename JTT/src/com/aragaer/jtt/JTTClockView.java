@@ -78,8 +78,7 @@ public class JTTClockView extends TextView {
         mStrokePaint2.setDither(true);
         mStrokePaint2.setTextAlign(Paint.Align.CENTER);
         mStrokePaint2.setStyle(Paint.Style.STROKE);
-        mStrokePaint2.setColor(Color.parseColor(ctx
-                .getString(R.color.tab_active)));
+        mStrokePaint2.setColor(Color.WHITE);
 
         mSolidPaint.setAntiAlias(true);
         mSolidPaint.setStyle(Paint.Style.FILL);
