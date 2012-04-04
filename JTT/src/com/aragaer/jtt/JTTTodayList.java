@@ -100,7 +100,6 @@ public class JTTTodayList extends ListView {
                     t(v, R.id.extra, extras[h / 3]);
                 else
                     t(v, R.id.extra, "");
-/* FIXME: works as "darken only"
                 Item next = null;
                 int i;
                 for (i = position + 1; i < items.size(); i++) {
@@ -114,8 +113,9 @@ public class JTTTodayList extends ListView {
                 long now = System.currentTimeMillis();
                 if (next != null
                         && (now >= item.time && now < next.time))
-                    v.setBackgroundColor(android.R.color.white);
-                    */
+                    t(v, R.id.curr, "⇒");
+                else
+                    t(v, R.id.curr, "");
             }
             return v;
         }

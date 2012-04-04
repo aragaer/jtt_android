@@ -70,6 +70,7 @@ public class JTTClockView extends TextView {
         final String s = v ? hs.getHrOf(hour.num) : hs.getHour(hour.num);
         canvas.drawText(s, v ? size : w / 5, v ? h / 10 : size,
                 mStrokePaint2);
+        canvas.drawText("⇓", v ? size : 3 * w / 5, v ? 3 * h / 5 - 14 * size / 15 : size / 15, mStrokePaint2);
     }
 
     private final void setupPaint(Context ctx) {

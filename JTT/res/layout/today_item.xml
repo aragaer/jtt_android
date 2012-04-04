@@ -4,10 +4,19 @@
     android:layout_height="match_parent" >
 
     <TextView
+        android:id="@+id/curr"
+        android:layout_width="25dip"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="5dp" />
+
+    <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_toRightOf="@id/curr"
         android:gravity="center"
         android:padding="5dp" />
 
