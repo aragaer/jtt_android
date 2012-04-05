@@ -84,7 +84,7 @@ public class JTTService extends Service {
                 try {
                     msg.replyTo.send(d_trans_msg(msg.arg1));
                 } catch (RemoteException e) {
-                    Log.w(TAG, "Client requested double transitions data but failed to get answer");
+                    Log.w(TAG, "Client requested transitions data but failed to get answer");
                 }
                 break;
             default:
