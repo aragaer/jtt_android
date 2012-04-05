@@ -26,10 +26,10 @@ public abstract class Ticker {
         this(ticks, subs, true);
     }
 
-    public Ticker(int t, int subs, boolean r) {
+    public Ticker(int t, int s, boolean r) {
         ticks = t;
-        this.subs = subs;
-        this.total = t * subs;
+        subs = s;
+        total = t * s;
         round = r;
     }
 

@@ -153,7 +153,7 @@ public class JTTTodayList extends ListView {
         int i = PAD + 1;
         while (inner.get(i).time < now)
             i++;
-        ta.cur = inner.get(i).hnum;
+        ta.cur = (inner.get(i).hnum + 11) % 12;
         int low = (i - PAD - 1) / 6 * 6;
         int high = (i + PAD + 5) / 6 * 6;
         ta.buildItems(inner.subList(low, high + 1));
@@ -161,6 +161,7 @@ public class JTTTodayList extends ListView {
 
     private void updateCurrent() {
         ta.cur = (ta.cur + 1) % 12;
+        ta.notifyDataSetChanged();
     }
 
     private static class TodayAdapter extends ArrayAdapter<Item> {
@@ -204,22 +205,11 @@ public class JTTTodayList extends ListView {
                 t(v, R.id.glyph, JTTHour.Glyphs[h]);
                 t(v, R.id.name, sh.getHrOf(h));
                 t(v, R.id.extra, extras[h]);
-/* FIXME: works as "darken only"
-                Item next = null;
-                int i;
-                for (i = position + 1; i < items.size(); i++) {
-                    next = items.get(i);
-                    if (next.hnum >= 0)
-                        break;
-                }
-                if (i == items.size())
-                    next = null;
 
-                long now = System.currentTimeMillis();
-                if (next != null
-                        && (now >= item.time && now < next.time))
-                    v.setBackgroundColor(android.R.color.white);
-                    */
+                if (item.hnum == cur)
+                    t(v, R.id.curr, "▶");
+                else
+                    t(v, R.id.curr, "");
             }
             return v;
         }
