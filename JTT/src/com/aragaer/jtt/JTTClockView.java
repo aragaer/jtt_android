@@ -60,10 +60,14 @@ public class JTTClockView extends TextView {
         canvas.drawBitmap(clock, m, mStrokePaint2);
 
         mStrokePaint2.setTextSize(v ? w / 20 : w / 15);
+        mSolidPaint.setTextSize(size / 5);
+        mStrokePaint.setTextSize(size / 5);
 
         final String s = v ? hs.getHrOf(hour.num) : hs.getHour(hour.num);
         canvas.drawText(s, v ? size : w / 5, v ? h / 10 : size,
                 mStrokePaint2);
+        canvas.drawText("▽", v ? size : 3 * w / 5, v ? 3 * h / 5 - 7 * size / 8 : size / 8, mStrokePaint);
+        canvas.drawText("▼", v ? size : 3 * w / 5, v ? 3 * h / 5 - 7 * size / 8 : size / 8, mSolidPaint);
     }
 
     private final void setupPaint(Context ctx) {

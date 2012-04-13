@@ -7,8 +7,12 @@ import java.util.concurrent.TimeUnit;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.util.Log;
 
 public abstract class Ticker {
+    private static final String TAG = Ticker.class.getSimpleName();
+    protected final boolean round;
+
     public Date start, end;
     protected LinkedList<Long> tr = new LinkedList<Long>();
 
@@ -19,9 +23,14 @@ public abstract class Ticker {
     private double total;
 
     public Ticker(int ticks, int subs) {
-        this.ticks = ticks;
-        this.subs = subs;
-        this.total = ticks * subs;
+        this(ticks, subs, true);
+    }
+
+    public Ticker(int t, int s, boolean r) {
+        ticks = t;
+        subs = s;
+        total = t * s;
+        round = r;
     }
 
     public void reset() {
@@ -32,7 +41,7 @@ public abstract class Ticker {
         @Override
         public void handleMessage(Message msg) {
             synchronized (Ticker.this) {
-                long lastTickStart = SystemClock.elapsedRealtime();
+                long lastTickStart = System.currentTimeMillis();
                 int o_tick = tick;
                 if (++sub >= subs) {
                     sub %= subs;
@@ -50,13 +59,14 @@ public abstract class Ticker {
                     handleTick(tick, sub);
 
                 // take into account user's onTick taking time to execute
-                long delay = lastTickStart - SystemClock.elapsedRealtime() + rate;
+                long delay = lastTickStart - System.currentTimeMillis() + rate;
                 // special case: user's onTick took more than interval to
                 // complete, skip to next interval
-                while (delay < 0) {
+                while (delay <= 0) {
                     delay += rate;
                     sub++;
                 }
+
                 sendMessageDelayed(obtainMessage(MSG), delay);
             }
         }
@@ -92,7 +102,7 @@ public abstract class Ticker {
         final long tr0 = tr.get(0);
         final long tr1 = tr.get(1);
         rate = Math.round((tr1 - tr0) / total);
-        double h = total * (ms - tr0) / (tr1 - tr0);
+        double h = total * (ms - tr0) / (tr1 - tr0) + (round ? 0.5 : 0);
         tick = (int) h / subs;
         sub = (int) h % subs;
         final long start_ms = tr0 + rate * subs * tick;
