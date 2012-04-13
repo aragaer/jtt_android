@@ -59,7 +59,7 @@ public abstract class Ticker {
                     handleTick(tick, sub);
 
                 // take into account user's onTick taking time to execute
-                long delay = lastTickStart - System.currentTimeMillis();
+                long delay = lastTickStart - System.currentTimeMillis() + rate;
                 // special case: user's onTick took more than interval to
                 // complete, skip to next interval
                 while (delay <= 0) {
