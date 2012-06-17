@@ -2,22 +2,17 @@ package com.aragaer.jtt;
 
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
-import android.util.Log;
 
 public abstract class Ticker {
-    private static final String TAG = Ticker.class.getSimpleName();
     protected final boolean round;
 
     public Date start, end;
     protected LinkedList<Long> tr = new LinkedList<Long>();
 
     private final static int MSG = 1;
-    static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
     private long rate; // number of millis per 1% of hour
     private int ticks, subs, tick, sub;
     private double total;
