@@ -44,6 +44,7 @@ public class JTTService extends Service {
     public static final int MSG_HOUR = 4;
     public static final int MSG_STOP = 5;
     public static final int MSG_TRANSITIONS = 6;
+    public static final int MSG_INVALIDATE = 7;
 
     final Messenger mMessenger = new Messenger(new Handler() {
         @Override
@@ -63,6 +64,7 @@ public class JTTService extends Service {
                 ticker.stop_ticking();
                 ticker.reset();
                 ticker.start_ticking();
+                informClients(Message.obtain(null, MSG_INVALIDATE));
                 break;
             case MSG_REGISTER_CLIENT:
                 try {
@@ -127,10 +129,13 @@ public class JTTService extends Service {
     private void doNotify(int n, int f) {
         if (notify)
             notify_helper(n, f);
+        informClients(Message.obtain(null, MSG_HOUR, n, f));
+    }
+
+    private void informClients(Message msg) {
         int i = mClients.size();
         if (i == 0)
             return;
-        Message msg = Message.obtain(null, MSG_HOUR, n, f);
         while (i-- > 0)
             try {
                 mClients.get(i).send(msg);

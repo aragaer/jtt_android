@@ -182,19 +182,20 @@ public class JTTTodayList extends ListView {
                     c.getString(R.string.midday), "", "" };
         }
 
+        /* sets a value to a text field */
         private final static void t(View v, int id, String t) {
             ((TextView) v.findViewById(id)).setText(t);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View v, ViewGroup parent) {
             final Context c = parent.getContext();
-            View v = convertView;
             LayoutInflater li = (LayoutInflater) c
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             final Item item = items.get(position);
             final int h = item.hnum;
+
             if (h == -1) {
                 v = li.inflate(android.R.layout.preference_category, null);
                 t(v, android.R.id.title, dateToString(item.time, c));

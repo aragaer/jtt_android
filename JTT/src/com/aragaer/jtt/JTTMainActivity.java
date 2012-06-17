@@ -94,8 +94,13 @@ public class JTTMainActivity extends ActivityGroup {
                     tr.add(t);
                 today.addTr(st);
                 break;
+            case JTTService.MSG_INVALIDATE:
+                Log.d(TAG, "Invalidate all");
+                today.dropTrs();
+                break;
             default:
                 super.handleMessage(msg);
+                break;
             }
         }
     }
@@ -132,10 +137,9 @@ public class JTTMainActivity extends ActivityGroup {
         if (savedInstanceState != null) {
             pager.scrollToScreen(savedInstanceState.getInt("Screen"));
             long st[] = savedInstanceState.getLongArray("tr");
-            if (st != null) {
+            if (st != null)
                 for (long t : st)
                     tr.add(t);
-            }
         }
 
         bindService(service, conn, 0);
