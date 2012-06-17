@@ -1,5 +1,7 @@
 package com.aragaer.jtt;
 
+import java.util.HashMap;
+
 import android.content.Context;
 import android.content.res.Resources;
 
@@ -28,8 +30,8 @@ public class JTTHour {
     }
 
     public static class StringsHelper {
-        private final String DayHours[], NightHours[];
-        private final String Hours[], HrOf[];
+        private final String DayHours[], NightHours[], Hours[], HrOf[];
+        private final HashMap<String, Integer> H2N = new HashMap<String, Integer>(12);
 
         public String getHour(int num) {
             return Hours[num];
@@ -47,17 +49,12 @@ public class JTTHour {
             Hours = new String[12];
             System.arraycopy(NightHours, 0, Hours, 0, 6);
             System.arraycopy(DayHours, 0, Hours, 6, 6);
+            for (int i = 0; i < 12; i++)
+                H2N.put(Hours[i], i);
         }
 
         public int name_to_num(String name) {
-            int i;
-            for (i = 0; i < 6; i++)
-                if (NightHours[i] == name)
-                    return i;
-            for (i = 0; i < 6; i++)
-                if (DayHours[i] == name)
-                    return i + 6;
-            return -1;
+            return H2N.get(name);
         }
 
         public JTTHour makeHour(String hour) {
