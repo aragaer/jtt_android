@@ -206,7 +206,11 @@ public class JTTTodayList extends ListView {
                 t(v, R.id.name, sh.getHrOf(h));
                 t(v, R.id.extra, extras[h]);
 
-                if (item.hnum == cur)
+                /* if current hour is sunrise or sunset
+                 * then last hour in list has the same hnum
+                 * do not mark it as current in this case
+                 */
+                if (item.hnum == cur && position < items.size() - 1)
                     t(v, R.id.curr, "▶");
                 else
                     t(v, R.id.curr, "");
