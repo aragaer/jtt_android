@@ -2,9 +2,11 @@ package com.aragaer.ticker;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -17,16 +19,17 @@ import android.util.Log;
  */
 public abstract class Ticker {
     private static final String TAG = Ticker.class.getSimpleName();
+    
+    public static int KEEP_TICKING = 0;
+    public static int STOP_TICKING = 1;
 
     /* last time the ticker was run */
-    private long sync;
-    /* start and length of the current interval */
-    private long tr0, trl;
+    private long sync = System.currentTimeMillis();
     /* a list of future transitions in relative form
      * first element is a time to next transition from last run
      * each other is a length of a following interval
      */
-    private LinkedList<Long> tr = new LinkedList<Long>();
+    private ArrayList<Long> tr = new ArrayList<Long>();
 
     private int ticks; // ticks per interval
     private int subs; // subticks per tick
@@ -49,48 +52,90 @@ public abstract class Ticker {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            wake_up();
         }
     };
 
     public final void start_ticking() {
-        do_tick();
+        wake_up();
     }
 
     public final void stop_ticking() {
         mHandler.removeMessages(MSG);
     }
 
-    private void do_tick() {
-        boolean tr_changed = false;
-        long passed, next;
-        /* adjust the transition */
-        do {
-            passed = System.currentTimeMillis() - sync;
-            Log.d(TAG, "Adjust at "+l2s(passed+sync)+", sync was at "+l2s(sync)+" "+passed+"ms passed");
-            if (tr.isEmpty()) {
-                /* request more items */
-                exhausted();
-                if (tr.isEmpty()) {
-                    Log.d(TAG, "no transitions");
+    private void wake_up() {
+        long start, end, now;
+        
+        /* do not want more than one message being in the system */
+        mHandler.removeMessages(MSG);
+        while (true) { // we are likely to pass this loop only once
+            int len = tr.size();
+            now = System.currentTimeMillis();
+            int pos = Collections.binarySearch(tr, now);
+            if (pos == -1) { // right before first element
+                if (underrun() == KEEP_TICKING)
+                    continue;
+                else
                     return;
-                }
-                passed = System.currentTimeMillis() - sync;
             }
-    
-            next = tr.get(0);
-            Log.d(TAG, "next would be in "+next+"ms at "+l2s(sync+next));
-            if (passed > next) {
-                /* we can now ignore previous tick/sub values
-                 * we will notify about transition anyway
-                 * this allows us to simply move sync time
-                 */
-                sync += next;
-                tr0 = sync;
-                tr.remove();
-                tr_changed = true;
+            if (pos == -len - 1             // after the last element
+                    || pos == len - 1) {    // equal to the last element 
+                if (overrun() == KEEP_TICKING)
+                    continue;
+                else
+                    return;
             }
-        } while (passed > next);
-        Log.d(TAG, "woot");
+
+            if (len < tr.size())
+                Log.wtf(TAG, "Array size reduced from "+len+" to "+tr.size());
+            if (len < 2)
+                Log.wtf(TAG, "Len is "+len+" - too small");
+            int opos = pos;
+            /* if pos >= 0 it is equal to one of elements; assume it is start
+             * otherwise (-1 - pos) points to where it would be inserted
+             * which is actually end
+             */
+            if (pos < 0)
+                pos = -pos - 2;
+
+            if (len < pos + 2) {
+                Log.wtf(TAG, "tr size is "+len+", pos = "+pos);
+                Log.d(TAG, "original pos was "+opos);
+                Log.d(TAG, "value is "+l2s(now));
+                Log.d(TAG, "last 2 items are "+l2s(tr.get(len - 2))+" and "+l2s(tr.get(len - 1)));
+                return;
+            }
+            start = tr.get(pos);
+            end = tr.get(pos + 1);
+            break;
+        }
+        /* great, we have start and end now */
+
+        long offset = now - start;
+        double sublen = (end - start)/total;
+        int exp_total = (int) (offset/sublen);
+        int exp_tick = exp_total / subs;
+        int exp_sub = exp_total % subs;
+        long next_sub = start + Math.round(sublen * (exp_total + 1));
+
+        // do not use exp_tick since we might be in a different tr
+        if (now - sync > exp_sub * sublen || now < sync) {
+            tick = exp_tick;
+            sub = exp_sub;
+            handle_tick(tick, sub);
+        } else if (sub < exp_sub) {
+            if (tick != exp_tick) // we might have just started
+                tick = exp_tick;
+            sub = exp_sub;
+            handle_sub(tick, sub);
+        }
+
+        sync = System.currentTimeMillis();
+        if (sync < next_sub)
+            mHandler.sendEmptyMessageDelayed(MSG, next_sub - sync);
+        else
+            mHandler.sendEmptyMessage(MSG);
     }
 
     private static final DateFormat df = new SimpleDateFormat("HH:mm:s.S");
@@ -98,28 +143,41 @@ public abstract class Ticker {
         return df.format(new Date(t));
     }
 
-    protected void init(long s) {
-        sync = s;
-    }
-
     protected void add_tr(long t) {
-        long diff = t - sync;
-        for (long l : tr) {
-            diff -= l;
-            if (diff < 0) {
-                Log.d(TAG, "Value is too small");
-                break;
-            }
-        }
-        tr.addLast(diff);
+        int pos = Collections.binarySearch(tr, t);
+        if (pos >= 0)
+            return; // ignore duplicates
+        if (-1-pos == tr.size())
+            tr.add(t);
+        else
+            tr.add(-1-pos, t);
     }
 
     /* this is called when we are past last interval */
-    public abstract void exhausted();
+    public abstract int overrun();
+
+    /* this is called when we are before first */
+    public abstract int underrun();
 
     /* called on tick */
-    public abstract void handleTick(int tick, int sub);
+    public abstract void handle_tick(int tick, int sub);
 
     /* called on subtick. Not called on tick */
-    public abstract void handleSub(int tick, int sub);
+    public abstract void handle_sub(int tick, int sub);
+
+    /* serialize to bundle */
+    public void save_to_bundle(Bundle save, String key) {
+        long[] t = new long[tr.size()];
+        for (int i = 0; i < tr.size(); i++)
+            t[i] = tr.get(i);
+        save.putLongArray(key, t);
+    }
+
+    /* deserialize from bundle */
+    public void load_from_bundle(Bundle save, String key) {
+        long st[] = save.getLongArray(key);
+        if (st != null)
+            for (long t : st)
+                tr.add(t);
+    }
 }
