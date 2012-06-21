@@ -134,10 +134,10 @@ public abstract class Ticker {
         }
 
         sync = System.currentTimeMillis();
-        if (sync < next_sub)
-            mHandler.sendEmptyMessageDelayed(MSG, next_sub - sync);
-        else
-            mHandler.sendEmptyMessage(MSG);
+        /* doesn't matter if next_sub < sync
+         * negative delay is perfectly valid and means that trigger will happen immediately
+         */
+        mHandler.sendEmptyMessageDelayed(MSG, next_sub - sync);
     }
 
     private static final DateFormat df = new SimpleDateFormat("HH:mm:s.S");

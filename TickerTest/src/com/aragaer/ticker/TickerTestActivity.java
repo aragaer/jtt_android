@@ -59,8 +59,6 @@ public class TickerTestActivity extends Activity {
         super.onStart();
         t = (TextView) findViewById(R.id.text);
         ticker.start_ticking();
-        SystemClock.sleep(100);
-        ticker.start_ticking();
     }
     
     @Override
