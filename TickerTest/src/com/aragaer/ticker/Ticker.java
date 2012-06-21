@@ -9,33 +9,36 @@ import java.util.Date;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 /* Ticker maintains internal list of datetimes (transitions)
  * transitions are kept in Longs
  * Each transition is a start/end of an interval
  * Each interval is split into several ticks
  * Each tick is split into several subticks
+ * Ticker calls handle_sub on each subtick, handle_tick on each tick
+ * If several subticks passed between invocations, handle_sub is called only once
+ * If tick passed between invocations, only handle_tick is called once (no handle_sub)
  */
 public abstract class Ticker {
-    @SuppressWarnings("unused")
     private static final String TAG = Ticker.class.getSimpleName();
     
     public static int KEEP_TICKING = 0;
     public static int STOP_TICKING = 1;
 
     /* last time the ticker was run */
-    private long sync = System.currentTimeMillis();
+    private long sync = 0;
     /* a list of future transitions in relative form
      * first element is a time to next transition from last run
      * each other is a length of a following interval
      */
     private ArrayList<Long> tr = new ArrayList<Long>();
 
-//    private int ticks; // ticks per interval
-                         // not used directly
-    private int subs; // subticks per tick
+//    private int ticks;  // ticks per interval, not used directly
+    private int subs;   // subticks per tick
     private int tick, sub; // current tick and subtick number
 
+    long start, end;        // start and end of current interval
     private double total; // ticks*subs
 
     public Ticker(int t, int s) {
@@ -57,16 +60,19 @@ public abstract class Ticker {
         }
     };
 
-    public final void start_ticking() {
+    public void start_ticking() {
         wake_up();
     }
 
-    public final void stop_ticking() {
+    public void stop_ticking() {
         mHandler.removeMessages(MSG);
     }
 
+    /* This function assumes that we have just woke up
+     * Do not attempt to short-cut any calculations based on previous runs
+     */
     private void wake_up() {
-        long start, end, now;
+        long now;
         
         /* do not want more than one message being in the system */
         mHandler.removeMessages(MSG);
@@ -105,23 +111,24 @@ public abstract class Ticker {
             end = tr.get(pos + 1);
             break;
         }
-        /* great, we have start and end now */
 
         long offset = now - start;
-        double sublen = (end - start)/total;
+        double sublen = ((double) (end - start))/total;
         int exp_total = (int) (offset/sublen);
         int exp_tick = exp_total / subs;
         int exp_sub = exp_total % subs;
         long next_sub = start + Math.round(sublen * (exp_total + 1));
 
-        // do not use exp_tick since we might be in a different tr
-        if (now - sync > exp_sub * sublen || now < sync) {
+        if (now - sync > exp_sub * sublen // sync belongs to previous tick interval
+                || now < sync) {          // time went backwards!
             tick = exp_tick;
             sub = exp_sub;
             handle_tick(tick, sub);
         } else if (sub < exp_sub) {
-            if (tick != exp_tick) // we might have just started
+            if (tick != exp_tick) { // sync should belong to this tick interval
+                Log.wtf(TAG, "current tick is "+tick+", expected "+exp_tick);
                 tick = exp_tick;
+            }
             sub = exp_sub;
             handle_sub(tick, sub);
         }
@@ -141,19 +148,15 @@ public abstract class Ticker {
 
     protected void add_tr(long t) {
         int pos = Collections.binarySearch(tr, t);
-        if (pos >= 0)
-            return; // ignore duplicates
-        if (-1-pos == tr.size())
-            tr.add(t);
-        else
+        if (pos < 0) // ignore duplicates
             tr.add(-1-pos, t);
     }
 
     /* this is called when we are past last interval */
-    public abstract int overrun();
+    protected abstract int overrun();
 
     /* this is called when we are before first */
-    public abstract int underrun();
+    protected abstract int underrun();
 
     /* called on tick */
     public abstract void handle_tick(int tick, int sub);

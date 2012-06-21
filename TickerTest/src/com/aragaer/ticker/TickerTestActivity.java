@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.widget.TextView;
 
 public class TickerTestActivity extends Activity {
-    private final static String TAG = "ticker test"; 
+    private final static String TAG = "ticker test";
+    private TextView t;
     private Ticker ticker = new Ticker(5, 10) {
         @Override
         public int overrun() {
@@ -27,11 +29,15 @@ public class TickerTestActivity extends Activity {
         @Override
         public void handle_tick(int tick, int sub) {
             Log.d(TAG, "handleTick("+tick+","+sub+")");
+            t.setText(""+tick+":"+sub);
+            SystemClock.sleep(200);
         }
 
         @Override
         public void handle_sub(int tick, int sub) {
             Log.d(TAG, "handleSub("+tick+","+sub+")");
+            t.setText(""+tick+":"+sub);
+            SystemClock.sleep(100);
         }
     };
     @Override
@@ -51,6 +57,7 @@ public class TickerTestActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        t = (TextView) findViewById(R.id.text);
         ticker.start_ticking();
         SystemClock.sleep(100);
         ticker.start_ticking();
