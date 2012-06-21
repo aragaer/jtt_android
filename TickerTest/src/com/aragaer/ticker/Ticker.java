@@ -2,14 +2,13 @@ package com.aragaer.ticker;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 /* Ticker maintains internal list of datetimes (transitions)
  * transitions are kept in Longs
@@ -18,6 +17,7 @@ import android.util.Log;
  * Each tick is split into several subticks
  */
 public abstract class Ticker {
+    @SuppressWarnings("unused")
     private static final String TAG = Ticker.class.getSimpleName();
     
     public static int KEEP_TICKING = 0;
@@ -31,14 +31,15 @@ public abstract class Ticker {
      */
     private ArrayList<Long> tr = new ArrayList<Long>();
 
-    private int ticks; // ticks per interval
+//    private int ticks; // ticks per interval
+                         // not used directly
     private int subs; // subticks per tick
     private int tick, sub; // current tick and subtick number
 
     private double total; // ticks*subs
 
     public Ticker(int t, int s) {
-        ticks = t;
+//        ticks = t;
         subs = s;
         total = t * s;
     }
@@ -73,6 +74,17 @@ public abstract class Ticker {
             int len = tr.size();
             now = System.currentTimeMillis();
             int pos = Collections.binarySearch(tr, now);
+            /*
+             * Possible results:
+             * -len - 1:        overrun
+             * -len - 2 to -2:  OK (tr[-pos - 2] < tr[-pos - 1])
+             * -1:              underrun
+             * 0 to len - 2:    OK (tr[pos] == now < tr[pos + 1])
+             * len - 1:         overrun
+             *
+             * if len == 0, the only result is -1
+             * if len == 1, there's no OK results
+             */
             if (pos == -1) { // right before first element
                 if (underrun() == KEEP_TICKING)
                     continue;
@@ -86,26 +98,9 @@ public abstract class Ticker {
                 else
                     return;
             }
-
-            if (len < tr.size())
-                Log.wtf(TAG, "Array size reduced from "+len+" to "+tr.size());
-            if (len < 2)
-                Log.wtf(TAG, "Len is "+len+" - too small");
-            int opos = pos;
-            /* if pos >= 0 it is equal to one of elements; assume it is start
-             * otherwise (-1 - pos) points to where it would be inserted
-             * which is actually end
-             */
             if (pos < 0)
                 pos = -pos - 2;
 
-            if (len < pos + 2) {
-                Log.wtf(TAG, "tr size is "+len+", pos = "+pos);
-                Log.d(TAG, "original pos was "+opos);
-                Log.d(TAG, "value is "+l2s(now));
-                Log.d(TAG, "last 2 items are "+l2s(tr.get(len - 2))+" and "+l2s(tr.get(len - 1)));
-                return;
-            }
             start = tr.get(pos);
             end = tr.get(pos + 1);
             break;
@@ -139,6 +134,7 @@ public abstract class Ticker {
     }
 
     private static final DateFormat df = new SimpleDateFormat("HH:mm:s.S");
+    @SuppressWarnings("unused")
     private static final String l2s(long t) {
         return df.format(new Date(t));
     }

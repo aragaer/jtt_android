@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
-import android.widget.TextView.SavedState;
 
 public class TickerTestActivity extends Activity {
     private final static String TAG = "ticker test"; 
