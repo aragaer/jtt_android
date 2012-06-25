@@ -1,6 +1,6 @@
 package com.aragaer.jtt;
 
-import java.util.LinkedList;
+import java.util.Collections;
 
 import android.app.ActivityGroup;
 import android.content.ComponentName;
@@ -28,26 +28,68 @@ public class JTTMainActivity extends ActivityGroup {
     private JTTClockView clock;
     private JTTPager pager;
     private JTTTodayList today;
-    protected LinkedList<Long> tr = new LinkedList<Long>();
 
     private Messenger mService = null;
     final Messenger mMessenger = new Messenger(new IncomingHandler());
 
+    private Ticker ticker = new Ticker(6, 100) {
+        protected int start_day, end_day;
+        int hn;
+        @Override
+        protected int underrun() {
+            send_msg_to_service(JTTService.MSG_TRANSITIONS, start_day--);
+            return STOP_TICKING;
+        }
+
+        @Override
+        protected int overrun() {
+            send_msg_to_service(JTTService.MSG_TRANSITIONS, end_day--);
+            return STOP_TICKING;
+        }
+
+        @Override
+        public void handle_tick(int tick, int sub) {
+            int pos = Collections.binarySearch(tr, System.currentTimeMillis());
+            /* possible results:
+             * pos >= 0 - equal to one of transitions
+             * pos < 0 - goes between transitions, -pos - 2 is the previous one
+             */
+            if (pos < 0)
+                pos = -2 - pos;
+            /* every even position is a sunrise */
+            int isDay = (pos + 1) % 2;
+            hn = (tick + isDay * 6) % 12;
+            clock.setJTTHour(new JTTHour(hn, sub));
+        }
+
+        /* guaranteed that tick number did not change */
+        @Override
+        public void handle_sub(int tick, int sub) {
+            handle_tick(hn, sub);
+        }
+
+        /* serialize to bundle */
+        @Override
+        public void save_to_bundle(Bundle save, String key) {
+            super.save_to_bundle(save, key);
+            save.putInt(key + "_start_day", start_day);
+            save.putInt(key + "_end_day", end_day);
+        }
+
+        /* deserialize from bundle */
+        @Override
+        public void load_from_bundle(Bundle save, String key) {
+            super.load_from_bundle(save, key);
+            start_day = save.getInt(key + "_start_day");
+            end_day = save.getInt(key + "_end_day");
+        }
+    };
+
     private ServiceConnection conn = new ServiceConnection() {
         public void onServiceConnected(ComponentName name, IBinder service) {
             mService = new Messenger(service);
-            try {
-                Message msg = Message.obtain(null,
-                        JTTService.MSG_REGISTER_CLIENT);
-                msg.replyTo = mMessenger;
-                mService.send(msg);
-                Log.i(TAG, "Service connection established");
-                today.onServiceConnect();
-            } catch (RemoteException e) {
-                // In this case the service has crashed before we could even do
-                // anything with it
-                Log.i(TAG, "Service connection can't be established");
-            }
+            Log.i(TAG, "Service connection established");
+            today.onServiceConnect();
         }
 
         public void onServiceDisconnected(ComponentName name) {
@@ -85,14 +127,14 @@ public class JTTMainActivity extends ActivityGroup {
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case JTTService.MSG_HOUR:
-                JTTHour hour = new JTTHour(msg.arg1, msg.arg2);
-                clock.setJTTHour(hour);
+                Log.wtf(TAG, "Did we request hour? Really?");
                 break;
             case JTTService.MSG_TRANSITIONS:
                 long[] st = msg.getData().getLongArray("tr");
                 for (long t : st)
-                    tr.add(t);
+                    ticker.add_tr(t);
                 today.addTr(st);
+                ticker.start_ticking();
                 break;
             case JTTService.MSG_INVALIDATE:
                 Log.d(TAG, "Invalidate all");
@@ -136,10 +178,7 @@ public class JTTMainActivity extends ActivityGroup {
 
         if (savedInstanceState != null) {
             pager.scrollToScreen(savedInstanceState.getInt("Screen"));
-            long st[] = savedInstanceState.getLongArray("tr");
-            if (st != null)
-                for (long t : st)
-                    tr.add(t);
+            ticker.load_from_bundle(savedInstanceState, "ticker");
         }
 
         bindService(service, conn, 0);
@@ -167,10 +206,7 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt("Screen", pager.getScreen());
-        long[] t = new long[tr.size()];
-        for (int i = 0; i < tr.size(); i++)
-            t[i] = tr.get(i);
-        savedInstanceState.putLongArray("tr", t);
+        ticker.save_to_bundle(savedInstanceState, "ticker");
         super.onSaveInstanceState(savedInstanceState);
     }
 

@@ -36,7 +36,7 @@ public abstract class Ticker {
 
     private int ticks;  // ticks per interval
     private int subs;   // subticks per tick
-    private int tick, sub; // current tick and subtick number
+    public int tick, sub; // current tick and subtick number
 
     public long start, end;        // start and end of current interval
     public long t_start, t_end;    // start and end of current tick
