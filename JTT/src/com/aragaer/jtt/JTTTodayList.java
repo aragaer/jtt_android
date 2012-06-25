@@ -20,23 +20,30 @@ import android.widget.TextView;
 public class JTTTodayList extends ListView {
     private LinkedList<Item> inner = new LinkedList<Item>();
     public boolean ticker_running = false;
-    Ticker ticker = new Ticker(1, 6, false) {
+    Ticker ticker = new Ticker(1, 6) {
         @Override
-        public void handleTick(int tick, int sub) {
+        public void handle_tick(int tick, int sub) {
             updateItems();
         }
 
         @Override
-        public void handleSub(int tick, int sub) {
+        public void handle_sub(int tick, int sub) {
             if (sub == 0)
-                handleTick(tick, sub);
+                handle_tick(tick, sub);
             else
                 updateCurrent();
         }
 
         @Override
-        public void exhausted() {
-            Log.e("today", "Ticker list exhausted. This should never happen.");
+        public int overrun() {
+            Log.wtf("today", "Ticker list exhausted. This should never happen.");
+            return Ticker.STOP_TICKING;
+        }
+
+        @Override
+        protected int underrun() {
+            Log.wtf("today", "Ticker list underrun. This should never happen.");
+            return Ticker.STOP_TICKING;
         }
     };
 
@@ -71,7 +78,7 @@ public class JTTTodayList extends ListView {
             jdn_l = JTT.longToJDN(tr[0]);
             jdn_f = jdn_l + 1;
 
-            ticker.tr.add(tr[0]);
+            ticker.add_tr(tr[0]);
             if (tr.length == 1) // nothing else left to add
                 Log.e("today", "just a single tr!"); // should never happen!
             long[] tmp = new long[tr.length - 1];
@@ -88,7 +95,7 @@ public class JTTTodayList extends ListView {
             for (long t : tr) {
                 add_interval(t, false, day);
                 day = !day;
-                ticker.tr.add(t);
+                ticker.add_tr(t);
             }
             jdn_l = JTT.longToJDN(tr[tr.length - 1]);
         } else
