@@ -3,6 +3,7 @@ package com.aragaer.jtt;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -118,8 +119,8 @@ public class JTTService extends Service {
         rv.setTextViewText(R.id.title, hs.getHrOf(hn));
         rv.setTextViewText(R.id.percent, String.format("%d%%", hf));
         rv.setProgressBar(R.id.fraction, 100, hf, false);
-        rv.setTextViewText(R.id.start, df.format(ticker.start));
-        rv.setTextViewText(R.id.end, df.format(ticker.end));
+        rv.setTextViewText(R.id.start, df.format(ticker.t_start));
+        rv.setTextViewText(R.id.end, df.format(ticker.t_end));
 
         n.contentIntent = pending_main;
         n.contentView = rv;
@@ -166,14 +167,6 @@ public class JTTService extends Service {
             ticker.stop_ticking();
         }
     };
-    private final BroadcastReceiver timeset = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ticker.stop_ticking();
-            ticker.reset();
-            ticker.start_ticking();
-        }
-    };
 
     @Override
     public void onStart(Intent intent, int startid) {
@@ -195,7 +188,6 @@ public class JTTService extends Service {
 
         registerReceiver(on, new IntentFilter(Intent.ACTION_SCREEN_ON));
         registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
-        registerReceiver(timeset, new IntentFilter(Intent.ACTION_TIME_CHANGED));
 
         ticker.start_ticking();
     }
@@ -207,7 +199,6 @@ public class JTTService extends Service {
 
         unregisterReceiver(on);
         unregisterReceiver(off);
-        unregisterReceiver(timeset);
 
         ticker.stop_ticking();
 
@@ -238,36 +229,51 @@ public class JTTService extends Service {
     }
 
     private final class JTTTicker extends Ticker {
-        protected int day;
+        protected int start_day, end_day;
         public int hn, hf;
 
         public JTTTicker() {
             super(6, 100);
-            day = JTT.longToJDN(System.currentTimeMillis());
+            start_day = end_day = JTT.longToJDN(System.currentTimeMillis());
         }
 
         @Override
-        public void exhausted() {
-            long[] t = calculator.computeTr(day++);
+        public int overrun() {
+            long[] t = calculator.computeTr(start_day++);
             for (long l : t)
-                tr.add(l);
+                add_tr(l);
+            return KEEP_TICKING;
         }
         @Override
         public void reset() {
-            day = JTT.longToJDN(System.currentTimeMillis());
+            start_day = end_day = JTT.longToJDN(System.currentTimeMillis());
             super.reset();
         }
         @Override
-        public void handleSub(int tick, int sub) {
+        public void handle_sub(int tick, int sub) {
             doNotify(hn, hf = sub);
         }
         @Override
-        public void handleTick(int tick, int sub) {
-            // we're always adding 2 times to tr - 1 sunrise and 1 sunset
-            // during day tr[0] is sunrise and total number is even
-            // on sunset it is discarded and total number is odd 
-            int isDay = 1 - tr.size() % 2;
+        public void handle_tick(int tick, int sub) {
+            int pos = Collections.binarySearch(tr, System.currentTimeMillis());
+            /* possible results:
+             * pos >= 0 - equal to one of transitions
+             * pos < 0 - goes between transitions, -pos - 2 is the previous one
+             */
+            if (pos < 0)
+                pos = -2 - pos;
+            /* every even position is a sunrise */
+            int isDay = (pos + 1) % 2;
             doNotify(hn = (tick + isDay * 6) % 12, hf = sub);
+        }
+
+        @Override
+        protected int underrun() {
+            // time went backwards..
+            long[] t = calculator.computeTr(end_day--);
+            for (long l : t)
+                add_tr(l);
+            return KEEP_TICKING;
         }
     };
 }

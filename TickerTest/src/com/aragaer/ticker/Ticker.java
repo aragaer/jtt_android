@@ -83,7 +83,7 @@ public abstract class Ticker {
             /*
              * Possible results:
              * -len - 1:        overrun
-             * -len - 2 to -2:  OK (tr[-pos - 2] < tr[-pos - 1])
+             * -len - 2 to -2:  OK (tr[-pos - 2] < now < tr[-pos - 1])
              * -1:              underrun
              * 0 to len - 2:    OK (tr[pos] == now < tr[pos + 1])
              * len - 1:         overrun
