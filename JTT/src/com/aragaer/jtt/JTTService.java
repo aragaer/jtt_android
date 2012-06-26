@@ -3,6 +3,7 @@ package com.aragaer.jtt;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -30,13 +31,19 @@ public class JTTService extends Service {
     private static final int flags_ongoing = Notification.FLAG_ONGOING_EVENT
             | Notification.FLAG_NO_CLEAR;
     private static final int APP_ID = 0;
+
     private PendingIntent pending_main;
     private JTTHour.StringsHelper hs;
-    private JTTTicker ticker = new JTTTicker();
 
     private boolean notify, force_stop = false;
 
+    private long sync = 0;
+    protected ArrayList<Long> transitions = new ArrayList<Long>();
+    private int start_day, end_day;
+    private long t_start, t_end;
+
     ArrayList<Messenger> mClients = new ArrayList<Messenger>();
+    // TODO: remove unused stuff
     public static final int MSG_TOGGLE_NOTIFY = 0;
     public static final int MSG_UPDATE_LOCATION = 1;
     public static final int MSG_REGISTER_CLIENT = 2;
@@ -45,15 +52,21 @@ public class JTTService extends Service {
     public static final int MSG_STOP = 5;
     public static final int MSG_TRANSITIONS = 6;
     public static final int MSG_INVALIDATE = 7;
+    public static final int MSG_TRANSITION = 8;
+    public static final int MSG_TICK = 9;
+    public static final int MSG_SUBTICK = 10;
+    public static final int MSG_SYNC = 11;
 
-    final Messenger mMessenger = new Messenger(new Handler() {
+    private int hour, sub;
+
+    final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case MSG_TOGGLE_NOTIFY:
                 notify = msg.getData().getBoolean("notify");
                 if (notify)
-                    notify_helper(ticker.hn, ticker.hf);
+                    notify_helper(hour, sub);
                 else
                     nm.cancel(APP_ID);
                 break;
@@ -61,15 +74,13 @@ public class JTTService extends Service {
                 String ll[] = msg.getData().getString("latlon").split(":");
                 calculator.move(Float.parseFloat(ll[0]),
                         Float.parseFloat(ll[1]));
-                ticker.stop_ticking();
-                ticker.reset();
-                ticker.start_ticking();
+                reset();
                 informClients(Message.obtain(null, MSG_INVALIDATE));
                 break;
             case MSG_REGISTER_CLIENT:
                 try {
-                    msg.replyTo.send(Message.obtain(null, MSG_HOUR, ticker.hn,
-                            ticker.hf));
+                    msg.replyTo.send(Message.obtain(null, MSG_HOUR, hour,
+                            sub));
                     mClients.add(msg.replyTo);
                 } catch (RemoteException e) {
                     Log.w(TAG, "Client registered but failed to get data");
@@ -89,12 +100,17 @@ public class JTTService extends Service {
                     Log.w(TAG, "Client requested transitions data but failed to get answer");
                 }
                 break;
+            case MSG_SYNC:
+                wake_up();
+                break;
             default:
                 super.handleMessage(msg);
                 break;
             }
         }
-    });
+    };
+
+    final Messenger mMessenger = new Messenger(mHandler);
 
     private Message d_trans_msg(int jd) {
         Bundle b = new Bundle();
@@ -118,18 +134,18 @@ public class JTTService extends Service {
         rv.setTextViewText(R.id.title, hs.getHrOf(hn));
         rv.setTextViewText(R.id.percent, String.format("%d%%", hf));
         rv.setProgressBar(R.id.fraction, 100, hf, false);
-        rv.setTextViewText(R.id.start, df.format(ticker.start));
-        rv.setTextViewText(R.id.end, df.format(ticker.end));
+        rv.setTextViewText(R.id.start, df.format(t_start));
+        rv.setTextViewText(R.id.end, df.format(t_end));
 
         n.contentIntent = pending_main;
         n.contentView = rv;
         nm.notify(APP_ID, n);
     }
 
-    private void doNotify(int n, int f) {
+    private void doNotify(int n, int f, int event) {
         if (notify)
             notify_helper(n, f);
-        informClients(Message.obtain(null, MSG_HOUR, n, f));
+        informClients(Message.obtain(null, event, n, f));
     }
 
     private void informClients(Message msg) {
@@ -157,21 +173,13 @@ public class JTTService extends Service {
     private final BroadcastReceiver on = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ticker.start_ticking();
+            wake_up();
         }
     };
     private final BroadcastReceiver off = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ticker.stop_ticking();
-        }
-    };
-    private final BroadcastReceiver timeset = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ticker.stop_ticking();
-            ticker.reset();
-            ticker.start_ticking();
+            sleep();
         }
     };
 
@@ -195,9 +203,8 @@ public class JTTService extends Service {
 
         registerReceiver(on, new IntentFilter(Intent.ACTION_SCREEN_ON));
         registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
-        registerReceiver(timeset, new IntentFilter(Intent.ACTION_TIME_CHANGED));
 
-        ticker.start_ticking();
+        reset();
     }
 
     @Override
@@ -207,9 +214,8 @@ public class JTTService extends Service {
 
         unregisterReceiver(on);
         unregisterReceiver(off);
-        unregisterReceiver(timeset);
 
-        ticker.stop_ticking();
+        sleep();
 
         if (force_stop)
             nm.cancel(APP_ID);
@@ -237,37 +243,106 @@ public class JTTService extends Service {
         }
     }
 
-    private final class JTTTicker extends Ticker {
-        protected int day;
-        public int hn, hf;
+    void handle_tick(int tick, int sub) {
+        doNotify(tick, sub, MSG_TICK);
+    }
 
-        public JTTTicker() {
-            super(6, 100);
-            day = JTT.longToJDN(System.currentTimeMillis());
+    void handle_sub(int tick, int sub) {
+        doNotify(tick, sub, MSG_SUBTICK);
+    }
+
+    private final static int ticks = 6;
+    private final static int subs = 100;
+    private final static double total = ticks * subs;
+    /* This function assumes that we have just woke up
+     * Do not attempt to short-cut any calculations based on previous runs
+     */
+    private void wake_up() {
+        long now, start, end;
+        int isDay;
+
+        /* do not want more than one message being in the system */
+        mHandler.removeMessages(MSG_SYNC);
+        while (true) { // we are likely to pass this loop only once
+            long[] t = null;
+            int len = transitions.size();
+            now = System.currentTimeMillis();
+            int pos = Collections.binarySearch(transitions, now);
+            /*
+             * Possible results:
+             * -len - 1:        overrun
+             * -len - 2 to -2:  OK (tr[-pos - 2] < now < tr[-pos - 1])
+             * -1:              underrun
+             * 0 to len - 2:    OK (tr[pos] == now < tr[pos + 1])
+             * len - 1:         overrun
+             *
+             * if len == 0, the only result is -1
+             * if len == 1, there's no OK results
+             */
+            if (pos == -1) // right before first element
+                t = calculator.computeTr(start_day--);
+            if (pos == -len - 1             // after the last element
+                    || pos == len - 1)      // equal to the last element
+                t = calculator.computeTr(end_day++);
+            if (t != null) {
+                for (long l : t)
+                    transitions.add(l);
+                // all this took some time, we should resync
+                continue;
+            }
+
+            if (pos < 0)
+                pos = -pos - 2;
+
+            start = transitions.get(pos);
+            end = transitions.get(pos + 1);
+            /* cheat - sunrises always have even positions */
+            isDay = (pos + 1) % 2;
+            break;
         }
 
-        @Override
-        public void exhausted() {
-            long[] t = calculator.computeTr(day++);
-            for (long l : t)
-                tr.add(l);
+        /* we've got start and end */
+        long offset = now - start;
+        double sublen = ((double) (end - start))/total;
+        int exp_total = (int) (offset/sublen);
+        int exp_tick = exp_total / subs;
+        int exp_sub = exp_total % subs;
+        long next_sub = start + Math.round(sublen * (exp_total + 1));
+        t_start = start + (end - start) * exp_tick / ticks;
+        t_end = start + (end - start) * (exp_tick + 1) / ticks;
+
+        if (now - sync > exp_sub * sublen // sync belongs to previous tick interval
+                || now < sync) {          // time went backwards!
+            hour = exp_tick + isDay * 6;
+            sub = exp_sub;
+            handle_tick(hour, sub);
+        } else if (sub < exp_sub) {
+            if (hour % 6 != exp_tick) { // sync should belong to this tick interval
+                Log.wtf(TAG, "current tick is "+(hour % 6)+", expected "+exp_tick);
+                hour = exp_tick + isDay * 6;
+            }
+            sub = exp_sub;
+            handle_sub(hour, sub);
         }
-        @Override
-        public void reset() {
-            day = JTT.longToJDN(System.currentTimeMillis());
-            super.reset();
-        }
-        @Override
-        public void handleSub(int tick, int sub) {
-            doNotify(hn, hf = sub);
-        }
-        @Override
-        public void handleTick(int tick, int sub) {
-            // we're always adding 2 times to tr - 1 sunrise and 1 sunset
-            // during day tr[0] is sunrise and total number is even
-            // on sunset it is discarded and total number is odd 
-            int isDay = 1 - tr.size() % 2;
-            doNotify(hn = (tick + isDay * 6) % 12, hf = sub);
-        }
-    };
+
+        sync = System.currentTimeMillis();
+        /* doesn't matter if next_sub < sync
+         * negative delay is perfectly valid and means that trigger will happen immediately
+         */
+        mHandler.sendEmptyMessageDelayed(MSG_SYNC, next_sub - sync);
+    }
+
+    private final void sleep() {
+        mHandler.removeMessages(MSG_SYNC);
+    }
+
+    private final void reset() {
+        sleep();
+        end_day = JTT.longToJDN(System.currentTimeMillis());
+        start_day = end_day - 1;
+        long[] t = calculator.computeTr(end_day++);
+        for (long l : t)
+            transitions.add(l);
+        wake_up();
+    }
 }

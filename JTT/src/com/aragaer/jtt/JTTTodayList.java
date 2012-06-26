@@ -19,26 +19,7 @@ import android.widget.TextView;
 
 public class JTTTodayList extends ListView {
     private LinkedList<Item> inner = new LinkedList<Item>();
-    public boolean ticker_running = false;
-    Ticker ticker = new Ticker(1, 6, false) {
-        @Override
-        public void handleTick(int tick, int sub) {
-            updateItems();
-        }
-
-        @Override
-        public void handleSub(int tick, int sub) {
-            if (sub == 0)
-                handleTick(tick, sub);
-            else
-                updateCurrent();
-        }
-
-        @Override
-        public void exhausted() {
-            Log.e("today", "Ticker list exhausted. This should never happen.");
-        }
-    };
+    private LinkedList<Long> transitions = new LinkedList<Long>();
 
     static final class Item {
         public final long time;
@@ -71,7 +52,7 @@ public class JTTTodayList extends ListView {
             jdn_l = JTT.longToJDN(tr[0]);
             jdn_f = jdn_l + 1;
 
-            ticker.tr.add(tr[0]);
+            transitions.add(tr[0]);
             if (tr.length == 1) // nothing else left to add
                 Log.e("today", "just a single tr!"); // should never happen!
             long[] tmp = new long[tr.length - 1];
@@ -88,7 +69,7 @@ public class JTTTodayList extends ListView {
             for (long t : tr) {
                 add_interval(t, false, day);
                 day = !day;
-                ticker.tr.add(t);
+                transitions.add(t);
             }
             jdn_l = JTT.longToJDN(tr[tr.length - 1]);
         } else
@@ -113,8 +94,7 @@ public class JTTTodayList extends ListView {
     }
 
     public void dropTrs() {
-        ticker.stop_ticking();
-        ticker.reset();
+        transitions.clear();
         inner.clear();
     }
 
@@ -144,11 +124,6 @@ public class JTTTodayList extends ListView {
         if (inner.get(is - PAD - 1).time < now) {
             getFutureDay();
             return;
-        }
-        if (!ticker_running) {
-            ticker_running = true;
-            ticker.start_ticking();
-            return; // we will reenter this function from ticker
         }
         int i = PAD + 1;
         while (inner.get(i).time < now)
