@@ -65,7 +65,7 @@ public class JTTMainActivity extends ActivityGroup {
         /* guaranteed that tick number did not change */
         @Override
         public void handle_sub(int tick, int sub) {
-            handle_tick(hn, sub);
+            clock.setJTTHour(new JTTHour(hn, sub));
         }
 
         /* serialize to bundle */
@@ -139,6 +139,7 @@ public class JTTMainActivity extends ActivityGroup {
             case JTTService.MSG_INVALIDATE:
                 Log.d(TAG, "Invalidate all");
                 today.dropTrs();
+                ticker.reset();
                 break;
             default:
                 super.handleMessage(msg);
@@ -200,7 +201,7 @@ public class JTTMainActivity extends ActivityGroup {
                     .getActivity("settings");
             ((LocationPreference) pa.findPreference("jtt_loc")).showMe();
         }
-
+        ticker.start_ticking();
     }
 
     @Override

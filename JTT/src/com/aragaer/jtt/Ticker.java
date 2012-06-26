@@ -108,12 +108,15 @@ public abstract class Ticker {
             if (pos < 0)
                 pos = -pos - 2;
 
+//            for (int i = 0; i < pos; i++)
+//                tr.remove(i);
             start = tr.get(pos);
-            end = tr.get(pos + 1);
+            end = tr.get(pos+1);
             break;
         }
 
         /* we've got start and end */
+        Log.d(TAG, "Tick between "+l2s(start)+" and "+l2s(end));
         long offset = now - start;
         double sublen = ((double) (end - start))/total;
         int exp_total = (int) (offset/sublen);
@@ -144,7 +147,7 @@ public abstract class Ticker {
         mHandler.sendEmptyMessageDelayed(MSG, next_sub - sync);
     }
 
-    private static final DateFormat df = new SimpleDateFormat("HH:mm:s.S");
+    private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:s.S");
     @SuppressWarnings("unused")
     private static final String l2s(long t) {
         return df.format(new Date(t));
