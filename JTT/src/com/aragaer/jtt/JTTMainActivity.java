@@ -1,7 +1,5 @@
 package com.aragaer.jtt;
 
-import java.util.LinkedList;
-
 import android.app.ActivityGroup;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -28,7 +26,6 @@ public class JTTMainActivity extends ActivityGroup {
     private JTTClockView clock;
     private JTTPager pager;
     private JTTTodayList today;
-    protected LinkedList<Long> tr = new LinkedList<Long>();
 
     private Messenger mService = null;
     final Messenger mMessenger = new Messenger(new IncomingHandler());
@@ -85,14 +82,13 @@ public class JTTMainActivity extends ActivityGroup {
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case JTTService.MSG_HOUR:
-                JTTHour hour = new JTTHour(msg.arg1, msg.arg2);
-                clock.setJTTHour(hour);
+            case JTTService.MSG_TICK:
+                today.setCurrent(msg.arg1);
+            case JTTService.MSG_SUBTICK:
+                clock.setJTTHour(new JTTHour(msg.arg1, msg.arg2));
                 break;
             case JTTService.MSG_TRANSITIONS:
-                long[] st = msg.getData().getLongArray("tr");
-                for (long t : st)
-                    tr.add(t);
-                today.addTr(st);
+                today.addTr(msg.getData().getLongArray("tr"));
                 break;
             case JTTService.MSG_INVALIDATE:
                 Log.d(TAG, "Invalidate all");
@@ -134,13 +130,8 @@ public class JTTMainActivity extends ActivityGroup {
 
         setContentView(pager);
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null)
             pager.scrollToScreen(savedInstanceState.getInt("Screen"));
-            long st[] = savedInstanceState.getLongArray("tr");
-            if (st != null)
-                for (long t : st)
-                    tr.add(t);
-        }
 
         bindService(service, conn, 0);
     }
@@ -167,10 +158,6 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putInt("Screen", pager.getScreen());
-        long[] t = new long[tr.size()];
-        for (int i = 0; i < tr.size(); i++)
-            t[i] = tr.get(i);
-        savedInstanceState.putLongArray("tr", t);
         super.onSaveInstanceState(savedInstanceState);
     }
 

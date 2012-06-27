@@ -201,7 +201,10 @@ public class JTTService extends Service {
         if (!notify)
             nm.cancel(APP_ID);
 
-        registerReceiver(on, new IntentFilter(Intent.ACTION_SCREEN_ON));
+        IntentFilter wake = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        wake.addAction(Intent.ACTION_TIME_CHANGED);
+        wake.addAction(Intent.ACTION_DATE_CHANGED);
+        registerReceiver(on, wake);
         registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
         reset();

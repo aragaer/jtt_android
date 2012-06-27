@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 public class JTTTodayList extends ListView {
     private LinkedList<Item> inner = new LinkedList<Item>();
-    private LinkedList<Long> transitions = new LinkedList<Long>();
 
     static final class Item {
         public final long time;
@@ -37,6 +36,7 @@ public class JTTTodayList extends ListView {
     private final JTTMainActivity main;
     int jdn_f, jdn_l;
     private static final DateFormat df = new SimpleDateFormat("HH:mm");
+    private long next_sync = 0, prev_sync = 0;
 
     public JTTTodayList(Context context) {
         super(context);
@@ -52,7 +52,6 @@ public class JTTTodayList extends ListView {
             jdn_l = JTT.longToJDN(tr[0]);
             jdn_f = jdn_l + 1;
 
-            transitions.add(tr[0]);
             if (tr.length == 1) // nothing else left to add
                 Log.e("today", "just a single tr!"); // should never happen!
             long[] tmp = new long[tr.length - 1];
@@ -69,7 +68,6 @@ public class JTTTodayList extends ListView {
             for (long t : tr) {
                 add_interval(t, false, day);
                 day = !day;
-                transitions.add(t);
             }
             jdn_l = JTT.longToJDN(tr[tr.length - 1]);
         } else
@@ -94,14 +92,12 @@ public class JTTTodayList extends ListView {
     }
 
     public void dropTrs() {
-        transitions.clear();
         inner.clear();
     }
 
     protected void onServiceConnect() {
         int jdn = JTT.longToJDN(System.currentTimeMillis());
         main.send_msg_to_service(JTTService.MSG_TRANSITIONS, jdn);
-//        main.send_msg_to_service(JTTService.MSG_TRANSITIONS, jdn + 1);
     }
 
     private void getPastDay() {
@@ -112,6 +108,7 @@ public class JTTTodayList extends ListView {
         main.send_msg_to_service(JTTService.MSG_TRANSITIONS, jdn_l + 1);
     }
 
+    // TODO: remove obsolete items
     private static final int PAD = 6;
     private void updateItems() {
         // first find out to which interval the current time belongs
@@ -128,15 +125,23 @@ public class JTTTodayList extends ListView {
         int i = PAD + 1;
         while (inner.get(i).time < now)
             i++;
-        ta.cur = (inner.get(i).hnum + 11) % 12;
+        // FIXME: next and prev syncs have to be on transitions, not hours!
+        next_sync = inner.get(i).time;
+        prev_sync = inner.get(i - 1).time;
         int low = (i - PAD - 1) / 6 * 6;
         int high = (i + PAD + 5) / 6 * 6;
         ta.buildItems(inner.subList(low, high + 1));
     }
 
-    private void updateCurrent() {
-        ta.cur = (ta.cur + 1) % 12;
-        ta.notifyDataSetChanged();
+    public void setCurrent(int cur) {
+        long now = System.currentTimeMillis();
+        ta.cur = cur;
+        if (now >= next_sync)
+            getFutureDay();
+        else if (now < prev_sync) // time went backwards
+            getPastDay();
+        else
+            ta.notifyDataSetChanged();
     }
 
     private static class TodayAdapter extends ArrayAdapter<Item> {
