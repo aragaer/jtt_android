@@ -1,0 +1,2 @@
+Currently there's a lot of problems trying to figure out if given transition ins sunrise or sunset.
+The idea is to keep one of those (say, sunrises) as negative numbers.
