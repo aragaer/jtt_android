@@ -1,14 +1,33 @@
 The today list is currently a bit overcomplcated.
 
-1. It should be similar to ClockView in that it takes a single piece of information (current hour) and fills the rest of data itself.
-2. Since Service notifices Main about time changes on any important event, Today should not try and track these events itself.
-3. Main would work as a proxy between Today and Service in passing the transition timestamps (TODO: timestaps should be longs).
-   Alternatively, Today will have its own handler for communcation with Service. For now we'll pick the proxy way.
-4. Today will completely draw itself when Main receives a MSG_HOUR event.
-5. Today will keep two sync timestamps - forward and backward. Backward sync is necessary in case time goes back.
-   Syncs are equal to last and next transitions. If current time falls between these two, assume that list is already in correct state.
-   Otherwise check existing transitions list if it contains any useful information.
-6. Fill the inner list with whatever information we have!
-7. If Today doesn't have enough information about future/past transitions, it requests that information.
-8. When Today gets the MSG_TRANSITIONS message, it first checks if it could use that information at all.
-   Then it adds it to its transitions list. Then it adds new records to the inner list.
+1.  It should be similar to ClockView in that it takes a single piece of information (current hour)
+    and fills the rest of data itself.
+2.  Since Service notifices Main about time changes on any important event,
+    Today should not try and track these events itself.
+3.  Main would work as a proxy between Today and Service in passing the transition timestamps
+    (TODO: timestaps should be longs).
+    Alternatively, Today will have its own handler for communcation with Service. For now we'll pick the proxy way.
+4.  Today will completely draw itself when Main receives a MSG_HOUR event.
+5.  Today will keep two sync timestamps - forward and backward. Backward sync is necessary in case time goes back.
+    Syncs are equal to last and next transitions. If current time falls between these two,
+    assume that list is already in correct state.
+    Otherwise check existing transitions list if it contains any useful information.
+6.  Fill the inner list with whatever information we have!
+7.  If Today doesn't have enough information about future/past transitions, it requests that information.
+8.  When Today gets the MSG_TRANSITIONS message, it first checks if it could use that information at all.
+    Then it adds it to its transitions list. Then it adds new records to the inner list.
+9.  If Today doesn't have enough information it draws what it can. New information invalidates the existing list.
+10. Inner list contains all the records between all known transitions. Shown list is a sublist of inner list.
+11. Obsolete transitions (older than 1 day) are discarded.
+    "if JDN(now) - JDN(tr) > 1 then discard"
+    Transitions for previous JDN are valid if current time is day before noon.
+12. Current hour is the hour equal to hour passed from Servece AND is between two sync stamps.
+13. There is still a problem to know the difference between day and night.
+    The only information we've got is hour number passed from Service sets either day or night for current interval.
+    Also each transition switches day/night.
+14. It is also known that transitions are coming from service in pairs sunrise/sunset.
+15. If we got transition and transition list is empty (either it was empty or it contained obsolete data which was discarded)
+    we create the day interval.
+16. If current time is later than last transition in list, whole list is obsolete and should be discarded.
+    It is possible that last transition pair is still valid but detecting that is not that simple.
+17. All transitions are stored/loaded into/from bundles when application is saving/loading.
