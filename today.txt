@@ -1,4 +1,5 @@
-The today list is currently a bit overcomplcated.
+The today list is currently a bit overcomplcated. It needs to be rewritten.
+Following is a list of notes for rewriting it.
 
 1.  It should be similar to ClockView in that it takes a single piece of information (current hour)
     and fills the rest of data itself.
@@ -26,8 +27,13 @@ The today list is currently a bit overcomplcated.
     The only information we've got is hour number passed from Service sets either day or night for current interval.
     Also each transition switches day/night.
 14. It is also known that transitions are coming from service in pairs sunrise/sunset.
-15. If we got transition and transition list is empty (either it was empty or it contained obsolete data which was discarded)
-    we create the day interval.
+15. If we got transition and transition list is empty (either it was empty or it contained obsolete data which was
+    discarded) we create the day interval.
+    Otherwise we create one night and one day intervals.
 16. If current time is later than last transition in list, whole list is obsolete and should be discarded.
     It is possible that last transition pair is still valid but detecting that is not that simple.
 17. All transitions are stored/loaded into/from bundles when application is saving/loading.
+
+3a. Transition message should include JDN used to calculate transitions. Message should be using bundle instead of ints.
+11a.Alternatively discard transitions in pairs. In this case each even transition (starting from 0) is sunrise.
+    This mechanism is currently used in Service/Ticker.
