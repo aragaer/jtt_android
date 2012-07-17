@@ -22,7 +22,7 @@ public class JTT {
 
     public JTTHour time_to_jtt(Date d) {
         long time = d == null ? System.currentTimeMillis() : d.getTime();
-        int day = longToJDN(time);
+        long day = longToJDN(time);
         long[] tr = computeTr(day);
         int dayAdd = 0;
         if (time < tr[0]) { // before sunrise. Get prev sunset
@@ -44,7 +44,7 @@ public class JTT {
 
     public Date jtt_to_time(int n, int f, Date date) {
         long t = date == null ? System.currentTimeMillis() : date.getTime();
-        int d = longToJDN(t);
+        long d = longToJDN(t);
         long tr[] = computeTr(d);
         if (n < 3) {// get prev sunset
             tr[1] = tr[0];
@@ -74,7 +74,7 @@ public class JTT {
         return Math.toDegrees(Math.acos(a));
     }
 
-    public static int longToJDN(long time) {
+    public static long longToJDN(long time) {
         return (int) Math.floor(longToJD(time));
     }
 
@@ -87,7 +87,7 @@ public class JTT {
     }
 
     // http://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth
-    public long[] computeTr(int jdn) {
+    public long[] computeTr(long jdn) {
         final double n_star = jdn - 2451545.0009 + longitude / 360.0;
         final double n = Math.floor(n_star + 0.5);
         final double j_star = 2451545.0009 - longitude / 360.0 + n;

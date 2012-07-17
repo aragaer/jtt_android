@@ -9,6 +9,7 @@ import java.util.TimeZone;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class JTTTodayList extends ListView {
+    private static final String TAG = JTTTodayList.class.getSimpleName();
+
     private LinkedList<Item> inner = new LinkedList<Item>();
+    private LinkedList<Long> transitions = new LinkedList<Long>();
 
     static final class Item {
         public final long time;
@@ -34,9 +38,9 @@ public class JTTTodayList extends ListView {
 
     private final TodayAdapter ta;
     private final JTTMainActivity main;
-    int jdn_f, jdn_l;
+    long jdn_f, jdn_l;
     private static final DateFormat df = new SimpleDateFormat("HH:mm");
-    private long next_sync = 0, prev_sync = 0;
+    private long forward_sync = 0, backward_sync = 0;
 
     public JTTTodayList(Context context) {
         super(context);
@@ -45,33 +49,32 @@ public class JTTTodayList extends ListView {
         main = (JTTMainActivity) context;
     }
 
-    public void addTr(long tr[]) {
+    public void addTr(Bundle b) {
+        Log.d(TAG, "add tr!");
+        long jdn = b.getLong("jdn");
         boolean day = inner.isEmpty();
+        boolean forward = day;
+        long sunrise = b.getLong("sunrise");
+        long sunset = b.getLong("sunset");
         if (day) {
-            inner.add(new Item(tr[0], 6)); // hour of the hare
-            jdn_l = JTT.longToJDN(tr[0]);
-            jdn_f = jdn_l + 1;
-
-            if (tr.length == 1) // nothing else left to add
-                Log.e("today", "just a single tr!"); // should never happen!
-            long[] tmp = new long[tr.length - 1];
-            System.arraycopy(tr, 1, tmp, 0, tmp.length);
-            tr = tmp;
+            inner.add(new Item(sunrise, 6));
+            jdn_l = jdn_f = jdn;
+        } else {
+            if (jdn <= jdn_l && jdn >= jdn_f) {
+                Log.wtf(TAG, "Got "+jdn+" which is between "+jdn_f+" and "+jdn_l);
+                return;
+            }
+            forward = jdn_l < jdn;
+            add_interval(forward ? sunrise : sunset, !forward, false);
         }
-        if (tr[tr.length - 1] < inner.getFirst().time) {
-            for (int i = tr.length - 1; i >= 0; i--) {
-                add_interval(tr[i], true, day);
-                day = !day;
-            }
-            jdn_f = JTT.longToJDN(tr[0]);
-        } else if (tr[0] > inner.getLast().time) {
-            for (long t : tr) {
-                add_interval(t, false, day);
-                day = !day;
-            }
-            jdn_l = JTT.longToJDN(tr[tr.length - 1]);
-        } else
-            Log.w("today", "We already have these transitions!");
+
+        if (forward) {
+            jdn_l = jdn;
+            add_interval(sunset, false, true);
+        } else {
+            jdn_f = jdn;
+            add_interval(sunrise, true, true);
+        }
         updateItems();
     }
 
@@ -91,21 +94,26 @@ public class JTTTodayList extends ListView {
         }
     }
 
-    public void dropTrs() {
+    public void reset() {
         inner.clear();
     }
 
     protected void onServiceConnect() {
-        int jdn = JTT.longToJDN(System.currentTimeMillis());
-        main.send_msg_to_service(JTTService.MSG_TRANSITIONS, jdn);
+        getDay(JTT.longToJDN(System.currentTimeMillis()));
     }
 
+    private void getDay(long jdn) {
+        Bundle b = new Bundle();
+        b.putLong("jdn", jdn);
+        Log.d(TAG, "Requesting transitions for day "+jdn);
+        main.send_msg_to_service(JTTService.MSG_TRANSITIONS, b);
+    }
     private void getPastDay() {
-        main.send_msg_to_service(JTTService.MSG_TRANSITIONS, jdn_f - 1);
+        getDay(jdn_f - 1);
     }
 
     private void getFutureDay() {
-        main.send_msg_to_service(JTTService.MSG_TRANSITIONS, jdn_l + 1);
+        getDay(jdn_l + 1);
     }
 
     // TODO: remove obsolete items
@@ -125,9 +133,6 @@ public class JTTTodayList extends ListView {
         int i = PAD + 1;
         while (inner.get(i).time < now)
             i++;
-        // FIXME: next and prev syncs have to be on transitions, not hours!
-        next_sync = inner.get(i).time;
-        prev_sync = inner.get(i - 1).time;
         int low = (i - PAD - 1) / 6 * 6;
         int high = (i + PAD + 5) / 6 * 6;
         ta.buildItems(inner.subList(low, high + 1));
@@ -136,12 +141,14 @@ public class JTTTodayList extends ListView {
     public void setCurrent(int cur) {
         long now = System.currentTimeMillis();
         ta.cur = cur;
-        if (now >= next_sync)
-            getFutureDay();
-        else if (now < prev_sync) // time went backwards
-            getPastDay();
-        else
+        /* if everything is in valid state, that's simple */
+        if (now < forward_sync && now >= backward_sync) {
             ta.notifyDataSetChanged();
+            return;
+        }
+
+        // here's some redrawing
+        ta.notifyDataSetChanged();
     }
 
     private static class TodayAdapter extends ArrayAdapter<Item> {

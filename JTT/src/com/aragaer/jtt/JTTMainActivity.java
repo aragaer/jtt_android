@@ -82,17 +82,17 @@ public class JTTMainActivity extends ActivityGroup {
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case JTTService.MSG_HOUR:
-            case JTTService.MSG_TICK:
                 today.setCurrent(msg.arg1);
+                /* fall-through! */
             case JTTService.MSG_SUBTICK:
                 clock.setJTTHour(new JTTHour(msg.arg1, msg.arg2));
                 break;
             case JTTService.MSG_TRANSITIONS:
-                today.addTr(msg.getData().getLongArray("tr"));
+                today.addTr(msg.getData());
                 break;
             case JTTService.MSG_INVALIDATE:
                 Log.d(TAG, "Invalidate all");
-                today.dropTrs();
+                today.reset();
                 break;
             default:
                 super.handleMessage(msg);

@@ -39,7 +39,7 @@ public class JTTService extends Service {
 
     private long sync = 0;
     protected ArrayList<Long> transitions = new ArrayList<Long>();
-    private int start_day, end_day;
+    private long start_day, end_day;
     private long t_start, t_end;
 
     ArrayList<Messenger> mClients = new ArrayList<Messenger>();
@@ -53,9 +53,8 @@ public class JTTService extends Service {
     public static final int MSG_TRANSITIONS = 6;
     public static final int MSG_INVALIDATE = 7;
     public static final int MSG_TRANSITION = 8;
-    public static final int MSG_TICK = 9;
-    public static final int MSG_SUBTICK = 10;
-    public static final int MSG_SYNC = 11;
+    public static final int MSG_SUBTICK = 9;
+    public static final int MSG_SYNC = 10;
 
     private int hour, sub;
 
@@ -95,7 +94,7 @@ public class JTTService extends Service {
                 break;
             case MSG_TRANSITIONS:
                 try {
-                    msg.replyTo.send(d_trans_msg(msg.arg1));
+                    msg.replyTo.send(trans_msg(msg));
                 } catch (RemoteException e) {
                     Log.w(TAG, "Client requested transitions data but failed to get answer");
                 }
@@ -112,12 +111,17 @@ public class JTTService extends Service {
 
     final Messenger mMessenger = new Messenger(mHandler);
 
-    private Message d_trans_msg(int jd) {
+    private Message trans_msg(Message rq) {
+        Message resp = Message.obtain(null, MSG_TRANSITIONS);
+        Long jdn = rq.getData().getLong("jdn");
+        Log.d(TAG, "got request for transitions for day "+jdn);
         Bundle b = new Bundle();
-        Message res = Message.obtain(null, MSG_TRANSITIONS);
-        b.putLongArray("tr", calculator.computeTr(jd));
-        res.setData(b);
-        return res;
+        long[] tr = calculator.computeTr(jdn);
+        b.putLong("jdn", jdn);
+        b.putLong("sunrise", tr[0]);
+        b.putLong("sunset", tr[1]);
+        resp.setData(b);
+        return resp;
     }
 
     private String app_name;
@@ -247,7 +251,7 @@ public class JTTService extends Service {
     }
 
     void handle_tick(int tick, int sub) {
-        doNotify(tick, sub, MSG_TICK);
+        doNotify(tick, sub, MSG_HOUR);
     }
 
     void handle_sub(int tick, int sub) {
