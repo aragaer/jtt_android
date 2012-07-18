@@ -88,7 +88,7 @@ public class JTTMainActivity extends ActivityGroup {
                 clock.setJTTHour(new JTTHour(msg.arg1, msg.arg2));
                 break;
             case JTTService.MSG_TRANSITIONS:
-                today.addTr(msg.getData());
+                today.addTransitions(msg.getData());
                 break;
             case JTTService.MSG_INVALIDATE:
                 Log.d(TAG, "Invalidate all");
