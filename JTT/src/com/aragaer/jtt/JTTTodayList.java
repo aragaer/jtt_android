@@ -20,14 +20,18 @@ import android.widget.TextView;
 
 public class JTTTodayList extends ListView {
     private static final String TAG = JTTTodayList.class.getSimpleName();
-
     private LinkedList<Long> transitions = new LinkedList<Long>();
+    private long prev_transition, next_transition;
+
+    /* true if we have requested transitions data and not got result yet */
+    private boolean expecting_data = false;
 
     /* sets a value to a text field */
     private final static void t(View v, int id, String t) {
         ((TextView) v.findViewById(id)).setText(t);
     }
 
+    /* A single item in TodayList */
     private static abstract class TodayItem {
         public final long time;
         abstract public View toView(Context c);
@@ -36,7 +40,7 @@ public class JTTTodayList extends ListView {
         }
     }
 
-    /* A single item in TodayList */
+    /* Hour item in TodayList */
     private static class HourItem extends TodayItem {
         public static int current;
         public static long next_transition;
@@ -110,6 +114,15 @@ public class JTTTodayList extends ListView {
                 ? R.plurals.days_past
                 : R.plurals.days_future, ddiff, ddiff);
         }
+
+        /* helper function
+         * converts ms timestamp to day number
+         * not useful by itself but can be used to find difference between days
+         */
+        private static final long ms_to_day(long t) {
+            t += TimeZone.getDefault().getOffset(t);
+            return t / JTT.ms_per_day;
+        }
     }
 
     private final TodayAdapter ta;
@@ -134,6 +147,7 @@ public class JTTTodayList extends ListView {
         long jdn = b.getLong("jdn");
         long sunrise = b.getLong("sunrise");
         long sunset = b.getLong("sunset");
+        expecting_data = false;
 
         if (transitions.isEmpty()) {
             transitions.add(sunrise);
@@ -167,9 +181,15 @@ public class JTTTodayList extends ListView {
 
     /* request transitions for given day from JTTService */
     private void getDay(long jdn) {
+        if (expecting_data) {
+            Log.wtf(TAG, "Transitions data requested while previous request is not yet handled");
+            return;
+        }
+
         Bundle b = new Bundle();
         b.putLong("jdn", jdn);
         Log.d(TAG, "Requesting transitions for day "+jdn);
+        expecting_data = true;
         main.send_msg_to_service(JTTService.MSG_TRANSITIONS, b);
     }
 
@@ -222,8 +242,6 @@ public class JTTTodayList extends ListView {
          * keep it
          */
 
-        HourItem.next_transition = transitions.get(pos + 1);
-
         /* exactly 4 transitions are used:
          * pos-1, pos, pos+1 and pos+2
          */
@@ -231,13 +249,20 @@ public class JTTTodayList extends ListView {
         for (int i = 0; i < 4; i++)
             l[i] = transitions.get(pos - 1 + i);
 
+        prev_transition = l[1];
+        HourItem.next_transition = next_transition = l[2];
+
         /* if it is day now then first interval is night */
         ta.buildItems(l, pos == 1);
     }
 
     public void setCurrent(int cur) {
+        long now = System.currentTimeMillis();
         HourItem.current = cur;
-        ta.notifyDataSetChanged();
+        if (now >= prev_transition && now < next_transition)
+            ta.notifyDataSetChanged();
+        else if (!expecting_data)
+            updateItems();
     }
 
     private static class TodayAdapter extends ArrayAdapter<TodayItem> {
@@ -248,6 +273,18 @@ public class JTTTodayList extends ListView {
         @Override
         public View getView(int position, View v, ViewGroup parent) {
             return getItem(position).toView(parent.getContext());
+        }
+
+        /* helper function
+         * accepts a time stamp
+         * returns a time stamp for the same time but next day
+         *
+         * simply adding 24 hours does not always work
+         */
+        private static final long add24h(long t) {
+            t += TimeZone.getDefault().getOffset(t);
+            t += JTT.ms_per_day;
+            return t - TimeZone.getDefault().getOffset(t);
         }
 
         /* takes a sublist of hours
@@ -265,7 +302,7 @@ public class JTTTodayList extends ListView {
             start_of_day -= TimeZone.getDefault().getOffset(start_of_day);
 
             add(new DayItem(start_of_day)); // List should start with one
-            start_of_day += JTT.ms_per_day;
+            start_of_day = add24h(start_of_day);
 
             int h_add = is_day ? 6 : 0;
 
@@ -278,7 +315,7 @@ public class JTTTodayList extends ListView {
                     long t = start + j * diff / 6;
                     if (t >= start_of_day) {
                         add(new DayItem(start_of_day));
-                        start_of_day += JTT.ms_per_day;
+                        start_of_day = add24h(start_of_day);
                     }
                     add(new HourItem(t, h_add + j));
                 }
@@ -290,14 +327,5 @@ public class JTTTodayList extends ListView {
         public boolean isEnabled(int pos) {
             return false;
         }
-    }
-
-    /* helper function
-     * converts ms timestamp to day number
-     * not useful by itself but can be used to find difference between days
-     */
-    private static final long ms_to_day(long t) {
-        t += TimeZone.getDefault().getOffset(t);
-        return t / JTT.ms_per_day;
     }
 }
