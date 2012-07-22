@@ -52,9 +52,8 @@ public class JTTService extends Service {
     public static final int MSG_STOP = 5;
     public static final int MSG_TRANSITIONS = 6;
     public static final int MSG_INVALIDATE = 7;
-    public static final int MSG_TRANSITION = 8;
-    public static final int MSG_SUBTICK = 9;
-    public static final int MSG_SYNC = 10;
+    public static final int MSG_SUBTICK = 8;
+    public static final int MSG_SYNC = 9;
 
     private int hour, sub;
 
@@ -154,8 +153,6 @@ public class JTTService extends Service {
 
     private void informClients(Message msg) {
         int i = mClients.size();
-        if (i == 0)
-            return;
         while (i-- > 0)
             try {
                 mClients.get(i).send(msg);
@@ -345,10 +342,10 @@ public class JTTService extends Service {
 
     private final void reset() {
         sleep();
+        transitions.clear();
         end_day = JTT.longToJDN(System.currentTimeMillis());
         start_day = end_day - 1;
-        long[] t = calculator.computeTr(end_day++);
-        for (long l : t)
+        for (long l : calculator.computeTr(end_day++))
             transitions.add(l);
         wake_up();
     }

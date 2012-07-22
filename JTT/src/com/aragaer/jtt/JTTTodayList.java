@@ -22,6 +22,7 @@ public class JTTTodayList extends ListView {
     private static final String TAG = JTTTodayList.class.getSimpleName();
     private LinkedList<Long> transitions = new LinkedList<Long>();
     private long prev_transition, next_transition;
+    static TimeZone tz = TimeZone.getDefault();
 
     /* true if we have requested transitions data and not got result yet */
     private boolean expecting_data = false;
@@ -120,7 +121,7 @@ public class JTTTodayList extends ListView {
          * not useful by itself but can be used to find difference between days
          */
         private static final long ms_to_day(long t) {
-            t += TimeZone.getDefault().getOffset(t);
+            t += tz.getOffset(t);
             return t / JTT.ms_per_day;
         }
     }
@@ -259,6 +260,13 @@ public class JTTTodayList extends ListView {
     public void setCurrent(int cur) {
         long now = System.currentTimeMillis();
         HourItem.current = cur;
+
+        /* Proper code to update timezone when it changed is quite complex
+         * The event itself is pretty rare
+         * Even if it breaks, restarting the app will fix that
+         */
+        tz = TimeZone.getDefault();
+
         if (now >= prev_transition && now < next_transition)
             ta.notifyDataSetChanged();
         else if (!expecting_data)
@@ -282,9 +290,9 @@ public class JTTTodayList extends ListView {
          * simply adding 24 hours does not always work
          */
         private static final long add24h(long t) {
-            t += TimeZone.getDefault().getOffset(t);
+            t += tz.getOffset(t);
             t += JTT.ms_per_day;
-            return t - TimeZone.getDefault().getOffset(t);
+            return t - tz.getOffset(t);
         }
 
         /* takes a sublist of hours
@@ -297,9 +305,9 @@ public class JTTTodayList extends ListView {
             long start_of_day = transitions[0];
 
             /* "aligning" code */
-            start_of_day += TimeZone.getDefault().getOffset(start_of_day);
+            start_of_day += tz.getOffset(start_of_day);
             start_of_day -= start_of_day % JTT.ms_per_day;
-            start_of_day -= TimeZone.getDefault().getOffset(start_of_day);
+            start_of_day -= tz.getOffset(start_of_day);
 
             add(new DayItem(start_of_day)); // List should start with one
             start_of_day = add24h(start_of_day);
