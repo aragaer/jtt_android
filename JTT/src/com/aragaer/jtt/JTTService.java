@@ -22,7 +22,10 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 public class JTTService extends Service {
     private static final String TAG = JTTService.class.getSimpleName();
@@ -43,7 +46,6 @@ public class JTTService extends Service {
     private long t_start, t_end;
 
     ArrayList<Messenger> mClients = new ArrayList<Messenger>();
-    // TODO: remove unused stuff
     public static final int MSG_TOGGLE_NOTIFY = 0;
     public static final int MSG_UPDATE_LOCATION = 1;
     public static final int MSG_REGISTER_CLIENT = 2;
@@ -134,11 +136,16 @@ public class JTTService extends Service {
         n.flags = flags_ongoing;
         n.iconLevel = hn;
         rv.setTextViewText(R.id.image, JTTHour.Glyphs[hn]);
+        rv.setTextColor(R.id.image, notification_text_color);
         rv.setTextViewText(R.id.title, hs.getHrOf(hn));
+        rv.setTextColor(R.id.title, notification_text_color);
         rv.setTextViewText(R.id.percent, String.format("%d%%", hf));
+        rv.setTextColor(R.id.percent, notification_text_color);
         rv.setProgressBar(R.id.fraction, 100, hf, false);
         rv.setTextViewText(R.id.start, df.format(t_start));
+        rv.setTextColor(R.id.start, notification_text_color);
         rv.setTextViewText(R.id.end, df.format(t_end));
+        rv.setTextColor(R.id.end, notification_text_color);
 
         n.contentIntent = pending_main;
         n.contentView = rv;
@@ -183,6 +190,22 @@ public class JTTService extends Service {
             sleep();
         }
     };
+    private Integer notification_text_color = null;
+
+    private boolean recurseGroup(ViewGroup gp) {
+        final int count = gp.getChildCount();
+        for (int i = 0; i < count; i++)
+            if (gp.getChildAt(i) instanceof TextView) {
+                final TextView text = (TextView) gp.getChildAt(i);
+                if (!TAG.equals(text.getText().toString()))
+                    continue;
+                notification_text_color = text.getTextColors().getDefaultColor();
+                return true;
+            }
+            else if (gp.getChildAt(i) instanceof ViewGroup)
+                return recurseGroup((ViewGroup) gp.getChildAt(i));
+        return false;
+    }
 
     @Override
     public void onStart(Intent intent, int startid) {
@@ -201,6 +224,17 @@ public class JTTService extends Service {
         nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (!notify)
             nm.cancel(APP_ID);
+
+        try {
+            Notification n = new Notification();
+            n.setLatestEventInfo(this, TAG, "Utest", null);
+            LinearLayout group = new LinearLayout(this);
+            ViewGroup event = (ViewGroup) n.contentView.apply(this, group);
+            recurseGroup(event);
+            group.removeAllViews();
+        } catch (Exception e) {
+            notification_text_color = android.R.color.black;
+        }
 
         IntentFilter wake = new IntentFilter(Intent.ACTION_SCREEN_ON);
         wake.addAction(Intent.ACTION_TIME_CHANGED);
