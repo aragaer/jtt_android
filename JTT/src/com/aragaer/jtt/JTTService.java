@@ -112,8 +112,7 @@ public class JTTService extends Service {
 
     private Message trans_msg(Message rq) {
         Message resp = Message.obtain(null, MSG_TRANSITIONS);
-        Long jdn = rq.getData().getLong("jdn");
-        Log.d(TAG, "got request for transitions for day "+jdn);
+        long jdn = rq.getData().getLong("jdn");
         Bundle b = new Bundle();
         long[] tr = calculator.computeTr(jdn);
         b.putLong("jdn", jdn);
@@ -347,6 +346,7 @@ public class JTTService extends Service {
         start_day = end_day - 1;
         for (long l : calculator.computeTr(end_day++))
             transitions.add(l);
+        sync = 0;
         wake_up();
     }
 }
