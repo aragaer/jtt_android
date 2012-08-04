@@ -71,7 +71,7 @@ public class JTTTodayList extends ListView {
 
             /* no need to check for previous transition */
             boolean is_current = hnum == current
-                        && System.currentTimeMillis() < next_transition;
+                        && time < next_transition;
 
             t(v, R.id.time, date);
             t(v, R.id.glyph, JTTHour.Glyphs[hnum]);
@@ -189,7 +189,6 @@ public class JTTTodayList extends ListView {
 
         Bundle b = new Bundle();
         b.putLong("jdn", jdn);
-        Log.d(TAG, "Requesting transitions for day "+jdn);
         expecting_data = true;
         main.send_msg_to_service(JTTService.MSG_TRANSITIONS, b);
     }
