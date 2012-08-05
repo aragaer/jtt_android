@@ -1,5 +1,6 @@
 package com.aragaer.jtt;
 
+import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import android.widget.TextView;
 
 public class JTTService extends Service {
     private static final String TAG = JTTService.class.getSimpleName();
-    private JTT calculator;
+    private final JTT calculator = new JTT(0, 0);
     private NotificationManager nm;
     private static final int flags_ongoing = Notification.FLAG_ONGOING_EVENT
             | Notification.FLAG_NO_CLEAR;
@@ -45,7 +46,6 @@ public class JTTService extends Service {
     private long start_day, end_day;
     private long t_start, t_end;
 
-    ArrayList<Messenger> mClients = new ArrayList<Messenger>();
     public static final int MSG_TOGGLE_NOTIFY = 0;
     public static final int MSG_UPDATE_LOCATION = 1;
     public static final int MSG_REGISTER_CLIENT = 2;
@@ -59,39 +59,49 @@ public class JTTService extends Service {
 
     private int hour, sub;
 
-    final Handler mHandler = new Handler() {
+    static class JTTHandler extends Handler {
+        ArrayList<Messenger> clients = new ArrayList<Messenger>();
+        private final WeakReference<JTTService> srv;
+        private final WeakReference<JTT> calc;
+
+        public JTTHandler(JTTService s) {
+            srv = new WeakReference<JTTService>(s);
+            calc = new WeakReference<JTT>(s.calculator);
+        }
+
         @Override
         public void handleMessage(Message msg) {
+            JTTService s = srv.get();
             switch (msg.what) {
             case MSG_TOGGLE_NOTIFY:
-                notify = msg.getData().getBoolean("notify");
-                if (notify)
-                    notify_helper(hour, sub);
+                s.notify = msg.getData().getBoolean("notify");
+                if (s.notify)
+                    s.notify_helper(s.hour, s.sub);
                 else
-                    nm.cancel(APP_ID);
+                    s.nm.cancel(APP_ID);
                 break;
             case MSG_UPDATE_LOCATION:
                 String ll[] = msg.getData().getString("latlon").split(":");
-                calculator.move(Float.parseFloat(ll[0]),
+                calc.get().move(Float.parseFloat(ll[0]),
                         Float.parseFloat(ll[1]));
-                reset();
+                s.reset();
                 informClients(Message.obtain(null, MSG_INVALIDATE));
                 break;
             case MSG_REGISTER_CLIENT:
                 try {
-                    msg.replyTo.send(Message.obtain(null, MSG_HOUR, hour,
-                            sub));
-                    mClients.add(msg.replyTo);
+                    msg.replyTo.send(Message.obtain(null, MSG_HOUR, s.hour,
+                            s.sub));
+                    clients.add(msg.replyTo);
                 } catch (RemoteException e) {
                     Log.w(TAG, "Client registered but failed to get data");
                 }
                 break;
             case MSG_UNREGISTER_CLIENT:
-                mClients.remove(msg.replyTo);
+                clients.remove(msg.replyTo);
                 break;
             case MSG_STOP:
-                force_stop = true;
-                stopSelf();
+                s.force_stop = true;
+                s.stopSelf();
                 break;
             case MSG_TRANSITIONS:
                 try {
@@ -101,28 +111,43 @@ public class JTTService extends Service {
                 }
                 break;
             case MSG_SYNC:
-                wake_up();
+                s.wake_up();
                 break;
             default:
                 super.handleMessage(msg);
                 break;
             }
         }
+
+        public void informClients(Message msg) {
+            int i = clients.size();
+            while (i-- > 0)
+                try {
+                    clients.get(i).send(msg);
+                } catch (RemoteException e) {
+                    /*
+                     * The client is dead. Remove it from the list; we are going
+                     * through the list from back to front so this is safe to do
+                     * inside the loop.
+                     */
+                    clients.remove(i);
+                }
+        }
+
+        private Message trans_msg(Message rq) {
+            Message resp = Message.obtain(null, MSG_TRANSITIONS);
+            Bundle b = new Bundle(rq.getData());
+            long jdn = b.getLong("jdn");
+            long[] tr = calc.get().computeTr(jdn);
+            b.putLong("sunrise", tr[0]);
+            b.putLong("sunset", tr[1]);
+            resp.setData(b);
+            return resp;
+        }
     };
 
-    final Messenger mMessenger = new Messenger(mHandler);
-
-    private Message trans_msg(Message rq) {
-        Message resp = Message.obtain(null, MSG_TRANSITIONS);
-        long jdn = rq.getData().getLong("jdn");
-        Bundle b = new Bundle();
-        long[] tr = calculator.computeTr(jdn);
-        b.putLong("jdn", jdn);
-        b.putLong("sunrise", tr[0]);
-        b.putLong("sunset", tr[1]);
-        resp.setData(b);
-        return resp;
-    }
+    final JTTHandler handler = new JTTHandler(this);
+    final Messenger messenger = new Messenger(handler);
 
     private String app_name;
     private static final DateFormat df = new SimpleDateFormat("HH:mm");
@@ -154,27 +179,12 @@ public class JTTService extends Service {
     private void doNotify(int n, int f, int event) {
         if (notify)
             notify_helper(n, f);
-        informClients(Message.obtain(null, event, n, f));
-    }
-
-    private void informClients(Message msg) {
-        int i = mClients.size();
-        while (i-- > 0)
-            try {
-                mClients.get(i).send(msg);
-            } catch (RemoteException e) {
-                /*
-                 * The client is dead. Remove it from the list; we are going
-                 * through the list from back to front so this is safe to do
-                 * inside the loop.
-                 */
-                mClients.remove(i);
-            }
+        handler.informClients(Message.obtain(null, event, n, f));
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        return mMessenger.getBinder();
+        return messenger.getBinder();
     }
 
     private final BroadcastReceiver on = new BroadcastReceiver() {
@@ -213,8 +223,7 @@ public class JTTService extends Service {
         SharedPreferences settings = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
         String[] ll = settings.getString("jtt_loc", "0.0:0.0").split(":");
-
-        calculator = new JTT(Float.parseFloat(ll[0]), Float.parseFloat(ll[1]));
+        calculator.move(Float.parseFloat(ll[0]), Float.parseFloat(ll[1]));
 
         Intent JTTMain = new Intent(getBaseContext(), JTTMainActivity.class);
         pending_main = PendingIntent.getActivity(this, 0, JTTMain, 0);
@@ -299,7 +308,7 @@ public class JTTService extends Service {
         int isDay;
 
         /* do not want more than one message being in the system */
-        mHandler.removeMessages(MSG_SYNC);
+        handler.removeMessages(MSG_SYNC);
         while (true) { // we are likely to pass this loop only once
             long[] t = null;
             int len = transitions.size();
@@ -355,7 +364,7 @@ public class JTTService extends Service {
             handle_tick(hour, sub);
         } else if (sub < exp_sub) {
             if (hour % 6 != exp_tick) { // sync should belong to this tick interval
-                Log.wtf(TAG, "current tick is "+(hour % 6)+", expected "+exp_tick);
+                Log.e(TAG, "current tick is "+(hour % 6)+", expected "+exp_tick);
                 hour = exp_tick + isDay * 6;
             }
             sub = exp_sub;
@@ -366,11 +375,11 @@ public class JTTService extends Service {
         /* doesn't matter if next_sub < sync
          * negative delay is perfectly valid and means that trigger will happen immediately
          */
-        mHandler.sendEmptyMessageDelayed(MSG_SYNC, next_sub - sync);
+        handler.sendEmptyMessageDelayed(MSG_SYNC, next_sub - sync);
     }
 
     private final void sleep() {
-        mHandler.removeMessages(MSG_SYNC);
+        handler.removeMessages(MSG_SYNC);
     }
 
     private final void reset() {

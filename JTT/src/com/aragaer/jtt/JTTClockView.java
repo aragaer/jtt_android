@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.FloatMath;
 import android.widget.TextView;
 
 public class JTTClockView extends TextView {
@@ -22,6 +23,7 @@ public class JTTClockView extends TextView {
     private Bitmap clock;
     private JTTHour hour = new JTTHour(0);
     private JTTHour.StringsHelper hs;
+    private final Matrix m = new Matrix();
 
     public JTTClockView(Context context) {
         this(context, null, 0);
@@ -53,7 +55,7 @@ public class JTTClockView extends TextView {
 
         if (clock.isRecycled())
             clock = drawBitmap(hour.num, size);
-        final Matrix m = new Matrix();
+        m.reset();
         m.setTranslate(v ? 0 : 3 * w / 5 - size, v ? 3 * h / 5 - size : 0);
         m.preRotate(step * (0.5f - hour.num) - gap - (step - gap * 2)
                 * hour.fraction / 100.0f, size, size);
@@ -140,14 +142,14 @@ public class JTTClockView extends TextView {
         final int arc_end = -90 + Math.round(step / 2 - gap);
         final int arc_len = arc_end - arc_start;
 
-        final double start = Math.toRadians(arc_start);
-        final double end = Math.toRadians(arc_end);
-        final float l2x = c + (float) Math.cos(start) * iR;
-        final float l2y = c + (float) Math.sin(start) * iR;
-        final float l1x = c + (float) Math.cos(end) * oR;
-        final float l1y = c + (float) Math.sin(end) * oR;
-        final float l1xs = c + (float) Math.cos(end) * selR;
-        final float l1ys = c + (float) Math.sin(end) * selR;
+        final float start = (float) Math.toRadians(arc_start);
+        final float end = (float) Math.toRadians(arc_end);
+        final float l2x = c + FloatMath.cos(start) * iR;
+        final float l2y = c + FloatMath.sin(start) * iR;
+        final float l1x = c + FloatMath.cos(end) * oR;
+        final float l1y = c + FloatMath.sin(end) * oR;
+        final float l1xs = c + FloatMath.cos(end) * selR;
+        final float l1ys = c + FloatMath.sin(end) * selR;
 
         for (int hr = 0; hr < 12; hr++) {
             final Path path = new Path();
