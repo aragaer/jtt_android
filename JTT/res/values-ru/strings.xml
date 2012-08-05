@@ -65,4 +65,6 @@
     <string name="hour_of_horse">Час Лошади</string>
     <string name="hour_of_ram">Час Овцы</string>
     <string name="hour_of_monkey">Час Обезьяны</string>
+
+    <string name="no_providers">Не удается определить местоположение. Пожалуйста, включите GPS.</string>
 </resources>

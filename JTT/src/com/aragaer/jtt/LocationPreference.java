@@ -1,5 +1,6 @@
 package com.aragaer.jtt;
 
+import android.R.bool;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -11,12 +12,14 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LocationPreference extends DialogPreference implements
         LocationListener, TextWatcher {
@@ -108,6 +111,7 @@ public class LocationPreference extends DialogPreference implements
     }
 
     private void acquireLocation() {
+        boolean got_provider = false;
         lm = (LocationManager) getContext().getSystemService(
                 Context.LOCATION_SERVICE);
 
@@ -119,8 +123,21 @@ public class LocationPreference extends DialogPreference implements
         if (last != null)
             makeUseOfNewLocation(last, false);
 
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+        try {
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+            got_provider = true;
+        } catch (IllegalArgumentException e) {
+            Log.d("LocationPref", "No GPS provider");
+        }
+        try {
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            got_provider = true;
+        } catch (IllegalArgumentException e) {
+            Log.d("LocationPref", "No network provider");
+        }
+
+        if (!got_provider)
+            Toast.makeText(getContext(), R.string.no_providers, Toast.LENGTH_SHORT).show();
     }
 
     public void onLocationChanged(Location location) {

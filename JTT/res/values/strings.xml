@@ -63,4 +63,6 @@
     <string name="hour_of_horse">Hour of the Horse</string>
     <string name="hour_of_ram">Hour of the Ram</string>
     <string name="hour_of_monkey">Hour of the Monkey</string>
+
+    <string name="no_providers">No location providers found. Please enable GPS.</string>
 </resources>
