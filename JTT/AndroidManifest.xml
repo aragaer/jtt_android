@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aragaer.jtt"
-    android:versionCode="8"
-    android:versionName="1.3.1.1" >
+    android:versionCode="9"
+    android:versionName="1.3.2" >
 
     <uses-sdk android:minSdkVersion="4"
-        android:targetSdkVersion="8"/>
+        android:targetSdkVersion="9"/>
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -35,6 +35,7 @@
 
         <service
             android:name=".JTTService"
+            android:exported="false"
             android:process=":remote" >
             <intent-filter>
                 <action android:name="com.aragaer.jtt.JTTService" />
