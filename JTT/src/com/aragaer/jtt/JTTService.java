@@ -17,6 +17,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LightingColorFilter;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -192,9 +199,34 @@ public class JTTService extends Service {
         if (N == 0)
             return;
 
-        rv.setImageViewBitmap(R.id.clock, JTTClockView.drawRotatedBitmap(this, n, f, 2, hs.getHour(n)));
-        for (int i = 0; i < N; i++)
-            awm.updateAppWidget(ids[i], rv);
+        rv = new RemoteViews(getApplicationContext().getPackageName(), R.layout.widget);
+        rv.setTextViewText(R.id.glyph, JTTHour.Glyphs[n]);
+        rv.setImageViewBitmap(R.id.clock, drawProgress(f));
+        for (int i : ids)
+            awm.updateAppWidget(i, rv);
+    }
+
+    /* FIXME: this is turning into god object! */
+    Bitmap drawProgress(int f) {
+        Paint p = new Paint();
+        p.setAntiAlias(true);
+        p.setFilterBitmap(true);
+        p.setDither(true);
+        p.setStyle(Paint.Style.FILL);
+        p.setColor(Color.parseColor(getString(R.color.fill)));
+        p.setShadowLayer(10f, 0, 0, Color.BLACK);
+        p.setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xFFCCCCCC));
+
+        Bitmap result = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(result);
+        final Path path = new Path();
+
+        path.addArc(new RectF(20, 20, 60, 60), f * 3.6f - 90, -f * 3.6f);
+        path.arcTo(new RectF(10, 10, 70, 70), -90, f * 3.6f);
+//        path.close();
+
+        c.drawPath(path, p);
+        return result;
     }
 
     @Override
@@ -216,6 +248,8 @@ public class JTTService extends Service {
     };
     private Integer notification_text_color = null;
 
+    /* used to detect notification text color */
+    /* TODO: make it simpler */
     private boolean recurseGroup(ViewGroup gp) {
         final int count = gp.getChildCount();
         for (int i = 0; i < count; i++)

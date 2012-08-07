@@ -5,10 +5,17 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 public class JTTWidgetProvider extends AppWidgetProvider {
+    @Override
+    public void onEnabled(Context ctx) {
+        Log.d("Widget", "Another widget added");
+    }
+    
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        Log.d("Widget", "widgets updated");
         final int N = appWidgetIds.length;
 
         for (int i = 0; i < N; i++) {
