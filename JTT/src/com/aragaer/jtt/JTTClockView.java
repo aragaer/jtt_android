@@ -55,6 +55,7 @@ public class JTTClockView extends TextView {
 
         if (clock.isRecycled())
             clock = drawBitmap(hour.num, size);
+
         m.reset();
         m.setTranslate(v ? 0 : 3 * w / 5 - size, v ? 3 * h / 5 - size : 0);
         m.preRotate(step * (0.5f - hour.num) - gap - (step - gap * 2)
@@ -167,6 +168,32 @@ public class JTTClockView extends TextView {
             canvas.drawText(JTTHour.Glyphs[hr], c, glyph_y, mStrokePaint);
             canvas.rotate(step, c, c);
         }
+
+        return result;
+    }
+
+    public static Bitmap drawRotatedBitmap(Context c, int n, int f, int tiles, String text) {
+        final int size = Math.round((70 * tiles - 30) * c.getResources().getDisplayMetrics().density);
+
+        JTTClockView jcv = new JTTClockView(c);
+        jcv.mSolidPaint.setTextSize(size / 5);
+        jcv.mStrokePaint.setTextSize(size / 5);
+
+        Bitmap result = Bitmap.createBitmap(size * 2, size * 2,
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        final Matrix m = new Matrix();
+        m.preRotate(step * (0.5f - n) - gap - (step - gap * 2)
+                * f / 100.0f, size, size);
+        canvas.drawBitmap(jcv.drawBitmap(n, size), m, jcv.mStrokePaint2);
+        canvas.drawText("▽", size, size / 8, jcv.mStrokePaint);
+        if (text != null) {
+            Paint p = new Paint(jcv.mStrokePaint);
+            p.setTextSize(size / 4);
+            p.setShadowLayer(size/40, 0, 0, Color.WHITE);
+            canvas.drawText(text, size, size + size / 60, p);
+        }
+        canvas.drawText("▼", size, size / 8, jcv.mSolidPaint);
 
         return result;
     }

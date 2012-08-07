@@ -11,6 +11,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -34,6 +36,8 @@ public class JTTService extends Service {
     private NotificationManager nm;
     private static final int flags_ongoing = Notification.FLAG_ONGOING_EVENT
             | Notification.FLAG_NO_CLEAR;
+    private AppWidgetManager awm;
+    private RemoteViews rv;
     private static final int APP_ID = 0;
 
     private PendingIntent pending_main;
@@ -175,11 +179,22 @@ public class JTTService extends Service {
         n.contentView = rv;
         nm.notify(APP_ID, n);
     }
+    
+    private static final ComponentName JTT_WIDGET = new ComponentName("com.aragaer.jtt", "com.aragaer.jtt.JTTWidgetProvider");
 
     private void doNotify(int n, int f, int event) {
         if (notify)
             notify_helper(n, f);
         handler.informClients(Message.obtain(null, event, n, f));
+
+        final int[] ids = awm.getAppWidgetIds(JTT_WIDGET);
+        final int N = ids.length;
+        if (N == 0)
+            return;
+
+        rv.setImageViewBitmap(R.id.clock, JTTClockView.drawRotatedBitmap(this, n, f, 2, hs.getHour(n)));
+        for (int i = 0; i < N; i++)
+            awm.updateAppWidget(ids[i], rv);
     }
 
     @Override
@@ -232,6 +247,10 @@ public class JTTService extends Service {
         nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (!notify)
             nm.cancel(APP_ID);
+        
+        awm = AppWidgetManager.getInstance(getApplicationContext());
+        rv = new RemoteViews(getApplicationContext().getPackageName(), R.layout.widget);
+        rv.setOnClickPendingIntent(R.id.clock, pending_main);
 
         try {
             Notification n = new Notification();
