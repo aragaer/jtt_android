@@ -11,19 +11,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.LightingColorFilter;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -43,8 +34,6 @@ public class JTTService extends Service {
     private NotificationManager nm;
     private static final int flags_ongoing = Notification.FLAG_ONGOING_EVENT
             | Notification.FLAG_NO_CLEAR;
-    private AppWidgetManager awm;
-    private RemoteViews rv;
     private static final int APP_ID = 0;
 
     private PendingIntent pending_main;
@@ -159,6 +148,7 @@ public class JTTService extends Service {
 
     final JTTHandler handler = new JTTHandler(this);
     final Messenger messenger = new Messenger(handler);
+    final Handler widgets = JTTWidgetProvider.widgetsMessenger(this);
 
     private String app_name;
     private static final DateFormat df = new SimpleDateFormat("HH:mm");
@@ -187,46 +177,13 @@ public class JTTService extends Service {
         nm.notify(APP_ID, n);
     }
     
-    private static final ComponentName JTT_WIDGET = new ComponentName("com.aragaer.jtt", "com.aragaer.jtt.JTTWidgetProvider");
-
     private void doNotify(int n, int f, int event) {
         if (notify)
             notify_helper(n, f);
-        handler.informClients(Message.obtain(null, event, n, f));
 
-        final int[] ids = awm.getAppWidgetIds(JTT_WIDGET);
-        final int N = ids.length;
-        if (N == 0)
-            return;
-
-        rv = new RemoteViews(getApplicationContext().getPackageName(), R.layout.widget);
-        rv.setTextViewText(R.id.glyph, JTTHour.Glyphs[n]);
-        rv.setImageViewBitmap(R.id.clock, drawProgress(f));
-        for (int i : ids)
-            awm.updateAppWidget(i, rv);
-    }
-
-    /* FIXME: this is turning into god object! */
-    Bitmap drawProgress(int f) {
-        Paint p = new Paint();
-        p.setAntiAlias(true);
-        p.setFilterBitmap(true);
-        p.setDither(true);
-        p.setStyle(Paint.Style.FILL);
-        p.setColor(Color.parseColor(getString(R.color.fill)));
-        p.setShadowLayer(10f, 0, 0, Color.BLACK);
-        p.setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xFFCCCCCC));
-
-        Bitmap result = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(result);
-        final Path path = new Path();
-
-        path.addArc(new RectF(20, 20, 60, 60), f * 3.6f - 90, -f * 3.6f);
-        path.arcTo(new RectF(10, 10, 70, 70), -90, f * 3.6f);
-//        path.close();
-
-        c.drawPath(path, p);
-        return result;
+        Message m = Message.obtain(null, event, n, f);
+        handler.informClients(m);
+        widgets.sendMessage(m);
     }
 
     @Override
@@ -282,10 +239,6 @@ public class JTTService extends Service {
         if (!notify)
             nm.cancel(APP_ID);
         
-        awm = AppWidgetManager.getInstance(getApplicationContext());
-        rv = new RemoteViews(getApplicationContext().getPackageName(), R.layout.widget);
-        rv.setOnClickPendingIntent(R.id.clock, pending_main);
-
         try {
             Notification n = new Notification();
             n.setLatestEventInfo(this, TAG, "Utest", null);
