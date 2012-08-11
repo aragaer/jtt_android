@@ -14,6 +14,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.Path.Direction;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.RemoteViews;
@@ -59,17 +60,24 @@ public class JTTWidgetProvider {
             p.setFilterBitmap(true);
             p.setDither(true);
             p.setStyle(Paint.Style.FILL);
-            p.setColor(Color.parseColor(ctx.getString(R.color.fill)));
-            p.setShadowLayer(10f, 0, 0, Color.BLACK);
-            p.setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xFFCCCCCC));
+            p.setColor(Color.TRANSPARENT);
+            p.setShadowLayer(10f, 0, 0, Color.parseColor(ctx.getString(R.color.night)));
 
             Bitmap result = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(result);
             final Path path = new Path();
 
+            path.addCircle(40, 40, 20, Direction.CW);
+            path.addCircle(40, 40, 30, Direction.CCW);
+            c.drawPath(path, p);
+            path.reset();
+            
+            p.setColor(Color.parseColor(ctx.getString(R.color.fill)));
+            p.clearShadowLayer();
+            p.setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xFFCCCCCC));
+
             path.addArc(new RectF(20, 20, 60, 60), f * 3.6f - 90, -f * 3.6f);
             path.arcTo(new RectF(10, 10, 70, 70), -90, f * 3.6f);
-
             c.drawPath(path, p);
             return result;
         }
@@ -95,7 +103,13 @@ public class JTTWidgetProvider {
                 awm.updateAppWidget(id, rv);
         }
 
-        public void onUpdate(Context ctx, AppWidgetManager awm, int[] ids) {  }
+        public void onUpdate(Context ctx, AppWidgetManager awm, int[] ids) {
+            onTick(ctx, 0, 0);
+        }
+
+        public void onEnabled(Context ctx) {
+            onTick(ctx, 0, 0);
+        }
     }
 
     /* Widget showing 12 hours */
@@ -133,13 +147,18 @@ public class JTTWidgetProvider {
             return result;
         }
 
-        static int prev_h = -1;
+        static int prev_h = -1, prev_f = 0;
         static private void onTick(Context ctx, int n, int f) {
             if (awm == null) {
                 awm = AppWidgetManager.getInstance(ctx.getApplicationContext());
                 hs = new JTTHour.StringsHelper(ctx);
                 jcv = new JTTClockView(ctx);
                 size = Math.round(110 * ctx.getResources().getDisplayMetrics().density);
+            }
+
+            if (prev_h != n) {
+                prev_h = n;
+                jcv.clock.recycle();
             }
 
             final int[] ids = awm.getAppWidgetIds(JTT_WIDGET12);
@@ -149,10 +168,7 @@ public class JTTWidgetProvider {
             Intent intent = new Intent(ctx, JTTMainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, intent, 0);
 
-            if (prev_h != n) {
-                prev_h = n;
-                jcv.clock.recycle();
-            }
+            prev_f = f;
             Bitmap bmp = drawRotatedBitmap(n, f, hs.getHour(n)); 
 
             RemoteViews rv = new RemoteViews(ctx.getPackageName(), R.layout.widget);
@@ -163,6 +179,12 @@ public class JTTWidgetProvider {
                 awm.updateAppWidget(id, rv);
         }
 
-        public void onUpdate(Context ctx, AppWidgetManager awm, int[] ids) {  }
+        public void onUpdate(Context ctx, AppWidgetManager awm, int[] ids) {
+            onTick(ctx, prev_h >= 0 ? prev_h : 0, prev_f);
+        }
+
+        public void onEnabled(Context ctx) {
+            onTick(ctx, prev_h >= 0 ? prev_h : 0, prev_f);
+        }
     }
 }

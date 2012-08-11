@@ -67,4 +67,6 @@
     <string name="hour_of_monkey">Час Обезьяны</string>
 
     <string name="no_providers">Не удается определить местоположение. Пожалуйста, включите GPS.</string>
+    <string name="widget1">JTT: Один час</string>
+    <string name="widget12">JTT: Циферблат</string>
 </resources>

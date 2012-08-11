@@ -65,4 +65,6 @@
     <string name="hour_of_monkey">Hour of the Monkey</string>
 
     <string name="no_providers">No location providers found. Please enable GPS.</string>
+    <string name="widget1">JTT: Single hour</string>
+    <string name="widget12">JTT: Clock</string>
 </resources>

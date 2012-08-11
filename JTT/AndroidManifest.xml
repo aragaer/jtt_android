@@ -5,7 +5,7 @@
     android:versionName="1.3.2" >
 
     <uses-sdk android:minSdkVersion="4"
-        android:targetSdkVersion="11"/>
+        android:targetSdkVersion="8"/>
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -49,12 +49,24 @@
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
-        <receiver android:name="JTTWidgetProvider$Widget1" >
+        <receiver android:name="JTTWidgetProvider$Widget1"
+                android:icon="@drawable/widget1"
+                android:label="@string/widget1">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget1" />
         </receiver>
-        <receiver android:name="JTTWidgetProvider$Widget12" >
+        <receiver android:name="JTTWidgetProvider$Widget12"
+                android:icon="@drawable/widget12"
+                android:label="@string/widget12">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget12" />
