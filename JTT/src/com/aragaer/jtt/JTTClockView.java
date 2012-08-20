@@ -16,13 +16,13 @@ import android.widget.TextView;
 public class JTTClockView extends TextView {
     private final static int step = 360 / 12;
     private final static float gap = 1.5f;
-    protected final Paint stroke1 = new Paint();
-    protected final Paint stroke2 = new Paint();
-    protected final Paint solid1 = new Paint();
-    protected final Paint solid2 = new Paint();
+    protected final Paint stroke1 = new Paint(0x01),
+            stroke2 = new Paint(0x07),
+            solid1 = new Paint(0x01),
+            solid2 = new Paint(0x01);
     protected Bitmap clock;
     private JTTHour hour = new JTTHour(0);
-    private JTTHour.StringsHelper hs;
+    private final JTTHour.StringsHelper hs;
     private final Matrix m = new Matrix();
 
     public JTTClockView(Context context) {
@@ -74,26 +74,19 @@ public class JTTClockView extends TextView {
     }
 
     private final void setupPaint(Context ctx) {
-        LightingColorFilter f = new LightingColorFilter(0xFFFFFFFF, 0xFFCCCCCC);
-        stroke1.setAntiAlias(true);
         stroke1.setStyle(Paint.Style.STROKE);
         stroke1.setTextAlign(Paint.Align.CENTER);
         stroke1.setColor(Color.parseColor(ctx.getString(R.color.stroke)));
 
-        stroke2.setAntiAlias(true);
-        stroke2.setFilterBitmap(true);
-        stroke2.setDither(true);
         stroke2.setTextAlign(Paint.Align.CENTER);
         stroke2.setStyle(Paint.Style.STROKE);
         stroke2.setColor(Color.WHITE);
 
-        solid1.setAntiAlias(true);
         solid1.setStyle(Paint.Style.FILL);
         solid1.setTextAlign(Paint.Align.CENTER);
         solid1.setColor(Color.parseColor(ctx.getString(R.color.fill)));
-        solid1.setColorFilter(f);
+        solid1.setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xFFCCCCCC));
 
-        solid2.setAntiAlias(true);
         solid2.setStyle(Paint.Style.FILL);
         solid2.setTextAlign(Paint.Align.CENTER);
         solid2.setColor(Color.parseColor(ctx.getString(R.color.night)));
@@ -144,21 +137,15 @@ public class JTTClockView extends TextView {
         final int arc_len = arc_end - arc_start;
 
         final float start = (float) Math.toRadians(arc_start);
-        final float end = (float) Math.toRadians(arc_end);
         final float l2x = c + FloatMath.cos(start) * iR;
         final float l2y = c + FloatMath.sin(start) * iR;
-        final float l1x = c + FloatMath.cos(end) * oR;
-        final float l1y = c + FloatMath.sin(end) * oR;
-        final float l1xs = c + FloatMath.cos(end) * selR;
-        final float l1ys = c + FloatMath.sin(end) * selR;
 
         for (int hr = 0; hr < 12; hr++) {
             final Path path = new Path();
             final boolean current = hr == num;
 
             path.addArc(inner, arc_start, arc_len);
-            path.lineTo(current ? l1xs : l1x, current ? l1ys : l1y);
-            path.addArc(current ? sel : outer, arc_end, -arc_len);
+            path.arcTo(current ? sel : outer, arc_end, -arc_len);
             path.lineTo(l2x, l2y);
             canvas.drawPath(path, solid1);
             canvas.drawPath(path, stroke1);
@@ -172,9 +159,13 @@ public class JTTClockView extends TextView {
         return result;
     }
 
+    private static final int granularity = 10;
     public void setJTTHour(JTTHour new_hour) {
         if (hour.num != new_hour.num)
             clock.recycle();
+        new_hour.fraction -= new_hour.fraction % granularity;
+        if (hour.num == new_hour.num && hour.fraction == new_hour.fraction)
+            return; // do nothing
         hour = new_hour;
         invalidate();
     }
