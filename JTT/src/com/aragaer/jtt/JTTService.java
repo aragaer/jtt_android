@@ -23,6 +23,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RemoteViews;
@@ -203,23 +204,22 @@ public class JTTService extends Service {
             sleep();
         }
     };
-    private Integer notification_text_color = null;
+
+    private int notification_text_color;
 
     /* used to detect notification text color */
-    /* TODO: make it simpler */
-    private boolean recurseGroup(ViewGroup gp) {
+    private static final int getNotificationColor(ViewGroup gp) {
         final int count = gp.getChildCount();
-        for (int i = 0; i < count; i++)
-            if (gp.getChildAt(i) instanceof TextView) {
-                final TextView text = (TextView) gp.getChildAt(i);
-                if (!TAG.equals(text.getText().toString()))
-                    continue;
-                notification_text_color = text.getTextColors().getDefaultColor();
-                return true;
-            }
-            else if (gp.getChildAt(i) instanceof ViewGroup)
-                return recurseGroup((ViewGroup) gp.getChildAt(i));
-        return false;
+        for (int i = 0; i < count; i++) {
+            View v = gp.getChildAt(i);
+            if (v instanceof TextView) {
+                final TextView text = (TextView) v;
+                if (TAG.equals(text.getText().toString()))
+                    return text.getTextColors().getDefaultColor();
+            } else if (v instanceof ViewGroup)
+                return getNotificationColor((ViewGroup) v);
+        }
+        return android.R.color.black;
     }
 
     @Override
@@ -236,15 +236,17 @@ public class JTTService extends Service {
         notify = settings.getBoolean("jtt_notify", true);
         app_name = getString(R.string.app_name);
         nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        startForeground(APP_ID, null);
+
         if (!notify)
             nm.cancel(APP_ID);
-        
+
         try {
             Notification n = new Notification();
-            n.setLatestEventInfo(this, TAG, "Utest", null);
+            n.setLatestEventInfo(this, TAG, "", null);
             LinearLayout group = new LinearLayout(this);
-            ViewGroup event = (ViewGroup) n.contentView.apply(this, group);
-            recurseGroup(event);
+            notification_text_color = getNotificationColor((ViewGroup) n.contentView.apply(this, group));
             group.removeAllViews();
         } catch (Exception e) {
             notification_text_color = android.R.color.black;
@@ -293,14 +295,6 @@ public class JTTService extends Service {
                     .getBoolean("jtt_bootup", true))
                 context.startService(new Intent(context, JTTService.class));
         }
-    }
-
-    void handle_tick(int tick, int sub) {
-        doNotify(tick, sub, MSG_HOUR);
-    }
-
-    void handle_sub(int tick, int sub) {
-        doNotify(tick, sub, MSG_SUBTICK);
     }
 
     private final static int ticks = 6;
@@ -367,14 +361,14 @@ public class JTTService extends Service {
                 || now < sync) {          // time went backwards!
             hour = exp_tick + isDay * 6;
             sub = exp_sub;
-            handle_tick(hour, sub);
+            doNotify(hour, sub, MSG_HOUR);
         } else if (sub < exp_sub) {
             if (hour % 6 != exp_tick) { // sync should belong to this tick interval
                 Log.e(TAG, "current tick is "+(hour % 6)+", expected "+exp_tick);
                 hour = exp_tick + isDay * 6;
             }
             sub = exp_sub;
-            handle_sub(hour, sub);
+            doNotify(hour, sub, MSG_SUBTICK);
         }
 
         sync = System.currentTimeMillis();
