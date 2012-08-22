@@ -152,7 +152,6 @@ public class JTTService extends Service {
 
     final JTTHandler handler = new JTTHandler(this);
     final Messenger messenger = new Messenger(handler);
-    final Handler widgets = JTTWidgetProvider.widgetsMessenger(this);
 
     private String app_name;
     private static final DateFormat df = new SimpleDateFormat("HH:mm");
@@ -192,7 +191,6 @@ public class JTTService extends Service {
 
         Message m = Message.obtain(null, event, n, f);
         handler.informClients(m);
-        widgets.sendMessage(m);
     }
 
     @Override
