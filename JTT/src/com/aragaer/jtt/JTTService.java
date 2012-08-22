@@ -30,6 +30,7 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 public class JTTService extends Service {
+    public final static String TICK_ACTION = "com.aragaer.jtt.ACTION_JTT_TICK";
     private static final String TAG = JTTService.class.getSimpleName();
     private final JTT calculator = new JTT(0, 0);
     private NotificationManager nm;
@@ -57,6 +58,8 @@ public class JTTService extends Service {
     public static final int MSG_INVALIDATE = 7;
     public static final int MSG_SUBTICK = 8;
     public static final int MSG_SYNC = 9;
+
+    private final static Intent TickAction = new Intent();
 
     private int hour, sub;
 
@@ -182,6 +185,11 @@ public class JTTService extends Service {
         if (notify)
             notify_helper(n, f);
 
+        TickAction.putExtra("hour", n);
+        TickAction.putExtra("fraction", f);
+
+        sendBroadcast(TickAction);
+
         Message m = Message.obtain(null, event, n, f);
         handler.informClients(m);
         widgets.sendMessage(m);
@@ -259,6 +267,8 @@ public class JTTService extends Service {
         wake.addAction(Intent.ACTION_DATE_CHANGED);
         registerReceiver(on, wake);
         registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+
+        TickAction.setAction(TICK_ACTION);
 
         reset();
     }
