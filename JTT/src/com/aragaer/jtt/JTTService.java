@@ -38,14 +38,14 @@ public class JTTService extends Service {
     private static final int APP_ID = 0;
 
     private PendingIntent pending_main;
-    private JTTHour.StringsHelper hs;
+    private JTTHour.StringsHelper hs = null;
 
     private boolean notify, force_stop = false;
 
     private long sync = 0;
     protected ArrayList<Long> transitions = new ArrayList<Long>();
     private long start_day, end_day;
-    private long t_start, t_end;
+    private String t_start, t_end;
 
     public static final int MSG_TOGGLE_NOTIFY = 0;
     public static final int MSG_UPDATE_LOCATION = 1;
@@ -168,9 +168,9 @@ public class JTTService extends Service {
         rv.setTextViewText(R.id.percent, String.format("%d%%", hf));
         rv.setTextColor(R.id.percent, notification_text_color);
         rv.setProgressBar(R.id.fraction, 100, hf, false);
-        rv.setTextViewText(R.id.start, df.format(t_start));
+        rv.setTextViewText(R.id.start, t_start);
         rv.setTextColor(R.id.start, notification_text_color);
-        rv.setTextViewText(R.id.end, df.format(t_end));
+        rv.setTextViewText(R.id.end, t_end);
         rv.setTextColor(R.id.end, notification_text_color);
 
         n.contentIntent = pending_main;
@@ -224,6 +224,8 @@ public class JTTService extends Service {
 
     @Override
     public void onStart(Intent intent, int startid) {
+        if (hs != null) // already working!
+            return;
         Log.i(TAG, "Service starting");
         hs = new JTTHour.StringsHelper(this);
         SharedPreferences settings = PreferenceManager
@@ -354,13 +356,13 @@ public class JTTService extends Service {
         int exp_tick = exp_total / subs;
         int exp_sub = exp_total % subs;
         long next_sub = start + Math.round(sublen * (exp_total + 1));
-        t_start = start + (end - start) * exp_tick / ticks;
-        t_end = start + (end - start) * (exp_tick + 1) / ticks;
 
         if (now - sync > exp_sub * sublen // sync belongs to previous tick interval
                 || now < sync) {          // time went backwards!
             hour = exp_tick + isDay * 6;
             sub = exp_sub;
+            t_start = df.format(start + (end - start) * exp_tick / ticks);
+            t_end = df.format(start + (end - start) * (exp_tick + 1) / ticks);
             doNotify(hour, sub, MSG_HOUR);
         } else if (sub < exp_sub) {
             if (hour % 6 != exp_tick) { // sync should belong to this tick interval
