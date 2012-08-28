@@ -47,6 +47,7 @@ public class JTTWidgetProvider {
         }
 
         private void tick(Context c, Intent i) {
+            Log.d("Widgets", "Tick for "+this.getClass().getSimpleName());
             int n = i.getIntExtra("hour", 0);
             int f = i.getIntExtra("fraction", 0);
             f -= f % granularity;
@@ -62,6 +63,7 @@ public class JTTWidgetProvider {
 
         private void update(Context c, Intent i) {
             int[] ids = i.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+            Log.d("Widgets", "Update for "+(ids==null ? "all" : ids.length)+" widgets for "+this.getClass().getSimpleName());
             if (get_h() == null)
                 return;
             draw(c, ids);
@@ -73,6 +75,7 @@ public class JTTWidgetProvider {
                 ids = awm.getAppWidgetIds(name);
             if (ids.length == 0)
                 return;
+            Log.d("Widgets", "Draw "+(ids==null ? "all" : ids.length)+" widgets of "+this.getClass().getSimpleName());
             RemoteViews rv = new RemoteViews(PKG_NAME, R.layout.widget);
             PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, new Intent(c, JTTMainActivity.class), 0);
             rv.setOnClickPendingIntent(R.id.clock, pendingIntent);
