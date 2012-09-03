@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <array name="night_hours">
+    <array name="hour">
         <item>@string/cock</item>
         <item>@string/dog</item>
         <item>@string/boar</item>
         <item>@string/rat</item>
         <item>@string/ox</item>
         <item>@string/tiger</item>
-    </array>
-    <array name="day_hours">
         <item>@string/hare</item>
         <item>@string/dragon</item>
         <item>@string/serpent</item>

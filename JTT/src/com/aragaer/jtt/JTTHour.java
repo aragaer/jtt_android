@@ -30,7 +30,7 @@ public class JTTHour {
     }
 
     public static class StringsHelper {
-        private final String DayHours[], NightHours[], Hours[], HrOf[];
+        private final String Hours[], HrOf[];
         private final HashMap<String, Integer> H2N = new HashMap<String, Integer>(12);
 
         public String getHour(int num) {
@@ -43,12 +43,8 @@ public class JTTHour {
 
         public StringsHelper(Context ctx) {
             Resources r = ctx.getResources();
-            DayHours = r.getStringArray(R.array.day_hours);
-            NightHours = r.getStringArray(R.array.night_hours);
             HrOf = r.getStringArray(R.array.hour_of);
-            Hours = new String[12];
-            System.arraycopy(NightHours, 0, Hours, 0, 6);
-            System.arraycopy(DayHours, 0, Hours, 6, 6);
+            Hours = r.getStringArray(R.array.hour);
             for (int i = 0; i < 12; i++)
                 H2N.put(Hours[i], i);
         }
