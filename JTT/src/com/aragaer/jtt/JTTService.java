@@ -42,6 +42,7 @@ public class JTTService extends Service {
     private JTTHour.StringsHelper hs = null;
 
     private boolean notify, force_stop = false;
+    private static Notification notification;
 
     private long sync = 0;
     protected ArrayList<Long> transitions = new ArrayList<Long>();
@@ -156,13 +157,13 @@ public class JTTService extends Service {
     private String app_name;
     private static final DateFormat df = new SimpleDateFormat("HH:mm");
     private void notify_helper(int hn, int hf) {
-        Notification n = new Notification(R.drawable.notification_icon,
+        notification = new Notification(R.drawable.notification_icon,
                 app_name, System.currentTimeMillis());
         RemoteViews rv = new RemoteViews(getPackageName(),
                 R.layout.notification);
 
-        n.flags = flags_ongoing;
-        n.iconLevel = hn;
+        notification.flags = flags_ongoing;
+        notification.iconLevel = hn;
         rv.setTextViewText(R.id.image, JTTHour.Glyphs[hn]);
         rv.setTextColor(R.id.image, notification_text_color);
         rv.setTextViewText(R.id.title, hs.getHrOf(hn));
@@ -175,9 +176,9 @@ public class JTTService extends Service {
         rv.setTextViewText(R.id.end, t_end);
         rv.setTextColor(R.id.end, notification_text_color);
 
-        n.contentIntent = pending_main;
-        n.contentView = rv;
-        nm.notify(APP_ID, n);
+        notification.contentIntent = pending_main;
+        notification.contentView = rv;
+        nm.notify(APP_ID, notification);
     }
     
     private void doNotify(int n, int f, int event) {
@@ -230,9 +231,13 @@ public class JTTService extends Service {
 
     @Override
     public void onStart(Intent intent, int startid) {
-        if (hs != null) // already working!
-            return;
-        Log.i(TAG, "Service starting");
+        Log.d(TAG, "Service starting");
+        if (hs == null) // first run
+            init();
+    }
+
+    private void init() {
+        Log.d(TAG, "Service initializing");
         hs = new JTTHour.StringsHelper(this);
         SharedPreferences settings = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
@@ -244,8 +249,6 @@ public class JTTService extends Service {
         notify = settings.getBoolean("jtt_notify", true);
         app_name = getString(R.string.app_name);
         nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        startForeground(APP_ID, null);
 
         if (!notify)
             nm.cancel(APP_ID);
@@ -288,13 +291,13 @@ public class JTTService extends Service {
                     .getDefaultSharedPreferences(getBaseContext());
             final boolean boot = settings.getBoolean("jtt_bootup", true);
             if (notify || boot) {
-                Notification n = new Notification(R.drawable.notification_icon,
+                notification = new Notification(R.drawable.notification_icon,
                         app_name, System.currentTimeMillis());
 
-                n.setLatestEventInfo(JTTService.this, getString(R.string.srv_fail),
+                notification.setLatestEventInfo(JTTService.this, getString(R.string.srv_fail),
                         getString(R.string.srv_fail_ex), pending_main);
-                n.flags = boot ? flags_ongoing : 0;
-                nm.notify(APP_ID, n);
+                notification.flags = boot ? flags_ongoing : 0;
+                nm.notify(APP_ID, notification);
             }
         }
     }
@@ -316,6 +319,9 @@ public class JTTService extends Service {
     private void wake_up() {
         long now, start, end;
         int isDay;
+
+        if (notify)
+            startForeground(APP_ID, notification);
 
         /* do not want more than one message being in the system */
         handler.removeMessages(MSG_SYNC);

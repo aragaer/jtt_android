@@ -54,7 +54,6 @@
                 android:label="@string/widget1">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="com.aragaer.jtt.ACTION_JTT_TICK" />
             </intent-filter>
             <meta-data
@@ -67,7 +66,6 @@
                 android:label="@string/widget12">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="android.appwidget.action.APPWIDGET_ENABLED" />
                 <action android:name="com.aragaer.jtt.ACTION_JTT_TICK" />
             </intent-filter>
             <meta-data
