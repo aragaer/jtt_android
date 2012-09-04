@@ -1,5 +1,7 @@
 package com.aragaer.jtt;
 
+import java.util.HashMap;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -21,18 +23,19 @@ public class JTTWidgetProvider {
     private static final String PKG_NAME = "com.aragaer.jtt";
 
     private static abstract class JTTWidget extends AppWidgetProvider {
-        final private ComponentName name;
-        final private int granularity;
+        private final String cn;
+        private final ComponentName name;
+        private final int granularity;
+        static private final HashMap<String, JTTHour> last_update = new HashMap<String, JTTHour>();
 
         abstract protected void invalidate();
-        abstract protected void fill_rv(RemoteViews rv);
+        abstract protected void fill_rv(RemoteViews rv, JTTHour h);
         abstract protected void init(Context c);
-        abstract protected JTTHour get_h();
-        abstract protected void set_h(JTTHour h);
 
-        public JTTWidget(String className, int g) {
-            name = new ComponentName(PKG_NAME, className);
-            granularity = g;
+        protected JTTWidget(int granularity) {
+            cn = this.getClass().getSimpleName();
+            name = new ComponentName(PKG_NAME, this.getClass().getName());
+            this.granularity = granularity;
         }
 
         public void onReceive(Context c, Intent i) {
@@ -47,39 +50,42 @@ public class JTTWidgetProvider {
         }
 
         private void tick(Context c, Intent i) {
-            Log.d("Widgets", "Tick for "+this.getClass().getSimpleName());
             int n = i.getIntExtra("hour", 0);
             int f = i.getIntExtra("fraction", 0);
             f -= f % granularity;
-            JTTHour prev = get_h();
-            if (prev != null)
-                if (prev.num != n)
-                    invalidate();
-                else if (prev.fraction == f)
-                    return; // do nothing
-            set_h(new JTTHour(n, f));
-            draw(c, null);
+            JTTHour prev = last_update.get(cn);
+            int prev_n = -1;
+            if (prev == null)
+                // unfortunately put() returns _previous_ value, I want new
+                last_update.put(cn, prev = new JTTHour(n, f));
+            else
+                prev_n = prev.num;
+            if (prev_n != n)
+                invalidate();
+            else if (prev.fraction == f)
+                return; // do nothing
+            prev.setTo(n, f);
+            draw(c, null, prev);
         }
 
         private void update(Context c, Intent i) {
             int[] ids = i.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-            Log.d("Widgets", "Update for "+(ids==null ? "all" : ids.length)+" widgets for "+this.getClass().getSimpleName());
-            if (get_h() == null)
+            JTTHour h = last_update.get(cn);
+            if (h == null)
                 return;
-            draw(c, ids);
+            draw(c, ids, h);
         }
 
-        private void draw(Context c, int[] ids) {
+        private void draw(Context c, int[] ids, JTTHour h) {
             final AppWidgetManager awm = AppWidgetManager.getInstance(c.getApplicationContext());
             if (ids == null)
                 ids = awm.getAppWidgetIds(name);
             if (ids.length == 0)
                 return;
-            Log.d("Widgets", "Draw "+(ids==null ? "all" : ids.length)+" widgets of "+this.getClass().getSimpleName());
             RemoteViews rv = new RemoteViews(PKG_NAME, R.layout.widget);
             PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, new Intent(c, JTTMainActivity.class), 0);
             rv.setOnClickPendingIntent(R.id.clock, pendingIntent);
-            fill_rv(rv);
+            fill_rv(rv, h);
 
             for (int id : ids)
                 awm.updateAppWidget(id, rv);
@@ -97,7 +103,7 @@ public class JTTWidgetProvider {
         static boolean initialized = false;
 
         public Widget1() {
-            super("com.aragaer.jtt.JTTWidgetProvider$Widget1", 5);
+            super(5);
 
             p1.setStyle(Paint.Style.FILL);
             p1.setColor(Color.TRANSPARENT);
@@ -110,7 +116,7 @@ public class JTTWidgetProvider {
 
         protected void invalidate() { }
 
-        protected void fill_rv(RemoteViews rv) {
+        protected void fill_rv(RemoteViews rv, JTTHour h) {
             bmp.eraseColor(Color.TRANSPARENT);
 
             c.drawPath(path1, p1);
@@ -131,14 +137,6 @@ public class JTTWidgetProvider {
             p2.setColor(Color.parseColor(c.getString(R.color.fill)));
             initialized = true;
         }
-
-        static JTTHour h = null;
-        protected JTTHour get_h() {
-            return h;
-        }
-        protected void set_h(JTTHour nh) {
-            h = nh;
-        }
     }
 
     /* Widget showing 12 hours */
@@ -154,15 +152,14 @@ public class JTTWidgetProvider {
         private static Canvas canvas;
 
         public Widget12() {
-            super("com.aragaer.jtt.JTTWidgetProvider$Widget12", 20);
+            super(20);
         }
 
         protected void invalidate() {
             jcv.clock.recycle();
         }
 
-        @Override
-        protected void fill_rv(RemoteViews rv) {
+        protected void fill_rv(RemoteViews rv, JTTHour h) {
             final int n = h.num, f = h.fraction;
             bmp.eraseColor(Color.TRANSPARENT);
             m.reset();
@@ -193,14 +190,6 @@ public class JTTWidgetProvider {
 
             bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
             canvas = new Canvas(bmp);
-        }
-
-        static JTTHour h = null;
-        protected JTTHour get_h() {
-            return h;
-        }
-        protected void set_h(JTTHour nh) {
-            h = nh;
         }
     }
 }
