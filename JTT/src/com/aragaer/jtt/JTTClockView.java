@@ -160,13 +160,13 @@ public class JTTClockView extends TextView {
     }
 
     private static final int granularity = 10;
-    public void setJTTHour(JTTHour new_hour) {
-        if (hour.num != new_hour.num)
+    public void setHour(int n, int f) {
+        if (hour.num != n)
             clock.recycle();
-        new_hour.fraction -= new_hour.fraction % granularity;
-        if (hour.num == new_hour.num && hour.fraction == new_hour.fraction)
+        f -= f % granularity;
+        if (hour.num == n && hour.fraction == f)
             return; // do nothing
-        hour = new_hour;
+        hour.setTo(n, f);
         invalidate();
     }
 }

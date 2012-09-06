@@ -1,5 +1,7 @@
 package com.aragaer.jtt;
 
+import java.lang.ref.WeakReference;
+
 import android.app.ActivityGroup;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -18,7 +20,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 
 public class JTTMainActivity extends ActivityGroup {
     private final static String TAG = "jtt main";
@@ -28,7 +29,37 @@ public class JTTMainActivity extends ActivityGroup {
     private JTTTodayList today;
 
     private Messenger mService = null;
-    final Messenger mMessenger = new Messenger(new IncomingHandler());
+    final Messenger mMessenger = new Messenger(new IncomingHandler(this));
+
+    static class IncomingHandler extends Handler {
+        private final WeakReference<JTTMainActivity> main;
+
+        public IncomingHandler(JTTMainActivity m) {
+            main = new WeakReference<JTTMainActivity>(m);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case JTTService.MSG_HOUR:
+                main.get().today.setCurrent(msg.arg1);
+                /* fall-through! */
+            case JTTService.MSG_SUBTICK:
+                main.get().clock.setHour(msg.arg1, msg.arg2);
+                break;
+            case JTTService.MSG_TRANSITIONS:
+                main.get().today.addTransitions(msg.getData());
+                break;
+            case JTTService.MSG_INVALIDATE:
+                Log.d(TAG, "Invalidate all");
+                main.get().today.reset();
+                break;
+            default:
+                super.handleMessage(msg);
+                break;
+            }
+        }
+    }
 
     private ServiceConnection conn = new ServiceConnection() {
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -53,63 +84,31 @@ public class JTTMainActivity extends ActivityGroup {
         }
     };
 
-    protected int send_msg_to_service(int what, Bundle b) {
+    protected void send_msg_to_service(int what, Bundle b) {
         Message msg = Message.obtain(null, what);
         if (b != null)
             msg.setData(b);
-        return send_msg(msg);
-    }
 
-    protected int send_msg_to_service(int what, int arg) {
-        return send_msg(Message.obtain(null, what, arg, 0));
-    }
-
-    private int send_msg(Message msg) {
         msg.replyTo = mMessenger;
         try {
             mService.send(msg);
-            return 0;
         } catch (RemoteException e) {
             Log.i(TAG, "Service connection broken");
         } catch (NullPointerException e) {
             Log.i(TAG, "Service not connected");
         }
-        return 1;
     }
 
-    class IncomingHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case JTTService.MSG_HOUR:
-                today.setCurrent(msg.arg1);
-                /* fall-through! */
-            case JTTService.MSG_SUBTICK:
-                clock.setJTTHour(new JTTHour(msg.arg1, msg.arg2));
-                break;
-            case JTTService.MSG_TRANSITIONS:
-                today.addTransitions(msg.getData());
-                break;
-            case JTTService.MSG_INVALIDATE:
-                Log.d(TAG, "Invalidate all");
-                today.reset();
-                break;
-            default:
-                super.handleMessage(msg);
-                break;
-            }
-        }
-    }
-
+    int settings_tab = 0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Intent service = new Intent(JTTService.class.getName());
         startService(service);
-        final LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.FILL_PARENT);
+        final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
 
-        pager = (JTTPager) new JTTPager(this, null);
+        pager = new JTTPager(this, null);
         pager.setLayoutParams(lp);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             pager.setOrientation(LinearLayout.VERTICAL);
@@ -126,7 +125,7 @@ public class JTTMainActivity extends ActivityGroup {
 
         final Window sw = getLocalActivityManager().startActivity("settings",
                 new Intent(this, JTTSettingsActivity.class));
-        pager.addTab(this, sw.getDecorView(), getString(R.string.settings));
+        settings_tab = pager.addTab(this, sw.getDecorView(), getString(R.string.settings));
 
         setContentView(pager);
 
@@ -139,11 +138,9 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     protected void onStart() {
         super.onStart();
-        int settings_tab = 2; // FIXME: need a proper way of getting this number
         SharedPreferences settings = PreferenceManager
                 .getDefaultSharedPreferences(this);
-        final boolean is_first_run = settings.getBoolean("jtt_first", true);
-        if (is_first_run) {
+        if (settings.getBoolean("jtt_first", true)) {
             settings.edit().putBoolean("jtt_first", false).commit();
             if (settings.contains("jtt_loc")) // it's already configured
                 return;
@@ -152,7 +149,6 @@ public class JTTMainActivity extends ActivityGroup {
                     .getActivity("settings");
             ((LocationPreference) pa.findPreference("jtt_loc")).showMe();
         }
-
     }
 
     @Override
