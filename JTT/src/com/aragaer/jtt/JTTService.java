@@ -23,11 +23,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 
 public class JTTService extends Service {
     public final static String TICK_ACTION = "com.aragaer.jtt.ACTION_JTT_TICK";
@@ -165,16 +161,11 @@ public class JTTService extends Service {
         notification.flags = flags_ongoing;
         notification.iconLevel = hn;
         rv.setTextViewText(R.id.image, JTTHour.Glyphs[hn]);
-        rv.setTextColor(R.id.image, notification_text_color);
         rv.setTextViewText(R.id.title, hs.getHrOf(hn));
-        rv.setTextColor(R.id.title, notification_text_color);
         rv.setTextViewText(R.id.percent, String.format("%d%%", hf));
-        rv.setTextColor(R.id.percent, notification_text_color);
         rv.setProgressBar(R.id.fraction, 100, hf, false);
         rv.setTextViewText(R.id.start, t_start);
-        rv.setTextColor(R.id.start, notification_text_color);
         rv.setTextViewText(R.id.end, t_end);
-        rv.setTextColor(R.id.end, notification_text_color);
 
         notification.contentIntent = pending_main;
         notification.contentView = rv;
@@ -212,23 +203,6 @@ public class JTTService extends Service {
         }
     };
 
-    private int notification_text_color;
-
-    /* used to detect notification text color */
-    private static final int getNotificationColor(ViewGroup gp) {
-        final int count = gp.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View v = gp.getChildAt(i);
-            if (v instanceof TextView) {
-                final TextView text = (TextView) v;
-                if (TAG.equals(text.getText().toString()))
-                    return text.getTextColors().getDefaultColor();
-            } else if (v instanceof ViewGroup)
-                return getNotificationColor((ViewGroup) v);
-        }
-        return android.R.color.black;
-    }
-
     @Override
     public void onStart(Intent intent, int startid) {
         Log.d(TAG, "Service starting");
@@ -252,16 +226,6 @@ public class JTTService extends Service {
 
         if (!notify)
             nm.cancel(APP_ID);
-
-        try {
-            Notification n = new Notification();
-            n.setLatestEventInfo(this, TAG, "", null);
-            LinearLayout group = new LinearLayout(this);
-            notification_text_color = getNotificationColor((ViewGroup) n.contentView.apply(this, group));
-            group.removeAllViews();
-        } catch (Exception e) {
-            notification_text_color = android.R.color.black;
-        }
 
         IntentFilter wake = new IntentFilter(Intent.ACTION_SCREEN_ON);
         wake.addAction(Intent.ACTION_TIME_CHANGED);

@@ -16,17 +16,9 @@
         <item name="android:padding">5dp</item>
     </style>
 
-    <style name="NotificationTitle">
-        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="NotificationGlyph">
-        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    <style name="NotificationText" parent="android:TextAppearance.StatusBar.EventContent" />
+    <style name="NotificationTitle" parent="android:TextAppearance.StatusBar.EventContent.Title" />
+    <style name="NotificationGlyph" parent="android:TextAppearance.StatusBar.EventContent" >
         <item name="android:textSize">25dp</item>
-    </style>
-
-    <style name="NotificationText">
-      <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>
 </resources>

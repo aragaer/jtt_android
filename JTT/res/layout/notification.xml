@@ -26,6 +26,7 @@
 
         <TextView
             android:id="@+id/percent"
+            style="@style/NotificationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dip"
@@ -33,6 +34,7 @@
 
         <TextView
             android:id="@+id/start"
+            style="@style/NotificationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -40,6 +42,7 @@
 
         <TextView
             android:id="@+id/end"
+            style="@style/NotificationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
