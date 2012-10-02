@@ -234,10 +234,9 @@ public class JTTPager extends LinearLayout {
             case MotionEvent.ACTION_UP:
                 if (mTouchState == TOUCH_STATE_SCROLLING) {
                     final int bump = getWidth() / 2 + 1;
-                    final VelocityTracker velocityTracker = mVelocityTracker;
-                    velocityTracker.computeCurrentVelocity(1000,
+                    mVelocityTracker.computeCurrentVelocity(1000,
                             mMaximumVelocity);
-                    int velocityX = (int) velocityTracker.getXVelocity();
+                    int velocityX = (int) mVelocityTracker.getXVelocity();
 
                     if (velocityX > SNAP_VELOCITY && mCurrentScreen > 0)
                         // Fling hard enough to move left
