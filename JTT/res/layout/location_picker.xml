@@ -13,7 +13,7 @@
         android:id="@+id/lat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:numeric="signed|decimal" />
+        android:inputType="numberSigned|numberDecimal" />
 
     <TextView
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
         android:id="@+id/lon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:numeric="signed|decimal" />
+        android:inputType="numberSigned|numberDecimal" />
 
     <Button
         android:id="@+id/auto_loc"
