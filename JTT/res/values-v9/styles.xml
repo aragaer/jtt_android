@@ -18,7 +18,7 @@
 
     <style name="NotificationText" parent="android:TextAppearance.StatusBar.EventContent" />
     <style name="NotificationTitle" parent="android:TextAppearance.StatusBar.EventContent.Title" />
-    <style name="NotificationGlyph" parent="android:TextAppearance.StatusBar.EventContent" >
+    <style name="NotificationGlyph" parent="android:TextAppearance.StatusBar.EventContent.Title" >
         <item name="android:textSize">25dp</item>
     </style>
 </resources>
