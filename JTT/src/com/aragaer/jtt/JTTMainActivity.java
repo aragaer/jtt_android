@@ -160,6 +160,7 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        send_msg_to_service(JTTService.MSG_UNREGISTER_CLIENT, null);
 
         try {
             unbindService(conn);
