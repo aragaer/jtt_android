@@ -17,6 +17,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.RemoteViews;
 
 public class JTTWidgetProvider {
@@ -82,10 +83,15 @@ public class JTTWidgetProvider {
                 ids = awm.getAppWidgetIds(name);
             if (ids.length == 0)
                 return;
-            RemoteViews rv = new RemoteViews(PKG_NAME, R.layout.widget);
+            RemoteViews rv;
+            if (h == null)
+                rv = new RemoteViews(PKG_NAME, R.layout.widget_loading);
+            else {
+                rv = new RemoteViews(PKG_NAME, R.layout.widget);
+                fill_rv(rv, h);
+            }
             PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, new Intent(c, JTTMainActivity.class), 0);
             rv.setOnClickPendingIntent(R.id.clock, pendingIntent);
-            fill_rv(rv, h);
 
             for (int id : ids)
                 awm.updateAppWidget(id, rv);
