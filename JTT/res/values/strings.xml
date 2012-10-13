@@ -64,7 +64,10 @@
     <string name="hour_of_ram">Hour of the Ram</string>
     <string name="hour_of_monkey">Hour of the Monkey</string>
 
+    <string name="appearance">Look and feel</string>
     <string name="no_providers">No location providers found. Please enable GPS.</string>
     <string name="widget1">JTT: Single hour</string>
     <string name="widget12">JTT: Clock</string>
+    <string name="widget_invert">Invert widget text color</string>
+    <string name="widget_invert_ex">Use white text with black border</string>
 </resources>

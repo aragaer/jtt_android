@@ -16,6 +16,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -32,6 +33,8 @@ public class JTTWidgetProvider {
         abstract protected void fill_rv(RemoteViews rv, JTTHour h);
         abstract protected void init(Context c);
 
+        static boolean inverse;
+
         protected JTTWidget(int granularity) {
             cn = this.getClass().getSimpleName();
             name = new ComponentName(PKG_NAME, this.getClass().getName());
@@ -41,11 +44,16 @@ public class JTTWidgetProvider {
         public void onReceive(Context c, Intent i) {
             final String action = i.getAction();
             init(c);
+            inverse = PreferenceManager.getDefaultSharedPreferences(c)
+                    .getBoolean("jtt_widget_text_invert", false);
             if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
                 update(c, i);
             else if (action.equals(JTTService.TICK_ACTION))
                 tick(c, i);
-            else
+            else if (action.equals(JTTSettingsActivity.JTT_SETTINGS_CHANGED)) {
+                inverse = i.getBooleanExtra("inverse", inverse);
+                draw(c, null, last_update.get(cn));
+            } else
                 Log.d("Widgets", "Got action "+action);
         }
 
@@ -82,11 +90,12 @@ public class JTTWidgetProvider {
                 ids = awm.getAppWidgetIds(name);
             if (ids.length == 0)
                 return;
+
             RemoteViews rv;
             if (h == null)
                 rv = new RemoteViews(PKG_NAME, R.layout.widget_loading);
             else {
-                rv = new RemoteViews(PKG_NAME, R.layout.widget);
+                rv = new RemoteViews(PKG_NAME, inverse ? R.layout.widget_inverse : R.layout.widget);
                 fill_rv(rv, h);
             }
             PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, new Intent(c, JTTMainActivity.class), 0);
@@ -138,6 +147,7 @@ public class JTTWidgetProvider {
         protected void init(Context c) {
             if (initialized)
                 return;
+
             p1.setShadowLayer(10f, 0, 0, Color.parseColor(c.getString(R.color.night)));
             p2.setColor(Color.parseColor(c.getString(R.color.fill)));
             initialized = true;
@@ -146,7 +156,6 @@ public class JTTWidgetProvider {
 
     /* Widget showing 12 hours */
     public static class Widget12 extends JTTWidget {
-        private static Paint p;
         static JTTHour.StringsHelper hs;
         static JTTClockView jcv;
         static int size;
@@ -178,9 +187,10 @@ public class JTTWidgetProvider {
 
             canvas.drawText("▽", size, size / 8, jcv.stroke1);
             canvas.drawText("▼", size, size / 8, jcv.solid1);
-            canvas.drawText(hs.getHour(n), size, size + size / 60, p);
 
             rv.setImageViewBitmap(R.id.clock, bmp);
+            rv.setFloat(R.id.glyph, "setTextSize", size / 10);
+            rv.setTextViewText(R.id.glyph, hs.getHour(n));
         }
 
         protected void init(Context c) {
@@ -189,9 +199,6 @@ public class JTTWidgetProvider {
             hs = new JTTHour.StringsHelper(c);
             jcv = new JTTClockView(c);
             size = Math.round(110 * c.getResources().getDisplayMetrics().density);
-            p = new Paint(jcv.stroke1);
-            p.setTextSize(size / 4);
-            p.setShadowLayer(4, 0, 0, Color.WHITE);
 
             bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
             canvas = new Canvas(bmp);

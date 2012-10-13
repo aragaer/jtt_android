@@ -16,8 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:textColor="@android:color/black"
-        android:shadowColor="@android:color/white"
+        android:textColor="@color/tab"
+        android:shadowColor="@android:color/black"
         android:shadowRadius="3.0"
         android:textSize="40dp" />
 

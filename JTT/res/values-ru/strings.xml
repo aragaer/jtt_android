@@ -66,7 +66,10 @@
     <string name="hour_of_ram">Час Овцы</string>
     <string name="hour_of_monkey">Час Обезьяны</string>
 
+    <string name="appearance">Внешний вид</string>
     <string name="no_providers">Не удается определить местоположение. Пожалуйста, включите GPS.</string>
     <string name="widget1">JTT: Один час</string>
     <string name="widget12">JTT: Циферблат</string>
+    <string name="widget_invert">Альтернативный цвет текста в виджете</string>
+    <string name="widget_invert_ex">Использовать белый текст с черным контуром</string>
 </resources>

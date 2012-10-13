@@ -2,6 +2,7 @@ package com.aragaer.jtt;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -12,6 +13,7 @@ import android.util.Log;
 public class JTTSettingsActivity extends PreferenceActivity {
     private Preference prefLocation;
 
+    public final static String JTT_SETTINGS_CHANGED = "com.aragaer.jtt.ACTION_JTT_SETTINGS";
     private final static String TAG = "jtt settings";
 
     @Override
@@ -41,6 +43,21 @@ public class JTTSettingsActivity extends PreferenceActivity {
         prefLocation.setOnPreferenceChangeListener(changeListener);
         ((Preference) findPreference("jtt_notify"))
                 .setOnPreferenceChangeListener(changeListener);
+
+        OnPreferenceChangeListener widgetPrefChangeListener = new OnPreferenceChangeListener() {
+            public boolean onPreferenceChange(Preference pref, Object newVal) {
+                Intent i = new Intent(JTT_SETTINGS_CHANGED);
+                Log.d("pref", "text color change!");
+                if (pref.getKey().equals("jtt_widget_text_invert")) {
+                    i.putExtra("inverse", (Boolean) newVal);
+                    sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
+                }
+                return true;
+            }
+        };
+        ((Preference) findPreference("jtt_widget_text_invert"))
+                .setOnPreferenceChangeListener(widgetPrefChangeListener);
+
         ((Preference) findPreference("jtt_stop")).setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 return tryStop();

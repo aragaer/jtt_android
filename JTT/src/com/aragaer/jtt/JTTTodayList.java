@@ -164,7 +164,7 @@ public class JTTTodayList extends ListView {
                 transitions.addFirst(sunrise);
                 jdn_min = jdn;
             } else {
-                Log.wtf(TAG, "Got "+jdn+" which is between "+jdn_min+" and "+jdn_max);
+                Log.e(TAG, "Got "+jdn+" which is between "+jdn_min+" and "+jdn_max);
                 return;
             }
         }
@@ -183,7 +183,7 @@ public class JTTTodayList extends ListView {
     /* request transitions for given day from JTTService */
     private void getDay(long jdn) {
         if (expecting_data) {
-            Log.wtf(TAG, "Transitions data requested while previous request is not yet handled");
+            Log.e(TAG, "Transitions data requested while previous request is not yet handled");
             return;
         }
 
@@ -203,7 +203,7 @@ public class JTTTodayList extends ListView {
 
     private void updateItems() {
         if (transitions.isEmpty() || (transitions.size() % 2) == 1) {
-            Log.wtf(TAG, "Transitions list is empty or has incorrect number of items");
+            Log.e(TAG, "Transitions list is empty or has incorrect number of items");
             reset();
             return;
         }
