@@ -41,30 +41,34 @@
         <item quantity="other">Через %d дней</item>
     </plurals>
 
-    <string name="cock">Петух</string>
-    <string name="dog">Собака</string>
-    <string name="boar">Кабан</string>
-    <string name="rat">Крыса</string>
-    <string name="ox">Бык</string>
-    <string name="tiger">Тигр</string>
-    <string name="hare">Заяц</string>
-    <string name="dragon">Дракон</string>
-    <string name="serpent">Змея</string>
-    <string name="horse">Лошадь</string>
-    <string name="ram">Овца</string>
-    <string name="monkey">Обезьяна</string>
-    <string name="hour_of_cock">Час Петуха</string>
-    <string name="hour_of_dog">Час Собаки</string>
-    <string name="hour_of_boar">Час Кабана</string>
-    <string name="hour_of_rat">Час Крысы</string>
-    <string name="hour_of_ox">Час Быка</string>
-    <string name="hour_of_tiger">Час Тигра</string>
-    <string name="hour_of_hare">Час Зайца</string>
-    <string name="hour_of_dragon">Час Дракона</string>
-    <string name="hour_of_serpent">Час Змеи</string>
-    <string name="hour_of_horse">Час Лошади</string>
-    <string name="hour_of_ram">Час Овцы</string>
-    <string name="hour_of_monkey">Час Обезьяны</string>
+    <string-array name="hour">
+        <item>Петух</item>
+        <item>Собака</item>
+        <item>Кабан</item>
+        <item>Крыса</item>
+        <item>Бык</item>
+        <item>Тигр</item>
+        <item>Заяц</item>
+        <item>Дракон</item>
+        <item>Змея</item>
+        <item>Лошадь</item>
+        <item>Овца</item>
+        <item>Обезьяна</item>
+    </string-array>
+    <string-array name="hour_of">
+        <item>Час Петуха</item>
+        <item>Час Собаки</item>
+        <item>Час Кабана</item>
+        <item>Час Крысы</item>
+        <item>Час Быка</item>
+        <item>Час Тигра</item>
+        <item>Час Зайца</item>
+        <item>Час Дракона</item>
+        <item>Час Змеи</item>
+        <item>Час Лошади</item>
+        <item>Час Овцы</item>
+        <item>Час Обезьяны</item>
+    </string-array>
 
     <string name="appearance">Внешний вид</string>
     <string name="no_providers">Не удается определить местоположение. Пожалуйста, включите GPS.</string>
@@ -72,4 +76,7 @@
     <string name="widget12">JTT: Циферблат</string>
     <string name="widget_invert">Альтернативный цвет текста в виджете</string>
     <string name="widget_invert_ex">Использовать белый текст с черным контуром</string>
+    <string name="locale">Язык - Русский</string>
+    <string name="locale_ex">Нажмите, чтобы изменить язык</string>
+    <string name="locale_default">Язык системы</string>
 </resources>

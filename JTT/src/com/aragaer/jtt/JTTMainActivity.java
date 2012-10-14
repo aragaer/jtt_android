@@ -103,10 +103,12 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Intent service = new Intent(JTTService.class.getName());
+        final Intent service = new Intent(this, JTTService.class);
         startService(service);
         final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
+
+        JTTUtil.setLocale(getApplicationContext());
 
         pager = new JTTPager(this, null);
         pager.setLayoutParams(lp);

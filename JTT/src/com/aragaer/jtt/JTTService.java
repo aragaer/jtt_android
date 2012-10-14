@@ -45,7 +45,7 @@ public class JTTService extends Service {
     private long start_day, end_day;
     private String t_start, t_end;
 
-    public static final int MSG_TOGGLE_NOTIFY = 0;
+    public static final int MSG_SETTINGS_CHANGE = 0;
     public static final int MSG_UPDATE_LOCATION = 1;
     public static final int MSG_REGISTER_CLIENT = 2;
     public static final int MSG_UNREGISTER_CLIENT = 3;
@@ -74,8 +74,10 @@ public class JTTService extends Service {
         public void handleMessage(Message msg) {
             JTTService s = srv.get();
             switch (msg.what) {
-            case MSG_TOGGLE_NOTIFY:
-                s.notify = msg.getData().getBoolean("notify");
+            case MSG_SETTINGS_CHANGE:
+                s.notify = msg.getData().getBoolean("notify", s.notify);
+                JTTUtil.setLocale(s, msg.getData().getString("locale"));
+                s.hs = new JTTHour.StringsHelper(s);
                 if (s.notify)
                     s.notify_helper(s.hour, s.sub);
                 else
@@ -90,8 +92,7 @@ public class JTTService extends Service {
                 break;
             case MSG_REGISTER_CLIENT:
                 try {
-                    msg.replyTo.send(Message.obtain(null, MSG_HOUR, s.hour,
-                            s.sub));
+                    msg.replyTo.send(Message.obtain(null, MSG_HOUR, s.hour, s.sub));
                     clients.add(msg.replyTo);
                 } catch (RemoteException e) {
                     Log.w(TAG, "Client registered but failed to get data");
@@ -212,6 +213,7 @@ public class JTTService extends Service {
 
     private void init() {
         Log.d(TAG, "Service initializing");
+        JTTUtil.setLocale(this);
         hs = new JTTHour.StringsHelper(this);
         SharedPreferences settings = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());

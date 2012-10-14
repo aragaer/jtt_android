@@ -39,30 +39,34 @@
         <item quantity="other">In %d days</item>
     </plurals>
     
-    <string name="cock">The Cock</string>
-    <string name="dog">The Dog</string>
-    <string name="boar">The Boar</string>
-    <string name="rat">The Rat</string>
-    <string name="ox">The Ox</string>
-    <string name="tiger">The Tiger</string>
-    <string name="hare">The Hare</string>
-    <string name="dragon">The Dragon</string>
-    <string name="serpent">The Serpent</string>
-    <string name="horse">The Horse</string>
-    <string name="ram">The Ram</string>
-    <string name="monkey">The Monkey</string>
-    <string name="hour_of_cock">Hour of the Cock</string>
-    <string name="hour_of_dog">Hour of the Dog</string>
-    <string name="hour_of_boar">Hour of the Boar</string>
-    <string name="hour_of_rat">Hour of the Rat</string>
-    <string name="hour_of_ox">Hour of the Ox</string>
-    <string name="hour_of_tiger">Hour of the Tiger</string>
-    <string name="hour_of_hare">Hour of the Hare</string>
-    <string name="hour_of_dragon">Hour of the Dragon</string>
-    <string name="hour_of_serpent">Hour of the Serpent</string>
-    <string name="hour_of_horse">Hour of the Horse</string>
-    <string name="hour_of_ram">Hour of the Ram</string>
-    <string name="hour_of_monkey">Hour of the Monkey</string>
+    <string-array name="hour">
+	    <item>The Cock</item>
+	    <item>The Dog</item>
+	    <item>The Boar</item>
+	    <item>The Rat</item>
+	    <item>The Ox</item>
+	    <item>The Tiger</item>
+	    <item>The Hare</item>
+	    <item>The Dragon</item>
+	    <item>The Serpent</item>
+	    <item>The Horse</item>
+	    <item>The Ram</item>
+	    <item>The Monkey</item>
+    </string-array>
+    <string-array name="hour_of">
+	    <item>Hour of the Cock</item>
+	    <item>Hour of the Dog</item>
+	    <item>Hour of the Boar</item>
+	    <item>Hour of the Rat</item>
+	    <item>Hour of the Ox</item>
+	    <item>Hour of the Tiger</item>
+	    <item>Hour of the Hare</item>
+	    <item>Hour of the Dragon</item>
+	    <item>Hour of the Serpent</item>
+	    <item>Hour of the Horse</item>
+	    <item>Hour of the Ram</item>
+	    <item>Hour of the Monkey</item>
+    </string-array>
 
     <string name="appearance">Look and feel</string>
     <string name="no_providers">No location providers found. Please enable GPS.</string>
@@ -70,4 +74,13 @@
     <string name="widget12">JTT: Clock</string>
     <string name="widget_invert">Invert widget text color</string>
     <string name="widget_invert_ex">Use white text with black border</string>
+
+    <string name="locale">Language - English</string>
+    <string name="locale_ex">Tap to change language</string>
+    <string name="locale_default">Default</string>
+    <string-array name="locales">
+        <item></item>
+        <item>en</item>
+        <item>ru</item>
+    </string-array>
 </resources>

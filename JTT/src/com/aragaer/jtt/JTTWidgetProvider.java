@@ -43,6 +43,7 @@ public class JTTWidgetProvider {
 
         public void onReceive(Context c, Intent i) {
             final String action = i.getAction();
+            JTTUtil.setLocale(c);
             init(c);
             inverse = PreferenceManager.getDefaultSharedPreferences(c)
                     .getBoolean("jtt_widget_text_invert", false);
@@ -194,9 +195,9 @@ public class JTTWidgetProvider {
         }
 
         protected void init(Context c) {
-            if (hs != null)
+            hs = new JTTHour.StringsHelper(c); // FIXME: a little bit hacky way
+            if (jcv != null)
                 return;
-            hs = new JTTHour.StringsHelper(c);
             jcv = new JTTClockView(c);
             size = Math.round(110 * c.getResources().getDisplayMetrics().density);
 

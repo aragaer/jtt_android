@@ -40,11 +40,7 @@
         <service
             android:name=".JTTService"
             android:exported="false"
-            android:process=":remote" >
-            <intent-filter>
-                <action android:name="com.aragaer.jtt.JTTService" />
-            </intent-filter>
-        </service>
+            android:process=":remote" />
         <receiver android:name=".JTTService$JTTStartupReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

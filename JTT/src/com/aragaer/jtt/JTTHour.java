@@ -47,7 +47,7 @@ public class JTTHour {
         }
 
         public StringsHelper(Context ctx) {
-            Resources r = ctx.getResources();
+            Resources r = ctx.getApplicationContext().getResources();
             HrOf = r.getStringArray(R.array.hour_of);
             Hours = r.getStringArray(R.array.hour);
             for (int i = 0; i < 12; i++)
