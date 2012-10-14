@@ -8,7 +8,6 @@
     <string name="location_ex">Изменить сохраненные координаты</string>
     <string name="latitude">Широта</string>
     <string name="longitude">Долгота</string>
-    <string name="not_impl">Not implemented yet</string>
     <string name="clock">Часы</string>
     <string name="alarm">Будильник</string>
     <string name="settings">Настройки</string>
@@ -21,7 +20,7 @@
     <string name="status">Запуск и оповещения</string>
     <string name="stop">Остановить сервис</string>
     <string name="stop_ex">Нажмите для остановки сервиса и выхода из приложения.</string>
-    <string name="stop_ask">Сервис будет остановлен, а приложение закрыто. При следующем запуске приложения сервис автоматически будет запущен. Продолжить?</string>
+    <string name="stop_ask">Сервис будет остановлен, а приложение закрыто. При следующем запуске приложения сервис автоматически будет запущен.\n\nПродолжить?</string>
     <string name="today">Сегодня</string>
     <string name="sunrise">Рассвет</string>
     <string name="sunset">Закат</string>
