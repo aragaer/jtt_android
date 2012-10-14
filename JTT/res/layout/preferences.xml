@@ -37,6 +37,7 @@
             android:summary="@string/widget_invert_ex"
             android:title="@string/widget_invert" />
         <ListPreference
+            android:defaultValue=""
             android:key="jtt_locale"
             android:title="@string/locale"
             android:summary="@string/locale_ex"
