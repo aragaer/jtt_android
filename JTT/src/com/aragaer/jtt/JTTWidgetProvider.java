@@ -43,7 +43,7 @@ public class JTTWidgetProvider {
 
         public void onReceive(Context c, Intent i) {
             final String action = i.getAction();
-            JTTUtil.setLocale(c);
+            JTTUtil.initLocale(c);
             init(c);
             inverse = PreferenceManager.getDefaultSharedPreferences(c)
                     .getBoolean("jtt_widget_text_invert", false);
@@ -157,7 +157,7 @@ public class JTTWidgetProvider {
 
     /* Widget showing 12 hours */
     public static class Widget12 extends JTTWidget {
-        static JTTHour.StringsHelper hs;
+        static JTTUtil.StringsHelper hs;
         static JTTClockView jcv;
         static int size;
         private final static int step = 360 / 12;
@@ -195,9 +195,9 @@ public class JTTWidgetProvider {
         }
 
         protected void init(Context c) {
-            hs = new JTTHour.StringsHelper(c); // FIXME: a little bit hacky way
-            if (jcv != null)
+            if (hs != null)
                 return;
+            hs = JTTUtil.getStringsHelper(c);
             jcv = new JTTClockView(c);
             size = Math.round(110 * c.getResources().getDisplayMetrics().density);
 

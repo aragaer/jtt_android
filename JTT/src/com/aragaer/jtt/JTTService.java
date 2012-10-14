@@ -35,7 +35,7 @@ public class JTTService extends Service {
     private static final int APP_ID = 0;
 
     private PendingIntent pending_main;
-    private JTTHour.StringsHelper hs = null;
+    private JTTUtil.StringsHelper hs = null;
 
     private boolean notify, force_stop = false;
     private static Notification notification;
@@ -76,8 +76,7 @@ public class JTTService extends Service {
             switch (msg.what) {
             case MSG_SETTINGS_CHANGE:
                 s.notify = msg.getData().getBoolean("notify", s.notify);
-                JTTUtil.setLocale(s, msg.getData().getString("locale"));
-                s.hs = new JTTHour.StringsHelper(s);
+                JTTUtil.changeLocale(s, msg.getData().getString("locale"));
                 if (s.notify)
                     s.notify_helper(s.hour, s.sub);
                 else
@@ -213,8 +212,8 @@ public class JTTService extends Service {
 
     private void init() {
         Log.d(TAG, "Service initializing");
-        JTTUtil.setLocale(this);
-        hs = new JTTHour.StringsHelper(this);
+        JTTUtil.initLocale(this);
+        hs = JTTUtil.getStringsHelper(this);
         SharedPreferences settings = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
         String[] ll = settings.getString("jtt_loc", "0.0:0.0").split(":");

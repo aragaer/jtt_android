@@ -22,7 +22,7 @@ public class JTTClockView extends TextView {
             solid2 = new Paint(0x01);
     protected Bitmap clock;
     private JTTHour hour = new JTTHour(0);
-    private final JTTHour.StringsHelper hs;
+    private final JTTUtil.StringsHelper hs;
     private final Matrix m = new Matrix();
 
     public JTTClockView(Context context) {
@@ -35,7 +35,7 @@ public class JTTClockView extends TextView {
 
     public JTTClockView(Context ctx, AttributeSet attrs, int defStyle) {
         super(ctx, attrs, defStyle);
-        hs = new JTTHour.StringsHelper(ctx);
+        hs = JTTUtil.getStringsHelper(ctx);
         setupPaint(ctx);
 
         /* make it non-null */

@@ -108,7 +108,7 @@ public class JTTMainActivity extends ActivityGroup {
         final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
 
-        JTTUtil.setLocale(getApplicationContext());
+        JTTUtil.initLocale(this);
 
         pager = new JTTPager(this, null);
         pager.setLayoutParams(lp);

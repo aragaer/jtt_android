@@ -72,7 +72,7 @@ public class JTTSettingsActivity extends PreferenceActivity {
                         Bundle b = new Bundle();
                         b.putString("locale", (String) newValue);
                         doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
-                        JTTUtil.setLocale(getApplicationContext(), (String) newValue);
+                        JTTUtil.changeLocale(getApplicationContext(), (String) newValue);
                         i = getParent().getIntent();
                         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         getParent().finish();
