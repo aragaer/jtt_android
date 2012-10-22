@@ -21,55 +21,53 @@ public class JTTSettingsActivity extends PreferenceActivity {
     public final static String JTT_SETTINGS_CHANGED = "com.aragaer.jtt.ACTION_JTT_SETTINGS";
     private final static String TAG = "jtt settings";
 
-    private static abstract class PreferenceBroadcast {
-        abstract public void process(Object value);
-    }
-
-    private final Map<String, PreferenceBroadcast> listeners = new HashMap<String, PreferenceBroadcast>() {
-        private static final long serialVersionUID = 1L;
-        {
-            put("jtt_loc", new PreferenceBroadcast() {
-                public void process(Object value) {
-                    Bundle b = new Bundle();
-                    b.putString("latlon", (String) value);
-                    doSendMessage(JTTService.MSG_UPDATE_LOCATION, b);
-                }
-            });
-            put("jtt_notify", new PreferenceBroadcast() {
-                public void process(Object value) {
-                    Bundle b = new Bundle();
-                    b.putBoolean("notify", (Boolean) value);
-                    doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
-                }
-            });
-            put("jtt_widget_text_invert", new PreferenceBroadcast() {
-                public void process(Object value) {
-                    Intent i = new Intent(JTT_SETTINGS_CHANGED);
-                    i.putExtra("inverse", (Boolean) value);
-                    sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
-                }
-            });
-            put("jtt_locale", new PreferenceBroadcast() {
-                public void process(Object value) {
-                    Intent i = new Intent(JTT_SETTINGS_CHANGED);
-                    i.putExtra("locale", (String) value);
-                    sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
-                    Bundle b = new Bundle();
-                    b.putString("locale", (String) value);
-                    doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
-                    JTTUtil.changeLocale(getApplicationContext(), (String) value);
-                    i = getParent().getIntent();
-                    i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    getParent().finish();
-                    startActivity(i);
-                }
-            });
-        }
-    };
+    private static final String prefcodes[] = new String[] {"jtt_loc", "jtt_notify", "jtt_widget_text_invert", "jtt_locale"};
+    private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 
     final OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            listeners.get(preference.getKey()).process(newValue);
+            Bundle b = new Bundle();
+            Intent i = new Intent(JTT_SETTINGS_CHANGED);
+            int code = listeners.get(preference.getKey());
+            switch (code) {
+            case 0:
+                b.putString("latlon", (String) newValue);
+                break;
+            case 1:
+                b.putBoolean("notify", (Boolean) newValue);
+                break;
+            case 2:
+                i.putExtra("inverse", (Boolean) newValue);
+                break;
+            case 3:
+                i.putExtra("locale", (String) newValue);
+                b.putString("locale", (String) newValue);
+            default:
+                break;
+            }
+
+            switch (code) {
+            case 0:
+                doSendMessage(JTTService.MSG_UPDATE_LOCATION, b);
+                break;
+            case 1:
+                doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
+                break;
+            case 2:
+                sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
+                break;
+            case 3:
+                doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
+                sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
+                JTTUtil.changeLocale(getApplicationContext(), (String) newValue);
+                i = getParent().getIntent();
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                getParent().finish();
+                startActivity(i);
+                break;
+            default:
+                break;
+            }
             return true;
         }
     };
@@ -83,8 +81,10 @@ public class JTTSettingsActivity extends PreferenceActivity {
 
         Log.d(TAG, "settings created");
 
-        for (String p : listeners.keySet())
-            ((Preference) findPreference(p)).setOnPreferenceChangeListener(listener);
+        for (int i = 0; i < prefcodes.length; i++) {
+            listeners.put(prefcodes[i], i);
+            ((Preference) findPreference(prefcodes[i])).setOnPreferenceChangeListener(listener);
+        }
 
         final CharSequence[] llist = pref_locale.getEntryValues();
         final CharSequence[] lnames = new CharSequence[llist.length];
@@ -116,7 +116,7 @@ public class JTTSettingsActivity extends PreferenceActivity {
             switch (id) {
             case Dialog.BUTTON_POSITIVE:
                 doSendMessage(JTTService.MSG_STOP, null);
-                ((JTTMainActivity) getParent()).finish();
+                getParent().finish();
                 break;
             case Dialog.BUTTON_NEGATIVE:
             default:
