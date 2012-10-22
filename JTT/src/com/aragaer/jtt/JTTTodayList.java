@@ -133,6 +133,8 @@ public class JTTTodayList extends ListView {
 
     public JTTTodayList(Context context) {
         super(context);
+        JTTUtil.initLocale(context);
+        HourItem.extras = HourItem.hours = DayItem.daynames = null;
         ta = new TodayAdapter(context, R.layout.today_item);
         setAdapter(ta);
         main = (JTTMainActivity) context;
