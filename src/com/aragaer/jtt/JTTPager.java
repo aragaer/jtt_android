@@ -64,6 +64,10 @@ public class JTTPager extends LinearLayout {
         }
     };
 
+	public int addTab(Context ctx, View view, int resid) {
+		return addTab(ctx, view, ctx.getString(resid));
+	}
+
     public int addTab(Context ctx, View view, String btn) {
         final int id = tabs.size();
         final Button b = new Button(ctx, null);

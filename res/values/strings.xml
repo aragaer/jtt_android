@@ -10,7 +10,7 @@
     <string name="longitude">Longitude</string>
     <string name="not_impl">Not implemented yet</string>
     <string name="clock">Clock</string>
-    <string name="alarm">Alarm</string>
+    <string name="alarm">Alarms</string>
     <string name="settings">Settings</string>
     <string name="srv_fail">Service killed</string>
     <string name="srv_fail_ex">Touch to restart the service.</string>
@@ -83,4 +83,8 @@
         <item>en</item>
         <item>ru</item>
     </string-array>
+
+    <string name="alarm_off">Close</string>
+    <string name="snooze">Snooze</string>
+    <string name="unknown_alarm">Unknown alarm</string>
 </resources>

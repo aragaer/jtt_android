@@ -119,15 +119,15 @@ public class JTTMainActivity extends ActivityGroup {
         clock = new JTTClockView(this);
         clock.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
         clock.setLayoutParams(lp);
-        pager.addTab(this, clock, getString(R.string.clock));
+        pager.addTab(this, clock, R.string.clock);
 
         today = new JTTTodayList(this);
         today.setLayoutParams(lp);
-        pager.addTab(this, today, getString(R.string.today));
+        pager.addTab(this, today, R.string.today);
 
         final Window sw = getLocalActivityManager().startActivity("settings",
                 new Intent(this, JTTSettingsActivity.class));
-        settings_tab = pager.addTab(this, sw.getDecorView(), getString(R.string.settings));
+        settings_tab = pager.addTab(this, sw.getDecorView(), R.string.settings);
 
         setContentView(pager);
 

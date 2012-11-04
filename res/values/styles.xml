@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="JTTTheme" parent="android:style/Theme.Wallpaper.NoTitleBar">
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.3</item>
@@ -10,8 +11,12 @@
         <item name="android:buttonStyle">@style/JTTTabButton</item>
     </style>
 
-    <style name="JTTTabButton" parent="@android:style/Widget.Button">
+    <style name="JTTTabButton" parent="@style/JTTButton">
         <item name="android:textColor">@drawable/tab_text_selector</item>
+    </style>
+
+    <style name="JTTButton" parent="@android:style/Widget.Button">
+        <item name="android:textColor">@android:color/white</item>
         <item name="android:background">@color/background</item>
         <item name="android:padding">5dp</item>
     </style>
@@ -27,6 +32,18 @@
     </style>
 
     <style name="NotificationText">
-      <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>
+
+    <style name="DialogNoTitle" parent="android:Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:shadowColor">#FF000000</item>
+        <item name="android:shadowRadius">0.5</item>
+        <item name="android:textSize">15dip</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.3</item>
+        <item name="android:buttonStyle">@style/JTTButton</item>
+    </style>
+
 </resources>
