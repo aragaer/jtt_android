@@ -1,7 +1,6 @@
 package com.aragaer.jtt;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -129,7 +128,7 @@ public class JTTTodayList extends ListView {
     private final TodayAdapter ta;
     private final JTTMainActivity main;
     long jdn_min, jdn_max;
-    private static final DateFormat df = new SimpleDateFormat("HH:mm");
+    private static DateFormat df;
 
     public JTTTodayList(Context context) {
         super(context);
@@ -138,6 +137,7 @@ public class JTTTodayList extends ListView {
         ta = new TodayAdapter(context, R.layout.today_item);
         setAdapter(ta);
         main = (JTTMainActivity) context;
+        df = android.text.format.DateFormat.getTimeFormat(context);
     }
 
     /* handle bundle containing another couple of transitions
