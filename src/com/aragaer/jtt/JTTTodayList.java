@@ -126,7 +126,6 @@ public class JTTTodayList extends ListView {
     }
 
     private final TodayAdapter ta;
-    private final JTTMainActivity main;
     long jdn_min, jdn_max;
     private static DateFormat df;
 
@@ -136,7 +135,6 @@ public class JTTTodayList extends ListView {
         HourItem.extras = HourItem.hours = DayItem.daynames = null;
         ta = new TodayAdapter(context, R.layout.today_item);
         setAdapter(ta);
-        main = (JTTMainActivity) context;
         df = android.text.format.DateFormat.getTimeFormat(context);
     }
 
@@ -192,7 +190,7 @@ public class JTTTodayList extends ListView {
         Bundle b = new Bundle();
         b.putLong("jdn", jdn);
         expecting_data = true;
-        main.send_msg_to_service(JTTService.MSG_TRANSITIONS, b);
+        ((JTTMainActivity) getContext()).send_msg_to_service(JTTService.MSG_TRANSITIONS, b);
     }
 
     private void getPastDay() {
