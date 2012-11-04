@@ -7,7 +7,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -17,9 +16,7 @@ import android.os.RemoteException;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Window;
-import android.widget.LinearLayout;
 
 public class JTTMainActivity extends ActivityGroup {
     private final static String TAG = "jtt main";
@@ -27,6 +24,7 @@ public class JTTMainActivity extends ActivityGroup {
     private JTTClockView clock;
     private JTTPager pager;
     private JTTTodayList today;
+    private AlarmList alarms;
 
     private Messenger mService = null;
     final Messenger mMessenger = new Messenger(new IncomingHandler(this));
@@ -105,29 +103,23 @@ public class JTTMainActivity extends ActivityGroup {
         super.onCreate(savedInstanceState);
         final Intent service = new Intent(this, JTTService.class);
         startService(service);
-        final LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT);
 
         JTTUtil.initLocale(this);
 
         pager = new JTTPager(this, null);
-        pager.setLayoutParams(lp);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-            pager.setOrientation(LinearLayout.VERTICAL);
-        pager.setPadding(5, 5, 5, 5);
 
         clock = new JTTClockView(this);
-        clock.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-        clock.setLayoutParams(lp);
-        pager.addTab(this, clock, R.string.clock);
+        pager.addTab(clock, R.string.clock);
 
         today = new JTTTodayList(this);
-        today.setLayoutParams(lp);
-        pager.addTab(this, today, R.string.today);
+        pager.addTab(today, R.string.today);
+
+        alarms = new AlarmList(this);
+        pager.addTab(alarms, R.string.alarm);
 
         final Window sw = getLocalActivityManager().startActivity("settings",
                 new Intent(this, JTTSettingsActivity.class));
-        settings_tab = pager.addTab(this, sw.getDecorView(), R.string.settings);
+        settings_tab = pager.addTab(sw.getDecorView(), R.string.settings);
 
         setContentView(pager);
 
