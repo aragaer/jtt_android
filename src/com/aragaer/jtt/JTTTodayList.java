@@ -2,12 +2,10 @@ package com.aragaer.jtt;
 
 import java.text.DateFormat;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.TimeZone;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,7 +48,7 @@ public class JTTTodayList extends ListView {
         public HourItem(long t, int h) {
             super(t);
             hnum = h % 12;
-            date = df.format(new Date(t));
+            date = df.format(t);
         }
 
         static String[] extras = null, hours = null;
@@ -109,8 +107,7 @@ public class JTTTodayList extends ListView {
             final int ddiff = (int) (ms_to_day(now) - ms_to_day(date));
             if (ddiff < 2 && ddiff > -2)
                 return daynames[ddiff+1];
-            final Resources r = c.getResources();
-            return r.getQuantityString(ddiff > 0
+            return c.getResources().getQuantityString(ddiff > 0
                 ? R.plurals.days_past
                 : R.plurals.days_future, ddiff, ddiff);
         }
