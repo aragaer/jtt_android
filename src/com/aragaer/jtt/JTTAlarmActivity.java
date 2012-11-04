@@ -44,6 +44,7 @@ public class JTTAlarmActivity extends Activity {
         super.onCreate(saved);
         final Intent service = new Intent(JTTService.class.getName());
         startService(service);
+        JTTUtil.initLocale(this);
 
         Bundle b = getIntent().getExtras();
         if (b != null)

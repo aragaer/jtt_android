@@ -17,6 +17,8 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 public final class JTTUtil {
 	public static Locale locale = null;
@@ -149,5 +151,10 @@ public final class JTTUtil {
 			}
 			context = null;
 		}
+	}
+
+	/* sets a value to a text field */
+	final static void t(View v, int id, String t) {
+		((TextView) v.findViewById(id)).setText(t);
 	}
 }

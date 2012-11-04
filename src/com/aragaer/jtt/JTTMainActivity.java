@@ -12,13 +12,14 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Window;
+import android.widget.ListView;
 
 public class JTTMainActivity extends ActivityGroup {
     private final static String TAG = "jtt main";
 
     private JTTClockView clock;
     private JTTPager pager;
-    private JTTTodayList today;
+    private TodayAdapter today;
     private AlarmList alarms;
     protected JTTUtil.ConnHelper conn = new JTTUtil.ConnHelper(this, new IncomingHandler(this));
 
@@ -66,8 +67,10 @@ public class JTTMainActivity extends ActivityGroup {
         clock = new JTTClockView(this);
         pager.addTab(clock, R.string.clock);
 
-        today = new JTTTodayList(this);
-        pager.addTab(today, R.string.today);
+        ListView today_list = new ListView(this);
+        today = new TodayAdapter(this, 0);
+        today_list.setAdapter(today);
+        pager.addTab(today_list, R.string.today);
 
         alarms = new AlarmList(this);
         pager.addTab(alarms, R.string.alarm);
