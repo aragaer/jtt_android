@@ -108,7 +108,7 @@ public class JTTSettingsActivity extends PreferenceActivity {
     }
 
     private final void doSendMessage(int what, Bundle data) {
-        ((JTTMainActivity) getParent()).send_msg_to_service(what, data);
+        ((JTTMainActivity) getParent()).conn.send_msg_to_service(what, data);
     }
 
     private final OnClickListener stop_dlg_listener = new OnClickListener() {

@@ -1,17 +1,12 @@
 package com.aragaer.jtt;
 
+import java.text.DateFormat;
+
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
-
-import java.text.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,30 +15,9 @@ import android.widget.TextView;
 
 public class JTTAlarmActivity extends Activity {
     private final static String TAG = JTTAlarmActivity.class.getSimpleName();
-    private Messenger mService = null;
-    final Messenger mMessenger = new Messenger(new IncomingHandler(this));
+    protected JTTUtil.ConnHelper conn = new JTTUtil.ConnHelper(this, new IncomingHandler(this));
     private TextView time, glyph, fraction;
-    private JTTAlarm alarm;
-
-    private ServiceConnection conn = new ServiceConnection() {
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mService = new Messenger(service);
-            try {
-                Message msg = Message.obtain(null,
-                        JTTService.MSG_REGISTER_CLIENT);
-                msg.replyTo = mMessenger;
-                mService.send(msg);
-                Log.i(TAG, "Service connection established");
-            } catch (RemoteException e) {
-                Log.i(TAG, "Service connection can't be established");
-            }
-        }
-
-        public void onServiceDisconnected(ComponentName name) {
-            mService = null;
-            Log.i(TAG, "Service connection closed");
-        }
-    };
+    private JTTAlarm alarm = null;
 
     static class IncomingHandler extends Handler {
     	DateFormat df;
@@ -95,18 +69,13 @@ public class JTTAlarmActivity extends Activity {
         glyph = (TextView) findViewById(R.id.glyph);
         fraction = (TextView) findViewById(R.id.fraction);
 
-        bindService(service, conn, 0);
+        conn.bind(service, 0);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        try {
-            unbindService(conn);
-        } catch (Throwable t) {
-            Log.w(TAG, "Failed to unbind from the service", t);
-        }
+        conn.release();
 
         Log.i(TAG, "Activity destroyed");
     }

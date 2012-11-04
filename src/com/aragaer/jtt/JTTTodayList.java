@@ -169,13 +169,10 @@ public class JTTTodayList extends ListView {
         updateItems();
     }
 
-    public void reset() {
-        transitions.clear();
-    }
-
-    protected void onServiceConnect() {
-        getDay(JTT.longToJDN(System.currentTimeMillis()));
-    }
+	public void reset() {
+		transitions.clear();
+		getDay(JTT.longToJDN(System.currentTimeMillis()));
+	}
 
     /* request transitions for given day from JTTService */
     private void getDay(long jdn) {
@@ -187,7 +184,7 @@ public class JTTTodayList extends ListView {
         Bundle b = new Bundle();
         b.putLong("jdn", jdn);
         expecting_data = true;
-        ((JTTMainActivity) getContext()).send_msg_to_service(JTTService.MSG_TRANSITIONS, b);
+        ((JTTMainActivity) getContext()).conn.send_msg_to_service(JTTService.MSG_TRANSITIONS, b);
     }
 
     private void getPastDay() {

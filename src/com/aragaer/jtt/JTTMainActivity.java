@@ -3,16 +3,11 @@ package com.aragaer.jtt;
 import java.lang.ref.WeakReference;
 
 import android.app.ActivityGroup;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -25,9 +20,7 @@ public class JTTMainActivity extends ActivityGroup {
     private JTTPager pager;
     private JTTTodayList today;
     private AlarmList alarms;
-
-    private Messenger mService = null;
-    final Messenger mMessenger = new Messenger(new IncomingHandler(this));
+    protected JTTUtil.ConnHelper conn = new JTTUtil.ConnHelper(this, new IncomingHandler(this));
 
     static class IncomingHandler extends Handler {
         private final WeakReference<JTTMainActivity> main;
@@ -56,44 +49,6 @@ public class JTTMainActivity extends ActivityGroup {
                 super.handleMessage(msg);
                 break;
             }
-        }
-    }
-
-    private ServiceConnection conn = new ServiceConnection() {
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            mService = new Messenger(service);
-            try {
-                Message msg = Message.obtain(null,
-                        JTTService.MSG_REGISTER_CLIENT);
-                msg.replyTo = mMessenger;
-                mService.send(msg);
-                Log.i(TAG, "Service connection established");
-                today.onServiceConnect();
-            } catch (RemoteException e) {
-                // In this case the service has crashed before we could even do
-                // anything with it
-                Log.i(TAG, "Service connection can't be established");
-            }
-        }
-
-        public void onServiceDisconnected(ComponentName name) {
-            mService = null;
-            Log.i(TAG, "Service connection closed");
-        }
-    };
-
-    protected void send_msg_to_service(int what, Bundle b) {
-        Message msg = Message.obtain(null, what);
-        if (b != null)
-            msg.setData(b);
-
-        msg.replyTo = mMessenger;
-        try {
-            mService.send(msg);
-        } catch (RemoteException e) {
-            Log.i(TAG, "Service connection broken");
-        } catch (NullPointerException e) {
-            Log.i(TAG, "Service not connected");
         }
     }
 
@@ -126,7 +81,7 @@ public class JTTMainActivity extends ActivityGroup {
         if (savedInstanceState != null)
             pager.scrollToScreen(savedInstanceState.getInt("Screen"));
 
-        bindService(service, conn, 0);
+        conn.bind(service, 0);
     }
 
     @Override
@@ -154,13 +109,7 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        send_msg_to_service(JTTService.MSG_UNREGISTER_CLIENT, null);
-
-        try {
-            unbindService(conn);
-        } catch (Throwable t) {
-            Log.w(TAG, "Failed to unbind from the service", t);
-        }
+        conn.release();
 
         Log.i(TAG, "Activity destroyed");
     }
