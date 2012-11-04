@@ -12,7 +12,7 @@
 
     <TextView
         android:id="@+id/time"
-        android:layout_width="75dp"
+        android:layout_width="@dimen/today_time_width"
         android:layout_height="wrap_content"
         android:gravity="right" />
 
