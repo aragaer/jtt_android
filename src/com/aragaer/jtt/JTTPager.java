@@ -111,9 +111,7 @@ public class JTTPager extends LinearLayout {
 		protected int mCurrentScreen = -1;
 
 		private float mLastMotionX;
-		// private float mLastMotionY;
 		private int mScrollX;
-		// private int mScrollY;
 
 		private final static int TOUCH_STATE_REST = 0;
 		private final static int TOUCH_STATE_SCROLLING = 1;
@@ -169,24 +167,15 @@ public class JTTPager extends LinearLayout {
 				return true;
 
 			final float x = ev.getX();
-			// final float y = ev.getY();
 			switch (action) {
 			case MotionEvent.ACTION_MOVE:
-				final int xDiff = (int) Math.abs(x - mLastMotionX);
-				// final int yDiff = (int) Math.abs(y - mLastMotionY);
-
-				final int touchSlop = mTouchSlop;
-				final boolean xMoved = xDiff > touchSlop;
-				// final boolean yMoved = yDiff > touchSlop;
-
-				if (xMoved)
+				if (Math.abs(x - mLastMotionX) > mTouchSlop)
 					mTouchState = TOUCH_STATE_SCROLLING;
 				break;
 
 			case MotionEvent.ACTION_DOWN:
 				// Remember location of down touch
 				mLastMotionX = x;
-				// mLastMotionY = y;
 				mTouchState = TOUCH_STATE_REST;
 				break;
 
@@ -293,9 +282,9 @@ public class JTTPager extends LinearLayout {
 		}
 
 		public void selectScreen(int whichScreen) {
-			JTTPager.this.deselect_tab(mCurrentScreen);
+			deselect_tab(mCurrentScreen);
 			mCurrentScreen = whichScreen;
-			JTTPager.this.select_tab(mCurrentScreen);
+			select_tab(mCurrentScreen);
 		}
 	}
 }
