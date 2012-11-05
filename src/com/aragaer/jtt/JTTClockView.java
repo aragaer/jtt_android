@@ -16,7 +16,7 @@ import android.view.View;
 public class JTTClockView extends View {
 	private final static int step = 360 / 12;
 	private final static float gap = 1.5f;
-	protected final Paint stroke1 = new Paint(0x01),
+	protected final Paint stroke1 = new Paint(0x07),
 			stroke2 = new Paint(0x07),
 			solid1 = new Paint(0x01),
 			solid2 = new Paint(0x01);
@@ -53,7 +53,7 @@ public class JTTClockView extends View {
 		m.setTranslate(v ? 0 : 3 * w / 5 - size, v ? 3 * h / 5 - size : 0);
 		m.preRotate(step * (0.5f - hour.num) - gap - (step - gap * 2)
 				* hour.fraction / 100.0f, size, size);
-		canvas.drawBitmap(clock, m, null);
+		canvas.drawBitmap(clock, m, stroke1);
 
 		stroke2.setTextSize(v ? w / 20 : w / 15);
 		solid1.setTextSize(size / 5);
@@ -159,6 +159,8 @@ public class JTTClockView extends View {
 	private static final int granularity = 10;
 	public void setHour(int n, int f) {
 		f -= f % granularity;
+		if (hour == null)
+			hour = new JTTHour(-1); // something impossible
 		if (hour.num == n && hour.fraction == f)
 			return; // do nothing
 
