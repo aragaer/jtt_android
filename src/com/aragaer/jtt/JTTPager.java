@@ -2,43 +2,34 @@ package com.aragaer.jtt;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.Scroller;
 
 public class JTTPager extends LinearLayout {
-	private JTTPageView pageview;
+	private PageScroller scrollview;
+	private ScrollContents pageview;
 	private RadioGroup tablist;
-	private LayoutParams lp;
-	private RadioGroup.LayoutParams btnlp = new RadioGroup.LayoutParams(
-			LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1);
+	int viewport_width;
+	private RadioGroup.LayoutParams btnlp;
 
-	public JTTPager(Context context, AttributeSet attrs) {
-		super(context, attrs);
+	public JTTPager(Context context) {
+		super(context);
 
-		lp = new LayoutParams(LayoutParams.FILL_PARENT,
-				LayoutParams.FILL_PARENT);
+		scrollview = new PageScroller(context);
+		pageview = new ScrollContents(context);
+		scrollview.addView(pageview);
 
-		pageview = new JTTPageView(context, attrs);
-		pageview.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
-				LayoutParams.FILL_PARENT, 1.0f));
-
-		tablist = new RadioGroup(context, attrs);
-		tablist.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		tablist = new RadioGroup(context);
+		tablist.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				pageview.snapToScreen(checkedId);
+				scrollToScreen(checkedId);
 			}
 		});
-		addView(pageview);
-		addView(tablist);
 		setPadding(5, 5, 5, 5);
 
 		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -46,12 +37,20 @@ public class JTTPager extends LinearLayout {
 			tablist.setOrientation(LinearLayout.HORIZONTAL);
 			tablist.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
 					LayoutParams.WRAP_CONTENT, 0));
+			btnlp = new RadioGroup.LayoutParams(LayoutParams.WRAP_CONTENT,
+					LayoutParams.FILL_PARENT, 1);
 		} else {
 			setOrientation(LinearLayout.HORIZONTAL);
 			tablist.setOrientation(LinearLayout.VERTICAL);
 			tablist.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
 					LayoutParams.FILL_PARENT, 0));
+			btnlp = new RadioGroup.LayoutParams(LayoutParams.FILL_PARENT,
+					LayoutParams.FILL_PARENT, 1);
 		}
+
+		addView(scrollview, new LayoutParams(LayoutParams.FILL_PARENT,
+				LayoutParams.FILL_PARENT, 1));
+		addView(tablist);
 	}
 
 	public int addTab(View view, int resid) {
@@ -60,11 +59,7 @@ public class JTTPager extends LinearLayout {
 		b.setText(getContext().getString(resid));
 		b.setId(id);
 		tablist.addView(b, btnlp);
-		pageview.addView(view, lp);
-
-		if (id == 0)
-			select_tab(0);
-
+		pageview.addView(view);
 		return id;
 	}
 
@@ -73,193 +68,100 @@ public class JTTPager extends LinearLayout {
 	}
 
 	public void scrollToScreen(int num) {
-		pageview.snapToScreen(num);
+		scrollview.scrollToScreen(num);
 	}
 
 	public int getScreen() {
 		return tablist.getCheckedRadioButtonId();
 	}
 
-	private final class JTTPageView extends ViewGroup {
-		Scroller scroller = new Scroller(getContext());
-		private static final int SNAP_VELOCITY = 1000;
+	class PageScroller extends HorizontalScrollView {
+		int target;
+		boolean touched;
+		int SNAPPER_DELAY = 200;
 
-		private VelocityTracker vt;
-		private int mMaximumVelocity;
-		private int mTouchSlop;
-
-		int mCurrentScreen = -1;
-
-		private float last_x;
-		private int scroll_x;
-
-		private final static int TOUCH_STATE_REST = 0;
-		private final static int TOUCH_STATE_SCROLLING = 1;
-		private int touch_state = TOUCH_STATE_REST;
-
-		public JTTPageView(Context ctx, AttributeSet attrs) {
-			super(ctx, attrs);
-
-			setHapticFeedbackEnabled(false);
-
-			final ViewConfiguration cfg = ViewConfiguration.get(getContext());
-			mMaximumVelocity = cfg.getScaledMaximumFlingVelocity();
-			mTouchSlop = cfg.getScaledTouchSlop();
-
+		public PageScroller(Context ctx) {
+			super(ctx);
+			setFillViewport(true);
 			setHorizontalScrollBarEnabled(false);
+			setSmoothScrollingEnabled(true);
+			setHorizontalFadingEdgeEnabled(false);
 		}
 
-		@Override
-		protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-			// The children are given the same width and height as the workspace
-			final int count = getChildCount();
-			for (int i = 0; i < count; i++)
-				getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
-		}
-
-		@Override
-		protected void onLayout(boolean changed, int left, int top, int right,
-				int bottom) {
-			int childLeft = 0;
-			final int width = right - left;
-
-			final int count = getChildCount();
-			for (int i = 0; i < count; i++) {
-				final View child = getChildAt(i);
-				child.layout(childLeft, 0, childLeft + width,
-						child.getMeasuredHeight());
-				childLeft += width;
-			}
-			if (width > 0)
-				scrollTo(mCurrentScreen * width, 0);
-		}
-
-		@Override
-		public boolean onInterceptTouchEvent(MotionEvent ev) {
-			final int action = ev.getAction();
-			if (action == MotionEvent.ACTION_MOVE
-					&& touch_state != TOUCH_STATE_REST)
-				return true;
-
-			final float x = ev.getX();
-			switch (action) {
-			case MotionEvent.ACTION_MOVE:
-				if (Math.abs(x - last_x) > mTouchSlop)
-					touch_state = TOUCH_STATE_SCROLLING;
-				break;
-
+		public boolean onTouchEvent(MotionEvent event) {
+			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				// Remember location of down touch
-				last_x = x;
-				touch_state = TOUCH_STATE_REST;
-				break;
-
-			case MotionEvent.ACTION_CANCEL:
-			case MotionEvent.ACTION_UP:
-				// Release the drag
-				touch_state = TOUCH_STATE_REST;
-				break;
-			}
-
-			/*
-			 * The only time we want to intercept motion events is if we are in
-			 * the drag mode.
-			 */
-			return touch_state != TOUCH_STATE_REST;
-		}
-
-		@Override
-		public boolean onTouchEvent(MotionEvent ev) {
-			if (vt == null)
-				vt = VelocityTracker.obtain();
-			vt.addMovement(ev);
-
-			final int action = ev.getAction();
-			final float x = ev.getX();
-
-			switch (action) {
-			case MotionEvent.ACTION_DOWN:
-				// Remember where the motion event started
-				last_x = x;
-				break;
 			case MotionEvent.ACTION_MOVE:
-				int deltaX = (int) (last_x - x);
-				touch_state = TOUCH_STATE_SCROLLING;
-				// Scroll to follow the motion event
-				last_x = x;
-
-				final int maxWidth = (getChildCount() - 1) * getWidth();
-
-				if (scroll_x + deltaX < 0)
-					deltaX = -scroll_x;
-				else if (scroll_x + deltaX > maxWidth)
-					deltaX = maxWidth - scroll_x;
-
-				scrollBy(deltaX, 0);
+				touched = true;
 				break;
 			case MotionEvent.ACTION_UP:
-				if (touch_state == TOUCH_STATE_SCROLLING) {
-					final int bump = getWidth() / 2 + 1;
-					vt.computeCurrentVelocity(1000, mMaximumVelocity);
-					int velocityX = (int) vt.getXVelocity();
-
-					if (velocityX > SNAP_VELOCITY && mCurrentScreen > 0)
-						// Fling hard enough to move left
-						scrollBy(-bump, 0);
-					else if (velocityX < -SNAP_VELOCITY
-							&& mCurrentScreen < getChildCount() - 1)
-						// Fling hard enough to move right
-						scrollBy(bump, 0);
-
-					snapToScreen(mCurrentScreen);
-
-					vt.recycle();
-					vt = null;
-				}
-				touch_state = TOUCH_STATE_REST;
+				touched = false;
+				postDelayed(snapper, SNAPPER_DELAY);
 				break;
-			case MotionEvent.ACTION_CANCEL:
-				touch_state = TOUCH_STATE_REST;
+			default:
+				break;
 			}
-
-			return true;
+			return super.onTouchEvent(event);
 		}
 
-		@Override
-		public void scrollBy(int scrollX, int scrollY) {
-			scroll_x += scrollX;
-			super.scrollBy(scrollX, scrollY);
-			selectDestination();
-		}
-
-		@Override
-		public void scrollTo(int scrollX, int scrollY) {
-			scroll_x = scrollX;
-			super.scrollTo(scrollX, scrollY);
-			selectDestination();
-		}
-
-		private void selectDestination() {
-			final int w = getWidth();
+		protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+			removeCallbacks(snapper);
+			int w = getWidth();
 			if (w == 0)
 				return;
-			final int whichScreen = (int) (scroll_x + w / 2) / w;
-
-			selectScreen(whichScreen);
+			select_tab((l + w / 2) / w);
+			postDelayed(snapper, SNAPPER_DELAY);
 		}
 
-		public void snapToScreen(int whichScreen) {
-			final int x = getWidth() * whichScreen;
-			selectScreen(whichScreen);
-			super.scrollTo(x, 0);
-			scroll_x = x;
+		public void scrollToScreen(int num) {
+			removeCallbacks(snapper);
+			target = num;
+			postDelayed(snapper, SNAPPER_DELAY);
 		}
 
-		public void selectScreen(int whichScreen) {
-			mCurrentScreen = whichScreen;
-			select_tab(mCurrentScreen);
+		Runnable snapper = new Runnable() {
+			public void run() {
+				if (!touched)
+					smoothScrollTo(getWidth() * target, 0);
+			}
+		};
+
+		/* only fling one page */
+		public void fling(int velocityX) {
+			removeCallbacks(snapper);
+			final int bump = getWidth() / 2 + 1;
+			smoothScrollBy(velocityX < 0 ? -bump : bump, 0);
+			postDelayed(snapper, SNAPPER_DELAY);
+		}
+
+		protected void onMeasure(int wms, int hms) {
+			viewport_width = MeasureSpec.getSize(wms);
+			super.onMeasure(wms, hms);
+		}
+	}
+
+	class ScrollContents extends ViewGroup {
+		public ScrollContents(Context ctx) {
+			super(ctx);
+			setFocusableInTouchMode(true); // otherwise children will steal focus
+		}
+
+		protected void onMeasure(int wms, int hms) {
+			wms = MeasureSpec.makeMeasureSpec(viewport_width, MeasureSpec.EXACTLY);
+			final int count = getChildCount();
+			for (int i = 0; i < count; i++)
+				getChildAt(i).measure(wms, hms);
+			setMeasuredDimension(MeasureSpec.makeMeasureSpec(viewport_width
+					* count, MeasureSpec.EXACTLY), hms);
+		}
+
+		protected void onLayout(boolean changed, int l, int t, int r, int b) {
+			int count = getChildCount();
+			for (int i = 0; i < count; i++) {
+				final View child = getChildAt(i);
+				child.layout(l, t, l + viewport_width, b);
+				l += viewport_width;
+			}
 		}
 	}
 }

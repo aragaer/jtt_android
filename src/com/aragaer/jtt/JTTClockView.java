@@ -8,9 +8,11 @@ import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Region.Op;
 import android.os.AsyncTask;
-import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.view.View;
 
@@ -22,48 +24,69 @@ public class JTTClockView extends View {
 			solid1 = new Paint(0x01),
 			solid2 = new Paint(0x01);
 	protected Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // make it non-null
+	private Bitmap cache = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // same
+	private Canvas cc = new Canvas();
 	private JTTHour hour = new JTTHour(-1); // something impossible
 	private final JTTUtil.StringsHelper hs;
 	private final Matrix m = new Matrix();
 
 	public JTTClockView(Context context) {
-		this(context, null, 0);
+		super(context);
+		hs = JTTUtil.getStringsHelper(context);
+		setupPaint(context);
 	}
 
-	public JTTClockView(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
+	int size, ox, oy, hx, hy;
+	int iR, oR, thick, selR;
+	float sR;
+	boolean vertical;
 
-	public JTTClockView(Context ctx, AttributeSet attrs, int defStyle) {
-		super(ctx, attrs, defStyle);
-		hs = JTTUtil.getStringsHelper(ctx);
-		setupPaint(ctx);
-	}
-
-	@Override
-	protected void onDraw(Canvas canvas) {
-		if (hour.num == -1)
+	protected void onSizeChanged (int w, int h, int oldw, int oldh) {
+		vertical = h > w;
+		size = vertical ? w / 2 : h / 2;
+		if (size == 0)
 			return;
-
-		final int w = getWidth();
-		final int h = getHeight();
-		final boolean v = h > w;
-		final int size = v ? w / 2 : h / 2;
-
-		m.reset();
-		m.setTranslate(v ? 0 : 3 * w / 5 - size, v ? 3 * h / 5 - size : 0);
-		m.preRotate(step * (0.5f - hour.num) - gap - (step - gap * 2)
-				* hour.fraction / 100.0f, size, size);
-		canvas.drawBitmap(clock, m, stroke1);
-
-		stroke2.setTextSize(v ? w / 20 : w / 15);
+		clock.recycle();
+		clock = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
+		cache.recycle();
+		cache = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+		cc.setBitmap(cache);
+		stroke2.setTextSize(vertical ? w / 20 : w / 15);
 		solid1.setTextSize(size / 5);
 		stroke1.setTextSize(size / 5);
+		if (vertical) {
+			ox = 0;
+			oy = 3 * h / 5 - size;
+			hx = size;
+			hy = h / 10;
+		} else {
+			ox = 3 * w / 5 - size;
+			oy = 0;
+			hx = w / 5;
+			hy = size;
+		}
+		cc.drawText("▽", ox + size, oy + size / 8, stroke1);
+		cc.drawText("▼", ox + size, oy + size / 8, solid1);
 
-		final String s = v ? hs.getHrOf(hour.num) : hs.getHour(hour.num);
-		canvas.drawText(s, v ? size : w / 5, v ? h / 10 : size, stroke2);
-		canvas.drawText("▽", v ? size : 3 * w / 5, v ? 3 * h / 5 - 7 * size / 8 : size / 8, stroke1);
-		canvas.drawText("▼", v ? size : 3 * w / 5, v ? 3 * h / 5 - 7 * size / 8 : size / 8, solid1);
+		iR = 2 * size / 5;
+		thick = 2 * size / 5;
+		oR = iR + thick;
+		selR = oR + thick / 4;
+		sR = iR * 0.2f;
+
+		stroke1.setTextSize(thick / 3);
+		solid2.setTextSize(thick / 3);
+
+		outer.set(size - oR, size - oR, size + oR, size + oR);
+		inner.set(size - iR, size - iR, size + iR, size + iR);
+		sel.set(size - selR, size - selR, size + selR, size + selR);
+		sun.set(size - sR, size - sR, size + sR, size + sR);
+
+		clock_area.set(ox + size - oR, oy + size - selR, ox + size + oR, oy + size + oR);
+	}
+
+	protected void onDraw(Canvas canvas) {
+		canvas.drawBitmap(cache, 0, 0, null);
 	}
 
 	private final void setupPaint(Context ctx) {
@@ -97,20 +120,6 @@ public class JTTClockView extends View {
 
 	void draw_onto(Bitmap b, int num, int c) {
 		Canvas canvas = new Canvas(b);
-
-		final int iR = 2 * c / 5;
-		final int thick = 2 * c / 5;
-		final int oR = iR + thick;
-		final int selR = oR + thick / 4;
-		final float sR = iR * 0.2f;
-
-		stroke1.setTextSize(thick / 3);
-		solid2.setTextSize(thick / 3);
-
-		outer.set(c - oR, c - oR, c + oR, c + oR);
-		inner.set(c - iR, c - iR, c + iR, c + iR);
-		sel.set(c - selR, c - selR, c + selR, c + selR);
-		sun.set(c - sR, c - sR, c + sR, c + sR);
 
 		canvas.rotate(-step / 2, c, c);
 		canvas.translate(-iR * 0.75f, 0);
@@ -166,29 +175,37 @@ public class JTTClockView extends View {
 		new PainterTask().execute(n, f);
 	}
 
+	final Rect clock_area = new Rect();
 	class PainterTask extends AsyncTask<Integer, Void, Void> {
 		protected Void doInBackground(Integer... params) {
 			final int n = params[0], f = params[1];
-			final int w = getWidth();
-			final int h = getHeight();
-			final boolean v = h > w;
-			final int size = v ? w / 2 : h / 2;
 
-			if (hour.num != n)
-				if (clock.getWidth() == w && clock.getHeight() == h) {
-					clock.eraseColor(Color.TRANSPARENT);
-					draw_onto(clock, n, size);
-				} else {
-					clock.recycle();
-					clock = drawBitmap(n, size);
-				}
+			if (hour.num != n) {
+				Rect r = new Rect();
+				final String s = vertical ? hs.getHrOf(n) : hs.getHour(n);
+				stroke2.getTextBounds(s, 0, s.length(), r);
+				r.offsetTo(-r.centerX(), r.top);
+				r.offset(hx, hy);
+				cc.clipRect(r, Op.REPLACE);
+				cc.drawColor(0, Mode.CLEAR);
+				cc.drawText(s, hx, hy, stroke2);
+				postInvalidate(r.left, r.top, r.right, r.bottom);
+
+				clock.eraseColor(Color.TRANSPARENT);
+				draw_onto(clock, n, size);
+			}
+
+			cc.clipRect(clock_area, Op.REPLACE);
+			cc.drawColor(0, Mode.CLEAR);
+			m.reset();
+			m.setTranslate(ox, oy);
+			m.preRotate(step * (0.5f - n) - gap - (step - gap * 2)
+					* f / 100.0f, size, size);
+			cc.drawBitmap(clock, m, stroke1);
+			postInvalidate(clock_area.left, clock_area.top, clock_area.right, clock_area.bottom);
 
 			hour.setTo(n, f);
 			return null;
-		}
-
-		protected void onPostExecute(Void result) {
-			postInvalidate();
 		}
 	}
 }

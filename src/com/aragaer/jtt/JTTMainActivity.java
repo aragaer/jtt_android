@@ -62,7 +62,7 @@ public class JTTMainActivity extends ActivityGroup {
 
         JTTUtil.initLocale(this);
 
-        pager = new JTTPager(this, null);
+        pager = new JTTPager(this);
 
         clock = new JTTClockView(this);
         pager.addTab(clock, R.string.clock);
