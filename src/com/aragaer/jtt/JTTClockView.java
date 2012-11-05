@@ -24,8 +24,7 @@ public class JTTClockView extends View {
 			solid1 = new Paint(0x01),
 			solid2 = new Paint(0x01);
 	protected Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // make it non-null
-	private Bitmap cache = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // same
-	private Canvas cc = new Canvas();
+	private final Canvas cc = new Canvas();
 	private JTTHour hour = new JTTHour(-1); // something impossible
 	private final JTTUtil.StringsHelper hs;
 	private final Matrix m = new Matrix();
@@ -34,6 +33,7 @@ public class JTTClockView extends View {
 		super(context);
 		hs = JTTUtil.getStringsHelper(context);
 		setupPaint(context);
+		setDrawingCacheEnabled(true);
 	}
 
 	int size, ox, oy, hx, hy;
@@ -41,16 +41,14 @@ public class JTTClockView extends View {
 	float sR;
 	boolean vertical;
 
-	protected void onSizeChanged (int w, int h, int oldw, int oldh) {
+	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		vertical = h > w;
 		size = vertical ? w / 2 : h / 2;
 		if (size == 0)
 			return;
 		clock.recycle();
 		clock = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
-		cache.recycle();
-		cache = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-		cc.setBitmap(cache);
+		cc.setBitmap(getDrawingCache());
 		stroke2.setTextSize(vertical ? w / 20 : w / 15);
 		solid1.setTextSize(size / 5);
 		stroke1.setTextSize(size / 5);
@@ -93,7 +91,7 @@ public class JTTClockView extends View {
 	}
 
 	protected void onDraw(Canvas canvas) {
-		canvas.drawBitmap(cache, 0, 0, null);
+		canvas.drawBitmap(getDrawingCache(), 0, 0, null);
 	}
 
 	private final void setupPaint(Context ctx) {
