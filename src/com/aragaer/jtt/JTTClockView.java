@@ -83,6 +83,13 @@ public class JTTClockView extends View {
 		sun.set(size - sR, size - sR, size + sR, size + sR);
 
 		clock_area.set(ox + size - oR, oy + size - selR, ox + size + oR, oy + size + oR);
+
+		cc.clipRect(ox + size - oR, oy + size - selR, ox + size + oR, oy + size + oR, Op.REPLACE);
+		path.reset();
+		path.addCircle(ox + size, oy + size, oR, Path.Direction.CW);
+		path.addCircle(ox + size, oy + size, iR, Path.Direction.CCW);
+		cc.drawPath(path, solid1);
+		cc.drawPath(path, stroke1);
 	}
 
 	protected void onDraw(Canvas canvas) {
