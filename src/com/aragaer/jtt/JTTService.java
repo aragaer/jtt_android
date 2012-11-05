@@ -1,7 +1,6 @@
 package com.aragaer.jtt;
 
 import java.lang.ref.WeakReference;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -150,7 +149,6 @@ public class JTTService extends Service {
     final Messenger messenger = new Messenger(handler);
 
     private String app_name;
-    private static DateFormat df;
     private void notify_helper(int hn, int hf) {
         notification = new Notification(R.drawable.notification_icon,
                 app_name, System.currentTimeMillis());
@@ -213,7 +211,6 @@ public class JTTService extends Service {
         Log.d(TAG, "Service initializing");
         JTTUtil.initLocale(this);
         hs = JTTUtil.getStringsHelper(this);
-        df = android.text.format.DateFormat.getTimeFormat(this);
         SharedPreferences settings = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
         String[] ll = settings.getString("jtt_loc", "0.0:0.0").split(":");
@@ -340,8 +337,8 @@ public class JTTService extends Service {
                 || now < sync) {          // time went backwards!
             hour = exp_tick + isDay * 6;
             sub = exp_sub;
-            t_start = df.format(start + (end - start) * exp_tick / ticks);
-            t_end = df.format(start + (end - start) * (exp_tick + 1) / ticks);
+            t_start = JTTUtil.format_time(start + (end - start) * exp_tick / ticks);
+            t_end = JTTUtil.format_time(start + (end - start) * (exp_tick + 1) / ticks);
             doNotify(hour, sub, MSG_HOUR);
         } else if (sub < exp_sub) {
             if (hour % 6 != exp_tick) { // sync should belong to this tick interval

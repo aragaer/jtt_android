@@ -1,6 +1,5 @@
 package com.aragaer.jtt;
 
-import java.text.DateFormat;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.TimeZone;
@@ -31,7 +30,7 @@ class HourItem extends TodayItem {
 	public HourItem(long t, int h) {
 		super(t);
 		hnum = h % 12;
-		date = TodayAdapter.df.format(t);
+		date = JTTUtil.format_time(t);
 	}
 
 	static String[] extras = null, hours = null;
@@ -113,13 +112,11 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 	private boolean expecting_data = false;
 
 	long jdn_min, jdn_max;
-	static DateFormat df;
 
 	public TodayAdapter(Context c, int layout_id) {
 		super(c, layout_id);
 		JTTUtil.initLocale(c);
 		HourItem.extras = HourItem.hours = DayItem.daynames = null;
-		df = android.text.format.DateFormat.getTimeFormat(c);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.aragaer.jtt;
 
+import java.text.DateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -42,6 +43,12 @@ public final class JTTUtil {
 		r.updateConfiguration(conf, null);
 		if (sh != null)
 			sh.load(c);
+		df = android.text.format.DateFormat.getTimeFormat(c);
+	}
+
+    private static DateFormat df;
+	public static String format_time(long timestamp) {
+		return df.format(timestamp);
 	}
 
 	public static final StringsHelper getStringsHelper(Context ctx) {

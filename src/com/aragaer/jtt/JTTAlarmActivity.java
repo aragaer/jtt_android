@@ -1,7 +1,6 @@
 package com.aragaer.jtt;
 
 import java.lang.ref.WeakReference;
-import java.text.DateFormat;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,18 +21,16 @@ public class JTTAlarmActivity extends Activity {
 
 	static class IncomingHandler extends Handler {
 		private final WeakReference<JTTAlarmActivity> weak;
-		DateFormat df;
 		public IncomingHandler(JTTAlarmActivity activity) {
 			weak = new WeakReference<JTTAlarmActivity>(activity);
-			df = android.text.format.DateFormat.getTimeFormat(activity);
 		}
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case JTTService.MSG_HOUR:
 				JTTAlarmActivity activity = weak.get();
 				activity.glyph.setText(JTTHour.Glyphs[msg.arg1]);
-				activity.fraction.setText(msg.arg2 + "%");
-				activity.time.setText(df.format(System.currentTimeMillis()));
+				activity.fraction.setText(String.format("%d%%", msg.arg2));
+				activity.time.setText(JTTUtil.format_time(System.currentTimeMillis()));
 				break;
 			default:
 				super.handleMessage(msg);
