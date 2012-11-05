@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.view.View;
@@ -21,7 +22,7 @@ public class JTTClockView extends View {
 			solid1 = new Paint(0x01),
 			solid2 = new Paint(0x01);
 	protected Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // make it non-null
-	private JTTHour hour = null;
+	private JTTHour hour = new JTTHour(-1); // something impossible
 	private final JTTUtil.StringsHelper hs;
 	private final Matrix m = new Matrix();
 
@@ -41,7 +42,7 @@ public class JTTClockView extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		if (hour == null)
+		if (hour.num == -1)
 			return;
 
 		final int w = getWidth();
@@ -159,26 +160,35 @@ public class JTTClockView extends View {
 	private static final int granularity = 10;
 	public void setHour(int n, int f) {
 		f -= f % granularity;
-		if (hour == null)
-			hour = new JTTHour(-1); // something impossible
 		if (hour.num == n && hour.fraction == f)
 			return; // do nothing
 
-		final int w = getWidth();
-		final int h = getHeight();
-		final boolean v = h > w;
-		final int size = v ? w / 2 : h / 2;
+		new PainterTask().execute(n, f);
+	}
 
-		if (hour.num != n)
-			if (clock.getWidth() == w && clock.getHeight() == h) {
-				clock.eraseColor(Color.TRANSPARENT);
-				draw_onto(clock, n, size);
-			} else {
-				clock.recycle();
-				clock = drawBitmap(n, size);
-			}
+	class PainterTask extends AsyncTask<Integer, Void, Void> {
+		protected Void doInBackground(Integer... params) {
+			final int n = params[0], f = params[1];
+			final int w = getWidth();
+			final int h = getHeight();
+			final boolean v = h > w;
+			final int size = v ? w / 2 : h / 2;
 
-		hour.setTo(n, f);
-		invalidate();
+			if (hour.num != n)
+				if (clock.getWidth() == w && clock.getHeight() == h) {
+					clock.eraseColor(Color.TRANSPARENT);
+					draw_onto(clock, n, size);
+				} else {
+					clock.recycle();
+					clock = drawBitmap(n, size);
+				}
+
+			hour.setTo(n, f);
+			return null;
+		}
+
+		protected void onPostExecute(Void result) {
+			postInvalidate();
+		}
 	}
 }
