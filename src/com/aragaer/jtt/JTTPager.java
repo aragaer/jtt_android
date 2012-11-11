@@ -29,7 +29,7 @@ public class JTTPager extends LinearLayout {
 		tablist = new RadioGroup(context);
 		tablist.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				scrollToScreen(checkedId);
+				scrollview.scrollToScreen(checkedId);
 			}
 		});
 		setPadding(5, 5, 5, 5);
@@ -67,16 +67,8 @@ public class JTTPager extends LinearLayout {
 		return id;
 	}
 
-	protected void select_tab(int num) {
+	protected void selectScreen(int num) {
 		tablist.check(num);
-	}
-
-	public void scrollToScreen(int num) {
-		scrollview.scrollToScreen(num);
-	}
-
-	public int getScreen() {
-		return tablist.getCheckedRadioButtonId();
 	}
 
 	class PageScroller extends HorizontalScrollView {
@@ -88,8 +80,7 @@ public class JTTPager extends LinearLayout {
 			setHorizontalScrollBarEnabled(false);
 			setSmoothScrollingEnabled(true);
 			setHorizontalFadingEdgeEnabled(false);
-			ViewConfiguration cfg = ViewConfiguration.get(ctx);
-			minfling = cfg.getScaledMinimumFlingVelocity();
+			minfling = ViewConfiguration.get(ctx).getScaledMinimumFlingVelocity();
 		}
 
 		VelocityTracker vt = null;
@@ -99,12 +90,30 @@ public class JTTPager extends LinearLayout {
 			vt.addMovement(event);
 
 			if (event.getAction() == MotionEvent.ACTION_UP) {
+				final int x = getScrollX();
+				final int bump = getWidth() / 2 + 1;
+				int on = x2n(x), nn = on;
+
 				vt.computeCurrentVelocity(1000);
-				onRelease((int) vt.getXVelocity());
+				float velocity = vt.getXVelocity();
+
+				if (Math.abs(velocity) > minfling)
+					nn = x2n(x + (velocity < 0 ? bump : -bump));
+
+				selectScreen(on);
+				touch = false;
+
+				if (nn == on)
+					smoothScrollTo(n2x(on), 0);
+				else
+					selectScreen(nn); // this will scroll too
+
 				vt.recycle();
 				vt = null;
-			} else
-				touch = true;
+				return true;
+			}
+
+			touch = true;
 			return super.onTouchEvent(event);
 		}
 
@@ -128,7 +137,7 @@ public class JTTPager extends LinearLayout {
 
 		protected void onScrollChanged(int l, int t, int oldl, int oldt) {
 			if (touch)
-				select_tab(x2n(l));
+				selectScreen(x2n(l));
 		}
 
 		public void scrollToScreen(int num) {
@@ -136,31 +145,14 @@ public class JTTPager extends LinearLayout {
 				smoothScrollTo(n2x(num), 0);
 		}
 
-		public void fling(int velocityX) {
-			return; // it's already handled
-		}
-
-		/* only fling one page */
-		public void onRelease(int velocityX) {
-			final int x = getScrollX();
-			final int bump = getWidth() / 2 + 1;
-			int on = x2n(x), nn = on;
-
-			if (Math.abs(velocityX) > minfling)
-				nn = x2n(x + (velocityX < 0 ? bump : -bump));
-
-			select_tab(on);
-			touch = false;
-
-			if (nn == on)
-				smoothScrollTo(n2x(on), 0);
-			else
-				select_tab(nn); // this will scroll too
-		}
-
 		protected void onMeasure(int wms, int hms) {
 			viewport_width = MeasureSpec.getSize(wms);
 			super.onMeasure(wms, hms);
+		}
+
+		protected void onLayout(boolean changed, int l, int t, int r, int b) {
+			super.onLayout(changed, l, t, r, b);
+			scrollTo(n2x(tablist.getCheckedRadioButtonId()), 0);
 		}
 	}
 

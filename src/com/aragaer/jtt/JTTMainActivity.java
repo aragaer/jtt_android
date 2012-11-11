@@ -78,10 +78,6 @@ public class JTTMainActivity extends ActivityGroup {
         settings_tab = pager.addTab(sw.getDecorView(), R.string.settings);
 
         setContentView(pager);
-
-        if (savedInstanceState != null)
-            pager.scrollToScreen(savedInstanceState.getInt("Screen"));
-
         conn.bind(service, 0);
     }
 
@@ -94,17 +90,11 @@ public class JTTMainActivity extends ActivityGroup {
             settings.edit().putBoolean("jtt_first", false).commit();
             if (settings.contains("jtt_loc")) // it's already configured
                 return;
-            pager.scrollToScreen(settings_tab);
+            pager.selectScreen(settings_tab);
             PreferenceActivity pa = (PreferenceActivity) getLocalActivityManager()
                     .getActivity("settings");
             ((LocationPreference) pa.findPreference("jtt_loc")).showMe();
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putInt("Screen", pager.getScreen());
-        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override

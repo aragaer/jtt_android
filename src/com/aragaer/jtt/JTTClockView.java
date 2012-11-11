@@ -52,8 +52,6 @@ public class JTTClockView extends View {
 		cc.setBitmap(getDrawingCache());
 
 		stroke2.setTextSize(vertical ? w / 20 : w / 15);
-		solid1.setTextSize(size / 5);
-		stroke1.setTextSize(size / 5);
 		if (vertical) {
 			ox = 0;
 			oy = 3 * h / 5 - size;
