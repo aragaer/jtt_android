@@ -1,11 +1,12 @@
 package com.aragaer.jtt;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import android.support.v4.util.LongSparseArray;
+
 public class JTT {
-	HashMap<Long, long[]> cache = new HashMap<Long, long[]>();
+	LongSparseArray<long[]> cache = new LongSparseArray<long[]>();
 	private double latitude, longitude;
 
 	public JTT(float lat, float lon) {
@@ -115,8 +116,8 @@ public class JTT {
 	// http://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth
 	// it's ok to call this function often since the data is cached
 	public long[] computeTr(long jdn) {
-		Long key = Long.valueOf(jdn);
-		if (!cache.containsKey(key)) {
+		long result[] = cache.get(jdn);
+		if (result == null) {
 			final double n_star = jdn - 2451545.0009 + longitude / 360.0;
 			final double n = Math.floor(n_star + 0.5);
 			final double j_star = 2451545.0009 - longitude / 360.0 + n;
@@ -134,8 +135,9 @@ public class JTT {
 					+ 0.0053 * sin(M) - 0.0069 * sin(2 * lambda);
 			final double j_rise = j_transit - (j_set - j_transit);
 
-			cache.put(key, new long[] { JDToLong(j_rise), JDToLong(j_set) });
+			result = new long[] { JDToLong(j_rise), JDToLong(j_set) };
+			cache.put(jdn, result);
 		}
-		return cache.get(key);
+		return result;
 	}
 }
