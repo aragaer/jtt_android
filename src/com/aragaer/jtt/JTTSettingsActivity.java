@@ -18,10 +18,11 @@ import android.preference.PreferenceActivity;
 import android.util.Log;
 
 public class JTTSettingsActivity extends PreferenceActivity {
+	public static final String PREF_LOCATION = "jtt_loc";
     public final static String JTT_SETTINGS_CHANGED = "com.aragaer.jtt.ACTION_JTT_SETTINGS";
     private final static String TAG = "jtt settings";
 
-    private static final String prefcodes[] = new String[] {"jtt_loc", "jtt_notify", "jtt_widget_text_invert", "jtt_locale"};
+    private static final String prefcodes[] = new String[] {PREF_LOCATION, "jtt_notify", "jtt_widget_text_invert", "jtt_locale"};
     private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 
     final OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
