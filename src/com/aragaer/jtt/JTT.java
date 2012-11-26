@@ -24,21 +24,25 @@ public class JTT {
 		return time_to_jtt(d == null ? System.currentTimeMillis() : d.getTime());
 	}
 
-	public JTTHour time_to_jtt(long time) {
-		long day = longToJDN(time);
-		long[] tr = computeTr(day);
+	public long time_to_jtt_wrapped(long time) {
+		final long day = longToJDN(time);
+		final long tr[] = computeTr(day);
 		int dayAdd = 0;
 		if (time < tr[0]) { // before sunrise. Get prev sunset
 			tr[1] = tr[0];
-		tr[0] = computeTr(day - 1)[1];
+			tr[0] = computeTr(day - 1)[1];
 		} else if (time > tr[1]) { // after sunset. Get next sunrise
 			tr[0] = tr[1];
 			tr[1] = computeTr(day + 1)[0];
 		} else {
-			dayAdd = 6;
+			dayAdd = 600;
 		}
-		long h = 600 * (time - tr[0]) / (tr[1] - tr[0]);
-		return new JTTHour((int) (h / 100) % 6 + dayAdd, (int) h % 100);
+		return 600 * (time - tr[0]) / (tr[1] - tr[0]) + dayAdd;
+	}
+
+	public JTTHour time_to_jtt(long time) {
+		long h = time_to_jtt_wrapped(time);
+		return new JTTHour((int) (h / 100), (int) h % 100);
 	}
 
 	public Date jtt_to_time(JTTHour hour, Date date) {
