@@ -21,7 +21,10 @@ public class JTT {
 	static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
 
 	public JTTHour time_to_jtt(Date d) {
-		long time = d == null ? System.currentTimeMillis() : d.getTime();
+		return time_to_jtt(d == null ? System.currentTimeMillis() : d.getTime());
+	}
+
+	public JTTHour time_to_jtt(long time) {
 		long day = longToJDN(time);
 		long[] tr = computeTr(day);
 		int dayAdd = 0;
