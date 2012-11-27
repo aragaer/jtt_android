@@ -25,10 +25,13 @@ public class JTT {
 	}
 
 	public long time_to_jtt_wrapped(long time) {
-		final long day = longToJDN(time);
-		final long tr[] = computeTr(day);
+		long day = longToJDN(time);
+		long tr[] = computeTr(day);
 		int dayAdd = 0;
-		if (time < tr[0]) { // before sunrise. Get prev sunset
+		if (time > tr[1]) // "day" is actually yesterday
+			tr = computeTr(++day);
+
+		if (time < tr[0]) { // before sunrise. Get prev sunset (from cache apparently)
 			tr[1] = tr[0];
 			tr[0] = computeTr(day - 1)[1];
 		} else if (time > tr[1]) { // after sunset. Get next sunrise
@@ -54,14 +57,16 @@ public class JTT {
 	}
 
 	public long jtt_to_long(int n, int f, long t) {
-		long d = longToJDN(t);
-		long tr[] = computeTr(d);
+		long day = longToJDN(t);
+		long tr[] = computeTr(day);
+		if (t > tr[1]) // "day" is actually yesterday
+			tr = computeTr(++day);
 		if (n < 3) {// get prev sunset
 			tr[1] = tr[0];
-			tr[0] = computeTr(d - 1)[1];
+			tr[0] = computeTr(day - 1)[1];
 		} else if (n > 8) {// get next sunrise
 			tr[0] = tr[1];
-			tr[1] = computeTr(d + 1)[0];
+			tr[1] = computeTr(day + 1)[0];
 		}
 		long offset = (tr[1] - tr[0]) * (n * 100 + f) / 600;
 
@@ -101,6 +106,7 @@ public class JTT {
 	}
 
 	// http://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth
+	// it's ok to call this function often since the data is cached
 	public long[] computeTr(long jdn) {
 		final double n_star = jdn - 2451545.0009 + longitude / 360.0;
 		final double n = Math.floor(n_star + 0.5);
