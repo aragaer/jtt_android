@@ -56,6 +56,7 @@ public class JTTMainActivity extends ActivityGroup {
     int settings_tab = 0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        JTTUtil.setTheme(this);
         super.onCreate(savedInstanceState);
         final Intent service = new Intent(this, JTTService.class);
         startService(service);

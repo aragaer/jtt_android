@@ -78,4 +78,12 @@
     <string name="locale">Язык - Русский</string>
     <string name="locale_ex">Нажмите, чтобы изменить язык</string>
     <string name="locale_default">Язык системы</string>
+
+
+    <string-array name="theme_names">
+        <item>Полурозрачный</item>
+        <item>Темный</item>
+    </string-array>
+
+    <string name="pref_theme">Стиль оформления</string>
 </resources>

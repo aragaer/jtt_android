@@ -30,6 +30,7 @@
     <string name="day_prev">Yesterday</string>
     <string name="day_curr">Today</string>
     <string name="day_next">Tomorrow</string>
+
     <plurals name="days_past">
         <item quantity="one">%d day ago</item>
         <item quantity="other">%d days ago</item>
@@ -38,34 +39,34 @@
         <item quantity="one">In %d day</item>
         <item quantity="other">In %d days</item>
     </plurals>
-    
+
     <string-array name="hour">
-	    <item>The Cock</item>
-	    <item>The Dog</item>
-	    <item>The Boar</item>
-	    <item>The Rat</item>
-	    <item>The Ox</item>
-	    <item>The Tiger</item>
-	    <item>The Hare</item>
-	    <item>The Dragon</item>
-	    <item>The Serpent</item>
-	    <item>The Horse</item>
-	    <item>The Ram</item>
-	    <item>The Monkey</item>
+        <item>The Cock</item>
+        <item>The Dog</item>
+        <item>The Boar</item>
+        <item>The Rat</item>
+        <item>The Ox</item>
+        <item>The Tiger</item>
+        <item>The Hare</item>
+        <item>The Dragon</item>
+        <item>The Serpent</item>
+        <item>The Horse</item>
+        <item>The Ram</item>
+        <item>The Monkey</item>
     </string-array>
     <string-array name="hour_of">
-	    <item>Hour of the Cock</item>
-	    <item>Hour of the Dog</item>
-	    <item>Hour of the Boar</item>
-	    <item>Hour of the Rat</item>
-	    <item>Hour of the Ox</item>
-	    <item>Hour of the Tiger</item>
-	    <item>Hour of the Hare</item>
-	    <item>Hour of the Dragon</item>
-	    <item>Hour of the Serpent</item>
-	    <item>Hour of the Horse</item>
-	    <item>Hour of the Ram</item>
-	    <item>Hour of the Monkey</item>
+        <item>Hour of the Cock</item>
+        <item>Hour of the Dog</item>
+        <item>Hour of the Boar</item>
+        <item>Hour of the Rat</item>
+        <item>Hour of the Ox</item>
+        <item>Hour of the Tiger</item>
+        <item>Hour of the Hare</item>
+        <item>Hour of the Dragon</item>
+        <item>Hour of the Serpent</item>
+        <item>Hour of the Horse</item>
+        <item>Hour of the Ram</item>
+        <item>Hour of the Monkey</item>
     </string-array>
 
     <string name="appearance">Look and feel</string>
@@ -74,13 +75,20 @@
     <string name="widget12">JTT: Clock</string>
     <string name="widget_invert">Invert widget text color</string>
     <string name="widget_invert_ex">Use white text with black border</string>
-
     <string name="locale">Language - English</string>
     <string name="locale_ex">Tap to change language</string>
     <string name="locale_default">Default</string>
+
     <string-array name="locales">
         <item></item>
         <item>en</item>
         <item>ru</item>
     </string-array>
+
+    <string-array name="theme_names">
+        <item>Translucent</item>
+        <item>Dark</item>
+    </string-array>
+
+    <string name="pref_theme">Theme</string>
 </resources>

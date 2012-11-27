@@ -22,7 +22,7 @@ public class JTTSettingsActivity extends PreferenceActivity {
     public final static String JTT_SETTINGS_CHANGED = "com.aragaer.jtt.ACTION_JTT_SETTINGS";
     private final static String TAG = "jtt settings";
 
-    private static final String prefcodes[] = new String[] {PREF_LOCATION, "jtt_notify", "jtt_widget_text_invert", "jtt_locale"};
+    private static final String prefcodes[] = new String[] {PREF_LOCATION, "jtt_notify", "jtt_widget_text_invert", "jtt_locale", "jtt_theme"};
     private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 
     final OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
@@ -61,6 +61,8 @@ public class JTTSettingsActivity extends PreferenceActivity {
                 doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
                 sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
                 JTTUtil.changeLocale(getApplicationContext(), (String) newValue);
+                /* fall-through */
+            case 4:
                 i = getParent().getIntent();
                 i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 getParent().finish();
