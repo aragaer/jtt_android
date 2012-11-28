@@ -204,6 +204,7 @@ public class JTTWidgetProvider {
 			bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
 			jcv.clock.recycle();
 			jcv.clock = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
+			jcv.set_size(size);
 			canvas = new Canvas(bmp);
 		}
 	}

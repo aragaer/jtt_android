@@ -49,6 +49,7 @@ public class JTTClockView extends View {
 		clock.recycle();
 		clock = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
 		cc.setBitmap(getDrawingCache());
+
 		stroke2.setTextSize(vertical ? w / 20 : w / 15);
 		solid1.setTextSize(size / 5);
 		stroke1.setTextSize(size / 5);
@@ -64,22 +65,7 @@ public class JTTClockView extends View {
 			hy = size;
 		}
 
-		iR = 2 * size / 5;
-		thick = 2 * size / 5;
-		oR = iR + thick;
-		selR = oR + thick / 4;
-		sR = iR * 0.2f;
-
-		oy += thick / 8;
-		hy += thick / 8;
-
-		stroke1.setTextSize(thick / 3);
-		solid2.setTextSize(thick / 3);
-
-		outer.set(size - oR, size - oR, size + oR, size + oR);
-		inner.set(size - iR, size - iR, size + iR, size + iR);
-		sel.set(size - selR, size - selR, size + selR, size + selR);
-		sun.set(size - sR, size - sR, size + sR, size + sR);
+		set_size(size);
 
 		path.reset();
 		path.moveTo(ox + size, oy + size - selR);
@@ -98,6 +84,25 @@ public class JTTClockView extends View {
 		initialized = hour_changed = true;
 		if (hn >= 0)
 			new PainterTask().execute(hn, hf);
+	}
+
+	void set_size(int size) {
+		iR = 2 * size / 5;
+		thick = 2 * size / 5;
+		oR = iR + thick;
+		selR = oR + thick / 4;
+		sR = iR * 0.2f;
+
+		oy += thick / 8;
+		hy += thick / 8;
+
+		stroke1.setTextSize(thick / 3);
+		solid2.setTextSize(thick / 3);
+
+		outer.set(size - oR, size - oR, size + oR, size + oR);
+		inner.set(size - iR, size - iR, size + iR, size + iR);
+		sel.set(size - selR, size - selR, size + selR, size + selR);
+		sun.set(size - sR, size - sR, size + sR, size + sR);
 	}
 
 	void draw_circle_placeholder() {
@@ -132,15 +137,10 @@ public class JTTClockView extends View {
 
 	final Path path = new Path();
 	final RectF outer = new RectF(), inner = new RectF(), sel = new RectF(), sun = new RectF();
-	protected Bitmap drawBitmap(int num, int c) {
-		Bitmap result = Bitmap.createBitmap(c * 2, c * 2,
-				Bitmap.Config.ARGB_8888);
-		draw_onto(result, num, c);
-		return result;
-	}
 
+	final Canvas canvas = new Canvas();
 	void draw_onto(Bitmap b, int num, int c) {
-		Canvas canvas = new Canvas(b);
+		canvas.setBitmap(b);
 
 		canvas.rotate(-step / 2, c, c);
 		canvas.translate(-iR * 0.75f, 0);
