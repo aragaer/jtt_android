@@ -130,7 +130,7 @@ public class JTT {
 			final double sigma = asin(sin(lambda) * sin(23.44));
 
 			final double omega0 = acos((sin(-0.83) - sin(latitude) * sin(sigma))
-					/ cos(latitude) * cos(sigma));
+					/ (cos(latitude) * cos(sigma)));
 			final double j_set = 2451545.0009 + (omega0 - longitude) / 360.0 + n
 					+ 0.0053 * sin(M) - 0.0069 * sin(2 * lambda);
 			final double j_rise = j_transit - (j_set - j_transit);
