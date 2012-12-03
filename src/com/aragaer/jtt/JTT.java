@@ -50,7 +50,10 @@ public class JTT {
 	}
 
 	public Date jtt_to_time(int n, int f, Date date) {
-		long t = date == null ? System.currentTimeMillis() : date.getTime();
+		return jtt_to_time(n, f, date == null ? System.currentTimeMillis() : date.getTime());
+	}
+
+	public long jtt_to_long(int n, int f, long t) {
 		long d = longToJDN(t);
 		long tr[] = computeTr(d);
 		if (n < 3) {// get prev sunset
@@ -62,7 +65,11 @@ public class JTT {
 		}
 		long offset = (tr[1] - tr[0]) * (n * 100 + f) / 600;
 
-		return new Date(tr[0] + offset);
+		return tr[0] + offset;
+	}
+
+	public Date jtt_to_time(int n, int f, long t) {
+		return new Date(jtt_to_long(n, f, t));
 	}
 
 	private final static double sin(double g) {
