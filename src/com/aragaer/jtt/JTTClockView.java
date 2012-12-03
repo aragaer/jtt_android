@@ -69,7 +69,7 @@ public class JTTClockView extends View {
 		set_size(size);
 
 		path.reset();
-		path.moveTo(ox + size, oy + size - selR);
+		path.moveTo(ox + size, oy + size - selR - 2);
 		path.rLineTo(-size / 20, selR - size);
 		path.rLineTo(size / 10, 0);
 		path.close();
@@ -78,7 +78,7 @@ public class JTTClockView extends View {
 		cc.drawPath(path, stroke1);
 		invalidate(ox + size * 19 / 20, oy, ox + size * 21 / 20, oy + size - selR);
 
-		clock_area.set(ox + size - oR, oy + size - selR, ox + size + oR, oy + size + oR);
+		clock_area.set(ox + size - oR, oy + size - selR - 2, ox + size + oR, oy + size + oR);
 		cc.clipRect(clock_area, Op.REPLACE);
 		draw_circle_placeholder();
 		invalidate(ox + size - oR, oy + size - selR, ox + size + oR, oy + size + oR);
