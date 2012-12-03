@@ -3,7 +3,9 @@ package com.aragaer.jtt;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -60,6 +62,8 @@ public class JTTPager extends LinearLayout {
 		b.setId(id);
 		tablist.addView(b, btnlp);
 		pageview.addView(view);
+		if (id == 0)
+			tablist.check(0);
 		return id;
 	}
 
@@ -76,62 +80,82 @@ public class JTTPager extends LinearLayout {
 	}
 
 	class PageScroller extends HorizontalScrollView {
-		int target;
-		boolean touched;
-		int SNAPPER_DELAY = 200;
+		boolean touch;
+		int minfling;
 
 		public PageScroller(Context ctx) {
 			super(ctx);
-			setFillViewport(true);
 			setHorizontalScrollBarEnabled(false);
 			setSmoothScrollingEnabled(true);
 			setHorizontalFadingEdgeEnabled(false);
+			ViewConfiguration cfg = ViewConfiguration.get(ctx);
+			minfling = cfg.getScaledMinimumFlingVelocity();
 		}
 
+		VelocityTracker vt = null;
 		public boolean onTouchEvent(MotionEvent event) {
-			switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN:
-			case MotionEvent.ACTION_MOVE:
-				touched = true;
-				break;
-			case MotionEvent.ACTION_UP:
-				touched = false;
-				postDelayed(snapper, SNAPPER_DELAY);
-				break;
-			default:
-				break;
-			}
+			if (vt == null)
+				vt = VelocityTracker.obtain();
+			vt.addMovement(event);
+
+			if (event.getAction() == MotionEvent.ACTION_UP) {
+				vt.computeCurrentVelocity(1000);
+				onRelease((int) vt.getXVelocity());
+				vt.recycle();
+				vt = null;
+			} else
+				touch = true;
 			return super.onTouchEvent(event);
 		}
 
-		protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-			removeCallbacks(snapper);
+		private int x2n(int x) {
+			int max = tablist.getChildCount() - 1;
 			int w = getWidth();
 			if (w == 0)
-				return;
-			select_tab((l + w / 2) / w);
-			postDelayed(snapper, SNAPPER_DELAY);
+				return 0;
+			int n = (x + w / 2) / w;
+			if (n < 0)
+				return 0;
+			if (n > max)
+				return max;
+			return n;
+		}
+
+		private int n2x(int n) {
+			int w = getWidth();
+			return w * n;
+		}
+
+		protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+			if (touch)
+				select_tab(x2n(l));
 		}
 
 		public void scrollToScreen(int num) {
-			removeCallbacks(snapper);
-			target = num;
-			postDelayed(snapper, SNAPPER_DELAY);
+			if (!touch)
+				smoothScrollTo(n2x(num), 0);
 		}
 
-		Runnable snapper = new Runnable() {
-			public void run() {
-				if (!touched)
-					smoothScrollTo(getWidth() * target, 0);
-			}
-		};
+		public void fling(int velocityX) {
+			return; // it's already handled
+		}
 
 		/* only fling one page */
-		public void fling(int velocityX) {
-			removeCallbacks(snapper);
+		public void onRelease(int velocityX) {
+			final int x = getScrollX();
 			final int bump = getWidth() / 2 + 1;
-			smoothScrollBy(velocityX < 0 ? -bump : bump, 0);
-			postDelayed(snapper, SNAPPER_DELAY);
+			int on = x2n(x), nn = on;
+
+			if (Math.abs(velocityX) > minfling)
+				nn = x2n(x + (velocityX < 0 ? bump : -bump));
+
+			select_tab(on);
+			touch = false;
+
+			if (nn == on)
+				smoothScrollTo(n2x(on), 0);
+			else
+				select_tab(nn); // this will scroll too
 		}
 
 		protected void onMeasure(int wms, int hms) {
@@ -144,6 +168,7 @@ public class JTTPager extends LinearLayout {
 		public ScrollContents(Context ctx) {
 			super(ctx);
 			setFocusableInTouchMode(true); // otherwise children will steal focus
+			setId(42);
 		}
 
 		protected void onMeasure(int wms, int hms) {
@@ -151,8 +176,7 @@ public class JTTPager extends LinearLayout {
 			final int count = getChildCount();
 			for (int i = 0; i < count; i++)
 				getChildAt(i).measure(wms, hms);
-			setMeasuredDimension(MeasureSpec.makeMeasureSpec(viewport_width
-					* count, MeasureSpec.EXACTLY), hms);
+			setMeasuredDimension(viewport_width * count, MeasureSpec.getSize(hms));
 		}
 
 		protected void onLayout(boolean changed, int l, int t, int r, int b) {
