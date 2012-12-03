@@ -83,8 +83,4 @@
         <item>en</item>
         <item>ru</item>
     </string-array>
-
-    <string name="alarm_off">Close</string>
-    <string name="snooze">Snooze</string>
-    <string name="unknown_alarm">Unknown alarm</string>
 </resources>

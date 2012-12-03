@@ -20,7 +20,7 @@ public class JTTMainActivity extends ActivityGroup {
     private JTTClockView clock;
     private JTTPager pager;
     private TodayAdapter today;
-    private AlarmList alarms;
+
     protected JTTUtil.ConnHelper conn = new JTTUtil.ConnHelper(this, new IncomingHandler(this));
 
     static class IncomingHandler extends Handler {
@@ -71,9 +71,6 @@ public class JTTMainActivity extends ActivityGroup {
         today = new TodayAdapter(this, 0);
         today_list.setAdapter(today);
         pager.addTab(today_list, R.string.today);
-
-        alarms = new AlarmList(this);
-        pager.addTab(alarms, R.string.alarm);
 
         final Window sw = getLocalActivityManager().startActivity("settings",
                 new Intent(this, JTTSettingsActivity.class));
