@@ -21,7 +21,8 @@ public class JTTClockView extends View {
 	protected final Paint stroke1 = new Paint(0x07),
 			stroke2 = new Paint(0x07),
 			solid1 = new Paint(0x01),
-			solid2 = new Paint(0x01);
+			solid2 = new Paint(0x01),
+			cache_paint = new Paint(0x07);
 	protected Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // make it non-null
 	private final Canvas cc = new Canvas();
 	private int hn = -1, hf;
@@ -228,7 +229,7 @@ public class JTTClockView extends View {
 			m.setTranslate(ox, oy);
 			m.preRotate(step * (0.5f - n) - gap - (step - gap * 2)
 					* f / 100f, size, size);
-			cc.drawBitmap(clock, m, stroke1);
+			cc.drawBitmap(clock, m, cache_paint);
 
 			postInvalidate(clock_area.left, clock_area.top, clock_area.right, clock_area.bottom);
 			return null;
