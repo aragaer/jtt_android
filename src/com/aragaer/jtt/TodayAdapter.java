@@ -234,7 +234,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 
 	private void updateItems() {
 		if (transitions.isEmpty() || (transitions.size() % 2) == 1) {
-			Log.e(TAG, "Transitions list is empty or has incorrect number of items");
+			Log.i(TAG, "Transitions list is empty or has incorrect number of items");
 			reset();
 			return;
 		}
