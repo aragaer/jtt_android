@@ -171,7 +171,7 @@ public class JTTClockView extends View {
 		final float l2y = c + FloatMath.sin(start) * iR;
 
 		for (int hr = 0; hr < 12; hr++) {
-			path.rewind();
+			path.reset();
 			final boolean current = hr == num;
 
 			path.addArc(inner, arc_start, arc_len);
