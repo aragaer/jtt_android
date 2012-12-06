@@ -232,12 +232,11 @@ public class JTTClockView extends View {
 				size_changed = false;
 			}
 
-			cc.clipRect(clock_area, Op.REPLACE);
-			cc.drawColor(0, Mode.CLEAR);
 			m.reset();
 			m.setTranslate(ox, oy);
-			m.preRotate(step * (0.5f - n) - gap - (step - gap * 2)
-					* f / 100f, size, size);
+			m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / 100f, size, size);
+			cc.clipRect(clock_area, Op.REPLACE);
+			cc.drawColor(0, Mode.CLEAR);
 			cc.drawBitmap(clock, m, cache_paint);
 
 			postInvalidate(clock_area.left, clock_area.top, clock_area.right, clock_area.bottom);
