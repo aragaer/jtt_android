@@ -140,7 +140,9 @@ public class JTTClockView extends View {
 
 	final Canvas canvas = new Canvas();
 	void draw_onto(Bitmap b, int num, int c) {
+		b.eraseColor(Color.TRANSPARENT);
 		canvas.setBitmap(b);
+		canvas.setMatrix(null);
 
 		canvas.rotate(-step / 2, c, c);
 		canvas.translate(-iR * 0.75f, 0);
@@ -218,7 +220,6 @@ public class JTTClockView extends View {
 				draw_circle_placeholder();
 				postInvalidate(r.left, r.top, r.right, r.bottom);
 
-				clock.eraseColor(Color.TRANSPARENT);
 				draw_onto(clock, n, size);
 				size_changed = false;
 			}

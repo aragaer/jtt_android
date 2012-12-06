@@ -171,7 +171,6 @@ public class JTTWidgetProvider {
 		}
 
 		protected void hour_changed(int n) {
-			jcv.clock.eraseColor(Color.TRANSPARENT);
 			jcv.draw_onto(jcv.clock, n, size);
 		}
 
