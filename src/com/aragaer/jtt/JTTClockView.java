@@ -58,7 +58,7 @@ public class JTTClockView extends View {
 			hx = size;
 			hy = h / 10;
 		} else {
-			ox = 3 * w / 5 - size;
+			ox = 7 * w / 10 - size;
 			oy = 0;
 			hx = w / 5;
 			hy = size;
