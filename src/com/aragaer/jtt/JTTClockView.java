@@ -225,8 +225,8 @@ public class JTTClockView extends View {
 				cc.clipRect(r, Op.REPLACE);
 				cc.drawColor(0, Mode.CLEAR);
 				cc.drawText(s, hx, hy, stroke2);
-				draw_circle_placeholder();
 				postInvalidate(r.left, r.top, r.right, r.bottom);
+				draw_circle_placeholder();
 
 				draw_onto(clock, n, size);
 				size_changed = false;
