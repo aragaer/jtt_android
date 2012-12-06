@@ -78,11 +78,12 @@ public class JTTClockView extends View {
 
 		clock_area.set(ox + size - oR, oy + size - selR - 2, ox + size + oR, oy + size + oR);
 		cc.clipRect(clock_area, Op.REPLACE);
-		draw_circle_placeholder();
 		invalidate(ox + size - oR, oy + size - selR, ox + size + oR, oy + size + oR);
 		initialized = hour_changed = true;
 		if (hn >= 0)
 			new PainterTask().execute(hn, hf);
+		else
+			draw_circle_placeholder();
 	}
 
 	void set_size(int size) {
