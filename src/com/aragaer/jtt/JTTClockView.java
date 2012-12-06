@@ -152,6 +152,10 @@ public class JTTClockView extends View {
 		draw_cancellable(b, num, c, null);
 	}
 
+	final static int arc_start = -90 - Math.round(step / 2 - gap);
+	final static int arc_end = -90 + Math.round(step / 2 - gap);
+	final static int arc_len = arc_end - arc_start;
+
 	/* return true if managed to draw, false if cancelled */
 	boolean draw_cancellable(Bitmap b, int num, int c, PainterTask task) {
 		b.eraseColor(Color.TRANSPARENT);
@@ -177,10 +181,6 @@ public class JTTClockView extends View {
 		canvas.drawLine(c - sR, c, c + sR, c, stroke1);
 		canvas.translate(iR * 0.75f, 0);
 		canvas.rotate(90 + step / 2, c, c);
-
-		final int arc_start = -90 - Math.round(step / 2 - gap);
-		final int arc_end = -90 + Math.round(step / 2 - gap);
-		final int arc_len = arc_end - arc_start;
 
 		for (int hr = 0; hr < 12; hr++) {
 			final boolean current = hr == num;
