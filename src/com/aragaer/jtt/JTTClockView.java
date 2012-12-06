@@ -77,8 +77,6 @@ public class JTTClockView extends View {
 		invalidate(ox + size * 19 / 20, oy, ox + size * 21 / 20, oy + size - selR);
 
 		clock_area.set(ox + size - oR, oy + size - selR - 2, ox + size + oR, oy + size + oR);
-		cc.clipRect(clock_area, Op.REPLACE);
-		invalidate(ox + size - oR, oy + size - selR, ox + size + oR, oy + size + oR);
 		initialized = size_changed = true;
 		if (hn >= 0)
 			new PainterTask().execute(hn, hf);
@@ -109,8 +107,10 @@ public class JTTClockView extends View {
 		path.reset();
 		path.addCircle(ox + size, oy + size, oR, Path.Direction.CW);
 		path.addCircle(ox + size, oy + size, iR, Path.Direction.CCW);
+		cc.clipRect(clock_area, Op.REPLACE);
 		cc.drawPath(path, solid1);
 		cc.drawPath(path, stroke1);
+		postInvalidate(clock_area.left, clock_area.top, clock_area.right, clock_area.bottom);
 	}
 
 	protected void onDraw(Canvas canvas) {
