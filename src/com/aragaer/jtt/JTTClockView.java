@@ -140,6 +140,11 @@ public class JTTClockView extends View {
 
 	final Canvas canvas = new Canvas();
 	void draw_onto(Bitmap b, int num, int c) {
+		draw_cancellable(b, num, c, null);
+	}
+
+	/* return true if managed to draw, false if cancelled */
+	boolean draw_cancellable(Bitmap b, int num, int c, PainterTask task) {
 		b.eraseColor(Color.TRANSPARENT);
 		canvas.setBitmap(b);
 		canvas.setMatrix(null);
@@ -173,9 +178,11 @@ public class JTTClockView extends View {
 		final float l2y = c + FloatMath.sin(start) * iR;
 
 		for (int hr = 0; hr < 12; hr++) {
-			path.reset();
 			final boolean current = hr == num;
+			if (task != null && task.isCancelled())
+				return false;
 
+			path.reset();
 			path.addArc(inner, arc_start, arc_len);
 			path.arcTo(current ? sel : outer, arc_end, -arc_len);
 			path.lineTo(l2x, l2y);
@@ -187,6 +194,7 @@ public class JTTClockView extends View {
 			canvas.drawText(JTTHour.Glyphs[hr], c, glyph_y, stroke1);
 			canvas.rotate(step, c, c);
 		}
+		return true;
 	}
 
 	private static final int granularity = 10;
