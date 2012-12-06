@@ -28,7 +28,7 @@ public class JTTClockView extends View {
 	private int hn = -1, hf;
 	private final JTTUtil.StringsHelper hs;
 	private final Matrix m = new Matrix();
-	boolean hour_changed = true, initialized = false;
+	boolean hour_changed = true, initialized = false, size_changed = false;
 
 	public JTTClockView(Context context) {
 		super(context);
@@ -79,7 +79,7 @@ public class JTTClockView extends View {
 		clock_area.set(ox + size - oR, oy + size - selR - 2, ox + size + oR, oy + size + oR);
 		cc.clipRect(clock_area, Op.REPLACE);
 		invalidate(ox + size - oR, oy + size - selR, ox + size + oR, oy + size + oR);
-		initialized = hour_changed = true;
+		initialized = size_changed = true;
 		if (hn >= 0)
 			new PainterTask().execute(hn, hf);
 		else
@@ -206,7 +206,7 @@ public class JTTClockView extends View {
 		protected Void doInBackground(Integer... params) {
 			final int n = params[0], f = params[1];
 
-			if (hour_changed) {
+			if (hour_changed || size_changed) {
 				final String s = vertical ? hs.getHrOf(n) : hs.getHour(n);
 				r.left = 0;
 				r.right = cc.getWidth();
@@ -220,6 +220,7 @@ public class JTTClockView extends View {
 
 				clock.eraseColor(Color.TRANSPARENT);
 				draw_onto(clock, n, size);
+				size_changed = false;
 			}
 
 			cc.clipRect(clock_area, Op.REPLACE);
