@@ -42,7 +42,7 @@ public class JTTClockView extends View {
 	float sR;
 	boolean vertical;
 
-	boolean circle_drawn = false;
+	boolean circle_drawn = false, is_empty = true;
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		vertical = h > w;
 		size = vertical ? w / 2 : h / 2;
@@ -80,10 +80,7 @@ public class JTTClockView extends View {
 		clock_area.set(ox + size - oR, oy + size - selR - 2, ox + size + oR, oy + size + oR);
 		initialized = size_changed = true;
 		circle_drawn = false;
-		if (hn >= 0)
-			queue_paint_task();
-		else
-			draw_circle_placeholder();
+		is_empty = true;
 	}
 
 	void set_size(int size) {
@@ -120,6 +117,14 @@ public class JTTClockView extends View {
 
 	protected void onDraw(Canvas canvas) {
 		canvas.drawBitmap(getDrawingCache(), 0, 0, null);
+
+		if (is_empty) {
+			if (hn >= 0)
+				queue_paint_task();
+			else
+				draw_circle_placeholder();
+			is_empty = false;
+		}
 	}
 
 	private final void setupPaint(Context ctx) {
