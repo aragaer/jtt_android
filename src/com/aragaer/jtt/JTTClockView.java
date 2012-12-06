@@ -211,8 +211,8 @@ public class JTTClockView extends View {
 	}
 
 	final Rect clock_area = new Rect();
+	final Rect r = new Rect();
 	class PainterTask extends AsyncTask<Integer, Void, Void> {
-		Rect r = new Rect();
 		protected Void doInBackground(Integer... params) {
 			final int n = params[0], f = params[1];
 
