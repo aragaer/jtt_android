@@ -81,7 +81,7 @@ public class JTTClockView extends View {
 		initialized = size_changed = true;
 		circle_drawn = false;
 		if (hn >= 0)
-			queue_paint_task(hn, hf);
+			queue_paint_task();
 		else
 			draw_circle_placeholder();
 	}
@@ -209,22 +209,21 @@ public class JTTClockView extends View {
 			return; // do nothing
 
 		hour_changed = hn != n;
-		if (initialized)
-			queue_paint_task(n, f);
 		hn = n;
 		hf = f;
+		if (initialized)
+			queue_paint_task();
 	}
 
 	final Rect clock_area = new Rect();
 	final Rect r = new Rect();
-	class PainterTask extends AsyncTask<Integer, Void, Void> {
-		protected Void doInBackground(Integer... params) {
-			final int n = params[0], f = params[1];
+	class PainterTask extends AsyncTask<Void, Void, Void> {
+		protected Void doInBackground(Void... params) {
 			if (isCancelled()) // even before we could start
 				return null;
 
 			if (hour_changed || size_changed) {
-				final String s = vertical ? hs.getHrOf(n) : hs.getHour(n);
+				final String s = vertical ? hs.getHrOf(hn) : hs.getHour(hn);
 				r.left = 0;
 				r.right = cc.getWidth();
 				r.top = hy - (int) stroke2.getTextSize();
@@ -235,14 +234,14 @@ public class JTTClockView extends View {
 				postInvalidate(r.left, r.top, r.right, r.bottom);
 				draw_circle_placeholder();
 
-				if (!draw_cancellable(clock, n, size, this))
+				if (!draw_cancellable(clock, hn, size, this))
 					return null;
 				size_changed = false;
 			}
 
 			m.reset();
 			m.setTranslate(ox, oy);
-			m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / 100f, size, size);
+			m.preRotate(step * (0.5f - hn) - gap - (step - gap * 2) * hf / 100f, size, size);
 			cc.clipRect(clock_area, Op.REPLACE);
 			cc.drawColor(0, Mode.CLEAR);
 			cc.drawBitmap(clock, m, cache_paint);
@@ -258,22 +257,19 @@ public class JTTClockView extends View {
 
 	/* Eliminate concurrency between painter tasks */
 	PainterTask current_task = null;
-	int qn = 0, qf = 0;
 	void requeue_paint_task() {
 		current_task = null;
-		queue_paint_task(qn, qf);
+		queue_paint_task();
 	}
 
-	void queue_paint_task(int n, int f) {
+	void queue_paint_task() {
 		if (current_task != null
 				&& current_task.getStatus() != AsyncTask.Status.FINISHED) {
 			current_task.cancel(false);
-			qn = n;
-			qf = f;
 			return; // do not start the task - it will be created in onCancelled
 		}
 
 		current_task = new PainterTask();
-		current_task.execute(qn, qf);
+		current_task.execute();
 	}
 }
