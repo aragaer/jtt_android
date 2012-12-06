@@ -12,7 +12,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region.Op;
 import android.os.AsyncTask;
-import android.util.FloatMath;
 import android.view.View;
 
 public class JTTClockView extends View {
@@ -183,10 +182,6 @@ public class JTTClockView extends View {
 		final int arc_end = -90 + Math.round(step / 2 - gap);
 		final int arc_len = arc_end - arc_start;
 
-		final float start = (float) Math.toRadians(arc_start);
-		final float l2x = c + FloatMath.cos(start) * iR;
-		final float l2y = c + FloatMath.sin(start) * iR;
-
 		for (int hr = 0; hr < 12; hr++) {
 			final boolean current = hr == num;
 			if (task != null && task.isCancelled())
@@ -195,7 +190,7 @@ public class JTTClockView extends View {
 			path.reset();
 			path.addArc(inner, arc_start, arc_len);
 			path.arcTo(current ? sel : outer, arc_end, -arc_len);
-			path.lineTo(l2x, l2y);
+			path.close();
 			canvas.drawPath(path, solid1);
 			canvas.drawPath(path, stroke1);
 
