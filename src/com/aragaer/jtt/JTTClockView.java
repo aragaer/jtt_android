@@ -71,7 +71,7 @@ public class JTTClockView extends View {
 		path.rLineTo(-size / 20, selR - size);
 		path.rLineTo(size / 10, 0);
 		path.close();
-		cc.clipRect(ox + size * 19 / 20, oy, ox + size * 21 / 20, oy + size - selR, Op.REPLACE);
+		cc.clipRect(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR, Op.REPLACE);
 		cc.drawPath(path, solid1);
 		cc.drawPath(path, stroke1);
 		invalidate(ox + size * 19 / 20, oy, ox + size * 21 / 20, oy + size - selR);
