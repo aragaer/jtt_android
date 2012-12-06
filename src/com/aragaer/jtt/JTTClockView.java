@@ -79,7 +79,7 @@ public class JTTClockView extends View {
 		clock_area.set(ox + size - oR, oy + size - selR - 2, ox + size + oR, oy + size + oR);
 		initialized = size_changed = true;
 		if (hn >= 0)
-			new PainterTask().execute(hn, hf);
+			queue_paint_task(hn, hf);
 		else
 			draw_circle_placeholder();
 	}
@@ -205,7 +205,7 @@ public class JTTClockView extends View {
 
 		hour_changed = hn != n;
 		if (initialized)
-			new PainterTask().execute(n, f);
+			queue_paint_task(n, f);
 		hn = n;
 		hf = f;
 	}
@@ -215,6 +215,8 @@ public class JTTClockView extends View {
 	class PainterTask extends AsyncTask<Integer, Void, Void> {
 		protected Void doInBackground(Integer... params) {
 			final int n = params[0], f = params[1];
+			if (isCancelled()) // even before we could start
+				return null;
 
 			if (hour_changed || size_changed) {
 				final String s = vertical ? hs.getHrOf(n) : hs.getHour(n);
@@ -228,7 +230,8 @@ public class JTTClockView extends View {
 				postInvalidate(r.left, r.top, r.right, r.bottom);
 				draw_circle_placeholder();
 
-				draw_onto(clock, n, size);
+				if (!draw_cancellable(clock, n, size, this))
+					return null;
 				size_changed = false;
 			}
 
@@ -242,5 +245,30 @@ public class JTTClockView extends View {
 			postInvalidate(clock_area.left, clock_area.top, clock_area.right, clock_area.bottom);
 			return null;
 		}
+
+		protected void onCancelled() {
+			requeue_paint_task();
+		}
+	}
+
+	/* Eliminate concurrency between painter tasks */
+	PainterTask current_task = null;
+	int qn = 0, qf = 0;
+	void requeue_paint_task() {
+		current_task = null;
+		queue_paint_task(qn, qf);
+	}
+
+	void queue_paint_task(int n, int f) {
+		if (current_task != null
+				&& current_task.getStatus() != AsyncTask.Status.FINISHED) {
+			current_task.cancel(false);
+			qn = n;
+			qf = f;
+			return; // do not start the task - it will be created in onCancelled
+		}
+
+		current_task = new PainterTask();
+		current_task.execute(qn, qf);
 	}
 }
