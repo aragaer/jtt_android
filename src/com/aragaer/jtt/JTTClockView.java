@@ -21,13 +21,13 @@ import android.view.View;
 public class JTTClockView extends View {
 	private final static int step = 360 / 12;
 	private final static float gap = 1.5f;
-	protected final Paint stroke1 = new Paint(0x07),
+	private final Paint stroke1 = new Paint(0x07),
 			stroke2 = new Paint(0x07),
 			solid1 = new Paint(0x01),
 			solid2 = new Paint(0x01),
 			cache_paint = new Paint(0x07);
-	protected Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // make it non-null
-	final Canvas cc = new Canvas();
+	private Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // make it non-null
+	private final Canvas cc = new Canvas();
 	private int hn = -1, hf;
 	private final JTTUtil.StringsHelper hs;
 	private final Matrix m = new Matrix();
@@ -59,7 +59,7 @@ public class JTTClockView extends View {
 
 		set_dial_size(new_size);
 
-		cc.setBitmap(getDrawingCache());
+		setBitmap(getDrawingCache());
 
 		stroke2.setTextSize(vertical ? w / 20 : w / 15);
 		if (vertical) {
@@ -185,7 +185,7 @@ public class JTTClockView extends View {
 	final static int arc_end = -90 + Math.round(step / 2 - gap);
 	final static int arc_len = arc_end - arc_start;
 
-	void draw_dial(int num) {
+	void prepare_dial(int num) {
 		if (!cache_lock.tryLock()) {
 			Log.e("CLOCK", "Can't hold lock, will not draw");
 			return;
@@ -304,21 +304,35 @@ public class JTTClockView extends View {
 			postInvalidate(r.left, r.top, r.right, r.bottom);
 			draw_circle_placeholder();
 
-			draw_dial(hn);
+			prepare_dial(hn);
 			update_all = false;
 		}
 		cc.clipRect(clock_area, Op.REPLACE);
-		draw_rotated_dial(hn, hf);
+		draw_dial(hn, hf);
 		cache_lock.unlock();
 
 		postInvalidate(clock_area.left, clock_area.top, clock_area.right, clock_area.bottom);
 	}
 
-	void draw_rotated_dial(int n, int f) {
+	void draw_dial(int n, int f) {
+		if (!cache_lock.tryLock()) {
+			Log.e("CLOCK", "Can't hold lock, won't draw!");
+			return;
+		}
 		m.reset();
 		m.setTranslate(ox, oy);
 		m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / 100f, size, size);
 		cc.drawColor(0, Mode.CLEAR);
 		cc.drawBitmap(clock, m, cache_paint);
+		cache_lock.unlock();
+	}
+
+	void setBitmap(Bitmap bmp) {
+		if (!cache_lock.tryLock()) {
+			Log.e("CLOCK", "Can't hold lock, won't replace bitmap!");
+			return;
+		}
+		cc.setBitmap(bmp);
+		cache_lock.unlock();
 	}
 }
