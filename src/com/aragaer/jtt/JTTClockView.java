@@ -57,22 +57,22 @@ public class JTTClockView extends View {
 		if (!cache_lock.isHeldByCurrentThread()) // do not lock twice
 			cache_lock.lock();
 
-		set_dial_size(new_size);
-
 		setBitmap(getDrawingCache());
 
 		stroke2.setTextSize(vertical ? w / 20 : w / 15);
 		if (vertical) {
 			ox = 0;
-			oy = 3 * h / 5 - size;
-			hx = size;
+			oy = 3 * h / 5 - new_size;
+			hx = new_size;
 			hy = h / 10;
 		} else {
-			ox = 7 * w / 10 - size;
+			ox = 7 * w / 10 - new_size;
 			oy = 0;
 			hx = w / 5;
-			hy = size;
+			hy = new_size;
 		}
+
+		set_dial_size(new_size);
 
 		cc.clipRect(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR, Op.REPLACE);
 		draw_arrow();
