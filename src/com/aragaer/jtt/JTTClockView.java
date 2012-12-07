@@ -307,14 +307,18 @@ public class JTTClockView extends View {
 			draw_dial(hn);
 			update_all = false;
 		}
-		m.reset();
-		m.setTranslate(ox, oy);
-		m.preRotate(step * (0.5f - hn) - gap - (step - gap * 2) * hf / 100f, size, size);
 		cc.clipRect(clock_area, Op.REPLACE);
-		cc.drawColor(0, Mode.CLEAR);
-		cc.drawBitmap(clock, m, cache_paint);
+		draw_rotated_dial(hn, hf);
 		cache_lock.unlock();
 
 		postInvalidate(clock_area.left, clock_area.top, clock_area.right, clock_area.bottom);
+	}
+
+	void draw_rotated_dial(int n, int f) {
+		m.reset();
+		m.setTranslate(ox, oy);
+		m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / 100f, size, size);
+		cc.drawColor(0, Mode.CLEAR);
+		cc.drawBitmap(clock, m, cache_paint);
 	}
 }

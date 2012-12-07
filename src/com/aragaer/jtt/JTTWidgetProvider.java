@@ -160,8 +160,6 @@ public class JTTWidgetProvider {
 		static JTTUtil.StringsHelper hs;
 		static JTTClockView jcv;
 		static int size;
-		private final static int step = 360 / 12;
-		private final static float gap = 1.5f;
 		final Matrix m = new Matrix();
 		private static Bitmap bmp;
 
@@ -175,11 +173,7 @@ public class JTTWidgetProvider {
 
 		protected void fill_rv(RemoteViews rv, JTTHour h) {
 			final int n = h.num, f = h.fraction;
-			bmp.eraseColor(Color.TRANSPARENT);
-			m.reset();
-			m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / 100.0f, size, size);
-
-			jcv.cc.drawBitmap(jcv.clock, m, jcv.cache_paint);
+			jcv.draw_rotated_dial(n, f);
 			jcv.draw_arrow();
 
 			rv.setImageViewBitmap(R.id.clock, bmp);
