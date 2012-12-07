@@ -27,7 +27,7 @@ public class JTTClockView extends View {
 			solid2 = new Paint(0x01),
 			cache_paint = new Paint(0x07);
 	private Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // make it non-null
-	private final Canvas cc = new Canvas();
+	private final Canvas cache_canvas = new Canvas(), clock_canvas = new Canvas();
 	private int hn = -1, hf;
 	private final JTTUtil.StringsHelper hs;
 	private final Matrix m = new Matrix();
@@ -74,7 +74,7 @@ public class JTTClockView extends View {
 
 		set_dial_size(new_size);
 
-		cc.clipRect(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR, Op.REPLACE);
+		cache_canvas.clipRect(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR, Op.REPLACE);
 		draw_arrow();
 		invalidate(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR);
 
@@ -96,8 +96,8 @@ public class JTTClockView extends View {
 		path.rLineTo(-size / 20, selR - size);
 		path.rLineTo(size / 10, 0);
 		path.close();
-		cc.drawPath(path, solid1);
-		cc.drawPath(path, stroke1);
+		cache_canvas.drawPath(path, solid1);
+		cache_canvas.drawPath(path, stroke1);
 		cache_lock.unlock();
 	}
 
@@ -129,6 +129,7 @@ public class JTTClockView extends View {
 
 		clock.recycle();
 		clock = Bitmap.createBitmap(clockR * 2, clockR * 2, Bitmap.Config.ARGB_8888);
+		clock_canvas.setBitmap(clock);
 
 		outer.set(size - oR, size - oR, size + oR, size + oR);
 		inner.set(size - iR, size - iR, size + iR, size + iR);
@@ -148,9 +149,9 @@ public class JTTClockView extends View {
 		path.reset();
 		path.addCircle(ox + size, oy + size, oR, Path.Direction.CW);
 		path.addCircle(ox + size, oy + size, iR, Path.Direction.CCW);
-		cc.clipRect(clock_area, Op.REPLACE);
-		cc.drawPath(path, solid1);
-		cc.drawPath(path, stroke1);
+		cache_canvas.clipRect(clock_area, Op.REPLACE);
+		cache_canvas.drawPath(path, solid1);
+		cache_canvas.drawPath(path, stroke1);
 		cache_lock.unlock();
 		circle_drawn = true;
 
@@ -182,7 +183,6 @@ public class JTTClockView extends View {
 	final Path path = new Path();
 	final RectF outer = new RectF(), inner = new RectF(), sel = new RectF(), sun = new RectF();
 
-	final Canvas canvas = new Canvas();
 
 	final static int arc_start = -90 - Math.round(step / 2 - gap);
 	final static int arc_end = -90 + Math.round(step / 2 - gap);
@@ -195,29 +195,28 @@ public class JTTClockView extends View {
 		}
 
 		clock.eraseColor(Color.TRANSPARENT);
-		canvas.setBitmap(clock);
-		canvas.setMatrix(null);
-		canvas.translate(-cox, -coy);
+		clock_canvas.setMatrix(null);
+		clock_canvas.translate(-cox, -coy);
 
-		canvas.rotate(-step / 2, size, size);
-		canvas.translate(-iR * 0.75f, 0);
-		canvas.drawArc(sun, 0, 360, false, solid1);
-		canvas.drawArc(sun, 0, 360, false, stroke1);
-		canvas.rotate(90, size + iR * 0.75f, size);
-		canvas.drawArc(sun, 0, 180, false, solid1);
-		canvas.drawArc(sun, 180, 180, false, solid2);
-		canvas.drawArc(sun, 0, 360, false, stroke1);
-		canvas.drawLine(size - sR, size, size + sR, size, stroke1);
-		canvas.rotate(90, size + iR * 0.75f, size);
-		canvas.drawArc(sun, 0, 360, false, solid2);
-		canvas.drawArc(sun, 0, 360, false, stroke1);
-		canvas.rotate(90, size + iR * 0.75f, size);
-		canvas.drawArc(sun, 180, 180, false, solid1);
-		canvas.drawArc(sun, 0, 180, false, solid2);
-		canvas.drawArc(sun, 0, 360, false, stroke1);
-		canvas.drawLine(size - sR, size, size + sR, size, stroke1);
-		canvas.translate(iR * 0.75f, 0);
-		canvas.rotate(90 + step / 2, size, size);
+		clock_canvas.rotate(-step / 2, size, size);
+		clock_canvas.translate(-iR * 0.75f, 0);
+		clock_canvas.drawArc(sun, 0, 360, false, solid1);
+		clock_canvas.drawArc(sun, 0, 360, false, stroke1);
+		clock_canvas.rotate(90, size + iR * 0.75f, size);
+		clock_canvas.drawArc(sun, 0, 180, false, solid1);
+		clock_canvas.drawArc(sun, 180, 180, false, solid2);
+		clock_canvas.drawArc(sun, 0, 360, false, stroke1);
+		clock_canvas.drawLine(size - sR, size, size + sR, size, stroke1);
+		clock_canvas.rotate(90, size + iR * 0.75f, size);
+		clock_canvas.drawArc(sun, 0, 360, false, solid2);
+		clock_canvas.drawArc(sun, 0, 360, false, stroke1);
+		clock_canvas.rotate(90, size + iR * 0.75f, size);
+		clock_canvas.drawArc(sun, 180, 180, false, solid1);
+		clock_canvas.drawArc(sun, 0, 180, false, solid2);
+		clock_canvas.drawArc(sun, 0, 360, false, stroke1);
+		clock_canvas.drawLine(size - sR, size, size + sR, size, stroke1);
+		clock_canvas.translate(iR * 0.75f, 0);
+		clock_canvas.rotate(90 + step / 2, size, size);
 
 		for (int hr = 0; hr < 12; hr++) {
 			final boolean current = hr == num;
@@ -226,13 +225,13 @@ public class JTTClockView extends View {
 			path.addArc(inner, arc_start, arc_len);
 			path.arcTo(current ? sel : outer, arc_end, -arc_len);
 			path.close();
-			canvas.drawPath(path, solid1);
-			canvas.drawPath(path, stroke1);
+			clock_canvas.drawPath(path, solid1);
+			clock_canvas.drawPath(path, stroke1);
 
 			final float glyph_y = size - iR - (current ? 5 : 4) * thick / 9;
-			canvas.drawText(JTTHour.Glyphs[hr], size, glyph_y, solid2);
-			canvas.drawText(JTTHour.Glyphs[hr], size, glyph_y, stroke1);
-			canvas.rotate(step, size, size);
+			clock_canvas.drawText(JTTHour.Glyphs[hr], size, glyph_y, solid2);
+			clock_canvas.drawText(JTTHour.Glyphs[hr], size, glyph_y, stroke1);
+			clock_canvas.rotate(step, size, size);
 		}
 		cache_lock.unlock();
 	}
@@ -299,19 +298,19 @@ public class JTTClockView extends View {
 		if (update_all) {
 			final String s = vertical ? hs.getHrOf(hn) : hs.getHour(hn);
 			r.left = 0;
-			r.right = cc.getWidth();
+			r.right = cache_canvas.getWidth();
 			r.top = hy - (int) stroke2.getTextSize();
 			r.bottom = hy + (int) stroke2.getTextSize() / 2;
-			cc.clipRect(r, Op.REPLACE);
-			cc.drawColor(0, Mode.CLEAR);
-			cc.drawText(s, hx, hy, stroke2);
+			cache_canvas.clipRect(r, Op.REPLACE);
+			cache_canvas.drawColor(0, Mode.CLEAR);
+			cache_canvas.drawText(s, hx, hy, stroke2);
 			postInvalidate(r.left, r.top, r.right, r.bottom);
 			draw_circle_placeholder();
 
 			prepare_dial(hn);
 			update_all = false;
 		}
-		cc.clipRect(clock_area, Op.REPLACE);
+		cache_canvas.clipRect(clock_area, Op.REPLACE);
 		draw_dial(hn, hf);
 		cache_lock.unlock();
 
@@ -326,8 +325,8 @@ public class JTTClockView extends View {
 		m.reset();
 		m.setTranslate(ox + cox, oy + coy);
 		m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / 100f, clockR, clockR);
-		cc.drawColor(0, Mode.CLEAR);
-		cc.drawBitmap(clock, m, cache_paint);
+		cache_canvas.drawColor(0, Mode.CLEAR);
+		cache_canvas.drawBitmap(clock, m, cache_paint);
 		cache_lock.unlock();
 	}
 
@@ -336,7 +335,7 @@ public class JTTClockView extends View {
 			Log.e("CLOCK", "Can't hold lock, won't replace bitmap!");
 			return;
 		}
-		cc.setBitmap(bmp);
+		cache_canvas.setBitmap(bmp);
 		cache_lock.unlock();
 	}
 }
