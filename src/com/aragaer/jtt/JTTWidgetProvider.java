@@ -171,7 +171,7 @@ public class JTTWidgetProvider {
 		}
 
 		protected void hour_changed(int n) {
-			jcv.draw_onto(jcv.clock, n, size);
+			jcv.draw_dial(n);
 		}
 
 		protected void fill_rv(RemoteViews rv, JTTHour h) {
@@ -180,6 +180,7 @@ public class JTTWidgetProvider {
 			m.reset();
 			m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / 100.0f, size, size);
 
+			jcv.stroke1.setTextSize(size / 3);
 			canvas.drawBitmap(jcv.clock, m, jcv.stroke1);
 
 			jcv.solid1.setTextSize(size / 5);
@@ -201,9 +202,7 @@ public class JTTWidgetProvider {
 			size = Math.round(110 * c.getResources().getDisplayMetrics().density);
 
 			bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
-			jcv.clock.recycle();
-			jcv.clock = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
-			jcv.set_size(size);
+			jcv.set_dial_size(size);
 			canvas = new Canvas(bmp);
 		}
 	}
