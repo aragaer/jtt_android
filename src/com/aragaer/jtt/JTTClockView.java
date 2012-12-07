@@ -1,5 +1,8 @@
 package com.aragaer.jtt;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,6 +15,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region.Op;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 
 public class JTTClockView extends View {
@@ -27,7 +31,10 @@ public class JTTClockView extends View {
 	private int hn = -1, hf;
 	private final JTTUtil.StringsHelper hs;
 	private final Matrix m = new Matrix();
-	boolean hour_changed = true, initialized = false, size_changed = false;
+
+	ReentrantLock cache_lock = new ReentrantLock();
+	Condition need_update = cache_lock.newCondition();
+	boolean update_all = true;
 
 	public JTTClockView(Context context) {
 		super(context);
@@ -41,12 +48,14 @@ public class JTTClockView extends View {
 	float sR;
 	boolean vertical;
 
-	boolean circle_drawn = false, is_empty = true;
+	boolean circle_drawn = false;
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		vertical = h > w;
 		size = vertical ? w / 2 : h / 2;
 		if (size == 0)
 			return;
+		if (!cache_lock.isHeldByCurrentThread()) // do not lock twice
+			cache_lock.lock();
 		clock.recycle();
 		clock = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
 		cc.setBitmap(getDrawingCache());
@@ -77,9 +86,11 @@ public class JTTClockView extends View {
 		invalidate(ox + size * 19 / 20, oy, ox + size * 21 / 20, oy + size - selR);
 
 		clock_area.set(ox + size - oR - 2, oy + size - selR - 2, ox + size + oR + 2, oy + size + oR + 2);
-		initialized = size_changed = true;
 		circle_drawn = false;
-		is_empty = true;
+		draw_circle_placeholder();
+		update_all = true;
+		need_update.signal();
+		cache_lock.unlock();
 	}
 
 	void set_size(int size) {
@@ -102,6 +113,10 @@ public class JTTClockView extends View {
 	}
 
 	void draw_circle_placeholder() {
+		if (!cache_lock.isHeldByCurrentThread()) {
+			Log.e("CLOCK", "Drawing without cache lock held!");
+			return;
+		}
 		if (circle_drawn)
 			return;
 		path.reset();
@@ -116,14 +131,6 @@ public class JTTClockView extends View {
 
 	protected void onDraw(Canvas canvas) {
 		canvas.drawBitmap(getDrawingCache(), 0, 0, null);
-
-		if (is_empty) {
-			if (hn >= 0)
-				queue_paint_task();
-			else
-				draw_circle_placeholder();
-			is_empty = false;
-		}
 	}
 
 	private final void setupPaint(Context ctx) {
@@ -148,16 +155,12 @@ public class JTTClockView extends View {
 	final RectF outer = new RectF(), inner = new RectF(), sel = new RectF(), sun = new RectF();
 
 	final Canvas canvas = new Canvas();
-	void draw_onto(Bitmap b, int num, int c) {
-		draw_cancellable(b, num, c, null);
-	}
 
 	final static int arc_start = -90 - Math.round(step / 2 - gap);
 	final static int arc_end = -90 + Math.round(step / 2 - gap);
 	final static int arc_len = arc_end - arc_start;
 
-	/* return true if managed to draw, false if cancelled */
-	boolean draw_cancellable(Bitmap b, int num, int c, PainterTask task) {
+	void draw_onto(Bitmap b, int num, int c) {
 		b.eraseColor(Color.TRANSPARENT);
 		canvas.setBitmap(b);
 		canvas.setMatrix(null);
@@ -184,8 +187,6 @@ public class JTTClockView extends View {
 
 		for (int hr = 0; hr < 12; hr++) {
 			final boolean current = hr == num;
-			if (task != null && task.isCancelled())
-				return false;
 
 			path.reset();
 			path.addArc(inner, arc_start, arc_len);
@@ -199,7 +200,20 @@ public class JTTClockView extends View {
 			canvas.drawText(JTTHour.Glyphs[hr], c, glyph_y, stroke1);
 			canvas.rotate(step, c, c);
 		}
-		return true;
+	}
+
+	PainterTask painter = null;
+	protected void onAttachedToWindow() {
+		cache_lock.lock(); // lock it initially. it will be unlocked when we're first initialized
+		painter = new PainterTask();
+		painter.execute();
+	}
+
+	protected void onDetachedFromWindow() {
+		cache_lock.lock();
+		painter.cancel(false);
+		need_update.signal();
+		cache_lock.unlock();
 	}
 
 	private static final int granularity = 10;
@@ -208,68 +222,67 @@ public class JTTClockView extends View {
 		if (hn == n && hf == f)
 			return; // do nothing
 
-		hour_changed = hn != n;
+		update_all |= hn != n;
 		hn = n;
 		hf = f;
-		if (initialized)
-			queue_paint_task();
+		cache_lock.lock();
+		need_update.signal();
+		cache_lock.unlock();
 	}
 
 	final Rect clock_area = new Rect();
 	final Rect r = new Rect();
 	class PainterTask extends AsyncTask<Void, Void, Void> {
 		protected Void doInBackground(Void... params) {
-			if (isCancelled()) // even before we could start
-				return null;
+			cache_lock.lock();
+			// if we're here, canvas is initialized
+			// draw now if hour is already set
+			if (hn >= 0)
+				draw_everything();
+			while (true) {
+				try {
+					need_update.await();
+				} catch (InterruptedException e) {
+					break;
+				}
 
-			if (hour_changed || size_changed) {
-				final String s = vertical ? hs.getHrOf(hn) : hs.getHour(hn);
-				r.left = 0;
-				r.right = cc.getWidth();
-				r.top = hy - (int) stroke2.getTextSize();
-				r.bottom = hy + (int) stroke2.getTextSize() / 2;
-				cc.clipRect(r, Op.REPLACE);
-				cc.drawColor(0, Mode.CLEAR);
-				cc.drawText(s, hx, hy, stroke2);
-				postInvalidate(r.left, r.top, r.right, r.bottom);
-				draw_circle_placeholder();
+				if (isCancelled())
+					break;
 
-				if (!draw_cancellable(clock, hn, size, this))
-					return null;
-				size_changed = false;
+				draw_everything();
 			}
-
-			m.reset();
-			m.setTranslate(ox, oy);
-			m.preRotate(step * (0.5f - hn) - gap - (step - gap * 2) * hf / 100f, size, size);
-			cc.clipRect(clock_area, Op.REPLACE);
-			cc.drawColor(0, Mode.CLEAR);
-			cc.drawBitmap(clock, m, cache_paint);
-
-			postInvalidate(clock_area.left, clock_area.top, clock_area.right, clock_area.bottom);
+			cache_lock.unlock();
 			return null;
 		}
+	};
 
-		protected void onCancelled() {
-			requeue_paint_task();
+	void draw_everything() {
+		if (!cache_lock.isHeldByCurrentThread()) {
+			Log.e("CLOCK", "Drawing without cache lock held!");
+			return;
 		}
-	}
+		if (update_all) {
+			final String s = vertical ? hs.getHrOf(hn) : hs.getHour(hn);
+			r.left = 0;
+			r.right = cc.getWidth();
+			r.top = hy - (int) stroke2.getTextSize();
+			r.bottom = hy + (int) stroke2.getTextSize() / 2;
+			cc.clipRect(r, Op.REPLACE);
+			cc.drawColor(0, Mode.CLEAR);
+			cc.drawText(s, hx, hy, stroke2);
+			postInvalidate(r.left, r.top, r.right, r.bottom);
+			draw_circle_placeholder();
 
-	/* Eliminate concurrency between painter tasks */
-	PainterTask current_task = null;
-	void requeue_paint_task() {
-		current_task = null;
-		queue_paint_task();
-	}
-
-	void queue_paint_task() {
-		if (current_task != null
-				&& current_task.getStatus() != AsyncTask.Status.FINISHED) {
-			current_task.cancel(false);
-			return; // do not start the task - it will be created in onCancelled
+			draw_onto(clock, hn, size);
+			update_all = false;
 		}
+		m.reset();
+		m.setTranslate(ox, oy);
+		m.preRotate(step * (0.5f - hn) - gap - (step - gap * 2) * hf / 100f, size, size);
+		cc.clipRect(clock_area, Op.REPLACE);
+		cc.drawColor(0, Mode.CLEAR);
+		cc.drawBitmap(clock, m, cache_paint);
 
-		current_task = new PainterTask();
-		current_task.execute();
+		postInvalidate(clock_area.left, clock_area.top, clock_area.right, clock_area.bottom);
 	}
 }
