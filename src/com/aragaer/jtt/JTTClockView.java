@@ -43,8 +43,8 @@ public class JTTClockView extends View {
 		setDrawingCacheEnabled(true);
 	}
 
-	int size, ox, oy, hx, hy;
-	int iR, oR, thick, selR;
+	int size, ox, oy, hx, hy, cox, coy;
+	int iR, oR, thick, selR, clockR;
 	float sR;
 	boolean vertical;
 
@@ -112,9 +112,6 @@ public class JTTClockView extends View {
 
 		size = new_size;
 
-		clock.recycle();
-		clock = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
-
 		iR = 2 * size / 5;
 		thick = 2 * size / 5;
 		oR = iR + thick;
@@ -126,6 +123,12 @@ public class JTTClockView extends View {
 
 		stroke1.setTextSize(thick / 3);
 		solid2.setTextSize(thick / 3);
+
+		clockR = selR + 2;
+		cox = coy = size - clockR;
+
+		clock.recycle();
+		clock = Bitmap.createBitmap(clockR * 2, clockR * 2, Bitmap.Config.ARGB_8888);
 
 		outer.set(size - oR, size - oR, size + oR, size + oR);
 		inner.set(size - iR, size - iR, size + iR, size + iR);
@@ -194,6 +197,7 @@ public class JTTClockView extends View {
 		clock.eraseColor(Color.TRANSPARENT);
 		canvas.setBitmap(clock);
 		canvas.setMatrix(null);
+		canvas.translate(-cox, -coy);
 
 		canvas.rotate(-step / 2, size, size);
 		canvas.translate(-iR * 0.75f, 0);
@@ -320,8 +324,8 @@ public class JTTClockView extends View {
 			return;
 		}
 		m.reset();
-		m.setTranslate(ox, oy);
-		m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / 100f, size, size);
+		m.setTranslate(ox + cox, oy + coy);
+		m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / 100f, clockR, clockR);
 		cc.drawColor(0, Mode.CLEAR);
 		cc.drawBitmap(clock, m, cache_paint);
 		cache_lock.unlock();
