@@ -181,7 +181,7 @@ public class JTTWidgetProvider {
 			m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / 100.0f, size, size);
 
 			jcv.stroke1.setTextSize(size / 3);
-			canvas.drawBitmap(jcv.clock, m, jcv.stroke1);
+			canvas.drawBitmap(jcv.clock, m, jcv.cache_paint);
 
 			jcv.solid1.setTextSize(size / 5);
 			jcv.stroke1.setTextSize(size / 5);
