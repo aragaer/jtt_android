@@ -27,7 +27,7 @@ public class JTTClockView extends View {
 			solid2 = new Paint(0x01),
 			cache_paint = new Paint(0x07);
 	protected Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // make it non-null
-	private final Canvas cc = new Canvas();
+	final Canvas cc = new Canvas();
 	private int hn = -1, hf;
 	private final JTTUtil.StringsHelper hs;
 	private final Matrix m = new Matrix();
@@ -75,13 +75,7 @@ public class JTTClockView extends View {
 		}
 
 		cc.clipRect(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR, Op.REPLACE);
-		path.reset();
-		path.moveTo(ox + size, oy + size - selR - 2);
-		path.rLineTo(-size / 20, selR - size);
-		path.rLineTo(size / 10, 0);
-		path.close();
-		cc.drawPath(path, solid1);
-		cc.drawPath(path, stroke1);
+		draw_arrow();
 		invalidate(ox + size * 19 / 20, oy, ox + size * 21 / 20, oy + size - selR);
 
 		clock_area.set(ox + size - oR - 2, oy + size - selR - 2, ox + size + oR + 2, oy + size + oR + 2);
@@ -89,6 +83,21 @@ public class JTTClockView extends View {
 		draw_circle_placeholder();
 		update_all = true;
 		need_update.signal();
+		cache_lock.unlock();
+	}
+
+	void draw_arrow() {
+		if (!cache_lock.tryLock()) {
+			Log.e("CLOCK", "Can't hold lock, will not draw");
+			return;
+		}
+		path.reset();
+		path.moveTo(ox + size, oy + size - selR - 2);
+		path.rLineTo(-size / 20, selR - size);
+		path.rLineTo(size / 10, 0);
+		path.close();
+		cc.drawPath(path, solid1);
+		cc.drawPath(path, stroke1);
 		cache_lock.unlock();
 	}
 

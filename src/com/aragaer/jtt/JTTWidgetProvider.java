@@ -164,7 +164,6 @@ public class JTTWidgetProvider {
 		private final static float gap = 1.5f;
 		final Matrix m = new Matrix();
 		private static Bitmap bmp;
-		private static Canvas canvas;
 
 		public Widget12() {
 			super(20);
@@ -180,14 +179,8 @@ public class JTTWidgetProvider {
 			m.reset();
 			m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / 100.0f, size, size);
 
-			jcv.stroke1.setTextSize(size / 3);
-			canvas.drawBitmap(jcv.clock, m, jcv.cache_paint);
-
-			jcv.solid1.setTextSize(size / 5);
-			jcv.stroke1.setTextSize(size / 5);
-
-			canvas.drawText("▽", size, size / 8, jcv.stroke1);
-			canvas.drawText("▼", size, size / 8, jcv.solid1);
+			jcv.cc.drawBitmap(jcv.clock, m, jcv.cache_paint);
+			jcv.draw_arrow();
 
 			rv.setImageViewBitmap(R.id.clock, bmp);
 			rv.setFloat(R.id.glyph, "setTextSize", size / 10);
@@ -202,8 +195,8 @@ public class JTTWidgetProvider {
 			size = Math.round(110 * c.getResources().getDisplayMetrics().density);
 
 			bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
+			jcv.cc.setBitmap(bmp);
 			jcv.set_dial_size(size);
-			canvas = new Canvas(bmp);
 		}
 	}
 }
