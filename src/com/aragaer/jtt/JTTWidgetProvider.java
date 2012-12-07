@@ -164,7 +164,7 @@ public class JTTWidgetProvider {
 		private static Bitmap bmp;
 
 		public Widget12() {
-			super(20);
+			super(12);
 		}
 
 		protected void hour_changed(int n) {
