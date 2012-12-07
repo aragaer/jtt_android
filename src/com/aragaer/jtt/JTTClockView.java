@@ -76,7 +76,7 @@ public class JTTClockView extends View {
 
 		cc.clipRect(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR, Op.REPLACE);
 		draw_arrow();
-		invalidate(ox + size * 19 / 20, oy, ox + size * 21 / 20, oy + size - selR);
+		invalidate(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR);
 
 		clock_area.set(ox + size - oR - 2, oy + size - selR - 2, ox + size + oR + 2, oy + size + oR + 2);
 		circle_drawn = false;
