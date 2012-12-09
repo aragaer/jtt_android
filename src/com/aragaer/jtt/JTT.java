@@ -1,7 +1,6 @@
 package com.aragaer.jtt;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -27,8 +26,8 @@ public class JTT {
 	static final long ms_per_hour = TimeUnit.SECONDS.toMillis(60 * 60);
 	static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
 
-	public JTTHour time_to_jtt(Date d) {
-		return time_to_jtt(d == null ? System.currentTimeMillis() : d.getTime());
+	public JTTHour time_to_jtt(Calendar c) {
+		return time_to_jtt(c == null ? System.currentTimeMillis() : c.getTimeInMillis());
 	}
 
 	// wrapped jtt is jtt written as a single integer from range [0; 1200)
@@ -56,12 +55,12 @@ public class JTT {
 		return new JTTHour((int) (h / 100), (int) h % 100);
 	}
 
-	public Date jtt_to_time(JTTHour hour, Date date) {
-		return jtt_to_time(hour.num, hour.fraction, date);
+	public Calendar jtt_to_time(JTTHour hour, Calendar cal) {
+		return jtt_to_time(hour.num, hour.fraction, cal);
 	}
 
-	public Date jtt_to_time(int n, int f, Date date) {
-		return jtt_to_time(n, f, date == null ? System.currentTimeMillis() : date.getTime());
+	public Calendar jtt_to_time(int n, int f, Calendar cal) {
+		return jtt_to_time(n, f, cal == null ? System.currentTimeMillis() : cal.getTimeInMillis());
 	}
 
 	// FIXME: this one isn't working properly
@@ -84,8 +83,10 @@ public class JTT {
 		return wrapped_jtt_to_long(n * 100 + f, t);
 	}
 
-	public Date jtt_to_time(int n, int f, long t) {
-		return new Date(jtt_to_long(n, f, t));
+	public Calendar jtt_to_time(int n, int f, long t) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(jtt_to_long(n, f, t));
+		return cal;
 	}
 
 	public static long longToJDN(long time) {
