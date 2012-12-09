@@ -56,7 +56,7 @@ public class JTT {
 	}
 
 	public Calendar jtt_to_time(JTTHour hour, Calendar cal) {
-		return jtt_to_time(hour.num, hour.fraction, cal);
+		return jtt_to_time(hour.num, hour.percent, cal);
 	}
 
 	public Calendar jtt_to_time(int n, int f, Calendar cal) {

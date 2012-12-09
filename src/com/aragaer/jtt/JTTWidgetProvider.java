@@ -71,7 +71,7 @@ public class JTTWidgetProvider {
 				prev_n = prev.num;
 			if (prev_n != n)
 				hour_changed(n);
-			else if (prev.fraction == f)
+			else if (prev.percent == f)
 				return; // do nothing
 			prev.setTo(n, f);
 			draw(c, null, prev);
@@ -137,8 +137,8 @@ public class JTTWidgetProvider {
 			c.drawPath(path1, p1);
 
 			path2.reset();
-			path2.addArc(inner, h.fraction * 3.6f - 90, -h.fraction * 3.6f);
-			path2.arcTo(outer, -90, h.fraction * 3.6f);
+			path2.addArc(inner, h.percent * 3.6f - 90, -h.percent * 3.6f);
+			path2.arcTo(outer, -90, h.percent * 3.6f);
 			c.drawPath(path2, p2);
 
 			rv.setImageViewBitmap(R.id.clock, bmp);
@@ -172,7 +172,7 @@ public class JTTWidgetProvider {
 		}
 
 		protected void fill_rv(RemoteViews rv, JTTHour h) {
-			final int n = h.num, f = h.fraction;
+			final int n = h.num, f = h.percent;
 			jcv.draw_dial(n, f);
 			jcv.draw_arrow();
 
