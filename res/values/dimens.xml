@@ -2,4 +2,6 @@
 <resources>
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="today_time_width">75dp</dimen>
+    <dimen name="notification_progress_height">10dp</dimen>
+    <dimen name="notification_progress_padding">2dp</dimen>
 </resources>

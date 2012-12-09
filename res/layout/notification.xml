@@ -29,8 +29,8 @@
             style="@style/NotificationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dip"
-            android:layout_toRightOf="@id/title" />
+            android:layout_toRightOf="@id/title"
+            android:paddingLeft="10dip" />
 
         <TextView
             android:id="@+id/start"
@@ -41,26 +41,68 @@
             android:layout_below="@id/title" />
 
         <TextView
-            android:id="@+id/end"
+            android:id="@+id/hour"
             style="@style/NotificationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
-            android:layout_alignParentRight="true" />
-        
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/end"
+            style="@style/NotificationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/title" />
+
         <ProgressBar
-            android:id="@+id/fraction"
+            android:id="@+id/fraction1"
             android:layout_width="fill_parent"
-            android:layout_height="15dip"
+            android:layout_height="@dimen/notification_progress_height"
+            android:layout_below="@id/title"
+            android:layout_toLeftOf="@id/hour"
             android:layout_toRightOf="@id/start"
-            android:layout_toLeftOf="@id/end"
             android:indeterminate="false"
             android:indeterminateOnly="false"
-            android:layout_below="@id/title"
-            android:padding="4dip"
-            android:layout_centerVertical="true"
+            android:padding="@dimen/notification_progress_padding"
             android:progressDrawable="@android:drawable/progress_horizontal" />
 
+        <ProgressBar
+            android:id="@+id/fraction2"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/notification_progress_height"
+            android:layout_below="@id/fraction1"
+            android:layout_toLeftOf="@id/hour"
+            android:layout_toRightOf="@id/start"
+            android:indeterminate="false"
+            android:indeterminateOnly="false"
+            android:padding="@dimen/notification_progress_padding"
+            android:progressDrawable="@android:drawable/progress_horizontal" />
+
+        <ProgressBar
+            android:id="@+id/fraction3"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/notification_progress_height"
+            android:layout_below="@id/title"
+            android:layout_toLeftOf="@id/end"
+            android:layout_toRightOf="@id/hour"
+            android:indeterminate="false"
+            android:indeterminateOnly="false"
+            android:padding="@dimen/notification_progress_padding"
+            android:progressDrawable="@android:drawable/progress_horizontal" />
+
+        <ProgressBar
+            android:id="@+id/fraction4"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/notification_progress_height"
+            android:layout_below="@id/fraction3"
+            android:layout_toLeftOf="@id/end"
+            android:layout_toRightOf="@id/hour"
+            android:indeterminate="false"
+            android:indeterminateOnly="false"
+            android:padding="@dimen/notification_progress_padding"
+            android:progressDrawable="@android:drawable/progress_horizontal" />
     </RelativeLayout>
 
 </RelativeLayout>

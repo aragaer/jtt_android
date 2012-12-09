@@ -56,7 +56,7 @@ public class JTTService extends Service {
 
     private final static Intent TickAction = new Intent();
 
-    private int hour, sub;
+    private int hour, quarter, part;
 
     static class JTTHandler extends Handler {
         ArrayList<Messenger> clients = new ArrayList<Messenger>();
@@ -76,7 +76,7 @@ public class JTTService extends Service {
                 s.notify = msg.getData().getBoolean("notify", s.notify);
                 JTTUtil.changeLocale(s, msg.getData().getString("locale"));
                 if (s.notify)
-                    s.notify_helper(s.hour, s.sub);
+                    s.notify_helper(s.hour, s.quarter, s.part);
                 else
                     s.nm.cancel(APP_ID);
                 break;
@@ -89,7 +89,7 @@ public class JTTService extends Service {
                 break;
             case MSG_REGISTER_CLIENT:
                 try {
-                    msg.replyTo.send(Message.obtain(null, MSG_HOUR, s.hour, s.sub));
+                    msg.replyTo.send(Message.obtain(null, MSG_HOUR, s.hour, s.part));
                     clients.add(msg.replyTo);
                 } catch (RemoteException e) {
                     Log.w(TAG, "Client registered but failed to get data");
@@ -149,7 +149,9 @@ public class JTTService extends Service {
     final Messenger messenger = new Messenger(handler);
 
     private String app_name;
-    private void notify_helper(int hn, int hf) {
+    private static final int bar_ids[] = {R.id.fraction1, R.id.fraction2, R.id.fraction3, R.id.fraction4};
+    private final JTTHour conv = new JTTHour(0);
+    private void notify_helper(int hn, int hq, int hf) {
         notification = new Notification(R.drawable.notification_icon,
                 app_name, System.currentTimeMillis());
         RemoteViews rv = new RemoteViews(getPackageName(),
@@ -160,7 +162,16 @@ public class JTTService extends Service {
         rv.setTextViewText(R.id.image, JTTHour.Glyphs[hn]);
         rv.setTextViewText(R.id.title, hs.getHrOf(hn));
         rv.setTextViewText(R.id.percent, String.format("%d%%", hf));
-        rv.setProgressBar(R.id.fraction, 100, hf, false);
+        conv.setTo(hn, hf);
+        hq = conv.quarter;
+        hf = conv.quarter_parts;
+        int i;
+        for (i = 0; i < hq; i++)
+        	rv.setProgressBar(bar_ids[i], 1, 1, false);
+    	rv.setProgressBar(bar_ids[i], JTTHour.PARTS, hf, false);
+        while (++i < JTTHour.QUARTERS)
+        	rv.setProgressBar(bar_ids[i], 1, 0, false);
+
         rv.setTextViewText(R.id.start, t_start);
         rv.setTextViewText(R.id.end, t_end);
 
@@ -169,9 +180,9 @@ public class JTTService extends Service {
         nm.notify(APP_ID, notification);
     }
     
-    private void doNotify(int n, int f, int event) {
+    private void doNotify(int n, int q, int f, int event) {
         if (notify)
-            notify_helper(n, f);
+            notify_helper(n, q, f);
 
         TickAction.putExtra("hour", n);
         TickAction.putExtra("fraction", f);
@@ -336,17 +347,17 @@ public class JTTService extends Service {
         if (now - sync > exp_sub * sublen // sync belongs to previous tick interval
                 || now < sync) {          // time went backwards!
             hour = exp_tick + isDay * 6;
-            sub = exp_sub;
+            part = exp_sub;
             t_start = JTTUtil.format_time(start + (end - start) * exp_tick / ticks);
             t_end = JTTUtil.format_time(start + (end - start) * (exp_tick + 1) / ticks);
-            doNotify(hour, sub, MSG_HOUR);
-        } else if (sub < exp_sub) {
+            doNotify(hour, quarter, part, MSG_HOUR);
+        } else if (part < exp_sub) {
             if (hour % 6 != exp_tick) { // sync should belong to this tick interval
                 Log.e(TAG, "current tick is "+(hour % 6)+", expected "+exp_tick);
                 hour = exp_tick + isDay * 6;
             }
-            sub = exp_sub;
-            doNotify(hour, sub, MSG_SUBTICK);
+            part = exp_sub;
+            doNotify(hour, quarter, part, MSG_SUBTICK);
         }
 
         sync = System.currentTimeMillis();
