@@ -1,22 +1,25 @@
 package com.aragaer.jtt;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+
+import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
+import com.luckycatlabs.sunrisesunset.dto.Location;
 
 import android.support.v4.util.LongSparseArray;
 
 public class JTT {
 	LongSparseArray<long[]> cache = new LongSparseArray<long[]>();
-	private double latitude, longitude;
+	SunriseSunsetCalculator calculator;
 
 	public JTT(float lat, float lon) {
-		latitude = lat;
-		longitude = lon;
+		move(lat, lon);
 	}
 
 	public void move(float lat, float lon) {
-		latitude = lat;
-		longitude = lon;
+		calculator = new SunriseSunsetCalculator(new Location(lat, lon), TimeZone.getDefault());
 		cache.clear();
 	}
 
@@ -85,22 +88,6 @@ public class JTT {
 		return new Date(jtt_to_long(n, f, t));
 	}
 
-	private final static double sin(double g) {
-		return Math.sin(Math.toRadians(g));
-	}
-
-	private final static double cos(double g) {
-		return Math.cos(Math.toRadians(g));
-	}
-
-	private final static double asin(double a) {
-		return Math.toDegrees(Math.asin(a));
-	}
-
-	private final static double acos(double a) {
-		return Math.toDegrees(Math.acos(a));
-	}
-
 	public static long longToJDN(long time) {
 		return (int) Math.floor(longToJD(time));
 	}
@@ -113,29 +100,15 @@ public class JTT {
 		return Math.round((jd - 2440587.5) * ms_per_day);
 	}
 
-	// http://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth
 	// it's ok to call this function often since the data is cached
 	public long[] computeTr(long jdn) {
 		long result[] = cache.get(jdn);
 		if (result == null) {
-			final double n_star = jdn - 2451545.0009 + longitude / 360.0;
-			final double n = Math.floor(n_star + 0.5);
-			final double j_star = 2451545.0009 - longitude / 360.0 + n;
-			final double M = (357.5291 + 0.98560028 * (j_star - 2451545)) % 360;
-			final double C = 1.9148 * sin(M) + 0.02 * sin(2 * M) + 0.0003
-					* sin(3 * M);
-			final double lambda = (M + 102.9372 + C + 180) % 360;
-			final double j_transit = j_star + 0.0053 * sin(M) - 0.0069
-					* sin(2 * lambda);
-			final double sigma = asin(sin(lambda) * sin(23.44));
-
-			final double omega0 = acos((sin(-0.83) - sin(latitude) * sin(sigma))
-					/ (cos(latitude) * cos(sigma)));
-			final double j_set = 2451545.0009 + (omega0 - longitude) / 360.0 + n
-					+ 0.0053 * sin(M) - 0.0069 * sin(2 * lambda);
-			final double j_rise = j_transit - (j_set - j_transit);
-
-			result = new long[] { JDToLong(j_rise), JDToLong(j_set) };
+			Calendar date = Calendar.getInstance();
+			date.setTimeInMillis(JDToLong(jdn));
+			Calendar rise = calculator.getOfficialSunriseCalendarForDate(date);
+			Calendar set = calculator.getOfficialSunsetCalendarForDate(date);
+			result = new long[] { rise.getTimeInMillis(), set.getTimeInMillis() };
 			cache.put(jdn, result);
 		}
 		return result;
