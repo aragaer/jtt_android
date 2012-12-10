@@ -42,7 +42,6 @@
         </receiver>
         <receiver android:name="JTTWidgetProvider$Widget1"
                 android:icon="@drawable/widget1"
-                android:exported="false"
                 android:label="@string/widget1">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -55,7 +54,6 @@
         </receiver>
         <receiver android:name="JTTWidgetProvider$Widget12"
                 android:icon="@drawable/widget12"
-                android:exported="false"
                 android:label="@string/widget12">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
