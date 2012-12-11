@@ -27,10 +27,12 @@ public class JTTClockView extends View {
 			solid2 = new Paint(0x01),
 			cache_paint = new Paint(0x07);
 	private Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // make it non-null
+	private Bitmap cache = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // same
 	private final Canvas cache_canvas = new Canvas(), clock_canvas = new Canvas();
 	private int hn = -1, hf;
 	private final JTTUtil.StringsHelper hs;
 	private final Matrix m = new Matrix();
+	PainterTask painter = null;
 
 	ReentrantLock cache_lock = new ReentrantLock();
 	Condition need_update = cache_lock.newCondition();
@@ -40,7 +42,6 @@ public class JTTClockView extends View {
 		super(context);
 		hs = JTTUtil.getStringsHelper(context);
 		setupPaint(context);
-		setDrawingCacheEnabled(true);
 	}
 
 	int size, ox, oy, hx, hy, cox, coy;
@@ -54,10 +55,12 @@ public class JTTClockView extends View {
 		int new_size = vertical ? w / 2 : h / 2;
 		if (new_size == 0)
 			return;
-		if (!cache_lock.isHeldByCurrentThread()) // do not lock twice
-			cache_lock.lock();
 
-		setBitmap(getDrawingCache());
+		cache_lock.lock();
+
+		cache.recycle();
+		cache = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+		setBitmap(cache);
 
 		stroke2.setTextSize(vertical ? w / 20 : w / 15);
 		if (vertical) {
@@ -82,7 +85,13 @@ public class JTTClockView extends View {
 		circle_drawn = false;
 		draw_circle_placeholder();
 		update_all = true;
-		need_update.signal();
+
+		if (painter == null) {
+			painter = new PainterTask();
+			painter.execute();
+		} else
+			need_update.signal();
+
 		cache_lock.unlock();
 	}
 
@@ -159,7 +168,7 @@ public class JTTClockView extends View {
 	}
 
 	protected void onDraw(Canvas canvas) {
-		canvas.drawBitmap(getDrawingCache(), 0, 0, null);
+		canvas.drawBitmap(cache, 0, 0, null);
 	}
 
 	private final void setupPaint(Context ctx) {
@@ -182,7 +191,6 @@ public class JTTClockView extends View {
 
 	final Path path = new Path();
 	final RectF outer = new RectF(), inner = new RectF(), sel = new RectF(), sun = new RectF();
-
 
 	final static int arc_start = -90 - Math.round(step / 2 - gap);
 	final static int arc_end = -90 + Math.round(step / 2 - gap);
@@ -236,14 +244,9 @@ public class JTTClockView extends View {
 		cache_lock.unlock();
 	}
 
-	PainterTask painter = null;
-	protected void onAttachedToWindow() {
-		cache_lock.lock(); // lock it initially. it will be unlocked when we're first initialized
-		painter = new PainterTask();
-		painter.execute();
-	}
-
 	protected void onDetachedFromWindow() {
+		if (painter == null) // we might have not been initialized
+			return;
 		cache_lock.lock();
 		painter.cancel(false);
 		need_update.signal();
@@ -291,10 +294,16 @@ public class JTTClockView extends View {
 	};
 
 	void draw_everything() {
+		if (hn < 0) {
+			Log.e("CLOCK", "Hour not set yet");
+			return;
+		}
+
 		if (!cache_lock.tryLock()) {
 			Log.e("CLOCK", "Can't hold lock, won't draw!");
 			return;
 		}
+
 		if (update_all) {
 			final String s = vertical ? hs.getHrOf(hn) : hs.getHour(hn);
 			r.left = 0;

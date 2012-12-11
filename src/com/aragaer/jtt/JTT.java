@@ -38,16 +38,18 @@ public class JTT {
 		if (time > tr[1]) // "day" is actually yesterday
 			tr = computeTr(++day);
 
-		if (time < tr[0]) { // before sunrise. Get prev sunset (from cache apparently)
-			tr[1] = tr[0];
-			tr[0] = computeTr(day - 1)[1];
-		} else if (time > tr[1]) { // after sunset. Get next sunrise
-			tr[0] = tr[1];
-			tr[1] = computeTr(day + 1)[0];
+		long tr0 = tr[0], tr1 = tr[1]; // do not modify array contents!
+
+		if (time < tr0) { // before sunrise. Get prev sunset (from cache apparently)
+			tr1 = tr0;
+			tr0 = computeTr(day - 1)[1];
+		} else if (time > tr1) { // after sunset. Get next sunrise
+			tr0 = tr1;
+			tr1 = computeTr(day + 1)[0];
 		} else {
 			dayAdd = 600;
 		}
-		return (int) (600 * (time - tr[0]) / (tr[1] - tr[0]) + dayAdd);
+		return (int) (600 * (time - tr0) / (tr1 - tr0) + dayAdd);
 	}
 
 	public JTTHour time_to_jtt(long time) {
