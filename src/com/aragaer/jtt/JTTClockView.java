@@ -27,6 +27,7 @@ public class JTTClockView extends View {
 			solid2 = new Paint(0x01),
 			cache_paint = new Paint(0x07);
 	private Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // make it non-null
+	private Bitmap cache = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // same
 	private final Canvas cache_canvas = new Canvas(), clock_canvas = new Canvas();
 	private int hn = -1, hf;
 	private final JTTUtil.StringsHelper hs;
@@ -40,7 +41,6 @@ public class JTTClockView extends View {
 		super(context);
 		hs = JTTUtil.getStringsHelper(context);
 		setupPaint(context);
-		setDrawingCacheEnabled(true);
 	}
 
 	int size, ox, oy, hx, hy, cox, coy;
@@ -57,7 +57,9 @@ public class JTTClockView extends View {
 		if (!cache_lock.isHeldByCurrentThread()) // do not lock twice
 			cache_lock.lock();
 
-		setBitmap(getDrawingCache());
+		cache.recycle();
+		cache = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+		setBitmap(cache);
 
 		stroke2.setTextSize(vertical ? w / 20 : w / 15);
 		if (vertical) {
@@ -159,7 +161,7 @@ public class JTTClockView extends View {
 	}
 
 	protected void onDraw(Canvas canvas) {
-		canvas.drawBitmap(getDrawingCache(), 0, 0, null);
+		canvas.drawBitmap(cache, 0, 0, null);
 	}
 
 	private final void setupPaint(Context ctx) {
@@ -182,7 +184,6 @@ public class JTTClockView extends View {
 
 	final Path path = new Path();
 	final RectF outer = new RectF(), inner = new RectF(), sel = new RectF(), sun = new RectF();
-
 
 	final static int arc_start = -90 - Math.round(step / 2 - gap);
 	final static int arc_end = -90 + Math.round(step / 2 - gap);
