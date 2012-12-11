@@ -292,10 +292,16 @@ public class JTTClockView extends View {
 	};
 
 	void draw_everything() {
+		if (hn < 0) {
+			Log.e("CLOCK", "Hour not set yet");
+			return;
+		}
+
 		if (!cache_lock.tryLock()) {
 			Log.e("CLOCK", "Can't hold lock, won't draw!");
 			return;
 		}
+
 		if (update_all) {
 			final String s = vertical ? hs.getHrOf(hn) : hs.getHour(hn);
 			r.left = 0;
