@@ -32,6 +32,7 @@ public class JTTClockView extends View {
 	private int hn = -1, hf;
 	private final JTTUtil.StringsHelper hs;
 	private final Matrix m = new Matrix();
+	PainterTask painter = null;
 
 	ReentrantLock cache_lock = new ReentrantLock();
 	Condition need_update = cache_lock.newCondition();
@@ -54,8 +55,8 @@ public class JTTClockView extends View {
 		int new_size = vertical ? w / 2 : h / 2;
 		if (new_size == 0)
 			return;
-		if (!cache_lock.isHeldByCurrentThread()) // do not lock twice
-			cache_lock.lock();
+
+		cache_lock.lock();
 
 		cache.recycle();
 		cache = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
@@ -84,7 +85,13 @@ public class JTTClockView extends View {
 		circle_drawn = false;
 		draw_circle_placeholder();
 		update_all = true;
-		need_update.signal();
+
+		if (painter == null) {
+			painter = new PainterTask();
+			painter.execute();
+		} else
+			need_update.signal();
+
 		cache_lock.unlock();
 	}
 
@@ -237,14 +244,9 @@ public class JTTClockView extends View {
 		cache_lock.unlock();
 	}
 
-	PainterTask painter = null;
-	protected void onAttachedToWindow() {
-		cache_lock.lock(); // lock it initially. it will be unlocked when we're first initialized
-		painter = new PainterTask();
-		painter.execute();
-	}
-
 	protected void onDetachedFromWindow() {
+		if (painter == null) // we might have not been initialized
+			return;
 		cache_lock.lock();
 		painter.cancel(false);
 		need_update.signal();
