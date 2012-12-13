@@ -221,7 +221,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 		Bundle b = new Bundle();
 		b.putLong("jdn", jdn);
 		expecting_data = true;
-		((JTTMainActivity) getContext()).conn.send_msg_to_service(JTTService.MSG_TRANSITIONS, b);
+//		((JTTMainActivity) getContext()).conn.send_msg_to_service(JTTService.MSG_TRANSITIONS, b);
 	}
 
 	private void getPastDay() {

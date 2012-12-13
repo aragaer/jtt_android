@@ -3,11 +3,15 @@ package com.aragaer.jtt;
 import java.lang.ref.WeakReference;
 
 import android.app.ActivityGroup;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+import android.os.RemoteException;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -20,8 +24,25 @@ public class JTTMainActivity extends ActivityGroup {
     private JTTClockView clock;
     private JTTPager pager;
     private TodayAdapter today;
+    private IJttService service;
 
-    protected JTTUtil.ConnHelper conn = new JTTUtil.ConnHelper(this, new IncomingHandler(this));
+	private final ServiceConnection conn = new ServiceConnection() {
+		public void onServiceConnected(ComponentName name, IBinder boundService) {
+			service = IJttService.Stub.asInterface((IBinder) boundService);
+			Log.d(TAG, "Service connected");
+			try {
+				JTTHour now = service.now();
+				Log.d(TAG, "now = " + now.num + ":" + now.fraction);
+			} catch (RemoteException e) {
+				Log.d(TAG, "Failed to get now");
+			}
+		}
+
+		public void onServiceDisconnected(ComponentName name) {
+			service = null;
+			Log.d(TAG, "Service disconnected");
+		}
+	};
 
     static class IncomingHandler extends Handler {
         private final WeakReference<JTTMainActivity> main;
@@ -78,7 +99,7 @@ public class JTTMainActivity extends ActivityGroup {
         settings_tab = pager.addTab(sw.getDecorView(), R.string.settings);
 
         setContentView(pager);
-        conn.bind(service, 0);
+        bindService(service, conn, 0);
     }
 
     @Override
@@ -100,7 +121,7 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        conn.release();
+        unbindService(conn);
 
         Log.i(TAG, "Activity destroyed");
     }

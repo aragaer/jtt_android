@@ -183,9 +183,13 @@ public class JTTService extends Service {
     }
 
     @Override
-    public IBinder onBind(Intent intent) {
-        return messenger.getBinder();
-    }
+	public IBinder onBind(Intent intent) {
+		return new IJttService.Stub() {
+			public JTTHour now() throws RemoteException {
+				return new JTTHour(hour, sub);
+			}
+		};
+	}
 
     private final BroadcastReceiver on = new BroadcastReceiver() {
         @Override
