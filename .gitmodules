@@ -1,3 +1,6 @@
 [submodule "sunrisesunsetlib-java"]
 	path = sunrisesunsetlib-java
 	url = git@github.com:aragaer/sunrisesunsetlib-java.git
+[submodule "jtt_client"]
+	path = jtt_client
+	url = git://github.com/aragaer/jtt_client.git
