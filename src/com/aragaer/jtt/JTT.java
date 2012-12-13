@@ -26,11 +26,14 @@ public class JTT {
 	static final long ms_per_hour = TimeUnit.SECONDS.toMillis(60 * 60);
 	static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
 
+	private final static int HOUR_PARTS = JTTHour.QUARTERS * JTTHour.PARTS;
+	private final static int TOTAL_PARTS = HOUR_PARTS * 6;
+
 	public JTTHour time_to_jtt(Calendar c) {
 		return time_to_jtt(c == null ? System.currentTimeMillis() : c.getTimeInMillis());
 	}
 
-	// wrapped jtt is jtt written as a single integer from range [0; 1200)
+	// wrapped jtt is jtt written as a single integer from range [0; 4800)
 	public int time_to_jtt_wrapped(long time) {
 		long day = longToJDN(time);
 		long tr[] = computeTr(day);
@@ -47,22 +50,36 @@ public class JTT {
 			tr0 = tr1;
 			tr1 = computeTr(day + 1)[0];
 		} else {
-			dayAdd = 600;
+			dayAdd = TOTAL_PARTS;
 		}
-		return (int) (600 * (time - tr0) / (tr1 - tr0) + dayAdd);
+		return time_tr_to_jtt_wrapped(tr0, tr1, time) + dayAdd;
+	}
+
+	// helper function,
+	// accepts two transition times and "current" time
+	// returns jtt as a single integer from range [0; TOTAL_PARTS)
+	// add TOTAL_PARTS for day hours
+	// assumes tr0 <= current < tr1
+	public static int time_tr_to_jtt_wrapped(long tr0, long tr1, long now) {
+		return (int) (TOTAL_PARTS * (now - tr0) / (tr1 - tr0));
+	}
+
+	public static JTTHour unwrap_jtt(int wrapped) {
+		final int h = wrapped / HOUR_PARTS;
+		wrapped %= HOUR_PARTS;
+		return new JTTHour(h, wrapped / JTTHour.PARTS, wrapped % JTTHour.PARTS);
 	}
 
 	public JTTHour time_to_jtt(long time) {
-		long h = time_to_jtt_wrapped(time);
-		return new JTTHour((int) (h / 100), (int) h % 100);
+		return unwrap_jtt(time_to_jtt_wrapped(time));
 	}
 
 	public Calendar jtt_to_time(JTTHour hour, Calendar cal) {
-		return jtt_to_time(hour.num, hour.percent, cal);
+		return jtt_to_time(hour.num, hour.quarter, hour.quarter_parts, cal);
 	}
 
-	public Calendar jtt_to_time(int n, int f, Calendar cal) {
-		return jtt_to_time(n, f, cal == null ? System.currentTimeMillis() : cal.getTimeInMillis());
+	public Calendar jtt_to_time(int n, int q, int f, Calendar cal) {
+		return jtt_to_time(n, q, f, cal == null ? System.currentTimeMillis() : cal.getTimeInMillis());
 	}
 
 	// FIXME: this one isn't working properly
@@ -81,13 +98,13 @@ public class JTT {
 		return tr[0] + offset;
 	}
 
-	public long jtt_to_long(int n, int f, long t) {
-		return wrapped_jtt_to_long(n * 100 + f, t);
+	public long jtt_to_long(int n, int q, int f, long t) {
+		return wrapped_jtt_to_long(((n * JTTHour.QUARTERS) + q) * JTTHour.PARTS + f, t);
 	}
 
-	public Calendar jtt_to_time(int n, int f, long t) {
+	public Calendar jtt_to_time(int n, int q, int f, long t) {
 		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(jtt_to_long(n, f, t));
+		cal.setTimeInMillis(jtt_to_long(n, q, f, t));
 		return cal;
 	}
 
