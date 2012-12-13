@@ -1,17 +1,9 @@
 package com.aragaer.jtt;
 
-import java.lang.ref.WeakReference;
-
 import android.app.ActivityGroup;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.RemoteException;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -24,55 +16,13 @@ public class JTTMainActivity extends ActivityGroup {
     private JTTClockView clock;
     private JTTPager pager;
     private TodayAdapter today;
-    private IJttService service;
-
-	private final ServiceConnection conn = new ServiceConnection() {
-		public void onServiceConnected(ComponentName name, IBinder boundService) {
-			service = IJttService.Stub.asInterface((IBinder) boundService);
-			Log.d(TAG, "Service connected");
-			try {
-				JTTHour now = service.now();
-				Log.d(TAG, "now = " + now.num + ":" + now.fraction);
-			} catch (RemoteException e) {
-				Log.d(TAG, "Failed to get now");
-			}
-		}
-
-		public void onServiceDisconnected(ComponentName name) {
-			service = null;
-			Log.d(TAG, "Service disconnected");
+    private JttClient client = new JttClient(this) {
+		@Override
+		public void onConnected() {
+			JTTHour now = now();
+			Log.d(TAG, "Now is "+now.num+":"+now.fraction);
 		}
 	};
-
-    static class IncomingHandler extends Handler {
-        private final WeakReference<JTTMainActivity> main;
-
-        public IncomingHandler(JTTMainActivity m) {
-            main = new WeakReference<JTTMainActivity>(m);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case JTTService.MSG_HOUR:
-                main.get().today.setCurrent(msg.arg1);
-                /* fall-through! */
-            case JTTService.MSG_SUBTICK:
-                main.get().clock.setHour(msg.arg1, msg.arg2);
-                break;
-            case JTTService.MSG_TRANSITIONS:
-                main.get().today.addTransitions(msg.getData());
-                break;
-            case JTTService.MSG_INVALIDATE:
-                Log.d(TAG, "Invalidate all");
-                main.get().today.reset();
-                break;
-            default:
-                super.handleMessage(msg);
-                break;
-            }
-        }
-    }
 
     int settings_tab = 0;
     @Override
@@ -99,7 +49,7 @@ public class JTTMainActivity extends ActivityGroup {
         settings_tab = pager.addTab(sw.getDecorView(), R.string.settings);
 
         setContentView(pager);
-        bindService(service, conn, 0);
+        client.bind();
     }
 
     @Override
@@ -121,7 +71,7 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(conn);
+        client.release();
 
         Log.i(TAG, "Activity destroyed");
     }
