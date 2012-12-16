@@ -49,7 +49,7 @@ public class JTTWidgetProvider {
 					.getBoolean("jtt_widget_text_invert", false);
 			if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
 				update(c, i);
-			else if (action.equals(JTTService.TICK_ACTION))
+			else if (action.equals(JttReceiver.TICK_ACTION))
 				tick(c, i);
 			else if (action.equals(JTTSettingsActivity.JTT_SETTINGS_CHANGED)) {
 				inverse = i.getBooleanExtra("inverse", inverse);

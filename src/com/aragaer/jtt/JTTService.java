@@ -24,7 +24,6 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 public class JTTService extends Service {
-	public final static String TICK_ACTION = "com.aragaer.jtt.ACTION_JTT_TICK";
 	private static final String TAG = JTTService.class.getSimpleName();
 	private final JTT calculator = new JTT(0, 0);
 	private NotificationManager nm;
@@ -241,7 +240,7 @@ public class JTTService extends Service {
 		registerReceiver(on, wake);
 		registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
-		TickAction.setAction(TICK_ACTION);
+		TickAction.setAction(JttReceiver.TICK_ACTION);
 
 		reset();
 	}
