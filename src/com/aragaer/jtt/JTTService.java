@@ -161,7 +161,6 @@ public class JTTService extends Service {
 		notification.iconLevel = hn;
 		rv.setTextViewText(R.id.image, JTTHour.Glyphs[hn]);
 		rv.setTextViewText(R.id.title, hs.getHrOf(hn));
-		rv.setTextViewText(R.id.percent, String.format("%d%%", hf));
 		conv.setTo(hn, hf);
 		hq = conv.quarter;
 		hf = conv.quarter_parts;
