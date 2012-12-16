@@ -182,7 +182,11 @@ public class JTTService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		return messenger.getBinder();
+		return new IJttService.Stub() {
+			public long[] getTr(long jdn) throws RemoteException {
+				return calculator.computeTr(jdn);
+			}
+		};
 	}
 
 	@Override

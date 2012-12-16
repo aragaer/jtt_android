@@ -34,13 +34,13 @@ public class JTTMainActivity extends ActivityGroup {
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case JTTService.MSG_HOUR:
-                main.get().today.setCurrent(msg.arg1);
+//                main.get().today.setCurrent(msg.arg1);
                 /* fall-through! */
             case JTTService.MSG_SUBTICK:
 //                main.get().clock.setHour(msg.arg1, msg.arg2);
                 break;
             case JTTService.MSG_TRANSITIONS:
-                main.get().today.addTransitions(msg.getData());
+//                main.get().today.addTransitions(msg.getData());
                 break;
             case JTTService.MSG_INVALIDATE:
                 Log.d(TAG, "Invalidate all");
@@ -109,6 +109,7 @@ public class JTTMainActivity extends ActivityGroup {
     protected void onDestroy() {
         super.onDestroy();
         receiver.unregister();
+        today.unbind();
 
         Log.i(TAG, "Activity destroyed");
     }

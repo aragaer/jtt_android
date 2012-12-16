@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.TimeZone;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,9 +106,11 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 	private LinkedList<Long> transitions = new LinkedList<Long>();
 	private long prev_transition, next_transition;
 	static TimeZone tz = TimeZone.getDefault();
-
-	/* true if we have requested transitions data and not got result yet */
-	private boolean expecting_data = false;
+	private final JttClient client = new JttClient() {
+		protected void onConnected() {
+			reset();
+		}
+	};
 
 	long jdn_min, jdn_max;
 
@@ -117,6 +118,11 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 		super(c, layout_id);
 		JTTUtil.initLocale(c);
 		HourItem.extras = HourItem.hours = DayItem.daynames = null;
+		client.bind(getContext());
+	}
+
+	protected void unbind() {
+		client.unbind(getContext());
 	}
 
 	@Override
@@ -178,11 +184,9 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 	 * if list is not empty, we have a new night and a day
 	 * these two go to the beginning or to the end of the list
 	 */
-	public void addTransitions(Bundle b) {
-		long jdn = b.getLong("jdn");
-		long sunrise = b.getLong("sunrise");
-		long sunset = b.getLong("sunset");
-		expecting_data = false;
+	public void addTransitions(long jdn, long tr[]) {
+		long sunrise = tr[0];
+		long sunset = tr[1];
 
 		if (transitions.isEmpty()) {
 			transitions.add(sunrise);
@@ -213,15 +217,8 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 
 	/* request transitions for given day from JTTService */
 	private void getDay(long jdn) {
-		if (expecting_data) {
-			Log.e(TAG, "Transitions data requested while previous request is not yet handled");
-			return;
-		}
-
-		Bundle b = new Bundle();
-		b.putLong("jdn", jdn);
-		expecting_data = true;
-		((JTTMainActivity) getContext()).conn.send_msg_to_service(JTTService.MSG_TRANSITIONS, b);
+		if (client.is_bound())
+			addTransitions(jdn, client.getTr(jdn));
 	}
 
 	private void getPastDay() {
@@ -299,7 +296,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 
 		if (now >= prev_transition && now < next_transition)
 			notifyDataSetChanged();
-		else if (!expecting_data)
+		else
 			updateItems();
 	}
 
