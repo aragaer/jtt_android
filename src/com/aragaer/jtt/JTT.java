@@ -29,8 +29,8 @@ public class JTT {
 	private final static int HOUR_PARTS = JTTHour.QUARTERS * JTTHour.PARTS;
 	private final static int TOTAL_PARTS = HOUR_PARTS * 6;
 
-	public JTTHour time_to_jtt(Calendar c) {
-		return time_to_jtt(c == null ? System.currentTimeMillis() : c.getTimeInMillis());
+	public JTTHour time_to_jtt(Calendar c, JTTHour reuse) {
+		return time_to_jtt(c == null ? System.currentTimeMillis() : c.getTimeInMillis(), reuse);
 	}
 
 	// wrapped jtt is jtt written as a single integer from range [0; 4800)
@@ -64,14 +64,17 @@ public class JTT {
 		return (int) (TOTAL_PARTS * (now - tr0) / (tr1 - tr0));
 	}
 
-	public static JTTHour unwrap_jtt(int wrapped) {
+	public static JTTHour unwrap_jtt(int wrapped, JTTHour reuse) {
+		if (reuse == null)
+			reuse = new JTTHour(0);
 		final int h = wrapped / HOUR_PARTS;
 		wrapped %= HOUR_PARTS;
-		return new JTTHour(h, wrapped / JTTHour.PARTS, wrapped % JTTHour.PARTS);
+		reuse.setTo(h, wrapped / JTTHour.PARTS, wrapped % JTTHour.PARTS);
+		return reuse;
 	}
 
-	public JTTHour time_to_jtt(long time) {
-		return unwrap_jtt(time_to_jtt_wrapped(time));
+	public JTTHour time_to_jtt(long time, JTTHour reuse) {
+		return unwrap_jtt(time_to_jtt_wrapped(time), reuse);
 	}
 
 	// helper function,
