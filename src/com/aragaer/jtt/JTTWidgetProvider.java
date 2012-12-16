@@ -35,10 +35,10 @@ public class JTTWidgetProvider {
 
 		static boolean inverse;
 
-		protected JTTWidget(int granularity) {
+		protected JTTWidget(int parts) {
 			cn = this.getClass().getSimpleName();
 			name = new ComponentName(PKG_NAME, this.getClass().getName());
-			this.granularity = granularity;
+			granularity = JTTHour.PARTS / parts;
 		}
 
 		public void onReceive(Context c, Intent i) {
@@ -118,7 +118,7 @@ public class JTTWidgetProvider {
 		static boolean initialized = false;
 
 		public Widget1() {
-			super(5);
+			super(20);
 
 			p1.setStyle(Paint.Style.FILL);
 			p1.setColor(Color.TRANSPARENT);
@@ -164,7 +164,7 @@ public class JTTWidgetProvider {
 		private static Bitmap bmp;
 
 		public Widget12() {
-			super(12);
+			super(4);
 		}
 
 		protected void hour_changed(int n) {
