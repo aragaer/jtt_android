@@ -86,7 +86,6 @@ public class JTTMainActivity extends ActivityGroup {
         settings_tab = pager.addTab(sw.getDecorView(), R.string.settings);
 
         setContentView(pager);
-        conn.bind(service, 0);
         receiver.register(this);
     }
 
@@ -109,7 +108,6 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        conn.release();
         receiver.unregister();
 
         Log.i(TAG, "Activity destroyed");
