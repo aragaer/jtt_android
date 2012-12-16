@@ -53,8 +53,6 @@ public class JTTService extends Service {
 	public static final int MSG_SUBTICK = 8;
 	public static final int MSG_SYNC = 9;
 
-	private final static Intent TickAction = new Intent();
-
 	private int hour, quarter, part;
 
 	static class JTTHandler extends Handler {
@@ -182,11 +180,6 @@ public class JTTService extends Service {
 		if (notify)
 			notify_helper(n, q, f);
 
-		TickAction.putExtra("hour", n);
-		TickAction.putExtra("fraction", f);
-
-		sendBroadcast(TickAction);
-
 		Message m = Message.obtain(null, event, n, f);
 		handler.informClients(m);
 	}
@@ -240,8 +233,6 @@ public class JTTService extends Service {
 		wake.addAction(Intent.ACTION_DATE_CHANGED);
 		registerReceiver(on, wake);
 		registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
-
-		TickAction.setAction(JttReceiver.TICK_ACTION);
 
 		reset();
 		clk.set_context(this);

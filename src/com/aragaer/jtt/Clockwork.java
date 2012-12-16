@@ -14,6 +14,7 @@ import android.util.Log;
 
 /* the thing that actually does change with time */
 class Clockwork extends Handler {
+	private final static Intent TickAction = new Intent(JttReceiver.TICK_ACTION);
 	public static final int MSG_SYNC = 9;
 
 	private WeakReference<Context> ctx;
@@ -120,6 +121,8 @@ class Clockwork extends Handler {
 				|| sync < start || sync >= end) {	// transition happened
 			wrapped_jtt = new_wrapped;
 			JTT.unwrap_jtt(wrapped_jtt + isDay * TOTAL_PARTS, jtt);
+			TickAction.putExtra("jtt", jtt);
+			ctx.get().sendStickyBroadcast(TickAction);
 		} // else same tick
 
 		long next_sub = JTT.wrapped_tr_to_time(start, end, wrapped_jtt + 1);
