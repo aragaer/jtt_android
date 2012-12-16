@@ -74,6 +74,14 @@ public class JTT {
 		return unwrap_jtt(time_to_jtt_wrapped(time));
 	}
 
+	// helper function,
+	// accepts two transition times and "current" wrapped jtt
+	// returns timestamp from [tr0; tr1) appropriate for jtt
+	// assumes jtt falls into interval
+	public static long wrapped_tr_to_time(long tr0, long tr1, int wrapped) {
+		return tr0 + (tr1 - tr0) * wrapped / TOTAL_PARTS;
+	}
+
 	public Calendar jtt_to_time(JTTHour hour, Calendar cal) {
 		return jtt_to_time(hour.num, hour.quarter, hour.quarter_parts, cal);
 	}
