@@ -147,7 +147,6 @@ public class JTTService extends Service {
 
 	private String app_name;
 	private static final int bar_ids[] = {R.id.fraction1, R.id.fraction2, R.id.fraction3, R.id.fraction4};
-	private final JTTHour conv = new JTTHour(0);
 	private void notify_helper(int hn, int hq, int hf) {
 		notification = new Notification(R.drawable.notification_icon,
 				app_name, System.currentTimeMillis());
@@ -158,9 +157,6 @@ public class JTTService extends Service {
 		notification.iconLevel = hn;
 		rv.setTextViewText(R.id.image, JTTHour.Glyphs[hn]);
 		rv.setTextViewText(R.id.title, hs.getHrOf(hn));
-		conv.setTo(hn, hf);
-		hq = conv.quarter;
-		hf = conv.quarter_parts;
 		int i;
 		for (i = 0; i < hq; i++)
 			rv.setProgressBar(bar_ids[i], 1, 1, false);
