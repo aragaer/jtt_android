@@ -253,8 +253,9 @@ public class JTTClockView extends View {
 		cache_lock.unlock();
 	}
 
-	private static final int granularity = 10;
-	public void setHour(int n, int f) {
+	private static final int granularity = JTTHour.QUARTERS * JTTHour.PARTS / 10;
+	public void setHour(int n, int q, int f) {
+		f += q * JTTHour.PARTS;
 		f -= f % granularity;
 		if (hn == n && hf == f)
 			return; // do nothing
