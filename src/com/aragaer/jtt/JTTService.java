@@ -81,7 +81,6 @@ public class JTTService extends Service {
 				String ll[] = msg.getData().getString("latlon").split(":");
 				calc.get().move(Float.parseFloat(ll[0]),
 						Float.parseFloat(ll[1]));
-				s.reset();
 				informClients(Message.obtain(null, MSG_INVALIDATE));
 				break;
 			case MSG_REGISTER_CLIENT:
@@ -105,9 +104,6 @@ public class JTTService extends Service {
 				} catch (RemoteException e) {
 					Log.w(TAG, "Client requested transitions data but failed to get answer");
 				}
-				break;
-			case MSG_SYNC:
-				s.wake_up();
 				break;
 			default:
 				super.handleMessage(msg);
@@ -252,105 +248,6 @@ public class JTTService extends Service {
 					.getBoolean("jtt_bootup", true))
 				context.startService(new Intent(context, JTTService.class));
 		}
-	}
-
-	private final static int ticks = 6;
-	private final static int subs = 100;
-	private final static double total = ticks * subs;
-	/* This function assumes that we have just woke up
-	 * Do not attempt to short-cut any calculations based on previous runs
-	 */
-	private void wake_up() {
-		long now, start, end;
-		int isDay;
-
-		if (notify)
-			startForeground(APP_ID, notification);
-
-		/* do not want more than one message being in the system */
-		handler.removeMessages(MSG_SYNC);
-		while (true) { // we are likely to pass this loop only once
-			long[] t = null;
-			int len = transitions.size();
-			now = System.currentTimeMillis();
-			int pos = Collections.binarySearch(transitions, now);
-			/*
-			 * Possible results:
-			 * -len - 1:        overrun
-			 * -len - 2 to -2:  OK (tr[-pos - 2] < now < tr[-pos - 1])
-			 * -1:              underrun
-			 * 0 to len - 2:    OK (tr[pos] == now < tr[pos + 1])
-			 * len - 1:         overrun
-			 *
-			 * if len == 0, the only result is -1
-			 * if len == 1, there's no OK results
-			 */
-			if (pos == -1) // right before first element
-				t = calculator.computeTr(start_day--);
-			if (pos == -len - 1             // after the last element
-					|| pos == len - 1)      // equal to the last element
-				t = calculator.computeTr(end_day++);
-			if (t != null) {
-				for (long l : t)
-					transitions.add(l);
-				// all this took some time, we should resync
-				continue;
-			}
-
-			if (pos < 0)
-				pos = -pos - 2;
-
-			start = transitions.get(pos);
-			end = transitions.get(pos + 1);
-			/* cheat - sunrises always have even positions */
-			isDay = (pos + 1) % 2;
-			break;
-		}
-
-		/* we've got start and end */
-		long offset = now - start;
-		double sublen = ((double) (end - start))/total;
-		int exp_total = (int) (offset/sublen);
-		int exp_tick = exp_total / subs;
-		int exp_sub = exp_total % subs;
-		long next_sub = start + Math.round(sublen * (exp_total + 1));
-
-		if (now - sync > exp_sub * sublen // sync belongs to previous tick interval
-				|| now < sync) {          // time went backwards!
-			hour = exp_tick + isDay * 6;
-			part = exp_sub;
-			t_start = JTTUtil.format_time(start + (end - start) * exp_tick / ticks);
-			t_end = JTTUtil.format_time(start + (end - start) * (exp_tick + 1) / ticks);
-			doNotify(hour, quarter, part, MSG_HOUR);
-		} else if (part < exp_sub) {
-			if (hour % 6 != exp_tick) { // sync should belong to this tick interval
-				Log.e(TAG, "current tick is "+(hour % 6)+", expected "+exp_tick);
-				hour = exp_tick + isDay * 6;
-			}
-			part = exp_sub;
-			doNotify(hour, quarter, part, MSG_SUBTICK);
-		}
-
-		sync = System.currentTimeMillis();
-		/* doesn't matter if next_sub < sync
-		 * negative delay is perfectly valid and means that trigger will happen immediately
-		 */
-		handler.sendEmptyMessageDelayed(MSG_SYNC, next_sub - sync);
-	}
-
-	private final void sleep() {
-		handler.removeMessages(MSG_SYNC);
-	}
-
-	private final void reset() {
-		sleep();
-		transitions.clear();
-		end_day = JTT.longToJDN(System.currentTimeMillis());
-		start_day = end_day - 1;
-		for (long l : calculator.computeTr(end_day++))
-			transitions.add(l);
-		sync = 0;
-		wake_up();
 	}
 
 	private final JttReceiver receiver = new JttReceiver() {
