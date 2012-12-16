@@ -326,6 +326,7 @@ public class JTTClockView extends View {
 		postInvalidate(clock_area.left, clock_area.top, clock_area.right, clock_area.bottom);
 	}
 
+	private static final float total_f = JTTHour.QUARTERS * JTTHour.PARTS;
 	void draw_dial(int n, int f) {
 		if (!cache_lock.tryLock()) {
 			Log.e("CLOCK", "Can't hold lock, won't draw!");
@@ -333,7 +334,7 @@ public class JTTClockView extends View {
 		}
 		m.reset();
 		m.setTranslate(ox + cox, oy + coy);
-		m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / 100f, clockR, clockR);
+		m.preRotate(step * (0.5f - n) - gap - (step - gap * 2) * f / total_f, clockR, clockR);
 		cache_canvas.drawColor(0, Mode.CLEAR);
 		cache_canvas.drawBitmap(clock, m, cache_paint);
 		cache_lock.unlock();
