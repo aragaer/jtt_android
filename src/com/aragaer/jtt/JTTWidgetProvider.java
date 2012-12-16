@@ -59,21 +59,22 @@ public class JTTWidgetProvider {
 		}
 
 		private void tick(Context c, Intent i) {
-			int n = i.getIntExtra("hour", 0);
-			int f = i.getIntExtra("fraction", 0);
+			JTTHour h = i.getParcelableExtra("jtt");
+			int n = h.num;
+			int f = h.quarter_parts;
 			f -= f % granularity;
 			JTTHour prev = last_update.get(cn);
 			int prev_n = -1;
 			if (prev == null)
 				// unfortunately put() returns _previous_ value, I want new
-				last_update.put(cn, prev = new JTTHour(n, f));
+				last_update.put(cn, prev = h);
 			else
 				prev_n = prev.num;
 			if (prev_n != n)
 				hour_changed(n);
 			else if (prev.quarter_parts == f)
 				return; // do nothing
-			prev.setTo(n, f);
+			prev.setTo(n, h.quarter, f);
 			draw(c, null, prev);
 		}
 

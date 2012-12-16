@@ -231,6 +231,7 @@ public class JTTService extends Service {
 		registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
 		reset();
+		receiver.register(this);
 		clk.set_context(this);
 		clk.reset();
 	}
@@ -245,6 +246,7 @@ public class JTTService extends Service {
 
 		sleep();
 		clk.go_sleep();
+		receiver.unregister();
 
 		if (force_stop)
 			nm.cancel(APP_ID);
@@ -370,4 +372,10 @@ public class JTTService extends Service {
 		sync = 0;
 		wake_up();
 	}
+
+	private final JttReceiver receiver = new JttReceiver() {
+		void handle_tick(int n, int q, int f) {
+			notify_helper(n, q, f);
+		}
+	};
 }

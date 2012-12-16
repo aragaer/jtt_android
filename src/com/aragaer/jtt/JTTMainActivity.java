@@ -53,6 +53,14 @@ public class JTTMainActivity extends ActivityGroup {
         }
     }
 
+    private JttReceiver receiver = new JttReceiver() {
+		@Override
+		void handle_tick(int n, int q, int f) {
+			today.setCurrent(n);
+			clock.setHour(n, q, f);
+		}
+	};
+
     int settings_tab = 0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,6 +87,7 @@ public class JTTMainActivity extends ActivityGroup {
 
         setContentView(pager);
         conn.bind(service, 0);
+        receiver.register(this);
     }
 
     @Override
@@ -101,6 +110,7 @@ public class JTTMainActivity extends ActivityGroup {
     protected void onDestroy() {
         super.onDestroy();
         conn.release();
+        receiver.unregister();
 
         Log.i(TAG, "Activity destroyed");
     }
