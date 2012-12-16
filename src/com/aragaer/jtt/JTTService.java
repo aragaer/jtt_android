@@ -185,19 +185,6 @@ public class JTTService extends Service {
 		return messenger.getBinder();
 	}
 
-	private final BroadcastReceiver on = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			wake_up();
-		}
-	};
-	private final BroadcastReceiver off = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			sleep();
-		}
-	};
-
 	@Override
 	public void onStart(Intent intent, int startid) {
 		Log.d(TAG, "Service starting");
@@ -224,13 +211,6 @@ public class JTTService extends Service {
 		if (!notify)
 			nm.cancel(APP_ID);
 
-		IntentFilter wake = new IntentFilter(Intent.ACTION_SCREEN_ON);
-		wake.addAction(Intent.ACTION_TIME_CHANGED);
-		wake.addAction(Intent.ACTION_DATE_CHANGED);
-		registerReceiver(on, wake);
-		registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
-
-		reset();
 		receiver.register(this);
 		clk.set_context(this);
 		clk.reset();
@@ -241,10 +221,6 @@ public class JTTService extends Service {
 		super.onDestroy();
 		Log.i(TAG, "Service destroying");
 
-		unregisterReceiver(on);
-		unregisterReceiver(off);
-
-		sleep();
 		clk.go_sleep();
 		receiver.unregister();
 
