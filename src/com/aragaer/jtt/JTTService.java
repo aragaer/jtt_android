@@ -216,6 +216,7 @@ public class JTTService extends Service {
 		init();
 	}
 
+	private Clockwork clk = new Clockwork(calculator);
 	private void init() {
 		Log.d(TAG, "Service initializing");
 		JTTUtil.initLocale(this);
@@ -243,6 +244,8 @@ public class JTTService extends Service {
 		TickAction.setAction(JttReceiver.TICK_ACTION);
 
 		reset();
+		clk.set_context(this);
+		clk.reset();
 	}
 
 	@Override
@@ -254,6 +257,7 @@ public class JTTService extends Service {
 		unregisterReceiver(off);
 
 		sleep();
+		clk.go_sleep();
 
 		if (force_stop)
 			nm.cancel(APP_ID);
