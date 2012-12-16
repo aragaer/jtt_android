@@ -175,7 +175,7 @@ public class JTTWidgetProvider {
 		}
 
 		protected void fill_rv(RemoteViews rv, JTTHour h) {
-			final int n = h.num, f = h.percent;
+			final int n = h.num, f = h.quarter * JTTHour.PARTS + h.quarter_parts;
 			jcv.draw_dial(n, f);
 			jcv.draw_arrow();
 
