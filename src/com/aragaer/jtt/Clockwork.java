@@ -23,7 +23,8 @@ class Clockwork extends Handler {
 	protected ArrayList<Long> transitions = new ArrayList<Long>();
 	private long start_day, end_day;
 
-	private int hour, sub;
+	private final JTTHour jtt = new JTTHour(0);
+	private int wrapped_jtt;
 
 	private final BroadcastReceiver on = new BroadcastReceiver() {
 		@Override
@@ -63,9 +64,9 @@ class Clockwork extends Handler {
 		}
 	}
 
-	private final static int ticks = 6;
-	private final static int subs = 100;
-	private final static double total = ticks * subs;
+	private final static int HOUR_PARTS = JTTHour.QUARTERS * JTTHour.PARTS;
+	private final static int TOTAL_PARTS = HOUR_PARTS * 6;
+
 	/* This function assumes that we have just woke up
 	 * Do not attempt to short-cut any calculations based on previous runs
 	 */
@@ -114,26 +115,14 @@ class Clockwork extends Handler {
 			break;
 		}
 
-		/* we've got start and end */
-		long offset = now - start;
-		double sublen = ((double) (end - start))/total;
-		int exp_total = (int) (offset/sublen);
-		int exp_tick = exp_total / subs;
-		int exp_sub = exp_total % subs;
-		long next_sub = start + Math.round(sublen * (exp_total + 1));
+		int new_wrapped = JTT.time_tr_to_jtt_wrapped(start, end, now);
+		if (wrapped_jtt != new_wrapped				// time has changed
+				|| sync < start || sync >= end) {	// transition happened
+			wrapped_jtt = new_wrapped;
+			JTT.unwrap_jtt(wrapped_jtt + isDay * TOTAL_PARTS, jtt);
+		} // else same tick
 
-		if (now - sync > exp_sub * sublen // sync belongs to previous tick interval
-				|| now < sync) {          // time went backwards!
-			hour = exp_tick + isDay * 6;
-			sub = exp_sub;
-		} else if (sub < exp_sub) {
-			if (hour % 6 != exp_tick) { // sync should belong to this tick interval
-				Log.e("CLOCK_MECHANISM", "current tick is "+(hour % 6)+", expected "+exp_tick);
-				hour = exp_tick + isDay * 6;
-			}
-			sub = exp_sub;
-		}
-		// broadcast current time
+		long next_sub = JTT.wrapped_tr_to_time(start, end, wrapped_jtt + 1);
 
 		sync = System.currentTimeMillis();
 		/* doesn't matter if next_sub < sync
