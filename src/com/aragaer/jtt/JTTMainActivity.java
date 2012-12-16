@@ -1,13 +1,10 @@
 package com.aragaer.jtt;
 
-import java.lang.ref.WeakReference;
 
 import android.app.ActivityGroup;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -20,39 +17,6 @@ public class JTTMainActivity extends ActivityGroup {
     private JTTClockView clock;
     private JTTPager pager;
     private TodayAdapter today;
-
-    protected JTTUtil.ConnHelper conn = new JTTUtil.ConnHelper(this, new IncomingHandler(this));
-
-    static class IncomingHandler extends Handler {
-        private final WeakReference<JTTMainActivity> main;
-
-        public IncomingHandler(JTTMainActivity m) {
-            main = new WeakReference<JTTMainActivity>(m);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case JTTService.MSG_HOUR:
-//                main.get().today.setCurrent(msg.arg1);
-                /* fall-through! */
-            case JTTService.MSG_SUBTICK:
-//                main.get().clock.setHour(msg.arg1, msg.arg2);
-                break;
-            case JTTService.MSG_TRANSITIONS:
-//                main.get().today.addTransitions(msg.getData());
-                break;
-            case JTTService.MSG_INVALIDATE:
-                Log.d(TAG, "Invalidate all");
-                main.get().today.reset();
-                break;
-            default:
-                super.handleMessage(msg);
-                break;
-            }
-        }
-    }
-
     private JttReceiver receiver = new JttReceiver() {
 		@Override
 		void handle_tick(int n, int q, int f) {
