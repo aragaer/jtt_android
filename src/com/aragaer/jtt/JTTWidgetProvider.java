@@ -131,14 +131,17 @@ public class JTTWidgetProvider {
 
 		protected void hour_changed(int n) { }
 
+		private static final float q_mul = 360f / JTTHour.QUARTERS;
+		private static final float f_mul = 360f / (JTTHour.QUARTERS * JTTHour.PARTS);
 		protected void fill_rv(RemoteViews rv, JTTHour h) {
 			bmp.eraseColor(Color.TRANSPARENT);
 
 			c.drawPath(path1, p1);
 
 			path2.reset();
-			path2.addArc(inner, h.percent * 3.6f - 90, -h.percent * 3.6f);
-			path2.arcTo(outer, -90, h.percent * 3.6f);
+			float angle = (h.quarter * q_mul + h.quarter_parts * f_mul) % 360;
+			path2.addArc(inner, angle - 90, -angle);
+			path2.arcTo(outer, -90, angle);
 			c.drawPath(path2, p2);
 
 			rv.setImageViewBitmap(R.id.clock, bmp);
