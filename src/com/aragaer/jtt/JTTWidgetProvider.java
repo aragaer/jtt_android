@@ -71,7 +71,7 @@ public class JTTWidgetProvider {
 				prev_n = prev.num;
 			if (prev_n != n)
 				hour_changed(n);
-			else if (prev.percent == f)
+			else if (prev.quarter_parts == f)
 				return; // do nothing
 			prev.setTo(n, f);
 			draw(c, null, prev);
