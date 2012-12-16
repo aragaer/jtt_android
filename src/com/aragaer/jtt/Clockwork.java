@@ -142,7 +142,7 @@ class Clockwork extends Handler {
 		sendEmptyMessageDelayed(MSG_SYNC, next_sub - sync);
 	}
 
-	private final void go_sleep() {
+	public final void go_sleep() {
 		removeMessages(MSG_SYNC);
 	}
 
