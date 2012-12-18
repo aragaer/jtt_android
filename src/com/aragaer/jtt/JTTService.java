@@ -168,14 +168,6 @@ public class JTTService extends Service {
 		nm.notify(APP_ID, notification);
 	}
 
-	private void doNotify(int n, int q, int f, int event) {
-		if (notify)
-			notify_helper(n, q, f);
-
-		Message m = Message.obtain(null, event, n, f);
-		handler.informClients(m);
-	}
-
 	@Override
 	public IBinder onBind(Intent intent) {
 		return new IJttService.Stub() {
