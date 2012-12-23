@@ -17,7 +17,7 @@ class Clockwork extends Handler {
 	private final static Intent TickAction = new Intent(JttReceiver.TICK_ACTION);
 	public static final int MSG_SYNC = 9;
 
-	private WeakReference<Context> ctx;
+	private final WeakReference<Context> ctx;
 	private final WeakReference<JTT> calc;
 
 	private long sync = 0;
@@ -27,30 +27,27 @@ class Clockwork extends Handler {
 	private final JTTHour jtt = new JTTHour(0);
 	private int wrapped_jtt;
 
-	private final BroadcastReceiver on = new BroadcastReceiver() {
-		@Override
+	private final BroadcastReceiver toggle = new BroadcastReceiver() {
 		public void onReceive(Context context, Intent intent) {
-			wake_up();
-		}
-	};
-	private final BroadcastReceiver off = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			go_sleep();
+			if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF))
+				go_sleep();
+			else
+				wake_up();
 		}
 	};
 
-	public Clockwork(JTT c) {
+	public Clockwork(JTT c, Context context) {
 		calc = new WeakReference<JTT>(c);
+		ctx = new WeakReference<Context>(context);
 	}
 
-	void set_context(Context context) {
-		ctx = new WeakReference<Context>(context);
-		IntentFilter wake = new IntentFilter(Intent.ACTION_SCREEN_ON);
-		wake.addAction(Intent.ACTION_TIME_CHANGED);
-		wake.addAction(Intent.ACTION_DATE_CHANGED);
-		context.registerReceiver(on, wake);
-		context.registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+	public void start() {
+		IntentFilter toggle_filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+		toggle_filter.addAction(Intent.ACTION_TIME_CHANGED);
+		toggle_filter.addAction(Intent.ACTION_DATE_CHANGED);
+		toggle_filter.addAction(Intent.ACTION_SCREEN_OFF);
+		ctx.get().registerReceiver(toggle, toggle_filter);
+		reset();
 	}
 
 	@Override

@@ -49,8 +49,8 @@ public class JTTService extends Service {
 		while (++i < JTTHour.QUARTERS)
 			rv.setProgressBar(bar_ids[i], 1, 0, false);
 
-		rv.setTextViewText(R.id.start, t_start);
-		rv.setTextViewText(R.id.end, t_end);
+//		rv.setTextViewText(R.id.start, t_start);
+//		rv.setTextViewText(R.id.end, t_end);
 
 		notification.contentIntent = pending_main;
 		notification.contentView = rv;
@@ -73,7 +73,7 @@ public class JTTService extends Service {
 		init();
 	}
 
-	private Clockwork clk = new Clockwork(calculator);
+	private Clockwork clk = new Clockwork(calculator, this);
 	private void init() {
 		Log.d(TAG, "Service initializing");
 		JTTUtil.initLocale(this);
@@ -92,9 +92,8 @@ public class JTTService extends Service {
 		if (!notify)
 			nm.cancel(APP_ID);
 
-		receiver.register(this);
-		clk.set_context(this);
-		clk.reset();
+		registerReceiver(receiver, JttReceiver.filter);
+		clk.start();
 	}
 
 	@Override
@@ -103,7 +102,7 @@ public class JTTService extends Service {
 		Log.i(TAG, "Service destroying");
 
 		clk.go_sleep();
-		receiver.unregister();
+		unregisterReceiver(receiver);
 
 		if (force_stop)
 			nm.cancel(APP_ID);

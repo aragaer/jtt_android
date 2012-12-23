@@ -50,7 +50,7 @@ public class JTTMainActivity extends ActivityGroup {
         settings_tab = pager.addTab(sw.getDecorView(), R.string.settings);
 
         setContentView(pager);
-        receiver.register(this);
+        registerReceiver(receiver, JttReceiver.filter);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        receiver.unregister();
+        unregisterReceiver(receiver);
         today.unbind();
 
         Log.i(TAG, "Activity destroyed");

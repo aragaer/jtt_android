@@ -49,16 +49,16 @@ public class JTTSettingsActivity extends PreferenceActivity {
 
             switch (code) {
             case 0:
-                doSendMessage(JTTService.MSG_UPDATE_LOCATION, b);
+//                doSendMessage(JTTService.MSG_UPDATE_LOCATION, b);
                 break;
             case 1:
-                doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
+//                doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
                 break;
             case 2:
                 sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
                 break;
             case 3:
-                doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
+//                doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
                 sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
                 JTTUtil.changeLocale(getApplicationContext(), (String) newValue);
                 /* fall-through */
@@ -118,7 +118,7 @@ public class JTTSettingsActivity extends PreferenceActivity {
         public void onClick(DialogInterface dialog, int id) {
             switch (id) {
             case Dialog.BUTTON_POSITIVE:
-                doSendMessage(JTTService.MSG_STOP, null);
+//                doSendMessage(JTTService.MSG_STOP, null);
                 getParent().finish();
                 break;
             case Dialog.BUTTON_NEGATIVE:
