@@ -113,6 +113,11 @@ public class JTT {
 		return tr[0] + offset;
 	}
 
+	// helper function - return hour of rat (midnight) that starts given jdn
+	public long rat(long day) {
+		return (sunrise(day) + sunset(day - 1)) / 2;
+	}
+
 	public long jtt_to_long(int n, int q, int f, long t) {
 		return wrapped_jtt_to_long(((n * JTTHour.QUARTERS) + q) * JTTHour.PARTS + f, t);
 	}
