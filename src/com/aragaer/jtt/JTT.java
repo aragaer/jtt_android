@@ -64,6 +64,10 @@ public class JTT {
 		return (int) (TOTAL_PARTS * (now - tr0) / (tr1 - tr0));
 	}
 
+	public static int wrap_jtt(int hour, int quarter, int part) {
+		return (hour * JTTHour.QUARTERS + quarter) * JTTHour.PARTS + part;
+	}
+
 	public static JTTHour unwrap_jtt(int wrapped, JTTHour reuse) {
 		if (reuse == null)
 			reuse = new JTTHour(0);
