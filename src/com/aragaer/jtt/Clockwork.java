@@ -50,6 +50,11 @@ class Clockwork extends Handler {
 		reset();
 	}
 
+	public void stop() {
+		go_sleep();
+		ctx.get().unregisterReceiver(toggle);
+	}
+
 	@Override
 	public void handleMessage(Message msg) {
 		switch (msg.what) {
