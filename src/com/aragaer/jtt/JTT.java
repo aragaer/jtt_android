@@ -29,6 +29,10 @@ public class JTT {
 	private final static int HOUR_PARTS = JTTHour.QUARTERS * JTTHour.PARTS;
 	private final static int TOTAL_PARTS = HOUR_PARTS * 6;
 
+//	private final static int HOUR_OF_COCK = wrap_jtt(0, 0, 0); // 0
+	private final static int HOUR_OF_RAT = wrap_jtt(3, 0, 0);
+	private final static int HOUR_OF_HARE = wrap_jtt(6, 0, 0);
+
 	public JTTHour time_to_jtt(Calendar c, JTTHour reuse) {
 		return time_to_jtt(c == null ? System.currentTimeMillis() : c.getTimeInMillis(), reuse);
 	}
@@ -97,20 +101,30 @@ public class JTT {
 		return jtt_to_time(n, q, f, cal == null ? System.currentTimeMillis() : cal.getTimeInMillis());
 	}
 
-	// FIXME: this one isn't working properly
 	public long wrapped_jtt_to_long(int n, long t) {
 		long day = longToJDN(t);
-		long tr[] = computeTr(day);
-		if (n < 300) {// get prev sunset
-			tr[1] = tr[0];
-			tr[0] = computeTr(day - 1)[1];
-		} else if (n > 799) {// get next sunrise
-			tr[0] = tr[1];
-			tr[1] = computeTr(day + 1)[0];
-		}
-		long offset = (tr[1] - tr[0]) * n / 600;
+		long rat2 = rat(day + 1);
+		long tr0, tr1;
 
-		return tr[0] + offset;
+		while (t >= rat2) {
+			day++;
+			rat2 = rat(day + 1);
+		}
+
+		// t is now fixed between two midnights
+		if (n < HOUR_OF_RAT /* && n >= HOUR_OF_COCK */) { // early night
+			tr0 = sunset(day);
+			tr1 = sunrise(day + 1);
+		} else if (n >= HOUR_OF_HARE) { // day
+			tr0 = sunrise(day);
+			tr1 = sunset(day);
+			n -= TOTAL_PARTS;
+		} else { // late night
+			tr0 = sunset(day - 1);
+			tr1 = sunrise(day);
+		}
+
+		return wrapped_tr_to_time(tr0, tr1, n);
 	}
 
 	// helper function - return hour of rat (midnight) that starts given jdn
