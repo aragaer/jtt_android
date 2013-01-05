@@ -148,4 +148,13 @@ public class JTT {
 		}
 		return result;
 	}
+
+	// wrappers
+	public long sunrise(long jdn) {
+		return computeTr(jdn)[0];
+	}
+
+	public long sunset(long jdn) {
+		return computeTr(jdn)[1];
+	}
 }
