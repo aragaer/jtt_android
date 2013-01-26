@@ -23,6 +23,7 @@ public class JTTService extends Service {
 	private static final int flags_ongoing = Notification.FLAG_ONGOING_EVENT
 			| Notification.FLAG_NO_CLEAR;
 	private static final int APP_ID = 0;
+	public static final String STOP_ACTION = "com.aragaer.jtt.SERVICE_STOP";
 
 	private PendingIntent pending_main;
 	private JTTUtil.StringsHelper hs = null;
