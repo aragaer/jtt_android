@@ -102,8 +102,8 @@ public class JTTService extends Service {
 		super.onDestroy();
 		Log.i(TAG, "Service destroying");
 
-		clk.go_sleep();
 		unregisterReceiver(receiver);
+		clk.stop();
 
 		if (force_stop)
 			nm.cancel(APP_ID);
