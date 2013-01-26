@@ -132,6 +132,20 @@ public class JTT {
 		return (sunrise(day) + sunset(day - 1)) / 2;
 	}
 
+	// this one is just a wrapper
+	public long hour_start(int n, long t) {
+		return jtt_to_long(n, 0, 0, t);
+	}
+
+	// this one is a bit more complex..
+	public long hour_end(int n, long t) {
+		n++;
+		n %= 12;
+		if (n == 3) // hour of rat
+			return rat(longToJDN(t) + 1);
+		return jtt_to_long(n, 0, 0, t);
+	}
+
 	public long jtt_to_long(int n, int q, int f, long t) {
 		return wrapped_jtt_to_long(((n * JTTHour.QUARTERS) + q) * JTTHour.PARTS + f, t);
 	}
