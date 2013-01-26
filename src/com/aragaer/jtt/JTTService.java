@@ -89,10 +89,11 @@ public class JTTService extends Service {
 		app_name = getString(R.string.app_name);
 		nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-		if (!notify)
+		if (notify)
+			registerReceiver(receiver, JttReceiver.filter);
+		else
 			nm.cancel(APP_ID);
 
-		registerReceiver(receiver, JttReceiver.filter);
 		clk.start();
 	}
 
