@@ -35,6 +35,7 @@
         <TextView
             android:id="@+id/hour"
             style="@style/NotificationText"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
