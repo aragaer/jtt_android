@@ -1,5 +1,7 @@
 package com.aragaer.jtt;
 
+import java.util.HashSet;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -28,6 +30,7 @@ public class JTTService extends Service {
 	private boolean notify, force_stop = false;
 	private static Notification notification;
 
+	private final HashSet<JttInvalidateCallback> invalidate_callbacks = new HashSet<JttInvalidateCallback>();
 	private String t_start, t_end;
 
 	private String app_name;
@@ -62,6 +65,16 @@ public class JTTService extends Service {
 		return new IJttService.Stub() {
 			public long[] getTr(long jdn) throws RemoteException {
 				return calculator.computeTr(jdn);
+			}
+
+			public void registerInvalidateCallback(JttInvalidateCallback cb)
+					throws RemoteException {
+				invalidate_callbacks.add(cb);
+			}
+
+			public void unregisterInvalidateCallback(JttInvalidateCallback cb)
+					throws RemoteException {
+				invalidate_callbacks.remove(cb);
 			}
 		};
 	}
