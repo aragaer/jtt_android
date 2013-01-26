@@ -85,6 +85,43 @@ public class JTTService extends Service {
 		Log.d(TAG, "Service starting");
 		if (hs == null) // first run
 		init();
+		final String action = intent.getAction();
+		if (action == null)
+			return;
+		if (action.equals(JTTSettingsActivity.JTT_SETTINGS_CHANGED)) {
+			final String loc = intent.getStringExtra(JTTSettingsActivity.PREF_LOCATION);
+			if (loc != null) {
+				final String ll[] = loc.split(":");
+				calculator.move(Float.parseFloat(ll[0]), Float.parseFloat(ll[1]));
+				clk.reset();
+				for (JttInvalidateCallback cb : invalidate_callbacks)
+					try {
+						cb.onInvalidate();
+					} catch (RemoteException e) {
+						Log.d(TAG, "Callback fell off");
+						invalidate_callbacks.remove(cb);
+					}
+			}
+			boolean new_notify = intent.getBooleanExtra(JTTSettingsActivity.PREF_NOTIFY, notify);
+			if (new_notify && !notify)
+				registerReceiver(receiver, JttReceiver.filter);
+			else if (!new_notify && notify) {
+				unregisterReceiver(receiver);
+				nm.cancel(APP_ID);
+			}
+			notify = new_notify;
+
+			final String locale = intent.getStringExtra(JTTSettingsActivity.PREF_LOCALE);
+			if (locale != null) {
+				JTTUtil.changeLocale(this, locale);
+				hs = JTTUtil.getStringsHelper(this);
+				if (notify)
+					receiver.handle_last();
+			}
+		} else if (action.equals(STOP_ACTION)) {
+			force_stop = true;
+			stopSelf();
+		}
 	}
 
 	private Clockwork clk = new Clockwork(calculator, this);

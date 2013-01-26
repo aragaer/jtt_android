@@ -38,6 +38,8 @@
             android:process=":remote" >
             <intent-filter>
                 <action android:name="com.aragaer.jtt.SERVICE" />
+                <action android:name="com.aragaer.jtt.SERVICE_STOP" />
+                <action android:name="com.aragaer.jtt.ACTION_JTT_SETTINGS" />
             </intent-filter>
         </service>
 
