@@ -32,7 +32,7 @@ public class JTTService extends Service {
 	private static Notification notification;
 
 	private final HashSet<JttInvalidateCallback> invalidate_callbacks = new HashSet<JttInvalidateCallback>();
-	private String t_start, t_end;
+	private String t_start, t_mid, t_end;
 
 	private String app_name;
 	private static final int bar_ids[] = {R.id.fraction1, R.id.fraction2, R.id.fraction3, R.id.fraction4};
@@ -53,8 +53,9 @@ public class JTTService extends Service {
 		while (++i < JTTHour.QUARTERS)
 			rv.setProgressBar(bar_ids[i], 1, 0, false);
 
-//		rv.setTextViewText(R.id.start, t_start);
-//		rv.setTextViewText(R.id.end, t_end);
+		rv.setTextViewText(R.id.start, t_start);
+		rv.setTextViewText(R.id.hour, t_mid);
+		rv.setTextViewText(R.id.end, t_end);
 
 		notification.contentIntent = pending_main;
 		notification.contentView = rv;
@@ -84,7 +85,7 @@ public class JTTService extends Service {
 	public void onStart(Intent intent, int startid) {
 		Log.d(TAG, "Service starting");
 		if (hs == null) // first run
-		init();
+			init();
 		final String action = intent.getAction();
 		if (action == null)
 			return;
@@ -183,7 +184,16 @@ public class JTTService extends Service {
 	}
 
 	private final JttReceiver receiver = new JttReceiver() {
+		long hstart, hend;
 		void handle_tick(int n, int q, int f) {
+			long now = System.currentTimeMillis();
+			if (now >= hend || now < hstart) {
+				hstart = calculator.hour_start(n, now);
+				hend = calculator.hour_end(n, now);
+				t_start = JTTUtil.format_time(hstart);
+				t_end = JTTUtil.format_time(hend);
+				t_mid = JTTUtil.format_time(calculator.jtt_to_long(n, JTTHour.QUARTERS / 2, 0, now));
+			}
 			notify_helper(n, q, f);
 		}
 	};
