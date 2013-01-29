@@ -3,7 +3,7 @@
 
     <style name="DarkTheme" parent="android:style/Theme.NoTitleBar">
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">15dip</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:radioButtonStyle">@style/JTTTabButton</item>
         <item name="android:buttonStyle">@style/JTTButton</item>
     </style>
@@ -14,7 +14,7 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:shadowColor">@android:color/black</item>
         <item name="android:shadowRadius">0.5</item>
-        <item name="android:textSize">15dip</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:radioButtonStyle">@style/JTTTabButton</item>
     </style>
 
@@ -48,16 +48,10 @@
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:shadowColor">#FF000000</item>
         <item name="android:shadowRadius">0.5</item>
-        <item name="android:textSize">15dip</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:backgroundDimAmount">0.3</item>
         <item name="android:buttonStyle">@style/JTTButton</item>
     </style>
 
-    <string-array name="themes">
-        <item>0</item>
-        <item>1</item>
-    </string-array>
-
-	<string name="theme_default">0</string>
 </resources>
