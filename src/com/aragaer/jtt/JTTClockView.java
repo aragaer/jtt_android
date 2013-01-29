@@ -206,7 +206,6 @@ public class JTTClockView extends View {
 		clock_canvas.setMatrix(null);
 		clock_canvas.translate(-cox, -coy);
 
-		clock_canvas.rotate(-step / 2, size, size);
 		clock_canvas.translate(-iR * 0.75f, 0);
 		clock_canvas.drawArc(sun, 0, 360, false, solid1);
 		clock_canvas.drawArc(sun, 0, 360, false, stroke1);
@@ -224,7 +223,7 @@ public class JTTClockView extends View {
 		clock_canvas.drawArc(sun, 0, 360, false, stroke1);
 		clock_canvas.drawLine(size - sR, size, size + sR, size, stroke1);
 		clock_canvas.translate(iR * 0.75f, 0);
-		clock_canvas.rotate(90 + step / 2, size, size);
+		clock_canvas.rotate(90, size, size);
 
 		for (int hr = 0; hr < 12; hr++) {
 			final boolean current = hr == num;

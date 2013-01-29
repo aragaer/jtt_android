@@ -72,10 +72,12 @@ public class JTT {
 		return (hour * JTTHour.QUARTERS + quarter) * JTTHour.PARTS + part;
 	}
 
+	/* wrapped 0 means h 0 quarter 2 part 0 actually */
 	public static JTTHour unwrap_jtt(int wrapped, JTTHour reuse) {
 		if (reuse == null)
 			reuse = new JTTHour(0);
-		final int h = wrapped / HOUR_PARTS;
+		wrapped += HOUR_PARTS / 2;
+		final int h = (wrapped / HOUR_PARTS) % 12;
 		wrapped %= HOUR_PARTS;
 		reuse.setTo(h, wrapped / JTTHour.PARTS, wrapped % JTTHour.PARTS);
 		return reuse;
@@ -90,6 +92,7 @@ public class JTT {
 	// returns timestamp from [tr0; tr1) appropriate for jtt
 	// assumes jtt falls into interval
 	public static long wrapped_tr_to_time(long tr0, long tr1, int wrapped) {
+		wrapped -= HOUR_PARTS / 2;
 		return tr0 + (tr1 - tr0) * wrapped / TOTAL_PARTS;
 	}
 
