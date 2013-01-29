@@ -9,6 +9,9 @@
         android:targetSdkVersion="17" />
 
     <permission
+        android:name="com.aragaer.jtt.permission.JTT"
+        android:protectionLevel="normal" />
+    <permission
         android:name="com.aragaer.jtt.JTT_SETTINGS"
         android:protectionLevel="signature" />
 
@@ -35,7 +38,8 @@
 
         <service
             android:name=".JTTService"
-            android:process=":remote" >
+            android:process=":remote"
+            android:permission="com.aragaer.jtt.permission.JTT">
             <intent-filter>
                 <action android:name="com.aragaer.jtt.SERVICE" />
                 <action android:name="com.aragaer.jtt.SERVICE_STOP" />
