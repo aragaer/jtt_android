@@ -18,47 +18,49 @@ import android.preference.PreferenceActivity;
 import android.util.Log;
 
 public class JTTSettingsActivity extends PreferenceActivity {
-	public static final String PREF_LOCATION = "jtt_loc";
+	public static final String PREF_LOCATION = "com.aragaer.jtt.location";
+	public static final String PREF_NOTIFY = "com.aragaer.jtt.notify";
+	public static final String PREF_LOCALE = "com.aragaer.jtt.locale";
+	public static final String PREF_INVERT = "com.aragaer.jtt.inverse";
     public final static String JTT_SETTINGS_CHANGED = "com.aragaer.jtt.ACTION_JTT_SETTINGS";
     private final static String TAG = "jtt settings";
 
-    private static final String prefcodes[] = new String[] {PREF_LOCATION, "jtt_notify", "jtt_widget_text_invert", "jtt_locale", "jtt_theme"};
+    private static final String prefcodes[] = new String[] {"jtt_loc", "jtt_notify", "jtt_widget_text_invert", "jtt_locale", "jtt_theme"};
     private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 
     final OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Bundle b = new Bundle();
             Intent i = new Intent(JTT_SETTINGS_CHANGED);
             int code = listeners.get(preference.getKey());
             switch (code) {
             case 0:
-                b.putString("latlon", (String) newValue);
+                i.putExtra(PREF_LOCATION, (String) newValue);
                 break;
             case 1:
-                b.putBoolean("notify", (Boolean) newValue);
+                i.putExtra(PREF_NOTIFY, (Boolean) newValue);
                 break;
             case 2:
-                i.putExtra("inverse", (Boolean) newValue);
+                i.putExtra(PREF_INVERT, (Boolean) newValue);
                 break;
             case 3:
-                i.putExtra("locale", (String) newValue);
-                b.putString("locale", (String) newValue);
+                i.putExtra(PREF_LOCALE, (String) newValue);
             default:
                 break;
             }
 
             switch (code) {
             case 0:
-//                doSendMessage(JTTService.MSG_UPDATE_LOCATION, b);
-                break;
             case 1:
-//                doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
+				/* notify service only */
+				startService(i);
                 break;
             case 2:
-                sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
+				/* notify widgets only */
+				sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
                 break;
             case 3:
-//                doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
+				/* notify both service and widgets */
+				startService(i);
                 sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
                 JTTUtil.changeLocale(getApplicationContext(), (String) newValue);
                 /* fall-through */
@@ -110,15 +112,11 @@ public class JTTSettingsActivity extends PreferenceActivity {
         });
     }
 
-    private final void doSendMessage(int what, Bundle data) {
-//        ((JTTMainActivity) getParent()).conn.send_msg_to_service(what, data);
-    }
-
     private final OnClickListener stop_dlg_listener = new OnClickListener() {
         public void onClick(DialogInterface dialog, int id) {
             switch (id) {
             case Dialog.BUTTON_POSITIVE:
-//                doSendMessage(JTTService.MSG_STOP, null);
+				startService(new Intent(JTTService.STOP_ACTION));
                 getParent().finish();
                 break;
             case Dialog.BUTTON_NEGATIVE:
