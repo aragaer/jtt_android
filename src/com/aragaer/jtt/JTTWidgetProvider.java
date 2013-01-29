@@ -38,7 +38,7 @@ public class JTTWidgetProvider {
 		protected JTTWidget(int parts) {
 			cn = this.getClass().getSimpleName();
 			name = new ComponentName(PKG_NAME, this.getClass().getName());
-			granularity = JTTHour.PARTS / parts;
+			granularity = JTTHour.PARTS * JTTHour.QUARTERS / parts;
 		}
 
 		public void onReceive(Context c, Intent i) {
@@ -168,7 +168,7 @@ public class JTTWidgetProvider {
 		private static Bitmap bmp;
 
 		public Widget12() {
-			super(4);
+			super(8);
 		}
 
 		protected void hour_changed(int n) {
