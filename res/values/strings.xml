@@ -8,9 +8,7 @@
     <string name="location_ex">Change stored location</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
-    <string name="not_impl">Not implemented yet</string>
     <string name="clock">Clock</string>
-    <string name="alarm">Alarms</string>
     <string name="settings">Settings</string>
     <string name="srv_fail">Service killed</string>
     <string name="srv_fail_ex">Touch to restart the service.</string>
@@ -78,12 +76,6 @@
     <string name="locale">Language - English</string>
     <string name="locale_ex">Tap to change language</string>
     <string name="locale_default">Default</string>
-
-    <string-array name="locales">
-        <item></item>
-        <item>en</item>
-        <item>ru</item>
-    </string-array>
 
     <string-array name="theme_names">
         <item>Translucent</item>

@@ -9,7 +9,6 @@
     <string name="latitude">Широта</string>
     <string name="longitude">Долгота</string>
     <string name="clock">Часы</string>
-    <string name="alarm">Будильник</string>
     <string name="settings">Настройки</string>
     <string name="srv_fail">Сервис остановлен</string>
     <string name="srv_fail_ex">Нажмите для перезапуска сервиса.</string>
