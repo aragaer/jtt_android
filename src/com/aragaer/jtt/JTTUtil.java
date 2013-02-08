@@ -79,8 +79,12 @@ public final class JTTUtil {
 			return makeHour(hour, 0);
 		}
 
-		public JTTHour makeHour(String hour, int fraction) {
-			return new JTTHour(name_to_num(hour), fraction);
+		public JTTHour makeHour(String hour, int quarter) {
+			return makeHour(hour, quarter, 0);
+		}
+
+		public JTTHour makeHour(String hour, int quarter, int part) {
+			return new JTTHour(name_to_num(hour), quarter, part);
 		}
 	}
 
