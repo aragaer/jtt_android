@@ -22,7 +22,7 @@ abstract class TodayItem {
 /* Hour item in TodayList */
 class HourItem extends TodayItem {
 	public static int current;
-	public static long next_transition;
+	public static long prev_transition, next_next_transition;
 	public final int hnum;
 	public final String date;
 
@@ -46,9 +46,9 @@ class HourItem extends TodayItem {
 		}
 		View v = View.inflate(c, R.layout.today_item, null);
 
-		/* no need to check for previous transition */
 		boolean is_current = hnum == current
-				&& time < next_transition;
+				&& time < next_next_transition
+				&& time >= prev_transition;
 
 		JTTUtil.t(v, R.id.time, date);
 		JTTUtil.t(v, R.id.glyph, JTTHour.Glyphs[hnum]);
@@ -277,8 +277,9 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 		for (int i = 0; i < 4; i++)
 			l[i] = transitions.get(pos - 1 + i);
 
-		prev_transition = l[1];
-		HourItem.next_transition = next_transition = l[2];
+		HourItem.prev_transition = prev_transition = l[1];
+		next_transition = l[2];
+		HourItem.next_next_transition = l[3];
 
 		/* if it is day now then first interval is night */
 		buildItems(l, pos == 1);
