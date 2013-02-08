@@ -86,6 +86,8 @@ public class JTTService extends Service {
 		Log.d(TAG, "Service starting");
 		if (hs == null) // first run
 			init();
+		if (intent == null)
+			return;
 		final String action = intent.getAction();
 		if (action == null)
 			return;
