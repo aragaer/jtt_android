@@ -65,7 +65,7 @@ public class JTT {
 	// add TOTAL_PARTS for day hours
 	// assumes tr0 <= current < tr1
 	public static int time_tr_to_jtt_wrapped(long tr0, long tr1, long now) {
-		return (int) (TOTAL_PARTS * (now - tr0) / (tr1 - tr0));
+		return (HOUR_PARTS / 2 + (int) (TOTAL_PARTS * (now - tr0) / (tr1 - tr0))) % TOTAL_PARTS;
 	}
 
 	public static int wrap_jtt(int hour, int quarter, int part) {
