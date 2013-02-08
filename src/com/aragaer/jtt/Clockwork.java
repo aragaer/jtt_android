@@ -122,7 +122,7 @@ class Clockwork extends Handler {
 		if (wrapped_jtt != new_wrapped				// time has changed
 				|| sync < start || sync >= end) {	// transition happened
 			wrapped_jtt = new_wrapped;
-			JTT.unwrap_jtt(wrapped_jtt + isDay * TOTAL_PARTS, jtt);
+			JTTHour.unwrap(wrapped_jtt + isDay * TOTAL_PARTS, jtt);
 			TickAction.putExtra("jtt", jtt);
 			ctx.get().sendStickyBroadcast(TickAction);
 		} // else same tick

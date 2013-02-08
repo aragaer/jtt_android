@@ -26,12 +26,11 @@ public class JTT {
 	static final long ms_per_hour = TimeUnit.SECONDS.toMillis(60 * 60);
 	static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
 
-	private final static int HOUR_PARTS = JTTHour.QUARTERS * JTTHour.PARTS;
-	private final static int TOTAL_PARTS = HOUR_PARTS * 6;
+	private final static int TOTAL_PARTS = JTTHour.HOUR_PARTS * 6;
 
-//	private final static int HOUR_OF_COCK = wrap_jtt(0, 0, 0); // 0
-	private final static int HOUR_OF_RAT = wrap_jtt(3, 0, 0);
-	private final static int HOUR_OF_HARE = wrap_jtt(6, 0, 0);
+//	private final static int HOUR_OF_COCK = JTTHour.wrap(0, 2, 0); // 0
+	private final static int HOUR_OF_RAT = JTTHour.wrap(3, 2, 0);
+	private final static int HOUR_OF_HARE = JTTHour.wrap(6, 2, 0);
 
 	public JTTHour time_to_jtt(Calendar c, JTTHour reuse) {
 		return time_to_jtt(c == null ? System.currentTimeMillis() : c.getTimeInMillis(), reuse);
@@ -65,26 +64,11 @@ public class JTT {
 	// add TOTAL_PARTS for day hours
 	// assumes tr0 <= current < tr1
 	public static int time_tr_to_jtt_wrapped(long tr0, long tr1, long now) {
-		return (HOUR_PARTS / 2 + (int) (TOTAL_PARTS * (now - tr0) / (tr1 - tr0))) % TOTAL_PARTS;
-	}
-
-	public static int wrap_jtt(int hour, int quarter, int part) {
-		return (hour * JTTHour.QUARTERS + quarter) * JTTHour.PARTS + part;
-	}
-
-	/* wrapped 0 means h 0 quarter 2 part 0 actually */
-	public static JTTHour unwrap_jtt(int wrapped, JTTHour reuse) {
-		if (reuse == null)
-			reuse = new JTTHour(0);
-		wrapped += HOUR_PARTS / 2;
-		final int h = (wrapped / HOUR_PARTS) % 12;
-		wrapped %= HOUR_PARTS;
-		reuse.setTo(h, wrapped / JTTHour.PARTS, wrapped % JTTHour.PARTS);
-		return reuse;
+		return (int) (TOTAL_PARTS * (now - tr0) / (tr1 - tr0));
 	}
 
 	public JTTHour time_to_jtt(long time, JTTHour reuse) {
-		return unwrap_jtt(time_to_jtt_wrapped(time), reuse);
+		return JTTHour.unwrap(time_to_jtt_wrapped(time), reuse);
 	}
 
 	// helper function,
@@ -92,7 +76,6 @@ public class JTT {
 	// returns timestamp from [tr0; tr1) appropriate for jtt
 	// assumes jtt falls into interval
 	public static long wrapped_tr_to_time(long tr0, long tr1, int wrapped) {
-		wrapped -= HOUR_PARTS / 2;
 		return tr0 + (tr1 - tr0) * wrapped / TOTAL_PARTS;
 	}
 
@@ -150,7 +133,7 @@ public class JTT {
 	}
 
 	public long jtt_to_long(int n, int q, int f, long t) {
-		return wrapped_jtt_to_long(((n * JTTHour.QUARTERS) + q) * JTTHour.PARTS + f, t);
+		return wrapped_jtt_to_long(JTTHour.wrap(n, q, f), t);
 	}
 
 	public Calendar jtt_to_time(int n, int q, int f, long t) {
