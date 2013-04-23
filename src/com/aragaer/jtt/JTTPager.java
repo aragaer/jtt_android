@@ -37,21 +37,21 @@ public class JTTPager extends LinearLayout {
 		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
 			setOrientation(LinearLayout.VERTICAL);
 			tablist.setOrientation(LinearLayout.HORIZONTAL);
-			tablist.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
+			tablist.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 					LayoutParams.WRAP_CONTENT, 0));
 			btnlp = new RadioGroup.LayoutParams(LayoutParams.WRAP_CONTENT,
-					LayoutParams.FILL_PARENT, 1);
+					LayoutParams.MATCH_PARENT, 1);
 		} else {
 			setOrientation(LinearLayout.HORIZONTAL);
 			tablist.setOrientation(LinearLayout.VERTICAL);
 			tablist.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-					LayoutParams.FILL_PARENT, 0));
-			btnlp = new RadioGroup.LayoutParams(LayoutParams.FILL_PARENT,
-					LayoutParams.FILL_PARENT, 1);
+					LayoutParams.MATCH_PARENT, 0));
+			btnlp = new RadioGroup.LayoutParams(LayoutParams.MATCH_PARENT,
+					LayoutParams.MATCH_PARENT, 1);
 		}
 
-		addView(scrollview, new LayoutParams(LayoutParams.FILL_PARENT,
-				LayoutParams.FILL_PARENT, 1));
+		addView(scrollview, new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT, 1));
 		addView(tablist);
 	}
 
