@@ -77,9 +77,7 @@ public class JTTClockView extends View {
 
 		set_dial_size(new_size);
 
-		cache_canvas.clipRect(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR, Op.REPLACE);
 		draw_arrow();
-		invalidate(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR);
 
 		clock_area.set(ox + size - oR - 2, oy + size - selR - 2, ox + size + oR + 2, oy + size + oR + 2);
 		circle_drawn = false;
@@ -100,6 +98,7 @@ public class JTTClockView extends View {
 			Log.e("CLOCK", "Can't hold lock, will not draw");
 			return;
 		}
+		cache_canvas.clipRect(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR, Op.REPLACE);
 		path.reset();
 		path.moveTo(ox + size, oy + size - selR - 2);
 		path.rLineTo(-size / 20, selR - size);
@@ -108,9 +107,10 @@ public class JTTClockView extends View {
 		cache_canvas.drawPath(path, solid1);
 		cache_canvas.drawPath(path, stroke1);
 		cache_lock.unlock();
+		invalidate(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR);
 	}
 
-	void set_dial_size(int new_size) {
+	public void set_dial_size(int new_size) {
 		if (size == new_size)
 			return;
 
@@ -148,7 +148,7 @@ public class JTTClockView extends View {
 		cache_lock.unlock();
 	}
 
-	void draw_circle_placeholder() {
+	private void draw_circle_placeholder() {
 		if (circle_drawn)
 			return;
 		if (!cache_lock.tryLock()) {
@@ -196,7 +196,7 @@ public class JTTClockView extends View {
 	final static int arc_end = -90 + Math.round(step / 2 - gap);
 	final static int arc_len = arc_end - arc_start;
 
-	void prepare_dial(int num) {
+	public void prepare_dial(int num) {
 		if (!cache_lock.tryLock()) {
 			Log.e("CLOCK", "Can't hold lock, will not draw");
 			return;
@@ -269,7 +269,7 @@ public class JTTClockView extends View {
 
 	final Rect clock_area = new Rect();
 	final Rect r = new Rect();
-	class PainterTask extends AsyncTask<Void, Void, Void> {
+	private final class PainterTask extends AsyncTask<Void, Void, Void> {
 		protected Void doInBackground(Void... params) {
 			cache_lock.lock();
 			// if we're here, canvas is initialized
@@ -293,7 +293,7 @@ public class JTTClockView extends View {
 		}
 	};
 
-	void draw_everything() {
+	private void draw_everything() {
 		if (hn < 0) {
 			Log.e("CLOCK", "Hour not set yet");
 			return;
@@ -327,7 +327,7 @@ public class JTTClockView extends View {
 	}
 
 	private static final float total_f = JTTHour.QUARTERS * JTTHour.PARTS;
-	void draw_dial(int n, int f) {
+	public void draw_dial(int n, int f) {
 		if (!cache_lock.tryLock()) {
 			Log.e("CLOCK", "Can't hold lock, won't draw!");
 			return;
@@ -340,7 +340,7 @@ public class JTTClockView extends View {
 		cache_lock.unlock();
 	}
 
-	void setBitmap(Bitmap bmp) {
+	public void setBitmap(Bitmap bmp) {
 		if (!cache_lock.tryLock()) {
 			Log.e("CLOCK", "Can't hold lock, won't replace bitmap!");
 			return;
