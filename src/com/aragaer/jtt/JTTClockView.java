@@ -77,9 +77,7 @@ public class JTTClockView extends View {
 
 		set_dial_size(new_size);
 
-		cache_canvas.clipRect(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR, Op.REPLACE);
 		draw_arrow();
-		invalidate(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR);
 
 		clock_area.set(ox + size - oR - 2, oy + size - selR - 2, ox + size + oR + 2, oy + size + oR + 2);
 		circle_drawn = false;
@@ -100,6 +98,7 @@ public class JTTClockView extends View {
 			Log.e("CLOCK", "Can't hold lock, will not draw");
 			return;
 		}
+		cache_canvas.clipRect(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR, Op.REPLACE);
 		path.reset();
 		path.moveTo(ox + size, oy + size - selR - 2);
 		path.rLineTo(-size / 20, selR - size);
@@ -108,6 +107,7 @@ public class JTTClockView extends View {
 		cache_canvas.drawPath(path, solid1);
 		cache_canvas.drawPath(path, stroke1);
 		cache_lock.unlock();
+		invalidate(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR);
 	}
 
 	public void set_dial_size(int new_size) {
