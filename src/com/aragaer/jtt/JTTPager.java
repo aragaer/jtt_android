@@ -117,6 +117,11 @@ public class JTTPager extends LinearLayout {
 			return super.onTouchEvent(event);
 		}
 
+		/**
+		 * Converts horizontal position to a screen number within pager
+		 * @param x - Horizontal scroll position
+		 * @return Screen number
+		 */
 		private int x2n(int x) {
 			int max = tablist.getChildCount() - 1;
 			int w = getWidth();
@@ -130,6 +135,11 @@ public class JTTPager extends LinearLayout {
 			return n;
 		}
 
+		/**
+		 * Converts a screen number to horizontal position within pager
+		 * @param n - Screen number
+		 * @return Horizontal scroll position
+		 */
 		private int n2x(int n) {
 			int w = getWidth();
 			return w * n;
@@ -157,10 +167,11 @@ public class JTTPager extends LinearLayout {
 	}
 
 	class ScrollContents extends ViewGroup {
+		private static final int ID = 42;
 		public ScrollContents(Context ctx) {
 			super(ctx);
 			setFocusableInTouchMode(true); // otherwise children will steal focus
-			setId(42);
+			setId(ID);
 		}
 
 		protected void onMeasure(int wms, int hms) {
