@@ -76,8 +76,8 @@ public class JTTPager extends LinearLayout implements RadioGroup.OnCheckedChange
 	}
 
 	class PageScroller extends HorizontalScrollView {
-		boolean touch;
-		int minfling;
+		int scrollFrom = -1;
+		final int minfling;
 
 		public PageScroller(Context ctx) {
 			super(ctx);
@@ -95,29 +95,34 @@ public class JTTPager extends LinearLayout implements RadioGroup.OnCheckedChange
 
 			if (event.getAction() == MotionEvent.ACTION_UP) {
 				final int x = getScrollX();
-				final int bump = getWidth() / 2 + 1;
-				int on = x2n(x), nn = on;
+				int targetScreen;
 
 				vt.computeCurrentVelocity(1000);
 				float velocity = vt.getXVelocity();
 
-				if (Math.abs(velocity) > minfling)
-					nn = x2n(x + (velocity < 0 ? bump : -bump));
+				/* fling gesture */
+				if (Math.abs(velocity) > minfling) {
+					int max = tablist.getChildCount() - 1;
+					targetScreen = scrollFrom + (velocity < 0 ? 1 : -1);
+					if (targetScreen < 0)
+						targetScreen = 0;
+					else if (targetScreen > max)
+						targetScreen = max;
+				} else /* return to current screen */
+					targetScreen = x2n(x);
 
-				selectScreen(on);
-				touch = false;
-
-				if (nn == on)
-					smoothScrollTo(n2x(on), 0);
-				else
-					selectScreen(nn); // this will scroll too
+				selectScreen(targetScreen);
+				smoothScrollTo(n2x(targetScreen), 0);
+				scrollFrom = -1;
 
 				vt.recycle();
 				vt = null;
 				return true;
 			}
 
-			touch = true;
+			if (scrollFrom == -1)
+				scrollFrom = tablist.getCheckedRadioButtonId();
+
 			return super.onTouchEvent(event);
 		}
 
@@ -150,7 +155,7 @@ public class JTTPager extends LinearLayout implements RadioGroup.OnCheckedChange
 		}
 
 		protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-			if (touch)
+			if (scrollFrom >= 0)
 				selectScreen(x2n(l));
 		}
 
@@ -159,7 +164,7 @@ public class JTTPager extends LinearLayout implements RadioGroup.OnCheckedChange
 		 * @param num - Number of screen to scroll to
 		 */
 		public void trySmoothScrollToScreen(int num) {
-			if (!touch)
+			if (scrollFrom == -1)
 				smoothScrollTo(n2x(num), 0);
 		}
 
