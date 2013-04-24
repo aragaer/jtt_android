@@ -133,10 +133,9 @@ public class JTTPager extends LinearLayout implements RadioGroup.OnCheckedChange
 		 */
 		private int x2n(int x) {
 			int max = tablist.getChildCount() - 1;
-			int w = getWidth();
-			if (w == 0)
+			if (viewport_width == 0)
 				return 0;
-			int n = (x + w / 2) / w;
+			int n = (x + viewport_width / 2) / viewport_width;
 			if (n < 0)
 				return 0;
 			if (n > max)
@@ -150,13 +149,7 @@ public class JTTPager extends LinearLayout implements RadioGroup.OnCheckedChange
 		 * @return Horizontal scroll position
 		 */
 		private int n2x(int n) {
-			int w = getWidth();
-			return w * n;
-		}
-
-		protected void onScrollChanged(int l, int t, int oldl, int oldt) {
-			if (scrollFrom >= 0)
-				selectScreen(x2n(l));
+			return viewport_width * n;
 		}
 
 		/**
