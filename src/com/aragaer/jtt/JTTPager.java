@@ -20,7 +20,7 @@ public class JTTPager extends LinearLayout implements RadioGroup.OnCheckedChange
 	private RadioGroup.LayoutParams btnlp;
 
 	public void onCheckedChanged(RadioGroup group, int checkedId) {
-		scrollview.scrollToScreen(checkedId);
+		scrollview.trySmoothScrollToScreen(checkedId);
 	}
 
 	public JTTPager(Context context) {
@@ -158,7 +158,7 @@ public class JTTPager extends LinearLayout implements RadioGroup.OnCheckedChange
 		 * Smooth scroll to screen unless screen is currently touched
 		 * @param num - Number of screen to scroll to
 		 */
-		public void scrollToScreen(int num) {
+		public void trySmoothScrollToScreen(int num) {
 			if (!touch)
 				smoothScrollTo(n2x(num), 0);
 		}
