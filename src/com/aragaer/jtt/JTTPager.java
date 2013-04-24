@@ -67,6 +67,10 @@ public class JTTPager extends LinearLayout implements RadioGroup.OnCheckedChange
 		return id;
 	}
 
+	/**
+	 * Highlight the screen name and try to scroll to it
+	 * @param num - Number of screen
+	 */
 	protected void selectScreen(int num) {
 		tablist.check(num);
 	}
@@ -150,6 +154,10 @@ public class JTTPager extends LinearLayout implements RadioGroup.OnCheckedChange
 				selectScreen(x2n(l));
 		}
 
+		/**
+		 * Smooth scroll to screen unless screen is currently touched
+		 * @param num - Number of screen to scroll to
+		 */
 		public void scrollToScreen(int num) {
 			if (!touch)
 				smoothScrollTo(n2x(num), 0);
