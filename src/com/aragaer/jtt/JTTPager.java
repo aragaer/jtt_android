@@ -12,12 +12,16 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-public class JTTPager extends LinearLayout {
+public class JTTPager extends LinearLayout implements RadioGroup.OnCheckedChangeListener {
 	private PageScroller scrollview;
 	private ScrollContents pageview;
 	private RadioGroup tablist;
 	int viewport_width;
 	private RadioGroup.LayoutParams btnlp;
+
+	public void onCheckedChanged(RadioGroup group, int checkedId) {
+		scrollview.scrollToScreen(checkedId);
+	}
 
 	public JTTPager(Context context) {
 		super(context);
@@ -27,11 +31,7 @@ public class JTTPager extends LinearLayout {
 		scrollview.addView(pageview);
 
 		tablist = new RadioGroup(context);
-		tablist.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				scrollview.scrollToScreen(checkedId);
-			}
-		});
+		tablist.setOnCheckedChangeListener(this);
 		setPadding(5, 5, 5, 5);
 
 		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
