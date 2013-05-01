@@ -37,6 +37,7 @@ public class ClockView extends ViewGroup {
 		f -= f % granularity;
 		if (hn == n && hf == f)
 			return; // do nothing
+		hn = n;
 		wadokei.set_hour(n, f);
 		text.setText(vertical ? hs.getHrOf(n) : hs.getHour(n));
 	}
