@@ -2,6 +2,8 @@ package com.aragaer.jtt;
 
 import java.util.HashMap;
 
+import com.aragaer.jtt.graphics.WadokeiDraw;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -158,7 +160,7 @@ public class JTTWidgetProvider {
 	/* Widget showing 12 hours */
 	public static class Widget12 extends JTTWidget {
 		static JTTUtil.StringsHelper hs;
-		static JTTClockView jcv;
+		static WadokeiDraw wd;
 		static int size;
 		final Matrix m = new Matrix();
 		private static Bitmap bmp;
@@ -168,13 +170,13 @@ public class JTTWidgetProvider {
 		}
 
 		protected void hour_changed(int n) {
-			jcv.prepare_dial(n);
+			wd.prepare_glyphs(n);
 		}
 
 		protected void fill_rv(RemoteViews rv, JTTHour h) {
 			final int n = h.num, f = h.fraction;
-			jcv.draw_dial(n, f);
-			jcv.draw_arrow();
+			bmp.eraseColor(Color.TRANSPARENT);
+			wd.draw_dial(n, f, new Canvas(bmp));
 
 			rv.setImageViewBitmap(R.id.clock, bmp);
 			rv.setFloat(R.id.glyph, "setTextSize", size / 10);
@@ -185,12 +187,11 @@ public class JTTWidgetProvider {
 			if (hs != null)
 				return;
 			hs = JTTUtil.getStringsHelper(c);
-			jcv = new JTTClockView(c);
+			wd = new WadokeiDraw(c);
 			size = Math.round(110 * c.getResources().getDisplayMetrics().density);
 
 			bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
-			jcv.setBitmap(bmp);
-			jcv.set_dial_size(size);
+			wd.set_dial_size(size);
 		}
 	}
 }
