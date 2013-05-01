@@ -18,7 +18,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
-public class JTTClockView extends View {
+public class ClockView extends View {
 	private final static int step = 360 / 12;
 	private final static float gap = 1.5f;
 	private final Paint stroke1 = new Paint(0x07),
@@ -38,7 +38,7 @@ public class JTTClockView extends View {
 	Condition need_update = cache_lock.newCondition();
 	boolean update_all = true;
 
-	public JTTClockView(Context context) {
+	public ClockView(Context context) {
 		super(context);
 		hs = JTTUtil.getStringsHelper(context);
 		setupPaint(context);

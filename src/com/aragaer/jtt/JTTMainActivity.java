@@ -17,7 +17,7 @@ import android.widget.ListView;
 public class JTTMainActivity extends ActivityGroup {
     private final static String TAG = "jtt main";
 
-    private JTTClockView clock;
+    private ClockView clock;
     private JTTPager pager;
     private TodayAdapter today;
 
@@ -65,7 +65,7 @@ public class JTTMainActivity extends ActivityGroup {
 
         pager = new JTTPager(this);
 
-        clock = new JTTClockView(this);
+        clock = new ClockView(this);
         pager.addTab(clock, R.string.clock);
 
         ListView today_list = new ListView(this);

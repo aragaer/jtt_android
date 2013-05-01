@@ -158,7 +158,7 @@ public class JTTWidgetProvider {
 	/* Widget showing 12 hours */
 	public static class Widget12 extends JTTWidget {
 		static JTTUtil.StringsHelper hs;
-		static JTTClockView jcv;
+		static ClockView jcv;
 		static int size;
 		final Matrix m = new Matrix();
 		private static Bitmap bmp;
@@ -185,7 +185,7 @@ public class JTTWidgetProvider {
 			if (hs != null)
 				return;
 			hs = JTTUtil.getStringsHelper(c);
-			jcv = new JTTClockView(c);
+			jcv = new ClockView(c);
 			size = Math.round(110 * c.getResources().getDisplayMetrics().density);
 
 			bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
