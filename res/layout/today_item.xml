@@ -8,13 +8,15 @@
         android:layout_width="20dip"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:gravity="center" />
+        android:gravity="center"
+        android:textIsSelectable="false" />
 
     <TextView
         android:id="@+id/time"
         android:layout_width="@dimen/today_time_width"
         android:layout_height="wrap_content"
-        android:gravity="right" />
+        android:gravity="right"
+        android:textIsSelectable="false" />
 
     <TextView
         android:id="@+id/glyph"
@@ -23,17 +25,20 @@
         android:gravity="center"
         android:textSize="20dp"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"/>
+        android:layout_marginRight="5dp"
+        android:textIsSelectable="false" />
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textIsSelectable="false" />
 
     <TextView
         android:id="@+id/extra"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="right" />
+        android:gravity="right"
+        android:textIsSelectable="false" />
 
 </LinearLayout>

@@ -19,6 +19,7 @@
         android:textColor="@color/tab"
         android:shadowColor="@android:color/black"
         android:shadowRadius="3.0"
-        android:textSize="40dp" />
+        android:textSize="40dp"
+        android:textIsSelectable="false" />
 
 </RelativeLayout>

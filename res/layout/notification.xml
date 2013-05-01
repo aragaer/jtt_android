@@ -10,7 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:textIsSelectable="false" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -22,15 +23,17 @@
             style="@style/NotificationTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true" />
+            android:layout_alignParentLeft="true"
+            android:textIsSelectable="false" />
 
         <TextView
             android:id="@+id/percent"
             style="@style/NotificationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/title"
             android:paddingLeft="10dip"
-            android:layout_toRightOf="@id/title" />
+            android:textIsSelectable="false" />
 
         <TextView
             android:id="@+id/start"
@@ -38,29 +41,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@id/title" />
+            android:layout_below="@id/title"
+            android:textIsSelectable="false" />
 
         <TextView
             android:id="@+id/end"
             style="@style/NotificationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_below="@id/title"
-            android:layout_alignParentRight="true" />
-        
+            android:textIsSelectable="false" />
+
         <ProgressBar
             android:id="@+id/fraction"
             android:layout_width="fill_parent"
             android:layout_height="15dip"
-            android:layout_toRightOf="@id/start"
+            android:layout_below="@id/title"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/end"
+            android:layout_toRightOf="@id/start"
             android:indeterminate="false"
             android:indeterminateOnly="false"
-            android:layout_below="@id/title"
             android:padding="4dip"
-            android:layout_centerVertical="true"
             android:progressDrawable="@android:drawable/progress_horizontal" />
-
     </RelativeLayout>
 
 </RelativeLayout>
