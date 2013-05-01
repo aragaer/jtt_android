@@ -23,7 +23,7 @@ public class StringResources implements
 	private final Context c;
 	private final Resources r;
 	private String Hours[], HrOf[];
-	private static DateFormat df;
+	private DateFormat df;
 	private int hour_name_option;
 
 	protected StringResources(final Context context) {
