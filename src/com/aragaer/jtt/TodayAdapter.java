@@ -102,7 +102,8 @@ class DayItem extends TodayItem {
 	}
 }
 
-public class TodayAdapter extends ArrayAdapter<TodayItem> {
+public class TodayAdapter extends ArrayAdapter<TodayItem> implements
+		StringResources.StringResourceChangeListener {
 	private static final String TAG = TodayAdapter.class.getSimpleName();
 	private LinkedList<Long> transitions = new LinkedList<Long>();
 	private long prev_transition, next_transition;
@@ -115,6 +116,9 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 
 	public TodayAdapter(Context c, int layout_id) {
 		super(c, layout_id);
+		RuntimeResources.get(c).getInstance(StringResources.class)
+				.registerStringResourceChangeListener(this,
+						StringResources.TYPE_HOUR_NAME | StringResources.TYPE_TIME_FORMAT);
 		HourItem.extras = DayItem.daynames = null;
 	}
 
@@ -306,5 +310,9 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 	@Override
 	public boolean isEnabled(int pos) {
 		return false;
+	}
+
+	public void onStringResourcesChanged(int changes) {
+		notifyDataSetChanged();
 	}
 }
