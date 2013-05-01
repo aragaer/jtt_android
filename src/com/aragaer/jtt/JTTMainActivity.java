@@ -61,8 +61,6 @@ public class JTTMainActivity extends ActivityGroup {
         final Intent service = new Intent(this, JTTService.class);
         startService(service);
 
-        JTTUtil.initLocale(this);
-
         pager = new JTTPager(this);
 
         clock = new ClockView(this);

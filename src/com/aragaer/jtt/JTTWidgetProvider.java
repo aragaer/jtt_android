@@ -3,6 +3,8 @@ package com.aragaer.jtt;
 import java.util.HashMap;
 
 import com.aragaer.jtt.graphics.WadokeiDraw;
+import com.aragaer.jtt.resources.RuntimeResources;
+import com.aragaer.jtt.resources.StringResources;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -14,7 +16,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -45,7 +46,6 @@ public class JTTWidgetProvider {
 
 		public void onReceive(Context c, Intent i) {
 			final String action = i.getAction();
-			JTTUtil.initLocale(c);
 			init(c);
 			inverse = PreferenceManager.getDefaultSharedPreferences(c)
 					.getBoolean("jtt_widget_text_invert", false);
@@ -159,10 +159,9 @@ public class JTTWidgetProvider {
 
 	/* Widget showing 12 hours */
 	public static class Widget12 extends JTTWidget {
-		static JTTUtil.StringsHelper hs;
+		static StringResources sr;
 		static WadokeiDraw wd;
 		static int size;
-		final Matrix m = new Matrix();
 		private static Bitmap bmp;
 
 		public Widget12() {
@@ -180,13 +179,13 @@ public class JTTWidgetProvider {
 
 			rv.setImageViewBitmap(R.id.clock, bmp);
 			rv.setFloat(R.id.glyph, "setTextSize", size / 10);
-			rv.setTextViewText(R.id.glyph, hs.getHour(n));
+			rv.setTextViewText(R.id.glyph, sr.getHour(n));
 		}
 
 		protected void init(Context c) {
-			if (hs != null)
+			if (sr != null)
 				return;
-			hs = JTTUtil.getStringsHelper(c);
+			sr = RuntimeResources.get(c).getInstance(StringResources.class);
 			wd = new WadokeiDraw(c);
 			size = Math.round(110 * c.getResources().getDisplayMetrics().density);
 

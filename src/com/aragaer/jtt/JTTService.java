@@ -4,6 +4,10 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.aragaer.jtt.resources.RuntimeResources;
+import com.aragaer.jtt.resources.StringResources;
+import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,7 +27,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-public class JTTService extends Service {
+public class JTTService extends Service implements StringResourceChangeListener {
     public final static String TICK_ACTION = "com.aragaer.jtt.ACTION_JTT_TICK";
     private static final String TAG = JTTService.class.getSimpleName();
     private final JTT calculator = new JTT(0, 0);
@@ -33,7 +37,7 @@ public class JTTService extends Service {
     private static final int APP_ID = 0;
 
     private PendingIntent pending_main;
-    private JTTUtil.StringsHelper hs = null;
+    private StringResources sr = null;
 
     private boolean notify, force_stop = false;
     private static Notification notification;
@@ -74,7 +78,6 @@ public class JTTService extends Service {
             switch (msg.what) {
             case MSG_SETTINGS_CHANGE:
                 s.notify = msg.getData().getBoolean("notify", s.notify);
-                JTTUtil.changeLocale(s, msg.getData().getString("locale"));
                 if (s.notify)
                     s.notify_helper(s.hour, s.sub);
                 else
@@ -158,7 +161,7 @@ public class JTTService extends Service {
         notification.flags = flags_ongoing;
         notification.iconLevel = hn;
         rv.setTextViewText(R.id.image, JTTHour.Glyphs[hn]);
-        rv.setTextViewText(R.id.title, hs.getHrOf(hn));
+        rv.setTextViewText(R.id.title, sr.getHrOf(hn));
         rv.setTextViewText(R.id.percent, String.format("%d%%", hf));
         rv.setProgressBar(R.id.fraction, 100, hf, false);
         rv.setTextViewText(R.id.start, t_start);
@@ -203,14 +206,16 @@ public class JTTService extends Service {
     @Override
     public void onStart(Intent intent, int startid) {
         Log.d(TAG, "Service starting");
-        if (hs == null) // first run
+        if (sr == null) // first run
             init();
     }
 
     private void init() {
         Log.d(TAG, "Service initializing");
-        JTTUtil.initLocale(this);
-        hs = JTTUtil.getStringsHelper(this);
+        sr = RuntimeResources.get(this).getInstance(StringResources.class);
+		sr.registerStringResourceChangeListener(this,
+				StringResources.TYPE_HOUR_NAME
+						| StringResources.TYPE_TIME_FORMAT);
         SharedPreferences settings = PreferenceManager
                 .getDefaultSharedPreferences(getBaseContext());
         String[] ll = settings.getString("jtt_loc", "0.0:0.0").split(":");
@@ -337,8 +342,8 @@ public class JTTService extends Service {
                 || now < sync) {          // time went backwards!
             hour = exp_tick + isDay * 6;
             sub = exp_sub;
-            t_start = JTTUtil.format_time(start + (end - start) * exp_tick / ticks);
-            t_end = JTTUtil.format_time(start + (end - start) * (exp_tick + 1) / ticks);
+            t_start = sr.format_time(start + (end - start) * exp_tick / ticks);
+            t_end = sr.format_time(start + (end - start) * (exp_tick + 1) / ticks);
             doNotify(hour, sub, MSG_HOUR);
         } else if (sub < exp_sub) {
             if (hour % 6 != exp_tick) { // sync should belong to this tick interval
@@ -370,4 +375,9 @@ public class JTTService extends Service {
         sync = 0;
         wake_up();
     }
+
+	public void onStringResourcesChanged(final int changes) {
+        if (notify)
+            notify_helper(hour, sub);
+	}
 }
