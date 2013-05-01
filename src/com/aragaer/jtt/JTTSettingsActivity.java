@@ -19,10 +19,11 @@ import android.util.Log;
 
 public class JTTSettingsActivity extends PreferenceActivity {
 	public static final String PREF_LOCATION = "jtt_loc";
+	public static final String PREF_LOCALE = "jtt_locale";
     public final static String JTT_SETTINGS_CHANGED = "com.aragaer.jtt.ACTION_JTT_SETTINGS";
     private final static String TAG = "jtt settings";
 
-    private static final String prefcodes[] = new String[] {PREF_LOCATION, "jtt_notify", "jtt_widget_text_invert", "jtt_locale", "jtt_theme"};
+    private static final String prefcodes[] = new String[] {PREF_LOCATION, "jtt_notify", "jtt_widget_text_invert", PREF_LOCALE, "jtt_theme"};
     private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 
     final OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
@@ -80,7 +81,7 @@ public class JTTSettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.layout.preferences);
-        ListPreference pref_locale = (ListPreference) findPreference("jtt_locale");
+        ListPreference pref_locale = (ListPreference) findPreference(PREF_LOCALE);
 
         Log.d(TAG, "settings created");
 

@@ -27,7 +27,7 @@ public final class JTTUtil {
 
 	public static final void initLocale(Context c) {
 		changeLocale(c.getApplicationContext(), PreferenceManager
-				.getDefaultSharedPreferences(c).getString("jtt_locale", ""));
+				.getDefaultSharedPreferences(c).getString(JTTSettingsActivity.PREF_LOCALE, ""));
 	}
 
 	public static final void changeLocale(Context c, String l) {
