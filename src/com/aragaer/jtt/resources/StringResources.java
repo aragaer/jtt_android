@@ -24,12 +24,14 @@ public class StringResources implements
 	private final Resources r;
 	private String Hours[], HrOf[];
 	private static DateFormat df;
+	private int hour_name_option;
 
 	protected StringResources(final Context context) {
 		c = context;
 		r = new Resources(c.getAssets(), null, null);
 		final SharedPreferences pref = PreferenceManager
 				.getDefaultSharedPreferences(c);
+		hour_name_option = Integer.parseInt(pref.getString(JTTSettingsActivity.PREF_HNAME, "0"));
 		setLocale(pref.getString(JTTSettingsActivity.PREF_LOCALE, ""));
 		pref.registerOnSharedPreferenceChangeListener(this);
 	}
@@ -45,13 +47,16 @@ public class StringResources implements
 		load_hour_names();
 		df = android.text.format.DateFormat.getTimeFormat(c);
 		change_pending |= TYPE_TIME_FORMAT;
-
-		notifyChange();
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
 		if (key.equals(JTTSettingsActivity.PREF_LOCALE))
 			setLocale(pref.getString(key, ""));
+		else if (key.equals(JTTSettingsActivity.PREF_HNAME)) {
+			hour_name_option = Integer.parseInt(pref.getString(key, "0"));
+			load_hour_names();
+		}
+		notifyChange();
 	}
 
 	public String getHour(final int num) {
@@ -85,9 +90,12 @@ public class StringResources implements
 		change_pending = 0;
 	}
 
+	private static final int hnh[] = { R.array.hour, R.array.romaji_hour, R.array.hiragana_hour };
+	private static final int hnhof[] = { R.array.hour_of, R.array.romaji_hour_of, R.array.hiragana_hour_of };
+
 	private void load_hour_names() {
-		HrOf = r.getStringArray(R.array.hour_of);
-		Hours = r.getStringArray(R.array.hour);
+		HrOf = r.getStringArray(hnhof[hour_name_option]);
+		Hours = r.getStringArray(hnh[hour_name_option]);
 		change_pending |= TYPE_HOUR_NAME;
 	}
 
