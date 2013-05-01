@@ -28,6 +28,14 @@
     <string name="day_prev">Вчера</string>
     <string name="day_curr">Сегодня</string>
     <string name="day_next">Завтра</string>
+    <string name="hour_names">Названия часов</string>
+
+    <string-array name="hour_name_option_names">
+        <item>По-умолчанию</item>
+        <item>Ромадзи</item>
+        <item>Хирагана</item>
+    </string-array>
+
     <plurals name="days_past">
         <item quantity="one">%d день назад</item>
         <item quantity="few">%d дня назад</item>
@@ -77,7 +85,6 @@
     <string name="locale">Язык - Русский</string>
     <string name="locale_ex">Нажмите, чтобы изменить язык</string>
     <string name="locale_default">Язык системы</string>
-
 
     <string-array name="theme_names">
         <item>Полурозрачный</item>

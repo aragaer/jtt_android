@@ -42,8 +42,14 @@
             android:entries="@array/locales"
             android:entryValues="@array/locales"
             android:key="jtt_locale"
-            android:summary="@string/locale_ex"
             android:title="@string/locale" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/hour_name_option_names"
+            android:entryValues="@array/hour_name_options"
+            android:key="jtt_hname"
+            android:title="@string/hour_names" />
 
         <ListPreference
             android:defaultValue="@string/theme_default"

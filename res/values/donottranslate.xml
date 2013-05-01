@@ -10,6 +10,68 @@
         <item>0</item>
         <item>1</item>
     </string-array>
+    <string-array name="hour_name_options">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="romaji_hour">
+        <item>Tori</item>
+        <item>Inu</item>
+        <item>I</item>
+        <item>Ne</item>
+        <item>Ushi</item>
+        <item>Tora</item>
+        <item>U</item>
+        <item>Tatsu</item>
+        <item>Mi</item>
+        <item>Uma</item>
+        <item>Hitsuji</item>
+        <item>Saru</item>
+    </string-array>
+    <string-array name="romaji_hour_of">
+        <item>Tori no koku</item>
+        <item>Inu no koku</item>
+        <item>I no koku</item>
+        <item>Ne no koku</item>
+        <item>Ushi no koku</item>
+        <item>Tora no koku</item>
+        <item>U no koku</item>
+        <item>Tatsu no koku</item>
+        <item>Mi no koku</item>
+        <item>Uma no koku</item>
+        <item>Hitsuji no koku</item>
+        <item>Saru no koku</item>
+    </string-array>
+    <string-array name="hiragana_hour">
+        <item>とり</item>
+        <item>いぬ</item>
+        <item>い</item>
+        <item>ね</item>
+        <item>うし</item>
+        <item>とら</item>
+        <item>う</item>
+        <item>たつ</item>
+        <item>み</item>
+        <item>うま</item>
+        <item>ひつじ</item>
+        <item>さる</item>
+    </string-array>
+    <string-array name="hiragana_hour_of">
+        <item>とりのこく</item>
+        <item>いぬのこく</item>
+        <item>いのこく</item>
+        <item>ねのこく</item>
+        <item>うしのこく</item>
+        <item>とらのこく</item>
+        <item>うのこく</item>
+        <item>たつのこく</item>
+        <item>みのこく</item>
+        <item>うまのこく</item>
+        <item>ひつじのこく</item>
+        <item>さるのこく</item>
+    </string-array>
 
     <string name="theme_default">0</string>
 
