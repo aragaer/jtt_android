@@ -82,8 +82,7 @@
     <string name="widget12">JTT: Циферблат</string>
     <string name="widget_invert">Белый текст в виджете</string>
     <string name="widget_invert_ex">Использовать белый текст с черным контуром</string>
-    <string name="locale">Язык - Русский</string>
-    <string name="locale_ex">Нажмите, чтобы изменить язык</string>
+    <string name="locale">Язык</string>
     <string name="locale_default">Язык системы</string>
 
     <string-array name="theme_names">
@@ -92,4 +91,5 @@
     </string-array>
 
     <string name="pref_theme">Стиль оформления</string>
+
 </resources>

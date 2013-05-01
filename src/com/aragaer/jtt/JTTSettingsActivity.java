@@ -29,9 +29,6 @@ public class JTTSettingsActivity extends PreferenceActivity {
 
     final OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-			final ListPreference lp = preference instanceof ListPreference
-					? (ListPreference) preference
-					: null;
             Bundle b = new Bundle();
             Intent i = new Intent(JTT_SETTINGS_CHANGED);
             int code = listeners.get(preference.getKey());
@@ -49,8 +46,9 @@ public class JTTSettingsActivity extends PreferenceActivity {
                 i.putExtra("locale", (String) newValue);
                 break;
             case 5:
-                i.putExtra("hname", (String) newValue);
-                lp.setSummary(lp.getEntry());
+						final ListPreference lp = (ListPreference) preference;
+						i.putExtra("hname", (String) newValue);
+						lp.setSummary(lp.getEntries()[lp.findIndexOfValue((String) newValue)]);
                 break;
             default:
                 break;
@@ -92,11 +90,6 @@ public class JTTSettingsActivity extends PreferenceActivity {
 
         Log.d(TAG, "settings created");
 
-        for (int i = 0; i < prefcodes.length; i++) {
-            listeners.put(prefcodes[i], i);
-            ((Preference) findPreference(prefcodes[i])).setOnPreferenceChangeListener(listener);
-        }
-
         final CharSequence[] llist = pref_locale.getEntryValues();
         final CharSequence[] lnames = new CharSequence[llist.length];
         lnames[0] = getString(R.string.locale_default);
@@ -117,8 +110,15 @@ public class JTTSettingsActivity extends PreferenceActivity {
             }
         });
 
-        final ListPreference pref_hn = (ListPreference) findPreference(PREF_HNAME);
-        pref_hn.setSummary(pref_hn.getEntry());
+		for (int i = 0; i < prefcodes.length; i++) {
+			listeners.put(prefcodes[i], i);
+			final Preference pref = (Preference) findPreference(prefcodes[i]);
+			pref.setOnPreferenceChangeListener(listener);
+			if (pref instanceof ListPreference) {
+				final ListPreference lp = (ListPreference) pref;
+				lp.setSummary(lp.getEntry());
+			}
+		}
     }
 
     private final void doSendMessage(int what, Bundle data) {

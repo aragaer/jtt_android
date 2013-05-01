@@ -80,8 +80,7 @@
     <string name="widget12">JTT: Clock</string>
     <string name="widget_invert">Invert widget text color</string>
     <string name="widget_invert_ex">Use white text with black border</string>
-    <string name="locale">Language - English</string>
-    <string name="locale_ex">Tap to change language</string>
+    <string name="locale">Language</string>
     <string name="locale_default">Default</string>
 
     <string-array name="theme_names">
