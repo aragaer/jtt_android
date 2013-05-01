@@ -43,7 +43,7 @@ public class JTTSettingsActivity extends PreferenceActivity {
                 break;
             case 3:
                 i.putExtra("locale", (String) newValue);
-                b.putString("locale", (String) newValue);
+                break;
             default:
                 break;
             }
@@ -59,9 +59,7 @@ public class JTTSettingsActivity extends PreferenceActivity {
                 sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
                 break;
             case 3:
-                doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
                 sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
-                JTTUtil.changeLocale(getApplicationContext(), (String) newValue);
                 /* fall-through */
             case 4:
                 i = getParent().getIntent();
