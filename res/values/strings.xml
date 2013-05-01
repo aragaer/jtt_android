@@ -28,6 +28,13 @@
     <string name="day_prev">Yesterday</string>
     <string name="day_curr">Today</string>
     <string name="day_next">Tomorrow</string>
+    <string name="hour_names">Hour names</string>
+
+    <string-array name="hour_name_option_names">
+        <item>Default</item>
+        <item>Romaji</item>
+        <item>Hiragana</item>
+    </string-array>
 
     <plurals name="days_past">
         <item quantity="one">%d day ago</item>
