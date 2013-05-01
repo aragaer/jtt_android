@@ -20,14 +20,18 @@ import android.util.Log;
 public class JTTSettingsActivity extends PreferenceActivity {
 	public static final String PREF_LOCATION = "jtt_loc";
 	public static final String PREF_LOCALE = "jtt_locale";
+	public static final String PREF_HNAME = "jtt_hname";
     public final static String JTT_SETTINGS_CHANGED = "com.aragaer.jtt.ACTION_JTT_SETTINGS";
     private final static String TAG = "jtt settings";
 
-    private static final String prefcodes[] = new String[] {PREF_LOCATION, "jtt_notify", "jtt_widget_text_invert", PREF_LOCALE, "jtt_theme"};
+    private static final String prefcodes[] = new String[] {PREF_LOCATION, "jtt_notify", "jtt_widget_text_invert", PREF_LOCALE, "jtt_theme", PREF_HNAME};
     private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 
     final OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
         public boolean onPreferenceChange(Preference preference, Object newValue) {
+			final ListPreference lp = preference instanceof ListPreference
+					? (ListPreference) preference
+					: null;
             Bundle b = new Bundle();
             Intent i = new Intent(JTT_SETTINGS_CHANGED);
             int code = listeners.get(preference.getKey());
@@ -44,6 +48,10 @@ public class JTTSettingsActivity extends PreferenceActivity {
             case 3:
                 i.putExtra("locale", (String) newValue);
                 break;
+            case 5:
+                i.putExtra("hname", (String) newValue);
+                lp.setSummary(lp.getEntry());
+                break;
             default:
                 break;
             }
@@ -56,6 +64,7 @@ public class JTTSettingsActivity extends PreferenceActivity {
                 doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
                 break;
             case 2:
+            case 5:
                 sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
                 break;
             case 3:
@@ -107,6 +116,9 @@ public class JTTSettingsActivity extends PreferenceActivity {
                 return false;
             }
         });
+
+        final ListPreference pref_hn = (ListPreference) findPreference(PREF_HNAME);
+        pref_hn.setSummary(pref_hn.getEntry());
     }
 
     private final void doSendMessage(int what, Bundle data) {
