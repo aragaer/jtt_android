@@ -3,6 +3,8 @@ package com.aragaer.jtt;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.aragaer.jtt.graphics.Paints;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -21,11 +23,8 @@ import android.view.View;
 public class ClockView extends View {
 	private final static int step = 360 / 12;
 	private final static float gap = 1.5f;
-	private final Paint stroke1 = new Paint(0x07),
-			stroke2 = new Paint(0x07),
-			solid1 = new Paint(0x01),
-			solid2 = new Paint(0x01),
-			cache_paint = new Paint(0x07);
+	private final Paints paints;
+	private final Paint stroke1, stroke2, solid2, cache_paint = new Paint(0x07);
 	private Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // make it non-null
 	private Bitmap cache = Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565); // same
 	private final Canvas cache_canvas = new Canvas(), clock_canvas = new Canvas();
@@ -41,7 +40,10 @@ public class ClockView extends View {
 	public ClockView(Context context) {
 		super(context);
 		hs = JTTUtil.getStringsHelper(context);
-		setupPaint(context);
+		paints = Paints.getInstance(context);
+		stroke1 = new Paint(paints.stroke1);
+		stroke2 = new Paint(paints.stroke2);
+		solid2 = new Paint(paints.solid2);
 	}
 
 	int size, ox, oy, hx, hy, cox, coy;
@@ -104,7 +106,7 @@ public class ClockView extends View {
 		path.rLineTo(-size / 20, selR - size);
 		path.rLineTo(size / 10, 0);
 		path.close();
-		cache_canvas.drawPath(path, solid1);
+		cache_canvas.drawPath(path, paints.solid1);
 		cache_canvas.drawPath(path, stroke1);
 		cache_lock.unlock();
 		invalidate(ox + size * 19 / 20, oy - 3, ox + size * 21 / 20 + 1, oy + size - selR);
@@ -159,7 +161,7 @@ public class ClockView extends View {
 		path.addCircle(ox + size, oy + size, oR, Path.Direction.CW);
 		path.addCircle(ox + size, oy + size, iR, Path.Direction.CCW);
 		cache_canvas.clipRect(clock_area, Op.REPLACE);
-		cache_canvas.drawPath(path, solid1);
+		cache_canvas.drawPath(path, paints.solid1);
 		cache_canvas.drawPath(path, stroke1);
 		cache_lock.unlock();
 		circle_drawn = true;
@@ -169,24 +171,6 @@ public class ClockView extends View {
 
 	protected void onDraw(Canvas canvas) {
 		canvas.drawBitmap(cache, 0, 0, null);
-	}
-
-	private final void setupPaint(Context ctx) {
-		stroke1.setStyle(Paint.Style.STROKE);
-		stroke1.setTextAlign(Paint.Align.CENTER);
-		stroke1.setColor(Color.parseColor(ctx.getString(R.color.stroke)));
-
-		stroke2.setTextAlign(Paint.Align.CENTER);
-		stroke2.setStyle(Paint.Style.STROKE);
-		stroke2.setColor(Color.WHITE);
-
-		solid1.setStyle(Paint.Style.FILL);
-		solid1.setTextAlign(Paint.Align.CENTER);
-		solid1.setColor(Color.parseColor(ctx.getString(R.color.fill)));
-
-		solid2.setStyle(Paint.Style.FILL);
-		solid2.setTextAlign(Paint.Align.CENTER);
-		solid2.setColor(Color.parseColor(ctx.getString(R.color.night)));
 	}
 
 	final Path path = new Path();
@@ -208,10 +192,10 @@ public class ClockView extends View {
 
 		clock_canvas.rotate(-step / 2, size, size);
 		clock_canvas.translate(-iR * 0.75f, 0);
-		clock_canvas.drawArc(sun, 0, 360, false, solid1);
+		clock_canvas.drawArc(sun, 0, 360, false, paints.solid1);
 		clock_canvas.drawArc(sun, 0, 360, false, stroke1);
 		clock_canvas.rotate(90, size + iR * 0.75f, size);
-		clock_canvas.drawArc(sun, 0, 180, false, solid1);
+		clock_canvas.drawArc(sun, 0, 180, false, paints.solid1);
 		clock_canvas.drawArc(sun, 180, 180, false, solid2);
 		clock_canvas.drawArc(sun, 0, 360, false, stroke1);
 		clock_canvas.drawLine(size - sR, size, size + sR, size, stroke1);
@@ -219,7 +203,7 @@ public class ClockView extends View {
 		clock_canvas.drawArc(sun, 0, 360, false, solid2);
 		clock_canvas.drawArc(sun, 0, 360, false, stroke1);
 		clock_canvas.rotate(90, size + iR * 0.75f, size);
-		clock_canvas.drawArc(sun, 180, 180, false, solid1);
+		clock_canvas.drawArc(sun, 180, 180, false, paints.solid1);
 		clock_canvas.drawArc(sun, 0, 180, false, solid2);
 		clock_canvas.drawArc(sun, 0, 360, false, stroke1);
 		clock_canvas.drawLine(size - sR, size, size + sR, size, stroke1);
@@ -233,7 +217,7 @@ public class ClockView extends View {
 			path.addArc(inner, arc_start, arc_len);
 			path.arcTo(current ? sel : outer, arc_end, -arc_len);
 			path.close();
-			clock_canvas.drawPath(path, solid1);
+			clock_canvas.drawPath(path, paints.solid1);
 			clock_canvas.drawPath(path, stroke1);
 
 			final float glyph_y = size - iR - (current ? 5 : 4) * thick / 9;
