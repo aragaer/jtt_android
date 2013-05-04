@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class ClockView extends ViewGroup implements StringResources.StringResourceChangeListener {
-	private int hn = -1, hf;
+	private int hn, hf;
 	private final StringResources sr;
 	private final TextView text;
 	private final WadokeiView wadokei;
@@ -74,7 +74,7 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 		}
 	}
 
-	public void onStringResourcesChanged(int changes) {
+	public void onStringResourcesChanged(final int changes) {
 		text.setText(vertical ? sr.getHrOf(hn) : sr.getHour(hn));
 	}
 }
