@@ -54,7 +54,7 @@ public class WadokeiDraw {
 		sun_stages = Bitmap.createBitmap(iR * 2, iR * 2, Bitmap.Config.ARGB_8888);
 
 		final Canvas canvas = new Canvas(sun_stages);
-		canvas.rotate(step / 2, iR, iR);
+		canvas.rotate(-step / 2, iR, iR);
 
 		canvas.drawArc(sun, 0, 360, false, paints.solid1);
 		canvas.drawArc(sun, 0, 360, false, paints.stroke1);
@@ -127,7 +127,7 @@ public class WadokeiDraw {
 		clock_matrix.setRotate(clock_angle, size, size);
 
 		sun_matrix.setTranslate(size - iR, size - iR);
-		sun_matrix.preRotate(clock_angle, iR, iR);
+		sun_matrix.preRotate(angle, iR, iR);
 
 		glyph_matrix.setTranslate(size / 5, size / 5);
 		glyph_matrix.preRotate(angle, size * 4 / 5, size * 4 / 5);
