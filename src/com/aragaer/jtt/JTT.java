@@ -1,16 +1,16 @@
 package com.aragaer.jtt;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 
-import android.support.v4.util.LongSparseArray;
-
 public class JTT {
-	LongSparseArray<long[]> cache = new LongSparseArray<long[]>();
+	private final Map<Long, long[]> cache = new HashMap<Long, long[]>();
 	SunriseSunsetCalculator calculator;
 
 	public JTT(float lat, float lon) {
