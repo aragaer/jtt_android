@@ -40,7 +40,7 @@ public class WadokeiDraw {
 		prepare_sun_stages();
 		prepare_dial();
 		glyphs.recycle();
-		glyphs = Bitmap.createBitmap(size * 8 / 5, size * 8 / 5, Bitmap.Config.ARGB_8888);
+		glyphs = Bitmap.createBitmap(size * 8 / 5, size * 8 / 5, Bitmap.Config.ARGB_4444);
 	}
 
 	final static int arc_start = -90 - Math.round(step / 2 - gap);
@@ -51,7 +51,7 @@ public class WadokeiDraw {
 		final RectF sun = new RectF(iR * 0.05f, iR * 0.8f, iR * 0.45f, iR * 1.2f);
 
 		sun_stages.recycle();
-		sun_stages = Bitmap.createBitmap(iR * 2, iR * 2, Bitmap.Config.ARGB_8888);
+		sun_stages = Bitmap.createBitmap(iR * 2, iR * 2, Bitmap.Config.ARGB_4444);
 
 		final Canvas canvas = new Canvas(sun_stages);
 		canvas.rotate(-step / 2, iR, iR);
@@ -80,7 +80,7 @@ public class WadokeiDraw {
 		final Path path = new Path();
 
 		clock.recycle();
-		clock = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
+		clock = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_4444);
 
 		final Canvas canvas = new Canvas(clock);
 
