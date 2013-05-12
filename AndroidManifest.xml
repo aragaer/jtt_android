@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aragaer.jtt"
-    android:versionCode="16"
-    android:versionName="1.4.2.2" >
+    android:versionCode="17"
+    android:versionName="1.4.2.3" >
 
     <uses-sdk android:minSdkVersion="6"
         android:targetSdkVersion="17"/>
@@ -36,8 +36,7 @@
 
         <service
             android:name=".JTTService"
-            android:exported="false"
-            android:process=":remote" />
+            android:exported="false" />
         <receiver android:name=".JTTService$JTTStartupReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

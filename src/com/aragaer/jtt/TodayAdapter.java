@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.TimeZone;
 
+import com.aragaer.jtt.resources.RuntimeResources;
+import com.aragaer.jtt.resources.StringResources;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,24 +28,20 @@ class HourItem extends TodayItem {
 	public static int current;
 	public static long next_transition;
 	public final int hnum;
-	public final String date;
 
 	public HourItem(long t, int h) {
 		super(t);
 		hnum = h % 12;
-		date = JTTUtil.format_time(t);
 	}
 
-	static String[] extras = null, hours = null;
+	static String[] extras = null;
 
 	public View toView(Context c) {
 		if (extras == null) {
-			JTTUtil.initLocale(c);
 			extras = new String[] { c.getString(R.string.sunset), "", "",
 					c.getString(R.string.midnight), "", "",
 					c.getString(R.string.sunrise), "", "",
 					c.getString(R.string.midday), "", "" };
-			hours = c.getResources().getStringArray(R.array.hour_of);
 
 		}
 		View v = View.inflate(c, R.layout.today_item, null);
@@ -51,9 +50,11 @@ class HourItem extends TodayItem {
 		boolean is_current = hnum == current
 				&& time < next_transition;
 
-		JTTUtil.t(v, R.id.time, date);
+		final StringResources sr = RuntimeResources.get(c).getInstance(StringResources.class);
+
+		JTTUtil.t(v, R.id.time, sr.format_time(time));
 		JTTUtil.t(v, R.id.glyph, JTTHour.Glyphs[hnum]);
-		JTTUtil.t(v, R.id.name, hours[hnum]);
+		JTTUtil.t(v, R.id.name, sr.getHrOf(hnum));
 		JTTUtil.t(v, R.id.extra, extras[hnum]);
 		JTTUtil.t(v, R.id.curr, is_current ? "▶" : "");
 
@@ -77,7 +78,6 @@ class DayItem extends TodayItem {
 	/* returns strings like "today" or "2 days ago" etc */
 	static String[] daynames = null;
 	private String dateToString(long date, Context c) {
-		JTTUtil.initLocale(c);
 		if (daynames == null)
 			daynames = new String[] { c.getString(R.string.day_next),
 				c.getString(R.string.day_curr),
@@ -102,7 +102,8 @@ class DayItem extends TodayItem {
 	}
 }
 
-public class TodayAdapter extends ArrayAdapter<TodayItem> {
+public class TodayAdapter extends ArrayAdapter<TodayItem> implements
+		StringResources.StringResourceChangeListener {
 	private static final String TAG = TodayAdapter.class.getSimpleName();
 	private LinkedList<Long> transitions = new LinkedList<Long>();
 	private long prev_transition, next_transition;
@@ -115,8 +116,10 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 
 	public TodayAdapter(Context c, int layout_id) {
 		super(c, layout_id);
-		JTTUtil.initLocale(c);
-		HourItem.extras = HourItem.hours = DayItem.daynames = null;
+		RuntimeResources.get(c).getInstance(StringResources.class)
+				.registerStringResourceChangeListener(this,
+						StringResources.TYPE_HOUR_NAME | StringResources.TYPE_TIME_FORMAT);
+		HourItem.extras = DayItem.daynames = null;
 	}
 
 	@Override
@@ -307,5 +310,9 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> {
 	@Override
 	public boolean isEnabled(int pos) {
 		return false;
+	}
+
+	public void onStringResourcesChanged(int changes) {
+		notifyDataSetChanged();
 	}
 }
