@@ -1,0 +1,100 @@
+com.aragaer.jtt.BuildConfig
+com.aragaer.jtt.ClockView:
+    private static final int granularity
+com.aragaer.jtt.JTT:
+    30:30:public com.aragaer.jtt.JTTHour time_to_jtt(java.util.Calendar)
+    35:52:public int time_to_jtt_wrapped(long)
+    56:57:public com.aragaer.jtt.JTTHour time_to_jtt(long)
+    61:61:public java.util.Calendar jtt_to_time(com.aragaer.jtt.JTTHour,java.util.Calendar)
+    65:65:public java.util.Calendar jtt_to_time(int,int,java.util.Calendar)
+    70:81:public long wrapped_jtt_to_long(int,long)
+    85:85:public long jtt_to_long(int,int,long)
+    89:91:public java.util.Calendar jtt_to_time(int,int,long)
+com.aragaer.jtt.JTTHour:
+    17:18:public JTTHour(int)
+com.aragaer.jtt.JTTMainActivity:
+    private static final java.lang.String TAG
+com.aragaer.jtt.JTTPager$ScrollContents:
+    private static final int ID
+com.aragaer.jtt.JTTService:
+    public static final java.lang.String TICK_ACTION
+    private static final int flags_ongoing
+    private static final int APP_ID
+    public static final int MSG_SETTINGS_CHANGE
+    public static final int MSG_UPDATE_LOCATION
+    public static final int MSG_REGISTER_CLIENT
+    public static final int MSG_UNREGISTER_CLIENT
+    public static final int MSG_HOUR
+    public static final int MSG_STOP
+    public static final int MSG_TRANSITIONS
+    public static final int MSG_INVALIDATE
+    public static final int MSG_SUBTICK
+    public static final int MSG_SYNC
+    private static final int ticks
+    private static final int subs
+    private static final double total
+com.aragaer.jtt.JTTSettingsActivity:
+    public static final java.lang.String PREF_LOCATION
+    public static final java.lang.String PREF_LOCALE
+    public static final java.lang.String PREF_HNAME
+    public static final java.lang.String JTT_SETTINGS_CHANGED
+    private static final java.lang.String TAG
+com.aragaer.jtt.JTTUtil:
+    18:18:public JTTUtil()
+com.aragaer.jtt.JTTUtil$ConnHelper:
+    private static final java.lang.String TAG
+com.aragaer.jtt.JTTWidgetProvider:
+    private static final java.lang.String PKG_NAME
+    26:26:public JTTWidgetProvider()
+com.aragaer.jtt.LocationPreference:
+    private static final java.lang.String fmt1
+    private static final java.lang.String fmt2
+    private static final java.lang.String fmt3
+com.aragaer.jtt.Manifest
+com.aragaer.jtt.Manifest$permission
+com.aragaer.jtt.R
+com.aragaer.jtt.R$array
+com.aragaer.jtt.R$attr
+com.aragaer.jtt.R$color
+com.aragaer.jtt.R$dimen
+com.aragaer.jtt.R$drawable
+com.aragaer.jtt.R$id
+com.aragaer.jtt.R$layout
+com.aragaer.jtt.R$plurals
+com.aragaer.jtt.R$string
+com.aragaer.jtt.R$style
+com.aragaer.jtt.R$xml
+com.aragaer.jtt.graphics.WadokeiDraw:
+    private static final int step
+    private static final float gap
+com.aragaer.jtt.resources.StringResources:
+    public static final int TYPE_HOUR_NAME
+    public static final int TYPE_TIME_FORMAT
+    83:84:public synchronized void unregisterStringResourceChangeListener(com.aragaer.jtt.resources.StringResources$StringResourceChangeListener)
+com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator:
+    private com.luckycatlabs.sunrisesunset.dto.Location location
+    45:47:public SunriseSunsetCalculator(com.luckycatlabs.sunrisesunset.dto.Location,java.lang.String)
+    70:70:public java.lang.String getAstronomicalSunriseForDate(java.util.Calendar)
+    81:81:public java.util.Calendar getAstronomicalSunriseCalendarForDate(java.util.Calendar)
+    92:92:public java.lang.String getAstronomicalSunsetForDate(java.util.Calendar)
+    103:103:public java.util.Calendar getAstronomicalSunsetCalendarForDate(java.util.Calendar)
+    114:114:public java.lang.String getNauticalSunriseForDate(java.util.Calendar)
+    125:125:public java.util.Calendar getNauticalSunriseCalendarForDate(java.util.Calendar)
+    136:136:public java.lang.String getNauticalSunsetForDate(java.util.Calendar)
+    147:147:public java.util.Calendar getNauticalSunsetCalendarForDate(java.util.Calendar)
+    158:158:public java.lang.String getCivilSunriseForDate(java.util.Calendar)
+    169:169:public java.util.Calendar getCivilSunriseCalendarForDate(java.util.Calendar)
+    180:180:public java.lang.String getCivilSunsetForDate(java.util.Calendar)
+    191:191:public java.util.Calendar getCivilSunsetCalendarForDate(java.util.Calendar)
+    202:202:public java.lang.String getOfficialSunriseForDate(java.util.Calendar)
+    224:224:public java.lang.String getOfficialSunsetForDate(java.util.Calendar)
+    255:256:public static java.util.Calendar getSunrise(double,double,java.util.TimeZone,java.util.Calendar,double)
+    276:277:public static java.util.Calendar getSunset(double,double,java.util.TimeZone,java.util.Calendar,double)
+    286:286:public com.luckycatlabs.sunrisesunset.dto.Location getLocation()
+com.luckycatlabs.sunrisesunset.calculator.SolarEventCalculator:
+    43:46:public SolarEventCalculator(com.luckycatlabs.sunrisesunset.dto.Location,java.lang.String)
+    72:72:public java.lang.String computeSunriseTime(com.luckycatlabs.sunrisesunset.Zenith,java.util.Calendar)
+    99:99:public java.lang.String computeSunsetTime(com.luckycatlabs.sunrisesunset.Zenith,java.util.Calendar)
+    300:323:private java.lang.String getLocalTimeAsString(java.math.BigDecimal)
+com.luckycatlabs.sunrisesunset.dto.Location:
+    36:39:public Location(java.lang.String,java.lang.String)
