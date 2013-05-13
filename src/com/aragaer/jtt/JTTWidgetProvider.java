@@ -113,7 +113,7 @@ public class JTTWidgetProvider {
 	public static class Widget1 extends JTTWidget {
 		/* Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG == 0x07 */
 		private final Paint p1 = new Paint(0x07), p2 = new Paint(p1);
-		private final Bitmap bmp = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_8888);
+		private final Bitmap bmp = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_4444);
 		private final Canvas c = new Canvas(bmp);
 		private final Path path1 = new Path(), path2 = new Path();
 		private final RectF outer = new RectF(10, 10, 70, 70), inner = new RectF(20, 20, 60, 60);
@@ -189,7 +189,7 @@ public class JTTWidgetProvider {
 			wd = new WadokeiDraw(c);
 			size = Math.round(110 * c.getResources().getDisplayMetrics().density);
 
-			bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_8888);
+			bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_4444);
 			wd.set_dial_size(size);
 		}
 	}
