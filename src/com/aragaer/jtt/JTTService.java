@@ -269,14 +269,6 @@ public class JTTService extends Service implements StringResourceChangeListener 
         }
     }
 
-    public static class JTTStartupReceiver extends BroadcastReceiver {
-        public void onReceive(Context context, Intent intent) {
-            if (PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("jtt_bootup", true))
-                context.startService(new Intent(context, JTTService.class));
-        }
-    }
-
     private final static int ticks = 6;
     private final static int subs = 100;
     private final static double total = ticks * subs;

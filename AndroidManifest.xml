@@ -37,7 +37,7 @@
         <service
             android:name=".JTTService"
             android:exported="false" />
-        <receiver android:name=".JTTService$JTTStartupReceiver" >
+        <receiver android:name="com.aragaer.jtt.core.BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
