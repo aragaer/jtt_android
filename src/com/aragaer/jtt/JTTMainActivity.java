@@ -72,7 +72,7 @@ public class JTTMainActivity extends ActivityGroup {
         pager.addTab(today_list, R.string.today);
 
         final Window sw = getLocalActivityManager().startActivity("settings",
-                new Intent(this, JTTSettingsActivity.class));
+                new Intent(this, Settings.class));
         settings_tab = pager.addTab(sw.getDecorView(), R.string.settings);
 
         setContentView(pager);

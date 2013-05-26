@@ -84,9 +84,8 @@ public class JTTService extends Service implements StringResourceChangeListener 
                     s.nm.cancel(APP_ID);
                 break;
             case MSG_UPDATE_LOCATION:
-                String ll[] = msg.getData().getString("latlon").split(":");
-                calc.get().move(Float.parseFloat(ll[0]),
-                        Float.parseFloat(ll[1]));
+                final float l[] = Settings.getLocation(s);
+                calc.get().move(l[0], l[1]);
                 s.reset();
                 informClients(Message.obtain(null, MSG_INVALIDATE));
                 break;
@@ -217,9 +216,9 @@ public class JTTService extends Service implements StringResourceChangeListener 
 				StringResources.TYPE_HOUR_NAME
 						| StringResources.TYPE_TIME_FORMAT);
         SharedPreferences settings = PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext());
-        String[] ll = settings.getString("jtt_loc", "0.0:0.0").split(":");
-        calculator.move(Float.parseFloat(ll[0]), Float.parseFloat(ll[1]));
+                .getDefaultSharedPreferences(this);
+        final float[] l = Settings.getLocation(this);
+        calculator.move(l[0], l[1]);
 
         Intent JTTMain = new Intent(getBaseContext(), JTTMainActivity.class);
         pending_main = PendingIntent.getActivity(this, 0, JTTMain, 0);
@@ -266,14 +265,6 @@ public class JTTService extends Service implements StringResourceChangeListener 
                 notification.flags = boot ? flags_ongoing : 0;
                 nm.notify(APP_ID, notification);
             }
-        }
-    }
-
-    public static class JTTStartupReceiver extends BroadcastReceiver {
-        public void onReceive(Context context, Intent intent) {
-            if (PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean("jtt_bootup", true))
-                context.startService(new Intent(context, JTTService.class));
         }
     }
 

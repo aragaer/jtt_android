@@ -53,7 +53,7 @@ public class JTTWidgetProvider {
 				update(c, i);
 			else if (action.equals(JTTService.TICK_ACTION))
 				tick(c, i);
-			else if (action.equals(JTTSettingsActivity.JTT_SETTINGS_CHANGED)) {
+			else if (action.equals(Settings.JTT_SETTINGS_CHANGED)) {
 				inverse = i.getBooleanExtra("inverse", inverse);
 				draw(c, null, last_update.get(cn));
 			} else

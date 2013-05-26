@@ -6,18 +6,20 @@ import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.util.Log;
 
-public class JTTSettingsActivity extends PreferenceActivity {
+public class Settings extends PreferenceActivity {
 	public static final String PREF_LOCATION = "jtt_loc";
 	public static final String PREF_LOCALE = "jtt_locale";
 	public static final String PREF_HNAME = "jtt_hname";
@@ -33,9 +35,6 @@ public class JTTSettingsActivity extends PreferenceActivity {
 			Intent i = new Intent(JTT_SETTINGS_CHANGED);
 			int code = listeners.get(preference.getKey());
 			switch (code) {
-			case 0:
-				b.putString("latlon", (String) newValue);
-				break;
 			case 1:
 				b.putBoolean("notify", (Boolean) newValue);
 				break;
@@ -101,7 +100,7 @@ public class JTTSettingsActivity extends PreferenceActivity {
 
 		((Preference) findPreference("jtt_stop")).setOnPreferenceClickListener(new OnPreferenceClickListener() {
 			public boolean onPreferenceClick(Preference preference) {
-				(new AlertDialog.Builder(JTTSettingsActivity.this))
+				(new AlertDialog.Builder(Settings.this))
 				.setTitle(R.string.stop)
 				.setMessage(R.string.stop_ask)
 				.setPositiveButton(android.R.string.yes, stop_dlg_listener)
@@ -139,4 +138,12 @@ public class JTTSettingsActivity extends PreferenceActivity {
 			}
 		}
 	};
+
+	public static float[] getLocation(final Context context) {
+		String[] ll = PreferenceManager
+				.getDefaultSharedPreferences(context)
+				.getString(Settings.PREF_LOCATION, LocationPreference.DEFAULT)
+				.split(":");
+		return new float[] { Float.parseFloat(ll[0]), Float.parseFloat(ll[1]) };
+	}
 }
