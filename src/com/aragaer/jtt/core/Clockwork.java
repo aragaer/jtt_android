@@ -24,7 +24,8 @@ public class Clockwork extends IntentService {
 
 	public static final String ENABLE_ACTION = "com.aragaer.jtt.action.ENABLE";
 	private static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK_INTERNAL";
-	private final Intent TickActionInternal = new Intent(ACTION_JTT_TICK);
+	private final Intent TickActionInternal = new Intent(ACTION_JTT_TICK),
+		TickAction = new Intent("com.aragaer.jtt.ACTION_JTT_TICK");
 	private final static int INTENT_FLAGS = PendingIntent.FLAG_UPDATE_CURRENT;
 
 	public Clockwork() {
@@ -96,6 +97,13 @@ public class Clockwork extends IntentService {
 			final long now = System.currentTimeMillis();
 			int jtt[] = timestamps2jtt(tr, is_day, now);
 			Log.d("CLOCKWORK", "Tick "+jtt[0]+":"+jtt[1]);
+
+			if (now >= tr[0] && now < tr[1]) {
+				TickAction.putExtra("hour", jtt[0]);
+				TickAction.putExtra("fraction", jtt[1]);
+
+				sendStickyBroadcast(TickAction);
+			}
 		}
 	}
 
