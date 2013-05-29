@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.aragaer.jtt.core.Clockwork;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
@@ -229,15 +230,17 @@ public class JTTService extends Service implements StringResourceChangeListener 
         if (!notify)
             nm.cancel(APP_ID);
 
-        IntentFilter wake = new IntentFilter(Intent.ACTION_SCREEN_ON);
-        wake.addAction(Intent.ACTION_TIME_CHANGED);
-        wake.addAction(Intent.ACTION_DATE_CHANGED);
-        registerReceiver(on, wake);
-        registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+//        IntentFilter wake = new IntentFilter(Intent.ACTION_SCREEN_ON);
+//        wake.addAction(Intent.ACTION_TIME_CHANGED);
+//        wake.addAction(Intent.ACTION_DATE_CHANGED);
+//        registerReceiver(on, wake);
+//        registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
-        TickAction.setAction(TICK_ACTION);
+//        TickAction.setAction(TICK_ACTION);
 
-        reset();
+//        reset();
+
+		startService(new Intent(Clockwork.ENABLE_ACTION));
     }
 
     @Override
@@ -349,7 +352,7 @@ public class JTTService extends Service implements StringResourceChangeListener 
         /* doesn't matter if next_sub < sync
          * negative delay is perfectly valid and means that trigger will happen immediately
          */
-        handler.sendEmptyMessageDelayed(MSG_SYNC, next_sub - sync);
+//        handler.sendEmptyMessageDelayed(MSG_SYNC, next_sub - sync);
     }
 
     private final void sleep() {
