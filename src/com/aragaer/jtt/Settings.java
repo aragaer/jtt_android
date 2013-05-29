@@ -55,10 +55,10 @@ public class Settings extends PreferenceActivity {
 
 			switch (code) {
 			case 0:
-				doSendMessage(JTTService.MSG_UPDATE_LOCATION, b);
+//				doSendMessage(JTTService.MSG_UPDATE_LOCATION, b);
 				break;
 			case 1:
-				doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
+//				doSendMessage(JTTService.MSG_SETTINGS_CHANGE, b);
 				break;
 			case 2:
 			case 5:
@@ -120,15 +120,11 @@ public class Settings extends PreferenceActivity {
 		}
 	}
 
-	private final void doSendMessage(int what, Bundle data) {
-		((JTTMainActivity) getParent()).conn.send_msg_to_service(what, data);
-	}
-
 	private final OnClickListener stop_dlg_listener = new OnClickListener() {
 		public void onClick(DialogInterface dialog, int id) {
 			switch (id) {
 			case Dialog.BUTTON_POSITIVE:
-				doSendMessage(JTTService.MSG_STOP, null);
+//				doSendMessage(JTTService.MSG_STOP, null);
 				getParent().finish();
 				break;
 			case Dialog.BUTTON_NEGATIVE:

@@ -18,7 +18,6 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 public class JTTService extends Service implements StringResourceChangeListener {
-    public final static String TICK_ACTION = "com.aragaer.jtt.ACTION_JTT_TICK";
     private static final String TAG = JTTService.class.getSimpleName();
     private NotificationManager nm;
     private static final int flags_ongoing = Notification.FLAG_ONGOING_EVENT
@@ -94,7 +93,7 @@ public class JTTService extends Service implements StringResourceChangeListener 
         if (!notify)
             nm.cancel(APP_ID);
 
-		startService(new Intent(Clockwork.ENABLE_ACTION));
+		startService(new Intent(Clockwork.ACTION_ENABLE));
     }
 
     @Override

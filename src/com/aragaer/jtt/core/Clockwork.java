@@ -12,7 +12,6 @@ import com.luckycatlabs.sunrisesunset.dto.Location;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -22,10 +21,12 @@ public class Clockwork extends IntentService {
 	private SunriseSunsetCalculator calculator;
 	private boolean is_ticking;
 
-	public static final String ENABLE_ACTION = "com.aragaer.jtt.action.ENABLE";
-	private static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK_INTERNAL";
-	private final Intent TickActionInternal = new Intent(ACTION_JTT_TICK),
-		TickAction = new Intent("com.aragaer.jtt.ACTION_JTT_TICK");
+	public static final String ACTION_ENABLE = "com.aragaer.jtt.action.ENABLE",
+		ACTION_DISABLE = "com.aragaer.jtt.action.DISABLE";
+	public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
+	private static final String ACTION_JTT_TICK2 = "com.aragaer.jtt.action.TICK_INTERNAL";
+	private final Intent TickActionInternal = new Intent(ACTION_JTT_TICK2),
+		TickAction = new Intent(ACTION_JTT_TICK);
 	private final static int INTENT_FLAGS = PendingIntent.FLAG_UPDATE_CURRENT;
 
 	public Clockwork() {
@@ -89,9 +90,11 @@ public class Clockwork extends IntentService {
 			return;
 		}
 
-		if (action.equals(ENABLE_ACTION)) {
+		if (action.equals(ACTION_ENABLE)) {
 			enable();
-		} else if (action.equals(ACTION_JTT_TICK)) {
+		} else if (action.equals(ACTION_DISABLE)) {
+			disable();
+		} else if (action.equals(ACTION_JTT_TICK2)) {
 			final long tr[] = intent.getLongArrayExtra("tr");
 			final boolean is_day = intent.getBooleanExtra("day", false);
 			final long now = System.currentTimeMillis();
