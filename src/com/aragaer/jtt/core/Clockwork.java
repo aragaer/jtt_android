@@ -103,6 +103,8 @@ public class Clockwork extends IntentService {
 				TickAction.putExtra("fraction", jtt[1]);
 
 				sendStickyBroadcast(TickAction);
+			} else {
+				schedule();
 			}
 		}
 	}
