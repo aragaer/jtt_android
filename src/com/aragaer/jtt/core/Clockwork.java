@@ -12,6 +12,7 @@ import com.luckycatlabs.sunrisesunset.dto.Location;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -19,10 +20,10 @@ import android.util.Log;
 
 public class Clockwork extends IntentService {
 	private SunriseSunsetCalculator calculator;
-	private boolean is_ticking;
 
 	public static final String ACTION_ENABLE = "com.aragaer.jtt.action.ENABLE",
-		ACTION_DISABLE = "com.aragaer.jtt.action.DISABLE";
+		ACTION_DISABLE = "com.aragaer.jtt.action.DISABLE",
+		ACTION_TRIGGER = "com.aragaer.jtt.action.TRIGGER";
 	public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
 	private static final String ACTION_JTT_TICK2 = "com.aragaer.jtt.action.TICK_INTERNAL";
 	private final Intent TickActionInternal = new Intent(ACTION_JTT_TICK2),
@@ -32,6 +33,16 @@ public class Clockwork extends IntentService {
 	public Clockwork() {
 		super("CLOCKWORK");
 	}
+
+	public static class TimeChangeReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			final String action = intent.getAction();
+			if (action.equals(Intent.ACTION_TIME_CHANGED)
+					|| action.equals(Intent.ACTION_DATE_CHANGED))
+				context.startService(new Intent(ACTION_TRIGGER));
+		}
+	};
 
 	private final static int ticks = 6;
 	private final static int subs = 100;
@@ -62,22 +73,6 @@ public class Clockwork extends IntentService {
 		am.cancel(PendingIntent.getService(this, 0, TickActionInternal, 0));
 	}
 
-	public synchronized void enable() {
-		if (is_ticking)
-			throw new IllegalStateException("Clockwork is already enabled");
-		is_ticking = true;
-
-		schedule();
-	}
-
-	public synchronized void disable() {
-		if (!is_ticking)
-			throw new IllegalStateException("Clockwork is already disabled");
-		is_ticking = false;
-
-		unschedule();
-	}
-
 	protected void onHandleIntent(Intent intent) {
 		if (intent == null) {
 			Log.e("CLOCKWORK", "Intent is null!");
@@ -90,10 +85,11 @@ public class Clockwork extends IntentService {
 			return;
 		}
 
-		if (action.equals(ACTION_ENABLE)) {
-			enable();
+		if (action.equals(ACTION_ENABLE)
+				|| action.equals(ACTION_TRIGGER)) {
+			schedule();
 		} else if (action.equals(ACTION_DISABLE)) {
-			disable();
+			unschedule();
 		} else if (action.equals(ACTION_JTT_TICK2)) {
 			final long tr[] = intent.getLongArrayExtra("tr");
 			final boolean is_day = intent.getBooleanExtra("day", false);
