@@ -1,6 +1,4 @@
-package com.aragaer.jtt.core;
-
-import com.aragaer.jtt.JTTService;
+package com.aragaer.jtt;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,6 +9,6 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean("jtt_bootup", true))
-            context.startService(new Intent(context, JTTService.class));
+            context.startService(new Intent(context, JttService.class));
     }
 }
