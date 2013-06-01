@@ -18,8 +18,6 @@ import android.view.Window;
 import android.widget.ListView;
 
 public class JTTMainActivity extends ActivityGroup {
-    private final static String TAG = "jtt main";
-
     private ClockView clock;
     private JTTPager pager;
     private TodayAdapter today;
@@ -36,19 +34,19 @@ public class JTTMainActivity extends ActivityGroup {
 		}
 	};
 
-    int settings_tab = 0;
+    private int settings_tab = 0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         JTTUtil.setTheme(this);
         super.onCreate(savedInstanceState);
-        startService(new Intent(Clockwork.ACTION_ENABLE));
+        startService(new Intent(this, JttService.class));
 
         pager = new JTTPager(this);
 
         clock = new ClockView(this);
         pager.addTab(clock, R.string.clock);
 
-        ListView today_list = new ListView(this);
+        final ListView today_list = new ListView(this);
         today = new TodayAdapter(this, 0);
         today_list.setAdapter(today);
         pager.addTab(today_list, R.string.today);
@@ -82,7 +80,5 @@ public class JTTMainActivity extends ActivityGroup {
     protected void onDestroy() {
         super.onDestroy();
 		unregisterReceiver(receiver);
-
-        Log.i(TAG, "Activity destroyed");
     }
 }

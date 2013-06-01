@@ -35,19 +35,12 @@
         </activity>
 
         <service
-            android:name=".JTTService"
+            android:name=".JttService"
             android:exported="false" />
         <service
             android:name=".core.Clockwork"
-            android:exported="false" >
-			<intent-filter>
-				<action android:name="com.aragaer.jtt.action.TRIGGER"/>
-				<action android:name="com.aragaer.jtt.action.ENABLE"/>
-				<action android:name="com.aragaer.jtt.action.DISABLE"/>
-				<action android:name="com.aragaer.jtt.action.TICK_INTERNAL"/>
-			</intent-filter>
-		</service>
-        <receiver android:name="com.aragaer.jtt.core.BootReceiver" >
+            android:exported="false" />
+        <receiver android:name=".BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
