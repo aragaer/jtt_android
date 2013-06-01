@@ -49,6 +49,7 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 		final int w = MeasureSpec.getSize(wms);
 		final int h = MeasureSpec.getSize(hms);
 		vertical = h > w;
+		text.setText(vertical ? sr.getHrOf(hn) : sr.getHour(hn));
 		text.setTextSize(vertical ? w / 20 : w / 15);
 		text.measure(0, 0);
 		setMeasuredDimension(w, h);
