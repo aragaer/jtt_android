@@ -125,8 +125,8 @@ public class Clockwork extends IntentService {
 	private static boolean getSurroundingTransitions(final SunriseSunsetCalculator calculator, final long tr[]) {
 		final long now = System.currentTimeMillis();
 		Calendar date = Calendar.getInstance();
-		tr[0] = calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis();
-		tr[1] = calculator.getOfficialSunsetCalendarForDate(date).getTimeInMillis();
+		tr[0] = calculator.getOfficialSunriseForDate(date);
+		tr[1] = calculator.getOfficialSunsetForDate(date);
 		boolean is_day = true;
 
 		// if tr2 is before now
@@ -134,9 +134,9 @@ public class Clockwork extends IntentService {
 			tr[0] = tr[1];
 			if (is_day) {
 				date.add(Calendar.DATE, 1);
-				tr[1] = calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis();
+				tr[1] = calculator.getOfficialSunriseForDate(date);
 			} else
-				tr[1] = calculator.getOfficialSunsetCalendarForDate(date).getTimeInMillis();
+				tr[1] = calculator.getOfficialSunsetForDate(date);
 			is_day = !is_day;
 		}
 
@@ -145,9 +145,9 @@ public class Clockwork extends IntentService {
 			tr[1] = tr[0];
 			if (is_day) {
 				date.add(Calendar.DATE, -1);
-				tr[0] = calculator.getOfficialSunsetCalendarForDate(date).getTimeInMillis();
+				tr[0] = calculator.getOfficialSunsetForDate(date);
 			} else
-				tr[0] = calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis();
+				tr[0] = calculator.getOfficialSunriseForDate(date);
 			is_day = !is_day;
 		}
 
