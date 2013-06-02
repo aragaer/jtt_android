@@ -41,12 +41,8 @@ public class Clockwork extends IntentService {
 
 	public static void schedule(final Context context) {
 		final AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-		final float l[] = Settings.getLocation(context);
-		final SunriseSunsetCalculator calculator = new SunriseSunsetCalculator(new Location(l[0], l[1]), TimeZone.getDefault());
-
 		final long tr[] = new long[2];
-		final boolean is_day = getSurroundingTransitions(calculator, tr);
+		final boolean is_day = Calculator.getSurroundingTransitions(context, System.currentTimeMillis(), tr);
 
 		final long freq = Math.round((tr[1] - tr[0])/total);
 
@@ -89,38 +85,5 @@ public class Clockwork extends IntentService {
 		out[0] = out[1] / subs + (is_day ? ticks : 0);
 		out[1] %= subs;
 		return out;
-	}
-
-	/* Put surrounding transitions into tr, return true if it is day now */
-	private static boolean getSurroundingTransitions(final SunriseSunsetCalculator calculator, final long tr[]) {
-		final long now = System.currentTimeMillis();
-		Calendar date = Calendar.getInstance();
-		tr[0] = calculator.getOfficialSunriseForDate(date);
-		tr[1] = calculator.getOfficialSunsetForDate(date);
-		boolean is_day = true;
-
-		// if tr2 is before now
-		while (now >= tr[1]) {
-			tr[0] = tr[1];
-			if (is_day) {
-				date.add(Calendar.DATE, 1);
-				tr[1] = calculator.getOfficialSunriseForDate(date);
-			} else
-				tr[1] = calculator.getOfficialSunsetForDate(date);
-			is_day = !is_day;
-		}
-
-		// (else) if tr1 is after now
-		while (now < tr[0]) {
-			tr[1] = tr[0];
-			if (is_day) {
-				date.add(Calendar.DATE, -1);
-				tr[0] = calculator.getOfficialSunsetForDate(date);
-			} else
-				tr[0] = calculator.getOfficialSunriseForDate(date);
-			is_day = !is_day;
-		}
-
-		return is_day;
 	}
 }
