@@ -1,6 +1,9 @@
 package com.aragaer.jtt.core;
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.TimeZone;
 
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
@@ -20,6 +23,8 @@ public class Calculator extends ContentProvider {
 	public static final String AUTHORITY = "com.aragaer.jtt.provider.calculator";
 	public static final Uri TRANSITIONS = Uri.parse("content://" + AUTHORITY + "/transitions"),
 		LOCATION = Uri.parse("content://" + AUTHORITY + "/location");
+
+	private final Map<Long, long[]> cache = new HashMap<Long, long[]>();
 
 	private static final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -49,21 +54,20 @@ public class Calculator extends ContentProvider {
 		if (calculator == null)
 			throw new IllegalStateException("Location not set");
 		final long now = ContentUris.parseId(uri);
-		final Calendar date = Calendar.getInstance();
-		date.setTimeInMillis(now);
+		long jdn = longToJDN(now);
 
-		long prev = calculator.getOfficialSunriseForDate(date);
-		long next = calculator.getOfficialSunsetForDate(date);
+		long prev = getTrForJDN(jdn)[0];
+		long next = getTrForJDN(jdn)[1];
 		boolean is_day = true;
 
 		// if tr2 is before now
 		while (now >= prev) {
 			prev = next;
 			if (is_day) {
-				date.add(Calendar.DATE, 1);
-				next = calculator.getOfficialSunriseForDate(date);
+				jdn++;
+				next = getTrForJDN(jdn)[0];
 			} else
-				next = calculator.getOfficialSunsetForDate(date);
+				next = getTrForJDN(jdn)[1];
 			is_day = !is_day;
 		}
 
@@ -71,10 +75,10 @@ public class Calculator extends ContentProvider {
 		while (now < prev) {
 			next = prev;
 			if (is_day) {
-				date.add(Calendar.DATE, -1);
-				prev = calculator.getOfficialSunsetForDate(date);
+				jdn--;
+				prev = getTrForJDN(jdn)[1];
 			} else
-				prev = calculator.getOfficialSunriseForDate(date);
+				prev = getTrForJDN(jdn)[0];
 			is_day = !is_day;
 		}
 
@@ -105,6 +109,7 @@ public class Calculator extends ContentProvider {
 					values.getAsFloat("lat"),
 					values.getAsFloat("lon")),
 				TimeZone.getDefault());
+		cache.clear();
 		Log.d("PROVIDER", "Location updated");
 		return 0;
 	}
@@ -119,5 +124,31 @@ public class Calculator extends ContentProvider {
 		final boolean is_day = c.getInt(2) == 1;
 		c.close();
 		return is_day;
+	}
+
+	public static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
+
+	private static long longToJDN(long time) {
+		return (long) Math.floor(longToJD(time));
+	}
+
+	private static double longToJD(long time) {
+		return time / ((double) ms_per_day) + 2440587.5;
+	}
+
+	private static long JDToLong(final double jd) {
+		return Math.round((jd - 2440587.5) * ms_per_day);
+	}
+
+	private long[] getTrForJDN(final long jdn) {
+		long[] result = cache.get(jdn);
+		if (result == null) {
+			final Calendar date = Calendar.getInstance();
+			date.setTimeInMillis(JDToLong(jdn));
+			result = new long[] { calculator.getOfficialSunriseForDate(date),
+				calculator.getOfficialSunsetForDate(date) };
+			cache.put(jdn, result);
+		}
+		return result;
 	}
 }

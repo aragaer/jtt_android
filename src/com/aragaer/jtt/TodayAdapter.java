@@ -99,7 +99,7 @@ class DayItem extends TodayItem {
 	 */
 	private static final long ms_to_day(long t) {
 		t += TodayAdapter.tz.getOffset(t);
-		return t / JTT.ms_per_day;
+		return t / Calculator.ms_per_day;
 	}
 }
 
@@ -131,7 +131,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 	 */
 	private static final long add24h(long t) {
 		t += tz.getOffset(t);
-		t += JTT.ms_per_day;
+		t += Calculator.ms_per_day;
 		return t - tz.getOffset(t);
 	}
 
@@ -146,7 +146,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 
 		/* "aligning" code */
 		start_of_day += tz.getOffset(start_of_day);
-		start_of_day -= start_of_day % JTT.ms_per_day;
+		start_of_day -= start_of_day % Calculator.ms_per_day;
 		start_of_day -= tz.getOffset(start_of_day);
 
 		add(new DayItem(start_of_day)); // List should start with one
