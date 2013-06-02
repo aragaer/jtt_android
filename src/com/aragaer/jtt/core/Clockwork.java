@@ -34,8 +34,8 @@ public class Clockwork extends IntentService {
 		}
 	};
 
-	private final static int ticks = Hour.ticks;
-	private final static int subs = Hour.subs;
+	private final static int ticks = Hour.HOURS;
+	private final static int subs = Hour.HOUR_PARTS;
 	private final static double total = ticks * subs;
 
 	public static void schedule(final Context context) {

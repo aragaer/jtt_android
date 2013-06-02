@@ -43,7 +43,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		context.unregisterReceiver(this);
 	}
 
-	private final static int ticks = Hour.ticks;
+	private final static int ticks = Hour.HOURS;
 
 	@Override
 	public void onReceive(Context ctx, Intent intent) {
