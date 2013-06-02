@@ -1,6 +1,6 @@
 package com.aragaer.jtt.graphics;
 
-import com.aragaer.jtt.JTTHour;
+import com.aragaer.jtt.core.Hour;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -114,8 +114,8 @@ public class WadokeiDraw {
 
 		for (int hr = 0; hr < 12; hr++) {
 			final int glyph_y = hr == num ? y_s : y;
-			canvas.drawText(JTTHour.Glyphs[hr], center, glyph_y, solid);
-			canvas.drawText(JTTHour.Glyphs[hr], center, glyph_y, stroke);
+			canvas.drawText(Hour.Glyphs[hr], center, glyph_y, solid);
+			canvas.drawText(Hour.Glyphs[hr], center, glyph_y, stroke);
 			canvas.rotate(step, center, center);
 		}
 	}

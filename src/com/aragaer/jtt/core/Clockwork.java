@@ -3,7 +3,6 @@ package com.aragaer.jtt.core;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import com.aragaer.jtt.JTTHour;
 import com.aragaer.jtt.Settings;
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
@@ -35,8 +34,8 @@ public class Clockwork extends IntentService {
 		}
 	};
 
-	private final static int ticks = JTTHour.ticks;
-	private final static int subs = JTTHour.subs;
+	private final static int ticks = Hour.ticks;
+	private final static int subs = Hour.subs;
 	private final static double total = ticks * subs;
 
 	public static void schedule(final Context context) {

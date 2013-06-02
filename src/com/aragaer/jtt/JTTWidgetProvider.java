@@ -3,6 +3,7 @@ package com.aragaer.jtt;
 import java.util.HashMap;
 
 import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.graphics.WadokeiDraw;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
@@ -31,10 +32,10 @@ public class JTTWidgetProvider {
 		private final String cn;
 		private final ComponentName name;
 		private final int granularity;
-		static private final HashMap<String, JTTHour> last_update = new HashMap<String, JTTHour>();
+		static private final HashMap<String, Hour> last_update = new HashMap<String, Hour>();
 
 		abstract protected void hour_changed(int n);
-		abstract protected void fill_rv(RemoteViews rv, JTTHour h);
+		abstract protected void fill_rv(RemoteViews rv, Hour h);
 		abstract protected void init(Context c);
 
 		static boolean inverse;
@@ -65,11 +66,11 @@ public class JTTWidgetProvider {
 			int n = i.getIntExtra("hour", 0);
 			int f = i.getIntExtra("fraction", 0);
 			f -= f % granularity;
-			JTTHour prev = last_update.get(cn);
+			Hour prev = last_update.get(cn);
 			int prev_n = -1;
 			if (prev == null)
 				// unfortunately put() returns _previous_ value, I want new
-				last_update.put(cn, prev = new JTTHour(n, f));
+				last_update.put(cn, prev = new Hour(n, f));
 			else
 				prev_n = prev.num;
 			if (prev_n != n)
@@ -82,13 +83,13 @@ public class JTTWidgetProvider {
 
 		private void update(Context c, Intent i) {
 			int[] ids = i.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-			JTTHour h = last_update.get(cn);
+			Hour h = last_update.get(cn);
 			if (h == null)
 				return;
 			draw(c, ids, h);
 		}
 
-		private void draw(Context c, int[] ids, JTTHour h) {
+		private void draw(Context c, int[] ids, Hour h) {
 			final AppWidgetManager awm = AppWidgetManager.getInstance(c.getApplicationContext());
 			if (ids == null)
 				ids = awm.getAppWidgetIds(name);
@@ -134,7 +135,7 @@ public class JTTWidgetProvider {
 
 		protected void hour_changed(int n) { }
 
-		protected void fill_rv(RemoteViews rv, JTTHour h) {
+		protected void fill_rv(RemoteViews rv, Hour h) {
 			bmp.eraseColor(Color.TRANSPARENT);
 
 			c.drawPath(path1, p1);
@@ -145,7 +146,7 @@ public class JTTWidgetProvider {
 			c.drawPath(path2, p2);
 
 			rv.setImageViewBitmap(R.id.clock, bmp);
-			rv.setTextViewText(R.id.glyph, JTTHour.Glyphs[h.num]);
+			rv.setTextViewText(R.id.glyph, Hour.Glyphs[h.num]);
 		}
 
 		protected void init(Context c) {
@@ -173,7 +174,7 @@ public class JTTWidgetProvider {
 			wd.prepare_glyphs(n);
 		}
 
-		protected void fill_rv(RemoteViews rv, JTTHour h) {
+		protected void fill_rv(RemoteViews rv, Hour h) {
 			final int n = h.num, f = h.fraction;
 			bmp.eraseColor(Color.TRANSPARENT);
 			wd.draw_dial(n, f, new Canvas(bmp));

@@ -1,6 +1,7 @@
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
@@ -42,7 +43,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		context.unregisterReceiver(this);
 	}
 
-	private final static int ticks = JTTHour.ticks;
+	private final static int ticks = Hour.ticks;
 
 	@Override
 	public void onReceive(Context ctx, Intent intent) {
@@ -68,7 +69,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		n.flags = flags_ongoing;
 		n.iconLevel = hn;
 
-		rv.setTextViewText(R.id.image, JTTHour.Glyphs[hn]);
+		rv.setTextViewText(R.id.image, Hour.Glyphs[hn]);
 		rv.setTextViewText(R.id.title, sr.getHrOf(hn));
 		rv.setTextViewText(R.id.percent, String.format("%d%%", hf));
 		rv.setProgressBar(R.id.fraction, 100, hf, false);

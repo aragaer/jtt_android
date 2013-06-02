@@ -1,10 +1,9 @@
 package com.aragaer.jtt;
 
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.TimeZone;
 
 import com.aragaer.jtt.core.Calculator;
+import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
@@ -54,7 +53,7 @@ class HourItem extends TodayItem {
 		final StringResources sr = RuntimeResources.get(c).getInstance(StringResources.class);
 
 		JTTUtil.t(v, R.id.time, sr.format_time(time));
-		JTTUtil.t(v, R.id.glyph, JTTHour.Glyphs[hnum]);
+		JTTUtil.t(v, R.id.glyph, Hour.Glyphs[hnum]);
 		JTTUtil.t(v, R.id.name, sr.getHrOf(hnum));
 		JTTUtil.t(v, R.id.extra, extras[hnum]);
 		JTTUtil.t(v, R.id.curr, is_current ? "▶" : "");
