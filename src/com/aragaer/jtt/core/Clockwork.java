@@ -63,26 +63,18 @@ public class Clockwork extends IntentService {
 		final long tr[] = intent.getLongArrayExtra("tr");
 		final boolean is_day = intent.getBooleanExtra("day", false);
 		final long now = System.currentTimeMillis();
-		final int jtt[] = timestamps2jtt(tr, is_day, now);
+		final Hour hour = Hour.fromTimestamps(tr, is_day, now);
 
 		if (now >= tr[1] && now < tr[2]) {
 			TickAction.putExtra("tr", tr)
 					.putExtra("day", is_day)
-					.putExtra("hour", jtt[0])
-					.putExtra("fraction", jtt[1]);
+					.putExtra("hour", hour.num)
+					.putExtra("fraction", hour.fraction)
+					.putExtra("jtt", hour.wrapped);
 			sendStickyBroadcast(TickAction);
 		} else
 			schedule(this);
 
 		stopSelf();
-	}
-
-	private static int[] timestamps2jtt(final long tr[], final boolean is_day, final long now) {
-		final int out[] = new int[2];
-		final double passed = (1. * now - tr[1]) / (tr[2] - tr[1]);
-		out[1] = (int) (total * passed);
-		out[0] = out[1] / subs + (is_day ? ticks : 0);
-		out[1] %= subs;
-		return out;
 	}
 }

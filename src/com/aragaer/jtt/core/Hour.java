@@ -11,7 +11,8 @@ public class Hour {
 	public boolean isNight;
 	public int num, // 0 to 11, where 0 is hour of Cock and 11 is hour of Monkey
 		quarter, // 0 to 3
-		quarter_parts; // 0 to PARTS
+		quarter_parts, // 0 to PARTS
+		wrapped; // wrapped into single integer
 
 	/* compatibility */
 	public int fraction; // 0 to 99
@@ -39,6 +40,8 @@ public class Hour {
 		quarter = f / fractions_per_quarter;
 		quarter_parts = (f % fractions_per_quarter) * HOUR_PARTS / 100;
 		fraction = f;
+
+		wrapped = ((num * QUARTERS) + quarter) * QUARTER_PARTS + quarter_parts;
 	}
 
 	// Instead of reallocation, reuse existing object
@@ -47,8 +50,19 @@ public class Hour {
 		isNight = n < HOURS;
 		quarter = q;
 		quarter_parts = f;
+		wrapped = ((num * QUARTERS) + quarter) * QUARTER_PARTS + quarter_parts;
 
 		fraction = (q * QUARTER_PARTS + f) * 100 / HOUR_PARTS;
 	}
 
+	public static Hour fromTimestamps(final long tr[], final boolean is_day, final long now) {
+		final double passed = (1. * now - tr[1]) / (tr[2] - tr[1]) + (is_day ? 1 : 0);
+		return fromWrapped((int) (HOURS * HOUR_PARTS * passed));
+	}
+
+	public static Hour fromWrapped(final int f) {
+		int q = f / QUARTER_PARTS;
+		int n = q / QUARTERS;
+		return new Hour(n, q % QUARTERS, f % QUARTER_PARTS);
+	}
 }
