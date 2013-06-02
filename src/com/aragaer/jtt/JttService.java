@@ -1,11 +1,13 @@
 package com.aragaer.jtt;
 
+import com.aragaer.jtt.core.Calculator;
 import com.aragaer.jtt.core.Clockwork;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
 
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,7 +35,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startid) {
 		Log.i(TAG, "Service starting");
-		Clockwork.schedule(this);
+		move();
 
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
@@ -70,6 +72,15 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 		if (key.equals(Settings.PREF_NOTIFY))
 			toggle_notify(pref.getBoolean("jtt_notify", true));
 		else if (key.equals(Settings.PREF_LOCATION))
-			Clockwork.schedule(this);
+			move();
+	}
+
+	private void move() {
+		final float l[] = Settings.getLocation(this);
+		final ContentValues location = new ContentValues(2);
+		location.put("lat", l[0]);
+		location.put("lon", l[1]);
+		getContentResolver().update(Calculator.LOCATION, location, null, null);
+		Clockwork.schedule(this);
 	}
 }
