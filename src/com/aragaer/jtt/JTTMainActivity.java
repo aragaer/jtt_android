@@ -31,6 +31,7 @@ public class JTTMainActivity extends ActivityGroup {
 			final int f = intent.getIntExtra("fraction", 0);
 
 			clock.setHour(n, f);
+			today.setCurrent(n);
 		}
 	};
 
