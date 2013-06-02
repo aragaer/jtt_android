@@ -43,7 +43,7 @@ public class Calculator extends ContentProvider {
 		return true;
 	}
 
-	private static final String PROJECTION_TR[] = { "start", "end", "is_sunrise" };
+	private static final String PROJECTION_TR[] = { "prev", "start", "end", "next", "is_day" };
 
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
@@ -56,34 +56,43 @@ public class Calculator extends ContentProvider {
 		final long now = ContentUris.parseId(uri);
 		long jdn = longToJDN(now);
 
-		long prev = getTrForJDN(jdn)[0];
-		long next = getTrForJDN(jdn)[1];
+		/* fill 4 transitions at once */
+		final long tr[] = new long[] {
+			getTrForJDN(jdn - 1)[1],
+			getTrForJDN(jdn)[0],
+			getTrForJDN(jdn)[1],
+			getTrForJDN(jdn + 1)[0]
+		};
 		boolean is_day = true;
 
 		// if tr2 is before now
-		while (now >= prev) {
-			prev = next;
-			if (is_day) {
+		while (now >= tr[2]) {
+			for (int i = 0; i < 3; i++)
+				tr[i] = tr[i + 1];
+			if (is_day)
+				tr[3] = getTrForJDN(jdn)[1];
+			else {
 				jdn++;
-				next = getTrForJDN(jdn)[0];
-			} else
-				next = getTrForJDN(jdn)[1];
+				tr[3] = getTrForJDN(jdn)[0];
+			}
 			is_day = !is_day;
 		}
 
 		// (else) if tr1 is after now
-		while (now < prev) {
-			next = prev;
-			if (is_day) {
+		while (now < tr[1]) {
+			for (int i = 0; i < 3; i++)
+				tr[i + 1] = tr[i];
+			if (is_day)
+				tr[0] = getTrForJDN(jdn)[0];
+			else {
 				jdn--;
-				prev = getTrForJDN(jdn)[1];
-			} else
-				prev = getTrForJDN(jdn)[0];
+				tr[0] = getTrForJDN(jdn)[1];
+			}
 			is_day = !is_day;
 		}
 
 		final MatrixCursor c = new MatrixCursor(PROJECTION_TR, 1);
-		c.addRow(new Object[] {prev, next, is_day ? 1 : 0});
+		c.addRow(new Object[] {tr[0], tr[1], tr[2], tr[3], is_day ? 1 : 0});
 		return c;
 	}
 
@@ -119,9 +128,9 @@ public class Calculator extends ContentProvider {
 		final Cursor c = context.getContentResolver()
 				.query(ContentUris.withAppendedId(TRANSITIONS, now), null, null, null, null);
 		c.moveToFirst();
-		tr[0] = c.getLong(0);
-		tr[1] = c.getLong(1);
-		final boolean is_day = c.getInt(2) == 1;
+		tr[0] = c.getLong(1);
+		tr[1] = c.getLong(2);
+		final boolean is_day = c.getInt(4) == 1;
 		c.close();
 		return is_day;
 	}
