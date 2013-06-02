@@ -75,5 +75,7 @@
                 <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
         </receiver>
+        <provider android:name=".core.Calculator"
+            android:authorities="com.aragaer.jtt.provider.calculator" />
     </application>
 </manifest>
