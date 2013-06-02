@@ -1,9 +1,12 @@
 package com.aragaer.jtt;
 
-import java.lang.ref.WeakReference;
+import com.aragaer.jtt.core.Clockwork;
 
 import android.app.ActivityGroup;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,58 +18,35 @@ import android.view.Window;
 import android.widget.ListView;
 
 public class JTTMainActivity extends ActivityGroup {
-    private final static String TAG = "jtt main";
-
     private ClockView clock;
     private JTTPager pager;
     private TodayAdapter today;
 
-    protected JTTUtil.ConnHelper conn = new JTTUtil.ConnHelper(this, new IncomingHandler(this));
+	private final BroadcastReceiver receiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (!intent.getAction().equals(Clockwork.ACTION_JTT_TICK))
+				return;
+			final int n = intent.getIntExtra("hour", 0);
+			final int f = intent.getIntExtra("fraction", 0);
 
-    static class IncomingHandler extends Handler {
-        private final WeakReference<JTTMainActivity> main;
+			clock.setHour(n, f);
+		}
+	};
 
-        public IncomingHandler(JTTMainActivity m) {
-            main = new WeakReference<JTTMainActivity>(m);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case JTTService.MSG_HOUR:
-                main.get().today.setCurrent(msg.arg1);
-                /* fall-through! */
-            case JTTService.MSG_SUBTICK:
-                main.get().clock.setHour(msg.arg1, msg.arg2);
-                break;
-            case JTTService.MSG_TRANSITIONS:
-                main.get().today.addTransitions(msg.getData());
-                break;
-            case JTTService.MSG_INVALIDATE:
-                Log.d(TAG, "Invalidate all");
-                main.get().today.reset();
-                break;
-            default:
-                super.handleMessage(msg);
-                break;
-            }
-        }
-    }
-
-    int settings_tab = 0;
+    private int settings_tab = 0;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         JTTUtil.setTheme(this);
         super.onCreate(savedInstanceState);
-        final Intent service = new Intent(this, JTTService.class);
-        startService(service);
+        startService(new Intent(this, JttService.class));
 
         pager = new JTTPager(this);
 
         clock = new ClockView(this);
         pager.addTab(clock, R.string.clock);
 
-        ListView today_list = new ListView(this);
+        final ListView today_list = new ListView(this);
         today = new TodayAdapter(this, 0);
         today_list.setAdapter(today);
         pager.addTab(today_list, R.string.today);
@@ -76,7 +56,8 @@ public class JTTMainActivity extends ActivityGroup {
         settings_tab = pager.addTab(sw.getDecorView(), R.string.settings);
 
         setContentView(pager);
-        conn.bind(service, 0);
+
+		registerReceiver(receiver, new IntentFilter(Clockwork.ACTION_JTT_TICK));
     }
 
     @Override
@@ -98,8 +79,6 @@ public class JTTMainActivity extends ActivityGroup {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        conn.release();
-
-        Log.i(TAG, "Activity destroyed");
+		unregisterReceiver(receiver);
     }
 }

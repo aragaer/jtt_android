@@ -2,6 +2,7 @@ package com.aragaer.jtt;
 
 import java.util.HashMap;
 
+import com.aragaer.jtt.core.Clockwork;
 import com.aragaer.jtt.graphics.WadokeiDraw;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
@@ -51,7 +52,7 @@ public class JTTWidgetProvider {
 					.getBoolean("jtt_widget_text_invert", false);
 			if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
 				update(c, i);
-			else if (action.equals(JTTService.TICK_ACTION))
+			else if (action.equals(Clockwork.ACTION_JTT_TICK))
 				tick(c, i);
 			else if (action.equals(Settings.JTT_SETTINGS_CHANGED)) {
 				inverse = i.getBooleanExtra("inverse", inverse);
