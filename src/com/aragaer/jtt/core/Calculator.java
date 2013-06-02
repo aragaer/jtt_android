@@ -123,13 +123,13 @@ public class Calculator extends ContentProvider {
 		return 0;
 	}
 
-	/* Put surrounding transitions into tr, return true if it is day now */
+	/* Calculate a total of 4 transitions, tr[1] <= now < tr[2]. Return true if it is day now */
 	public static boolean getSurroundingTransitions(final Context context, final long now, final long tr[]) {
 		final Cursor c = context.getContentResolver()
 				.query(ContentUris.withAppendedId(TRANSITIONS, now), null, null, null, null);
 		c.moveToFirst();
-		tr[0] = c.getLong(1);
-		tr[1] = c.getLong(2);
+		for (int i = 0; i < 4; i++)
+			tr[i] = c.getLong(i);
 		final boolean is_day = c.getInt(4) == 1;
 		c.close();
 		return is_day;

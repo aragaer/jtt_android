@@ -54,8 +54,8 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		hf = intent.getIntExtra("fraction", 0);
 
 		final long tr[] = intent.getLongArrayExtra("tr");
-		final long hlen = (tr[1] - tr[0]) / ticks;
-		start = tr[0] + hlen * (hn % ticks);
+		final long hlen = (tr[2] - tr[1]) / ticks;
+		start = tr[1] + hlen * (hn % ticks);
 		end = start + hlen;
 		show();
 	}

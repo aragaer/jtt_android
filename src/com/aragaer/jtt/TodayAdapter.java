@@ -186,14 +186,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 			return;
 		}
 
-		final long tr[] = new long[2];
-		is_day = Calculator.getSurroundingTransitions(getContext(), now, tr);
-		transitions[1] = tr[0];
-		transitions[2] = tr[1];
-		Calculator.getSurroundingTransitions(getContext(), transitions[1] - 1, tr);
-		transitions[0] = tr[0];
-		Calculator.getSurroundingTransitions(getContext(), transitions[2] + 1, tr);
-		transitions[3] = tr[1];
+		is_day = Calculator.getSurroundingTransitions(getContext(), now, transitions);
 
 		HourItem.next_transition = transitions[2];
 
