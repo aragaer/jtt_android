@@ -33,7 +33,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startid) {
 		Log.i(TAG, "Service starting");
-		startService(new Intent(this, Clockwork.class).putExtra("action", Clockwork.ACTION_ENABLE));
+		Clockwork.schedule(this);
 
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
@@ -70,8 +70,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 		if (key.equals(Settings.PREF_NOTIFY))
 			toggle_notify(pref.getBoolean("jtt_notify", true));
 		else if (key.equals(Settings.PREF_LOCATION))
-			startService(new Intent(this, Clockwork.class)
-					.putExtra("action", Clockwork.ACTION_MOVE)
-					.putExtra("location", Settings.getLocation(this)));
+			Clockwork.schedule(this);
 	}
 }

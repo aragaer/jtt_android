@@ -1,6 +1,5 @@
 package com.aragaer.jtt.core;
 
-import java.lang.IllegalStateException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -16,19 +15,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 public class Clockwork extends IntentService {
-	private SunriseSunsetCalculator calculator;
-
-	public static final int ACTION_ENABLE = 0,
-		ACTION_DISABLE = 1,
-		ACTION_TRIGGER = 2,
-		ACTION_MOVE = 3;
 	public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
-	private static final int ACTION_JTT_TICK2 = 42;
-	private final static Intent TickAction = new Intent(ACTION_JTT_TICK);
-	private final static int INTENT_FLAGS = PendingIntent.FLAG_UPDATE_CURRENT;
+	private static final Intent TickAction = new Intent(ACTION_JTT_TICK);
+	private static final int INTENT_FLAGS = PendingIntent.FLAG_UPDATE_CURRENT;
 
 	public Clockwork() {
 		super("CLOCKWORK");
@@ -40,7 +31,7 @@ public class Clockwork extends IntentService {
 			final String action = intent.getAction();
 			if (action.equals(Intent.ACTION_TIME_CHANGED)
 					|| action.equals(Intent.ACTION_DATE_CHANGED))
-				context.startService(new Intent(context, Clockwork.class).putExtra("action", ACTION_TRIGGER));
+				schedule(context);
 		}
 	};
 
@@ -48,69 +39,45 @@ public class Clockwork extends IntentService {
 	private final static int subs = JTTHour.subs;
 	private final static double total = ticks * subs;
 
-	public void schedule() {
-		final AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+	public static void schedule(final Context context) {
+		final AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-		if (calculator == null) {
-			final float l[] = Settings.getLocation(this);
-			calculator = new SunriseSunsetCalculator(new Location(l[0], l[1]), TimeZone.getDefault());
-		}
+		final float l[] = Settings.getLocation(context);
+		final SunriseSunsetCalculator calculator = new SunriseSunsetCalculator(new Location(l[0], l[1]), TimeZone.getDefault());
 
 		final long tr[] = new long[2];
 		final boolean is_day = getSurroundingTransitions(calculator, tr);
 
 		final long freq = Math.round((tr[1] - tr[0])/total);
 
-		final Intent TickActionInternal = new Intent(this, Clockwork.class)
-				.putExtra("action", ACTION_JTT_TICK2)
+		final Intent TickActionInternal = new Intent(context, Clockwork.class)
 				.putExtra("tr", tr)
 				.putExtra("day", is_day);
 
 		/* Tell alarm manager to start ticking at tr[0], it will automatically calculate the next tick time */
-		am.setRepeating(AlarmManager.RTC, tr[0], freq, PendingIntent.getService(this, 0, TickActionInternal, INTENT_FLAGS));
+		am.setRepeating(AlarmManager.RTC, tr[0], freq, PendingIntent.getService(context, 0, TickActionInternal, INTENT_FLAGS));
 	}
 
-	public void unschedule() {
-		final AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		am.cancel(PendingIntent.getService(this, 0, new Intent(this, Clockwork.class), 0));
+	public static void unschedule(final Context context) {
+		final AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		am.cancel(PendingIntent.getService(context, 0, new Intent(context, Clockwork.class), 0));
 	}
 
+	@Override
 	protected void onHandleIntent(Intent intent) {
-		switch (intent.getIntExtra("action", 0)) {
-		case ACTION_MOVE:
-			if (calculator != null) {
-				final float l[] = intent.getFloatArrayExtra("location");
-				calculator = new SunriseSunsetCalculator(new Location(l[0], l[1]), TimeZone.getDefault());
-			}
-			/* fall-through */
-		case ACTION_ENABLE:
-		case ACTION_TRIGGER:
-			schedule();
-			break;
-		case ACTION_DISABLE:
-			unschedule();
-			break;
-		case ACTION_JTT_TICK2:
-			final long tr[] = intent.getLongArrayExtra("tr");
-			final boolean is_day = intent.getBooleanExtra("day", false);
-			final long now = System.currentTimeMillis();
-			int jtt[] = timestamps2jtt(tr, is_day, now);
-			Log.d("CLOCKWORK", "Tick "+jtt[0]+":"+jtt[1]);
+		final long tr[] = intent.getLongArrayExtra("tr");
+		final boolean is_day = intent.getBooleanExtra("day", false);
+		final long now = System.currentTimeMillis();
+		final int jtt[] = timestamps2jtt(tr, is_day, now);
 
-			if (now >= tr[0] && now < tr[1]) {
-				TickAction.putExtra("tr", tr)
-						.putExtra("day", is_day)
-						.putExtra("hour", jtt[0])
-						.putExtra("fraction", jtt[1]);
-
-				sendStickyBroadcast(TickAction);
-			} else {
-				schedule();
-			}
-			break;
-		default:
-			break;
-		}
+		if (now >= tr[0] && now < tr[1]) {
+			TickAction.putExtra("tr", tr)
+					.putExtra("day", is_day)
+					.putExtra("hour", jtt[0])
+					.putExtra("fraction", jtt[1]);
+			sendStickyBroadcast(TickAction);
+		} else
+			schedule(this);
 
 		stopSelf();
 	}
