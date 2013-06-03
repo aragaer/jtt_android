@@ -22,7 +22,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 
 	private final Context context;
 	private final StringResources sr;
-	private int hn, hf;
+	private int hn, hq, hf;
 	private long start, end;
 	private final NotificationManager nm;
 
@@ -43,20 +43,20 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		context.unregisterReceiver(this);
 	}
 
-	private final static int ticks = Hour.HOURS;
-
 	@Override
 	public void onReceive(Context ctx, Intent intent) {
 		final String action = intent.getAction();
 		if (!action.equals(Clockwork.ACTION_JTT_TICK))
 			return;
 
+		final int wrapped = intent.getIntExtra("jtt", 0);
 		hn = intent.getIntExtra("hour", 0);
-		hf = intent.getIntExtra("fraction", 0);
+		hf = wrapped % Hour.HOUR_PARTS;
+		hq = hf / Hour.QUARTER_PARTS;
 
 		final long tr[] = intent.getLongArrayExtra("tr");
-		final long hlen = (tr[2] - tr[1]) / ticks;
-		start = tr[1] + hlen * (hn % ticks);
+		final long hlen = (tr[2] - tr[1]) / Hour.HOURS;
+		start = tr[1] + hlen * (hn % Hour.HOURS);
 		end = start + hlen;
 		show();
 	}
@@ -71,8 +71,9 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 
 		rv.setTextViewText(R.id.image, Hour.Glyphs[hn]);
 		rv.setTextViewText(R.id.title, sr.getHrOf(hn));
-		rv.setTextViewText(R.id.percent, String.format("%d%%", hf));
-		rv.setProgressBar(R.id.fraction, 100, hf, false);
+		rv.setTextViewText(R.id.quarter, sr.getQuarter(hq));
+		rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
+		rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
 		rv.setTextViewText(R.id.start, sr.format_time(start));
 		rv.setTextViewText(R.id.end, sr.format_time(end));
 

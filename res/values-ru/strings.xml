@@ -75,6 +75,12 @@
         <item>Час Овцы</item>
         <item>Час Обезьяны</item>
     </string-array>
+    <string-array name="quarter">
+        <item>Первая четверть</item>
+        <item>Вторая четверть</item>
+        <item>Третья четверть</item>
+        <item>Четвертая четверть</item>
+    </string-array>
 
     <string name="appearance">Внешний вид</string>
     <string name="no_providers">Не удается определить местоположение. Пожалуйста, включите GPS.</string>
