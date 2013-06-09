@@ -22,7 +22,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 
 	private final Context context;
 	private final StringResources sr;
-	private int hn, hq, hf;
+	private final Hour h = new Hour(0);
 	private long start, end;
 	private final NotificationManager nm;
 
@@ -50,14 +50,12 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 			return;
 
 		final int wrapped = intent.getIntExtra("jtt", 0);
-		hn = intent.getIntExtra("hour", 0);
-		hf = wrapped % Hour.HOUR_PARTS;
-		hq = hf / Hour.QUARTER_PARTS;
+		Hour.fromWrapped(wrapped, h);
 
 		final long tr[] = intent.getLongArrayExtra("tr");
-		final long hlen = (tr[2] - tr[1]) / Hour.HOURS;
-		start = tr[1] + hlen * (hn % Hour.HOURS);
-		end = start + hlen;
+		start = Hour.getHourBoundary(tr[1], tr[2], h.num % Hour.HOURS);
+		end = Hour.getHourBoundary(tr[1], tr[2], h.num % Hour.HOURS + 1);
+
 		show();
 	}
 
@@ -67,11 +65,12 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notification);
 
 		n.flags = flags_ongoing;
-		n.iconLevel = hn;
+		n.iconLevel = h.num;
+		final int hf = h.quarter * Hour.QUARTER_PARTS + h.quarter_parts;
 
-		rv.setTextViewText(R.id.image, Hour.Glyphs[hn]);
-		rv.setTextViewText(R.id.title, sr.getHrOf(hn));
-		rv.setTextViewText(R.id.quarter, sr.getQuarter(hq));
+		rv.setTextViewText(R.id.image, Hour.Glyphs[h.num]);
+		rv.setTextViewText(R.id.title, sr.getHrOf(h.num));
+		rv.setTextViewText(R.id.quarter, sr.getQuarter(h.quarter));
 		rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
 		rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
 		rv.setTextViewText(R.id.start, sr.format_time(start));

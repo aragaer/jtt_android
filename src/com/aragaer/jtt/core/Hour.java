@@ -17,6 +17,8 @@ public class Hour {
 	/* compatibility */
 	public int fraction; // 0 to 99
 
+	private Hour() { } // just allocate
+
 	public Hour(int num) {
 		this(num, 0, 0);
 	}
@@ -55,14 +57,23 @@ public class Hour {
 		fraction = (q * QUARTER_PARTS + f) * 100 / HOUR_PARTS;
 	}
 
-	public static Hour fromTimestamps(final long tr[], final boolean is_day, final long now) {
+	public static Hour fromTimestamps(final long tr[], final boolean is_day, final long now, Hour reuse) {
 		final double passed = (1. * now - tr[1]) / (tr[2] - tr[1]) + (is_day ? 1 : 0);
-		return fromWrapped((int) (HOURS * HOUR_PARTS * passed));
+		return fromWrapped((int) (HOURS * HOUR_PARTS * passed), reuse);
 	}
 
-	public static Hour fromWrapped(final int f) {
-		int q = f / QUARTER_PARTS;
-		int n = q / QUARTERS;
-		return new Hour(n, q % QUARTERS, f % QUARTER_PARTS);
+	public static Hour fromWrapped(final int f, Hour reuse) {
+		final int q = f / QUARTER_PARTS;
+		final int n = q / QUARTERS;
+		if (reuse == null)
+			reuse = new Hour();
+		reuse.setTo(n % Glyphs.length, q % QUARTERS, f % QUARTER_PARTS);
+		return reuse;
+	}
+
+	/* given start and end of time interval return hour boundary for given position */
+	public static long getHourBoundary(final long start, final long end, final int pos) {
+		final long hlen = (end - start) / HOURS;
+		return start + hlen * pos;
 	}
 }

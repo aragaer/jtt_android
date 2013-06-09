@@ -19,6 +19,7 @@ public class Clockwork extends IntentService {
 	public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
 	private static final Intent TickAction = new Intent(ACTION_JTT_TICK);
 	private static final int INTENT_FLAGS = PendingIntent.FLAG_UPDATE_CURRENT;
+	private final Hour hour = new Hour(0);
 
 	public Clockwork() {
 		super("CLOCKWORK");
@@ -63,7 +64,7 @@ public class Clockwork extends IntentService {
 		final long tr[] = intent.getLongArrayExtra("tr");
 		final boolean is_day = intent.getBooleanExtra("day", false);
 		final long now = System.currentTimeMillis();
-		final Hour hour = Hour.fromTimestamps(tr, is_day, now);
+		Hour.fromTimestamps(tr, is_day, now, hour);
 
 		if (now >= tr[1] && now < tr[2]) {
 			TickAction.putExtra("tr", tr)
