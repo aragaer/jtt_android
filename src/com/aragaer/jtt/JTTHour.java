@@ -1,8 +1,7 @@
 package com.aragaer.jtt;
 
 public class JTTHour {
-    public static final String Glyphs[] = { "酉", "戌", "亥", "子", "丑", "寅", "卯",
-            "辰", "巳", "午", "未", "申" };
+    public static final String Glyphs[] = "酉戌亥子丑寅卯辰巳午未申".split("(?!^)");
 
     public static final int ticks = 6;
     public static final int subs = 100;
