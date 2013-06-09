@@ -71,6 +71,17 @@ public class Hour {
 		return reuse;
 	}
 
+	/* truncate new value according to granularity
+	 * if new value is different from current, update and return true
+	 */
+	public boolean compareAndUpdate(int new_wrapped, final int granularity) {
+		new_wrapped -= new_wrapped % granularity;
+		if (wrapped == new_wrapped)
+			return false;
+		fromWrapped(new_wrapped, this);
+		return true;
+	}
+
 	/* given start and end of time interval return hour boundary for given position */
 	public static long getHourBoundary(final long start, final long end, final int pos) {
 		final long hlen = (end - start) / HOURS;
