@@ -51,7 +51,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.aragaer.jtt.ACTION_JTT_SETTINGS" />
-                <action android:name="com.aragaer.jtt.ACTION_JTT_TICK" />
+                <action android:name="com.aragaer.jtt.action.TICK" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
@@ -63,7 +63,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.aragaer.jtt.ACTION_JTT_SETTINGS" />
-                <action android:name="com.aragaer.jtt.ACTION_JTT_TICK" />
+                <action android:name="com.aragaer.jtt.action.TICK" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"

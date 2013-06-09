@@ -60,8 +60,8 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 		final int h = b - t;
 		if (vertical) {
 			if (changed) {
-				wadokei.layout(0, h - w * 19 / 20, w, h);
-				arrow.layout(w * 19 / 40, h - w, w * 21 / 40, h - w * 19 / 20);
+				wadokei.layout(0, h - w, w, h - w / 20);
+				arrow.layout(w * 19 / 40, h - w - w/20, w * 21 / 40, h - w);
 			}
 			final int tw = text.getMeasuredWidth();
 			text.layout(w / 2 - tw / 2, h / 10, w / 2 + tw / 2, h / 10 + text.getMeasuredHeight());
