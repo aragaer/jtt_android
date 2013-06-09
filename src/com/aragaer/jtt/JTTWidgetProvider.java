@@ -40,10 +40,10 @@ public class JTTWidgetProvider {
 
 		static boolean inverse;
 
-		protected JTTWidget(int granularity) {
+		protected JTTWidget(final int frequency) {
 			cn = this.getClass().getSimpleName();
 			name = new ComponentName(PKG_NAME, this.getClass().getName());
-			this.granularity = granularity;
+			this.granularity = Hour.QUARTERS * Hour.QUARTER_PARTS / frequency;
 		}
 
 		public void onReceive(Context c, Intent i) {
@@ -122,7 +122,7 @@ public class JTTWidgetProvider {
 		static boolean initialized = false;
 
 		public Widget1() {
-			super(5);
+			super(20);
 
 			p1.setStyle(Paint.Style.FILL);
 			p1.setColor(Color.TRANSPARENT);
@@ -167,7 +167,7 @@ public class JTTWidgetProvider {
 		private static Bitmap bmp;
 
 		public Widget12() {
-			super(12);
+			super(8);
 		}
 
 		protected void hour_changed(int n) {
