@@ -5,8 +5,7 @@ public class Hour {
 			QUARTERS = 4,
 			QUARTER_PARTS = 10,
 			HOUR_PARTS = QUARTERS * QUARTER_PARTS;
-	public static final String Glyphs[] = { "酉", "戌", "亥", "子", "丑", "寅", "卯",
-			"辰", "巳", "午", "未", "申" };
+	public static final String Glyphs[] = "酉戌亥子丑寅卯辰巳午未申".split("(?!^)");
 
 	public int num, // 0 to 11, where 0 is hour of Cock and 11 is hour of Monkey
 		quarter, // 0 to 3

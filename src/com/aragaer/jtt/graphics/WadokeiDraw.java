@@ -15,7 +15,7 @@ public class WadokeiDraw {
 	private final static int step = 360 / 12;
 	private final static float gap = 1.5f;
 	private final Paint cache_paint = new Paint(0x07), stroke, solid;
-	private final Matrix clock_matrix = new Matrix(), sun_matrix = new Matrix(), glyph_matrix = new Matrix();
+	private final Matrix matrix = new Matrix();
 
 	private final Paints paints;
 	private Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444), // make it non-null
@@ -129,16 +129,15 @@ public class WadokeiDraw {
 				- PART_ANGLE * hour.quarter_parts;
 		final float angle = clock_angle - hour.num * step;
 
-		clock_matrix.setRotate(clock_angle, size, size);
+		matrix.setRotate(clock_angle, size, size);
+		canvas.drawBitmap(clock, matrix, cache_paint);
 
-		sun_matrix.setTranslate(size - iR, size - iR);
-		sun_matrix.preRotate(angle, iR, iR);
+		matrix.setTranslate(size - iR, size - iR);
+		matrix.preRotate(angle, iR, iR);
+		canvas.drawBitmap(sun_stages, matrix, cache_paint);
 
-		glyph_matrix.setTranslate(size / 5, size / 5);
-		glyph_matrix.preRotate(angle, size * 4 / 5, size * 4 / 5);
-
-		canvas.drawBitmap(clock, clock_matrix, cache_paint);
-		canvas.drawBitmap(sun_stages, sun_matrix, cache_paint);
-		canvas.drawBitmap(glyphs, glyph_matrix, cache_paint);
+		matrix.setTranslate(size / 5, size / 5);
+		matrix.preRotate(angle, size * 4 / 5, size * 4 / 5);
+		canvas.drawBitmap(glyphs, matrix, cache_paint);
 	}
 }
