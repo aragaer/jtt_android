@@ -38,11 +38,9 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 	}
 
 	private static final int granularity = 10;
-	public void setHour(int n, int f) {
-		f -= f % granularity;
-		if (hour.num == n && hour.fraction == f)
+	public void setHour(final int wrapped) {
+		if (!hour.compareAndUpdate(wrapped, granularity))
 			return; // do nothing
-		hour.setTo(n, f);
 		wadokei.set_hour(hour);
 		text.setText(vertical ? sr.getHrOf(hour.num) : sr.getHour(hour.num));
 	}
