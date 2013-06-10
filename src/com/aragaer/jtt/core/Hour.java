@@ -27,7 +27,7 @@ public class Hour {
 		num = n;
 		quarter = q;
 		quarter_parts = f;
-		wrapped = (num * QUARTERS + quarter) * QUARTER_PARTS + quarter_parts;
+		wrapped = (num * QUARTERS + quarter - 2) * QUARTER_PARTS + quarter_parts;
 	}
 
 	public static Hour fromTimestamps(final long tr[], final boolean is_day, final long now, Hour reuse) {
@@ -36,7 +36,7 @@ public class Hour {
 	}
 
 	public static Hour fromWrapped(final int f, Hour reuse) {
-		final int q = f / QUARTER_PARTS;
+		final int q = f / QUARTER_PARTS + 2;
 		final int n = q / QUARTERS;
 		if (reuse == null)
 			reuse = new Hour();
@@ -57,7 +57,7 @@ public class Hour {
 
 	/* given start and end of time interval return hour boundary for given position */
 	public static long getHourBoundary(final long start, final long end, final int pos) {
-		final long hlen = (end - start) / HOURS;
-		return start + hlen * pos;
+		final long half_hlen = (end - start) / HOURS / 2;
+		return start + half_hlen * pos * 2 - half_hlen;
 	}
 }

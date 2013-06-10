@@ -54,7 +54,6 @@ public class WadokeiDraw {
 		sun_stages = Bitmap.createBitmap(iR * 2, iR * 2, Bitmap.Config.ARGB_4444);
 
 		final Canvas canvas = new Canvas(sun_stages);
-		canvas.rotate(-step / 2, iR, iR);
 
 		canvas.drawArc(sun, 0, 360, false, paints.solid1);
 		canvas.drawArc(sun, 0, 360, false, paints.stroke1);

@@ -55,6 +55,10 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		final long tr[] = intent.getLongArrayExtra("tr");
 		start = Hour.getHourBoundary(tr[1], tr[2], h.num % Hour.HOURS);
 		end = Hour.getHourBoundary(tr[1], tr[2], h.num % Hour.HOURS + 1);
+		if (start < tr[1])
+			start = Hour.getHourBoundary(tr[0], tr[1], h.num % Hour.HOURS);
+		else if (end > tr[2])
+			end = Hour.getHourBoundary(tr[2], tr[3], (h.num + 1) % Hour.HOURS);
 
 		show();
 	}
