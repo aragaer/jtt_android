@@ -70,7 +70,6 @@ public class Clockwork extends IntentService {
 			TickAction.putExtra("tr", tr)
 					.putExtra("day", is_day)
 					.putExtra("hour", hour.num)
-					.putExtra("fraction", hour.fraction)
 					.putExtra("jtt", hour.wrapped);
 			sendStickyBroadcast(TickAction);
 		} else
