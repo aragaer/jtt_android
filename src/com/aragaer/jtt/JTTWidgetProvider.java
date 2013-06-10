@@ -175,13 +175,12 @@ public class JTTWidgetProvider {
 		}
 
 		protected void fill_rv(RemoteViews rv, Hour h) {
-			final int n = h.num, f = h.fraction;
 			bmp.eraseColor(Color.TRANSPARENT);
-			wd.draw_dial(n, f, new Canvas(bmp));
+			wd.draw_dial(h, new Canvas(bmp));
 
 			rv.setImageViewBitmap(R.id.clock, bmp);
 			rv.setFloat(R.id.glyph, "setTextSize", size / 10);
-			rv.setTextViewText(R.id.glyph, sr.getHour(n));
+			rv.setTextViewText(R.id.glyph, sr.getHour(h.num));
 		}
 
 		protected void init(Context c) {

@@ -120,9 +120,14 @@ public class WadokeiDraw {
 		}
 	}
 
-	public void draw_dial(final int n, final int f, final Canvas canvas) {
-		final float clock_angle = step * 0.5f - gap - (step - gap * 2) * f / 100f;
-		final float angle = clock_angle - n * step;
+	private static final float QUARTER_ANGLE = (step - gap * 2) / Hour.QUARTERS,
+			PART_ANGLE = QUARTER_ANGLE / Hour.QUARTER_PARTS;
+
+	public void draw_dial(final Hour hour, final Canvas canvas) {
+		final float clock_angle = step / 2 - gap
+				- QUARTER_ANGLE * hour.quarter
+				- PART_ANGLE * hour.quarter_parts;
+		final float angle = clock_angle - hour.num * step;
 
 		clock_matrix.setRotate(clock_angle, size, size);
 
