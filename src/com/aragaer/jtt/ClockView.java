@@ -37,7 +37,7 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 		addView(text);
 	}
 
-	private static final int granularity = 10;
+	private static final int granularity = 4;
 	public void setHour(final int wrapped) {
 		if (!hour.compareAndUpdate(wrapped, granularity))
 			return; // do nothing
