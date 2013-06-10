@@ -1,10 +1,9 @@
 package com.aragaer.jtt;
 
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.TimeZone;
 
 import com.aragaer.jtt.core.Calculator;
+import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
@@ -54,7 +53,7 @@ class HourItem extends TodayItem {
 		final StringResources sr = RuntimeResources.get(c).getInstance(StringResources.class);
 
 		JTTUtil.t(v, R.id.time, sr.format_time(time));
-		JTTUtil.t(v, R.id.glyph, JTTHour.Glyphs[hnum]);
+		JTTUtil.t(v, R.id.glyph, Hour.Glyphs[hnum]);
 		JTTUtil.t(v, R.id.name, sr.getHrOf(hnum));
 		JTTUtil.t(v, R.id.extra, extras[hnum]);
 		JTTUtil.t(v, R.id.curr, is_current ? "▶" : "");
@@ -99,7 +98,7 @@ class DayItem extends TodayItem {
 	 */
 	private static final long ms_to_day(long t) {
 		t += TodayAdapter.tz.getOffset(t);
-		return t / JTT.ms_per_day;
+		return t / Calculator.ms_per_day;
 	}
 }
 
@@ -131,7 +130,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 	 */
 	private static final long add24h(long t) {
 		t += tz.getOffset(t);
-		t += JTT.ms_per_day;
+		t += Calculator.ms_per_day;
 		return t - tz.getOffset(t);
 	}
 
@@ -146,7 +145,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 
 		/* "aligning" code */
 		start_of_day += tz.getOffset(start_of_day);
-		start_of_day -= start_of_day % JTT.ms_per_day;
+		start_of_day -= start_of_day % Calculator.ms_per_day;
 		start_of_day -= tz.getOffset(start_of_day);
 
 		add(new DayItem(start_of_day)); // List should start with one
@@ -186,14 +185,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 			return;
 		}
 
-		final long tr[] = new long[2];
-		is_day = Calculator.getSurroundingTransitions(getContext(), now, tr);
-		transitions[1] = tr[0];
-		transitions[2] = tr[1];
-		Calculator.getSurroundingTransitions(getContext(), transitions[1] - 1, tr);
-		transitions[0] = tr[0];
-		Calculator.getSurroundingTransitions(getContext(), transitions[2] + 1, tr);
-		transitions[3] = tr[1];
+		is_day = Calculator.getSurroundingTransitions(getContext(), now, transitions);
 
 		HourItem.next_transition = transitions[2];
 

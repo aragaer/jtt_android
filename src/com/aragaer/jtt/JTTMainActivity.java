@@ -28,9 +28,9 @@ public class JTTMainActivity extends ActivityGroup {
 			if (!intent.getAction().equals(Clockwork.ACTION_JTT_TICK))
 				return;
 			final int n = intent.getIntExtra("hour", 0);
-			final int f = intent.getIntExtra("fraction", 0);
+			final int wrapped = intent.getIntExtra("jtt", 0);
 
-			clock.setHour(n, f);
+			clock.setHour(wrapped);
 			today.setCurrent(n);
 		}
 	};

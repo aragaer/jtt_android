@@ -1,6 +1,7 @@
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
@@ -21,7 +22,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 
 	private final Context context;
 	private final StringResources sr;
-	private int hn, hf;
+	private final Hour h = new Hour(0);
 	private long start, end;
 	private final NotificationManager nm;
 
@@ -42,21 +43,19 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		context.unregisterReceiver(this);
 	}
 
-	private final static int ticks = JTTHour.ticks;
-
 	@Override
 	public void onReceive(Context ctx, Intent intent) {
 		final String action = intent.getAction();
 		if (!action.equals(Clockwork.ACTION_JTT_TICK))
 			return;
 
-		hn = intent.getIntExtra("hour", 0);
-		hf = intent.getIntExtra("fraction", 0);
+		final int wrapped = intent.getIntExtra("jtt", 0);
+		Hour.fromWrapped(wrapped, h);
 
 		final long tr[] = intent.getLongArrayExtra("tr");
-		final long hlen = (tr[1] - tr[0]) / ticks;
-		start = tr[0] + hlen * (hn % ticks);
-		end = start + hlen;
+		start = Hour.getHourBoundary(tr[1], tr[2], h.num % Hour.HOURS);
+		end = Hour.getHourBoundary(tr[1], tr[2], h.num % Hour.HOURS + 1);
+
 		show();
 	}
 
@@ -66,12 +65,14 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notification);
 
 		n.flags = flags_ongoing;
-		n.iconLevel = hn;
+		n.iconLevel = h.num;
+		final int hf = h.quarter * Hour.QUARTER_PARTS + h.quarter_parts;
 
-		rv.setTextViewText(R.id.image, JTTHour.Glyphs[hn]);
-		rv.setTextViewText(R.id.title, sr.getHrOf(hn));
-		rv.setTextViewText(R.id.percent, String.format("%d%%", hf));
-		rv.setProgressBar(R.id.fraction, 100, hf, false);
+		rv.setTextViewText(R.id.image, Hour.Glyphs[h.num]);
+		rv.setTextViewText(R.id.title, sr.getHrOf(h.num));
+		rv.setTextViewText(R.id.quarter, sr.getQuarter(h.quarter));
+		rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
+		rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
 		rv.setTextViewText(R.id.start, sr.format_time(start));
 		rv.setTextViewText(R.id.end, sr.format_time(end));
 

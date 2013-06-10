@@ -22,7 +22,7 @@ public class StringResources implements
 
 	private final Context c;
 	private final Resources r;
-	private String Hours[], HrOf[];
+	private String Hours[], HrOf[], Quarters[];
 	private DateFormat df;
 	private int hour_name_option;
 
@@ -67,6 +67,10 @@ public class StringResources implements
 		return HrOf[num];
 	}
 
+	public String getQuarter(final int q) {
+		return Quarters[q];
+	}
+
 	public interface StringResourceChangeListener {
 		public void onStringResourcesChanged(final int changes);
 	}
@@ -92,10 +96,12 @@ public class StringResources implements
 
 	private static final int hnh[] = { R.array.hour, R.array.romaji_hour, R.array.hiragana_hour };
 	private static final int hnhof[] = { R.array.hour_of, R.array.romaji_hour_of, R.array.hiragana_hour_of };
+	private static final int q[] = { R.array.quarter, R.array.romaji_quarter, R.array.hiragana_quarter };
 
 	private void load_hour_names() {
 		HrOf = r.getStringArray(hnhof[hour_name_option]);
 		Hours = r.getStringArray(hnh[hour_name_option]);
+		Quarters = r.getStringArray(q[hour_name_option]);
 		change_pending |= TYPE_HOUR_NAME;
 	}
 

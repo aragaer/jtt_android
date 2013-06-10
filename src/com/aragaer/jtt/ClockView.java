@@ -1,5 +1,6 @@
 package com.aragaer.jtt;
 
+import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.graphics.ArrowView;
 import com.aragaer.jtt.graphics.WadokeiView;
 import com.aragaer.jtt.resources.RuntimeResources;
@@ -17,6 +18,7 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 	private final TextView text;
 	private final WadokeiView wadokei;
 	private final ArrowView arrow;
+	private final Hour hour = new Hour(0);
 	private boolean vertical;
 
 	public ClockView(Context context) {
@@ -36,20 +38,18 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 	}
 
 	private static final int granularity = 10;
-	public void setHour(int n, int f) {
-		f -= f % granularity;
-		if (hn == n && hf == f)
+	public void setHour(final int wrapped) {
+		if (!hour.compareAndUpdate(wrapped, granularity))
 			return; // do nothing
-		hn = n;
-		wadokei.set_hour(n, f);
-		text.setText(vertical ? sr.getHrOf(n) : sr.getHour(n));
+		wadokei.set_hour(hour);
+		text.setText(vertical ? sr.getHrOf(hour.num) : sr.getHour(hour.num));
 	}
 
 	protected void onMeasure(int wms, int hms) {
 		final int w = MeasureSpec.getSize(wms);
 		final int h = MeasureSpec.getSize(hms);
 		vertical = h > w;
-		text.setText(vertical ? sr.getHrOf(hn) : sr.getHour(hn));
+		text.setText(vertical ? sr.getHrOf(hour.num) : sr.getHour(hour.num));
 		text.setTextSize(vertical ? w / 20 : w / 15);
 		text.measure(0, 0);
 		setMeasuredDimension(w, h);
@@ -76,6 +76,6 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 	}
 
 	public void onStringResourcesChanged(final int changes) {
-		text.setText(vertical ? sr.getHrOf(hn) : sr.getHour(hn));
+		text.setText(vertical ? sr.getHrOf(hour.num) : sr.getHour(hour.num));
 	}
 }
