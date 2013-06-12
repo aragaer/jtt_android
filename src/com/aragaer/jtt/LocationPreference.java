@@ -27,6 +27,7 @@ public class LocationPreference extends DialogPreference implements
     private TextView lat, lon;
     private LinearLayout locView;
     private String latlon;
+    public static final String DEFAULT = "0.0:0.0";
 
     private final static String fmt1 = "%.2f";
     private final static String fmt2 = "%s:%s";
@@ -60,7 +61,7 @@ public class LocationPreference extends DialogPreference implements
         lon = (TextView) locView.findViewById(R.id.lon);
 
         if (latlon == null)
-            latlon = getPersistedString("0.0:0.0");
+            latlon = getPersistedString(DEFAULT);
         String[] ll = latlon.split(":");
         lat.setText(ll[0]);
         // 66.562222 is the latitude of arctic circle
@@ -77,7 +78,7 @@ public class LocationPreference extends DialogPreference implements
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object def) {
         if (restoreValue) {
-            latlon = getPersistedString("0.0:0.0");
+            latlon = getPersistedString(DEFAULT);
             persistString(latlon);
             setSummary(latlon);
         } else {

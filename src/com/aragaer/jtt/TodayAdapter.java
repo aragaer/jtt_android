@@ -1,9 +1,9 @@
 package com.aragaer.jtt;
 
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.TimeZone;
 
+import com.aragaer.jtt.core.Calculator;
+import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
@@ -53,7 +53,7 @@ class HourItem extends TodayItem {
 		final StringResources sr = RuntimeResources.get(c).getInstance(StringResources.class);
 
 		JTTUtil.t(v, R.id.time, sr.format_time(time));
-		JTTUtil.t(v, R.id.glyph, JTTHour.Glyphs[hnum]);
+		JTTUtil.t(v, R.id.glyph, Hour.Glyphs[hnum]);
 		JTTUtil.t(v, R.id.name, sr.getHrOf(hnum));
 		JTTUtil.t(v, R.id.extra, extras[hnum]);
 		JTTUtil.t(v, R.id.curr, is_current ? "▶" : "");
@@ -98,21 +98,16 @@ class DayItem extends TodayItem {
 	 */
 	private static final long ms_to_day(long t) {
 		t += TodayAdapter.tz.getOffset(t);
-		return t / JTT.ms_per_day;
+		return t / Calculator.ms_per_day;
 	}
 }
 
 public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 		StringResources.StringResourceChangeListener {
-	private static final String TAG = TodayAdapter.class.getSimpleName();
-	private LinkedList<Long> transitions = new LinkedList<Long>();
-	private long prev_transition, next_transition;
+	private static final String TAG = "TODAY";
+	private boolean is_day;
+	private final long transitions[] = new long[4];
 	static TimeZone tz = TimeZone.getDefault();
-
-	/* true if we have requested transitions data and not got result yet */
-	private boolean expecting_data = false;
-
-	long jdn_min, jdn_max;
 
 	public TodayAdapter(Context c, int layout_id) {
 		super(c, layout_id);
@@ -135,14 +130,14 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 	 */
 	private static final long add24h(long t) {
 		t += tz.getOffset(t);
-		t += JTT.ms_per_day;
+		t += Calculator.ms_per_day;
 		return t - tz.getOffset(t);
 	}
 
 	/* takes a sublist of hours
 	 * creates a list to display by adding day names
 	 */
-	void buildItems(long[] transitions, boolean is_day) {
+	void buildItems() {
 		clear();
 
 		/* time stamp for 00:00:00 */
@@ -150,13 +145,13 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 
 		/* "aligning" code */
 		start_of_day += tz.getOffset(start_of_day);
-		start_of_day -= start_of_day % JTT.ms_per_day;
+		start_of_day -= start_of_day % Calculator.ms_per_day;
 		start_of_day -= tz.getOffset(start_of_day);
 
 		add(new DayItem(start_of_day)); // List should start with one
 		start_of_day = add24h(start_of_day);
 
-		int h_add = is_day ? 6 : 0;
+		int h_add = is_day ? 0 : 6;
 
 		/* start with first transition */
 		add(new HourItem(transitions[0], h_add));
@@ -175,121 +170,6 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 		}
 	}
 
-	/* handle bundle containing another couple of transitions
-	 * if list is empty at the moment, we have only one day
-	 * that starts with sunrise and ends with sunset
-	 * if list is not empty, we have a new night and a day
-	 * these two go to the beginning or to the end of the list
-	 */
-	public void addTransitions(Bundle b) {
-		long jdn = b.getLong("jdn");
-		long sunrise = b.getLong("sunrise");
-		long sunset = b.getLong("sunset");
-		expecting_data = false;
-
-		if (transitions.isEmpty()) {
-			transitions.add(sunrise);
-			transitions.add(sunset);
-			jdn_max = jdn_min = jdn;
-		} else {
-			if (jdn_max < jdn) {
-				transitions.add(sunrise);
-				transitions.add(sunset);
-				jdn_max = jdn;
-			} else if (jdn_min > jdn) { // add to front
-				transitions.addFirst(sunset);
-				transitions.addFirst(sunrise);
-				jdn_min = jdn;
-			} else {
-				Log.e(TAG, "Got "+jdn+" which is between "+jdn_min+" and "+jdn_max);
-				return;
-			}
-		}
-
-		updateItems();
-	}
-
-	public void reset() {
-		transitions.clear();
-		getDay(JTT.longToJDN(System.currentTimeMillis()));
-	}
-
-	/* request transitions for given day from JTTService */
-	private void getDay(long jdn) {
-		if (expecting_data) {
-			Log.e(TAG, "Transitions data requested while previous request is not yet handled");
-			return;
-		}
-
-		Bundle b = new Bundle();
-		b.putLong("jdn", jdn);
-		expecting_data = true;
-		((JTTMainActivity) getContext()).conn.send_msg_to_service(JTTService.MSG_TRANSITIONS, b);
-	}
-
-	private void getPastDay() {
-		getDay(jdn_min - 1);
-	}
-
-	private void getFutureDay() {
-		getDay(jdn_max + 1);
-	}
-
-	private void updateItems() {
-		if (transitions.isEmpty() || (transitions.size() % 2) == 1) {
-			Log.i(TAG, "Transitions list is empty or has incorrect number of items");
-			reset();
-			return;
-		}
-
-		int pos = Collections.binarySearch(transitions, System.currentTimeMillis());
-		/* current time falls between pos and pos+1 */
-		if (pos < 0)
-			pos = -pos - 2;
-
-		/* check if we have enough data for past */
-		if (pos < 1) {
-			getPastDay();
-			return;
-		}
-
-		/* remove outdated stuff */
-		while (pos > 2) {
-			transitions.remove();
-			transitions.remove();
-			pos -= 2;
-			jdn_min++;
-		}
-
-		/* now pos is exactly 1 or 2
-		 * 1 means it is night now
-		 * 2 means it is day now
-		 */
-
-		/* check if we have enough data for future */
-		if (transitions.size() <= pos + 2) {
-			getFutureDay();
-			return;
-		}
-
-		/* it is possible that we have too much "future" information
-		 * keep it
-		 */
-
-		/* exactly 4 transitions are used:
-		 * pos-1, pos, pos+1 and pos+2
-		 */
-		long[] l = new long[4];
-		for (int i = 0; i < 4; i++)
-			l[i] = transitions.get(pos - 1 + i);
-
-		prev_transition = l[1];
-		HourItem.next_transition = next_transition = l[2];
-
-		/* if it is day now then first interval is night */
-		buildItems(l, pos == 1);
-	}
-
 	public void setCurrent(int cur) {
 		long now = System.currentTimeMillis();
 		HourItem.current = cur;
@@ -300,10 +180,16 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 		 */
 		tz = TimeZone.getDefault();
 
-		if (now >= prev_transition && now < next_transition)
+		if (now >= transitions[1] && now < transitions[2]) {
 			notifyDataSetChanged();
-		else if (!expecting_data)
-			updateItems();
+			return;
+		}
+
+		is_day = Calculator.getSurroundingTransitions(getContext(), now, transitions);
+
+		HourItem.next_transition = transitions[2];
+
+		buildItems();
 	}
 
 

@@ -73,6 +73,12 @@
         <item>Hour of the Ram</item>
         <item>Hour of the Monkey</item>
     </string-array>
+    <string-array name="quarter">
+        <item>First quarter</item>
+        <item>Second quarter</item>
+        <item>Third quarter</item>
+        <item>Fourth quarter</item>
+    </string-array>
 
     <string name="appearance">Look and feel</string>
     <string name="no_providers">No location providers found. Please enable GPS.</string>

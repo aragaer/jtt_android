@@ -1,6 +1,6 @@
 package com.aragaer.jtt.graphics;
 
-import com.aragaer.jtt.JTTHour;
+import com.aragaer.jtt.core.Hour;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,7 +15,7 @@ public class WadokeiDraw {
 	private final static int step = 360 / 12;
 	private final static float gap = 1.5f;
 	private final Paint cache_paint = new Paint(0x07), stroke, solid;
-	private final Matrix clock_matrix = new Matrix(), sun_matrix = new Matrix(), glyph_matrix = new Matrix();
+	private final Matrix matrix = new Matrix();
 
 	private final Paints paints;
 	private Bitmap clock = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444), // make it non-null
@@ -54,7 +54,6 @@ public class WadokeiDraw {
 		sun_stages = Bitmap.createBitmap(iR * 2, iR * 2, Bitmap.Config.ARGB_4444);
 
 		final Canvas canvas = new Canvas(sun_stages);
-		canvas.rotate(-step / 2, iR, iR);
 
 		canvas.drawArc(sun, 0, 360, false, paints.solid1);
 		canvas.drawArc(sun, 0, 360, false, paints.stroke1);
@@ -114,26 +113,30 @@ public class WadokeiDraw {
 
 		for (int hr = 0; hr < 12; hr++) {
 			final int glyph_y = hr == num ? y_s : y;
-			canvas.drawText(JTTHour.Glyphs[hr], center, glyph_y, solid);
-			canvas.drawText(JTTHour.Glyphs[hr], center, glyph_y, stroke);
+			canvas.drawText(Hour.Glyphs[hr], center, glyph_y, solid);
+			canvas.drawText(Hour.Glyphs[hr], center, glyph_y, stroke);
 			canvas.rotate(step, center, center);
 		}
 	}
 
-	public void draw_dial(final int n, final int f, final Canvas canvas) {
-		final float clock_angle = step * 0.5f - gap - (step - gap * 2) * f / 100f;
-		final float angle = clock_angle - n * step;
+	private static final float QUARTER_ANGLE = (step - gap * 2) / Hour.QUARTERS,
+			PART_ANGLE = QUARTER_ANGLE / Hour.QUARTER_PARTS;
 
-		clock_matrix.setRotate(clock_angle, size, size);
+	public void draw_dial(final Hour hour, final Canvas canvas) {
+		final float clock_angle = step / 2 - gap
+				- QUARTER_ANGLE * hour.quarter
+				- PART_ANGLE * hour.quarter_parts;
+		final float angle = clock_angle - hour.num * step;
 
-		sun_matrix.setTranslate(size - iR, size - iR);
-		sun_matrix.preRotate(angle, iR, iR);
+		matrix.setRotate(clock_angle, size, size);
+		canvas.drawBitmap(clock, matrix, cache_paint);
 
-		glyph_matrix.setTranslate(size / 5, size / 5);
-		glyph_matrix.preRotate(angle, size * 4 / 5, size * 4 / 5);
+		matrix.setTranslate(size - iR, size - iR);
+		matrix.preRotate(angle, iR, iR);
+		canvas.drawBitmap(sun_stages, matrix, cache_paint);
 
-		canvas.drawBitmap(clock, clock_matrix, cache_paint);
-		canvas.drawBitmap(sun_stages, sun_matrix, cache_paint);
-		canvas.drawBitmap(glyphs, glyph_matrix, cache_paint);
+		matrix.setTranslate(size / 5, size / 5);
+		matrix.preRotate(angle, size * 4 / 5, size * 4 / 5);
+		canvas.drawBitmap(glyphs, matrix, cache_paint);
 	}
 }

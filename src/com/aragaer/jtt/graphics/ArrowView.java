@@ -15,8 +15,8 @@ public class ArrowView extends View {
 
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		path.reset();
-		path.moveTo(0, 0);
-		path.rLineTo(w, 0);
+		path.moveTo(0, 1);
+		path.rLineTo(w, 1);
 		path.rLineTo(-w / 2, h);
 		path.close();
 	}

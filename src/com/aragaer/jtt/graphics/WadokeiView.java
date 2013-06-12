@@ -1,12 +1,14 @@
 package com.aragaer.jtt.graphics;
 
+import com.aragaer.jtt.core.Hour;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.view.View;
 
 public class WadokeiView extends View {
 	private final WadokeiDraw wd;
-	int hour = -1, fraction;
+	private final Hour hour = new Hour(0);
 
 	public WadokeiView(Context context) {
 		super(context);
@@ -17,18 +19,17 @@ public class WadokeiView extends View {
 		if (w == oldw)
 			return;
 		wd.set_dial_size(w / 2);
-		wd.prepare_glyphs(hour);
+		wd.prepare_glyphs(hour.num);
 	}
 
-	public void set_hour(int n, int f) {
-		if (hour != n)
-			wd.prepare_glyphs(n);
-		hour = n;
-		fraction = f;
+	public void set_hour(final Hour new_hour) {
+		if (hour.num != new_hour.num)
+			wd.prepare_glyphs(new_hour.num);
+		hour.setTo(new_hour.num, new_hour.quarter, new_hour.quarter_parts);
 		invalidate();
 	}
 
 	protected void onDraw(Canvas canvas) {
-		wd.draw_dial(hour, fraction, canvas);
+		wd.draw_dial(hour, canvas);
 	}
 }

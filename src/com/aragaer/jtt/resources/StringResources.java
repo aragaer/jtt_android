@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import com.aragaer.jtt.JTTSettingsActivity;
+import com.aragaer.jtt.Settings;
 import com.aragaer.jtt.R;
 
 import android.content.Context;
@@ -22,7 +22,7 @@ public class StringResources implements
 
 	private final Context c;
 	private final Resources r;
-	private String Hours[], HrOf[];
+	private String Hours[], HrOf[], Quarters[];
 	private DateFormat df;
 	private int hour_name_option;
 
@@ -31,8 +31,8 @@ public class StringResources implements
 		r = new Resources(c.getAssets(), null, null);
 		final SharedPreferences pref = PreferenceManager
 				.getDefaultSharedPreferences(c);
-		hour_name_option = Integer.parseInt(pref.getString(JTTSettingsActivity.PREF_HNAME, "0"));
-		setLocale(pref.getString(JTTSettingsActivity.PREF_LOCALE, ""));
+		hour_name_option = Integer.parseInt(pref.getString(Settings.PREF_HNAME, "0"));
+		setLocale(pref.getString(Settings.PREF_LOCALE, ""));
 		pref.registerOnSharedPreferenceChangeListener(this);
 	}
 
@@ -50,9 +50,9 @@ public class StringResources implements
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-		if (key.equals(JTTSettingsActivity.PREF_LOCALE))
+		if (key.equals(Settings.PREF_LOCALE))
 			setLocale(pref.getString(key, ""));
-		else if (key.equals(JTTSettingsActivity.PREF_HNAME)) {
+		else if (key.equals(Settings.PREF_HNAME)) {
 			hour_name_option = Integer.parseInt(pref.getString(key, "0"));
 			load_hour_names();
 		}
@@ -65,6 +65,10 @@ public class StringResources implements
 
 	public String getHrOf(final int num) {
 		return HrOf[num];
+	}
+
+	public String getQuarter(final int q) {
+		return Quarters[q];
 	}
 
 	public interface StringResourceChangeListener {
@@ -92,10 +96,12 @@ public class StringResources implements
 
 	private static final int hnh[] = { R.array.hour, R.array.romaji_hour, R.array.hiragana_hour };
 	private static final int hnhof[] = { R.array.hour_of, R.array.romaji_hour_of, R.array.hiragana_hour_of };
+	private static final int q[] = { R.array.quarter, R.array.romaji_quarter, R.array.hiragana_quarter };
 
 	private void load_hour_names() {
 		HrOf = r.getStringArray(hnhof[hour_name_option]);
 		Hours = r.getStringArray(hnh[hour_name_option]);
+		Quarters = r.getStringArray(q[hour_name_option]);
 		change_pending |= TYPE_HOUR_NAME;
 	}
 
