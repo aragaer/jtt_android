@@ -4,7 +4,8 @@ public class Hour {
 	public static final int HOURS = 6,
 			QUARTERS = 4,
 			QUARTER_PARTS = 10,
-			HOUR_PARTS = QUARTERS * QUARTER_PARTS;
+			HOUR_PARTS = QUARTERS * QUARTER_PARTS,
+			TOTAL_PARTS = HOURS * HOUR_PARTS * 2;
 	public static final String Glyphs[] = "酉戌亥子丑寅卯辰巳午未申".split("(?!^)");
 
 	public int num, // 0 to 11, where 0 is hour of Cock and 11 is hour of Monkey
@@ -28,6 +29,7 @@ public class Hour {
 		quarter = q;
 		quarter_parts = f;
 		wrapped = (num * QUARTERS + quarter - 2) * QUARTER_PARTS + quarter_parts;
+		wrapped = (wrapped + TOTAL_PARTS) % TOTAL_PARTS;
 	}
 
 	public static Hour fromTimestamps(final long tr[], final boolean is_day, final long now, Hour reuse) {
@@ -55,9 +57,20 @@ public class Hour {
 		return true;
 	}
 
+	/* 0, 6 -> 5; 1-5, 7-11 -> 0-4 */
+	public static final int lowerBoundary(final int hour) {
+		return (hour + HOURS - 1) % HOURS;
+	}
+
+	/* 0-11 -> 0-5 */
+	public static final int upperBoundary(final int hour) {
+		return hour % HOURS;
+	}
+
+
 	/* given start and end of time interval return hour boundary for given position */
 	public static long getHourBoundary(final long start, final long end, final int pos) {
 		final long half_hlen = (end - start) / HOURS / 2;
-		return start + half_hlen * pos * 2 - half_hlen;
+		return start + half_hlen * pos * 2 + half_hlen;
 	}
 }

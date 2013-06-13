@@ -70,10 +70,10 @@ public class Calculator extends ContentProvider {
 			for (int i = 0; i < 3; i++)
 				tr[i] = tr[i + 1];
 			if (is_day)
-				tr[3] = getTrForJDN(jdn)[1];
+				tr[3] = getTrForJDN(jdn + 1)[1];
 			else {
 				jdn++;
-				tr[3] = getTrForJDN(jdn)[0];
+				tr[3] = getTrForJDN(jdn + 1)[0];
 			}
 			is_day = !is_day;
 		}
@@ -83,10 +83,10 @@ public class Calculator extends ContentProvider {
 			for (int i = 0; i < 3; i++)
 				tr[i + 1] = tr[i];
 			if (is_day)
-				tr[0] = getTrForJDN(jdn)[0];
+				tr[0] = getTrForJDN(jdn - 1)[0];
 			else {
 				jdn--;
-				tr[0] = getTrForJDN(jdn)[1];
+				tr[0] = getTrForJDN(jdn - 1)[1];
 			}
 			is_day = !is_day;
 		}
