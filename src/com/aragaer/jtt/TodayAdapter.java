@@ -26,7 +26,7 @@ abstract class TodayItem {
 /* Hour item in TodayList */
 class HourItem extends TodayItem {
 	public static int current;
-	public static long next_transition;
+	public static long prev_transition, next_transition;
 	public final int hnum;
 
 	public HourItem(long t, int h) {
@@ -46,9 +46,9 @@ class HourItem extends TodayItem {
 		}
 		View v = View.inflate(c, R.layout.today_item, null);
 
-		/* no need to check for previous transition */
 		boolean is_current = hnum == current
-				&& time < next_transition;
+				&& time >= prev_transition
+				&& time <= next_transition;
 
 		final StringResources sr = RuntimeResources.get(c).getInstance(StringResources.class);
 
@@ -187,6 +187,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 
 		is_day = Calculator.getSurroundingTransitions(getContext(), now, transitions);
 
+		HourItem.prev_transition = transitions[1];
 		HourItem.next_transition = transitions[2];
 
 		buildItems();
