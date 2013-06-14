@@ -23,7 +23,7 @@
     <string name="today">Сегодня</string>
     <string name="sunrise">Рассвет</string>
     <string name="sunset">Закат</string>
-    <string name="midday">Полдень</string>
+    <string name="noon">Полдень</string>
     <string name="midnight">Полночь</string>
     <string name="day_prev">Вчера</string>
     <string name="day_curr">Сегодня</string>

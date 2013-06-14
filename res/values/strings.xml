@@ -23,7 +23,7 @@
     <string name="today">Today</string>
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
-    <string name="midday">Midday</string>
+    <string name="noon">Noon</string>
     <string name="midnight">Midnight</string>
     <string name="day_prev">Yesterday</string>
     <string name="day_curr">Today</string>
