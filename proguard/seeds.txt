@@ -1,17 +1,23 @@
+com.aragaer.jtt.BootReceiver
+com.aragaer.jtt.BootReceiver: BootReceiver()
 com.aragaer.jtt.JTTMainActivity
 com.aragaer.jtt.JTTMainActivity: JTTMainActivity()
-com.aragaer.jtt.JTTService
-com.aragaer.jtt.JTTService: JTTService()
-com.aragaer.jtt.JTTService$JTTStartupReceiver
-com.aragaer.jtt.JTTService$JTTStartupReceiver: JTTService$JTTStartupReceiver()
-com.aragaer.jtt.JTTSettingsActivity
-com.aragaer.jtt.JTTSettingsActivity: JTTSettingsActivity()
 com.aragaer.jtt.JTTWidgetProvider$JTTWidget: JTTWidgetProvider$JTTWidget(int)
 com.aragaer.jtt.JTTWidgetProvider$Widget1
 com.aragaer.jtt.JTTWidgetProvider$Widget1: JTTWidgetProvider$Widget1()
 com.aragaer.jtt.JTTWidgetProvider$Widget12
 com.aragaer.jtt.JTTWidgetProvider$Widget12: JTTWidgetProvider$Widget12()
+com.aragaer.jtt.JttService
+com.aragaer.jtt.JttService: JttService()
 com.aragaer.jtt.LocationPreference
 com.aragaer.jtt.LocationPreference: LocationPreference(android.content.Context,android.util.AttributeSet,int)
 com.aragaer.jtt.LocationPreference: LocationPreference(android.content.Context,android.util.AttributeSet)
+com.aragaer.jtt.Settings
+com.aragaer.jtt.Settings: Settings()
+com.aragaer.jtt.core.Calculator
+com.aragaer.jtt.core.Calculator: Calculator()
+com.aragaer.jtt.core.Clockwork
+com.aragaer.jtt.core.Clockwork: Clockwork()
+com.aragaer.jtt.core.Clockwork$TimeChangeReceiver
+com.aragaer.jtt.core.Clockwork$TimeChangeReceiver: Clockwork$TimeChangeReceiver()
 com.aragaer.jtt.resources.StringResources: StringResources(android.content.Context)

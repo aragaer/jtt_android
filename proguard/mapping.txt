@@ -1,11 +1,13 @@
+com.aragaer.jtt.BootReceiver -> com.aragaer.jtt.BootReceiver:
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
 com.aragaer.jtt.ClockView -> com.aragaer.jtt.a:
-    int hn -> a
-    com.aragaer.jtt.resources.StringResources sr -> b
-    android.widget.TextView text -> c
-    com.aragaer.jtt.graphics.WadokeiView wadokei -> d
-    com.aragaer.jtt.graphics.ArrowView arrow -> e
+    com.aragaer.jtt.resources.StringResources sr -> a
+    android.widget.TextView text -> b
+    com.aragaer.jtt.graphics.WadokeiView wadokei -> c
+    com.aragaer.jtt.graphics.ArrowView arrow -> d
+    com.aragaer.jtt.core.Hour hour -> e
     boolean vertical -> f
-    void setHour(int,int) -> a
+    void setHour(int) -> a
     void onMeasure(int,int) -> onMeasure
     void onLayout(boolean,int,int,int,int) -> onLayout
     void onStringResourcesChanged$13462e() -> a
@@ -15,37 +17,26 @@ com.aragaer.jtt.DayItem -> com.aragaer.jtt.b:
     long ms_to_day(long) -> a
 com.aragaer.jtt.HourItem -> com.aragaer.jtt.c:
     int current -> a
-    long next_transition -> b
-    int hnum -> e
-    java.lang.String[] extras -> c
+    long prev_transition -> b
+    long next_transition -> c
+    int hnum -> f
+    java.lang.String[] extras -> d
     android.view.View toView(android.content.Context) -> a
-com.aragaer.jtt.JTT -> com.aragaer.jtt.d:
-    java.util.Map cache -> b
-    com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator calculator -> c
-    long ms_per_day -> a
-    void move(float,float) -> a
-    long longToJDN(long) -> a
-    long[] computeTr(long) -> b
-com.aragaer.jtt.JTTHour -> com.aragaer.jtt.e:
-    java.lang.String[] Glyphs -> a
-    int num -> b
-    int fraction -> c
-    void setTo(int,int) -> a
 com.aragaer.jtt.JTTMainActivity -> com.aragaer.jtt.JTTMainActivity:
-    com.aragaer.jtt.ClockView clock -> b
-    com.aragaer.jtt.JTTPager pager -> c
-    com.aragaer.jtt.TodayAdapter today -> d
-    com.aragaer.jtt.JTTUtil$ConnHelper conn -> a
+    com.aragaer.jtt.ClockView clock -> a
+    com.aragaer.jtt.JTTPager pager -> b
+    com.aragaer.jtt.TodayAdapter today -> c
+    android.content.BroadcastReceiver receiver -> d
     int settings_tab -> e
     void onCreate(android.os.Bundle) -> onCreate
     void onStart() -> onStart
     void onDestroy() -> onDestroy
-    com.aragaer.jtt.TodayAdapter access$0(com.aragaer.jtt.JTTMainActivity) -> a
-    com.aragaer.jtt.ClockView access$1(com.aragaer.jtt.JTTMainActivity) -> b
-com.aragaer.jtt.JTTMainActivity$IncomingHandler -> com.aragaer.jtt.f:
-    java.lang.ref.WeakReference main -> a
-    void handleMessage(android.os.Message) -> handleMessage
-com.aragaer.jtt.JTTPager -> com.aragaer.jtt.g:
+    com.aragaer.jtt.ClockView access$000(com.aragaer.jtt.JTTMainActivity) -> a
+    com.aragaer.jtt.TodayAdapter access$100(com.aragaer.jtt.JTTMainActivity) -> b
+com.aragaer.jtt.JTTMainActivity$1 -> com.aragaer.jtt.d:
+    com.aragaer.jtt.JTTMainActivity this$0 -> a
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+com.aragaer.jtt.JTTPager -> com.aragaer.jtt.e:
     com.aragaer.jtt.JTTPager$PageScroller scrollview -> b
     com.aragaer.jtt.JTTPager$ScrollContents pageview -> c
     android.widget.RadioGroup tablist -> d
@@ -54,8 +45,8 @@ com.aragaer.jtt.JTTPager -> com.aragaer.jtt.g:
     void onCheckedChanged(android.widget.RadioGroup,int) -> onCheckedChanged
     int addTab(android.view.View,int) -> a
     void selectScreen(int) -> a
-    android.widget.RadioGroup access$0(com.aragaer.jtt.JTTPager) -> a
-com.aragaer.jtt.JTTPager$PageScroller -> com.aragaer.jtt.h:
+    android.widget.RadioGroup access$000(com.aragaer.jtt.JTTPager) -> a
+com.aragaer.jtt.JTTPager$PageScroller -> com.aragaer.jtt.f:
     int scrollFrom -> a
     int minfling -> b
     android.view.VelocityTracker vt -> c
@@ -65,111 +56,32 @@ com.aragaer.jtt.JTTPager$PageScroller -> com.aragaer.jtt.h:
     void trySmoothScrollToScreen(int) -> a
     void onMeasure(int,int) -> onMeasure
     void onLayout(boolean,int,int,int,int) -> onLayout
-com.aragaer.jtt.JTTPager$ScrollContents -> com.aragaer.jtt.i:
+com.aragaer.jtt.JTTPager$ScrollContents -> com.aragaer.jtt.g:
     com.aragaer.jtt.JTTPager this$0 -> a
     void onMeasure(int,int) -> onMeasure
     void onLayout(boolean,int,int,int,int) -> onLayout
-com.aragaer.jtt.JTTService -> com.aragaer.jtt.JTTService:
-    java.lang.String TAG -> a
-    com.aragaer.jtt.JTT calculator -> b
-    android.app.NotificationManager nm -> c
-    android.app.PendingIntent pending_main -> d
-    com.aragaer.jtt.resources.StringResources sr -> e
-    boolean notify -> f
-    boolean force_stop -> g
-    android.app.Notification notification -> h
-    long sync -> i
-    java.util.ArrayList transitions -> j
-    long start_day -> k
-    long end_day -> l
-    java.lang.String t_start -> m
-    java.lang.String t_end -> n
-    android.content.Intent TickAction -> o
-    int hour -> p
-    int sub -> q
-    com.aragaer.jtt.JTTService$JTTHandler handler -> r
-    android.os.Messenger messenger -> s
-    java.lang.String app_name -> t
-    android.content.BroadcastReceiver on -> u
-    android.content.BroadcastReceiver off -> v
-    void notify_helper(int,int) -> a
-    void doNotify(int,int,int) -> a
-    android.os.IBinder onBind(android.content.Intent) -> onBind
-    void onStart(android.content.Intent,int) -> onStart
-    void onDestroy() -> onDestroy
-    void wake_up() -> c
-    void sleep() -> d
-    void reset() -> e
-    void onStringResourcesChanged$13462e() -> a
-    void access$0(com.aragaer.jtt.JTTService) -> a
-    void access$1(com.aragaer.jtt.JTTService) -> b
-    com.aragaer.jtt.JTT access$2(com.aragaer.jtt.JTTService) -> c
-    boolean access$3(com.aragaer.jtt.JTTService) -> d
-    void access$4(com.aragaer.jtt.JTTService,boolean) -> a
-    int access$5(com.aragaer.jtt.JTTService) -> e
-    int access$6(com.aragaer.jtt.JTTService) -> f
-    void access$7(com.aragaer.jtt.JTTService,int,int) -> a
-    android.app.NotificationManager access$8(com.aragaer.jtt.JTTService) -> g
-    void access$9(com.aragaer.jtt.JTTService) -> h
-    java.lang.String access$10() -> b
-    void access$11$2349ce06(com.aragaer.jtt.JTTService) -> i
-com.aragaer.jtt.JTTService$1 -> com.aragaer.jtt.j:
-    com.aragaer.jtt.JTTService this$0 -> a
-    void onReceive(android.content.Context,android.content.Intent) -> onReceive
-com.aragaer.jtt.JTTService$2 -> com.aragaer.jtt.k:
-    com.aragaer.jtt.JTTService this$0 -> a
-    void onReceive(android.content.Context,android.content.Intent) -> onReceive
-com.aragaer.jtt.JTTService$JTTHandler -> com.aragaer.jtt.l:
-    java.util.ArrayList clients -> a
-    java.lang.ref.WeakReference srv -> b
-    java.lang.ref.WeakReference calc -> c
-    void handleMessage(android.os.Message) -> handleMessage
-    void informClients(android.os.Message) -> a
-com.aragaer.jtt.JTTService$JTTStartupReceiver -> com.aragaer.jtt.JTTService$JTTStartupReceiver:
-    void onReceive(android.content.Context,android.content.Intent) -> onReceive
-com.aragaer.jtt.JTTSettingsActivity -> com.aragaer.jtt.JTTSettingsActivity:
-    java.lang.String[] prefcodes -> a
-    java.util.Map listeners -> b
-    android.preference.Preference$OnPreferenceChangeListener listener -> c
-    android.content.DialogInterface$OnClickListener stop_dlg_listener -> d
-    void onCreate(android.os.Bundle) -> onCreate
-    java.util.Map access$0(com.aragaer.jtt.JTTSettingsActivity) -> a
-    void access$1(com.aragaer.jtt.JTTSettingsActivity,int,android.os.Bundle) -> a
-    android.content.DialogInterface$OnClickListener access$2(com.aragaer.jtt.JTTSettingsActivity) -> b
-com.aragaer.jtt.JTTSettingsActivity$1 -> com.aragaer.jtt.m:
-    com.aragaer.jtt.JTTSettingsActivity this$0 -> a
-    boolean onPreferenceChange(android.preference.Preference,java.lang.Object) -> onPreferenceChange
-com.aragaer.jtt.JTTSettingsActivity$2 -> com.aragaer.jtt.n:
-    com.aragaer.jtt.JTTSettingsActivity this$0 -> a
-    void onClick(android.content.DialogInterface,int) -> onClick
-com.aragaer.jtt.JTTSettingsActivity$3 -> com.aragaer.jtt.o:
-    com.aragaer.jtt.JTTSettingsActivity this$0 -> a
-    boolean onPreferenceClick(android.preference.Preference) -> onPreferenceClick
-com.aragaer.jtt.JTTUtil -> com.aragaer.jtt.p:
+com.aragaer.jtt.JTTUtil -> com.aragaer.jtt.h:
     int[] themes -> a
     void t(android.view.View,int,java.lang.String) -> a
     void setTheme(android.content.Context) -> a
-com.aragaer.jtt.JTTUtil$ConnHelper -> com.aragaer.jtt.q:
-    android.content.Context context -> a
-    android.os.Messenger remote -> b
-    android.os.Messenger local -> c
-    android.content.ServiceConnection conn -> d
-    void send_msg_to_service(int,android.os.Bundle) -> a
-com.aragaer.jtt.JTTUtil$ConnHelper$1 -> com.aragaer.jtt.r:
-    com.aragaer.jtt.JTTUtil$ConnHelper this$1 -> a
-    void onServiceConnected(android.content.ComponentName,android.os.IBinder) -> onServiceConnected
-    void onServiceDisconnected(android.content.ComponentName) -> onServiceDisconnected
-com.aragaer.jtt.JTTWidgetProvider$JTTWidget -> com.aragaer.jtt.s:
+com.aragaer.jtt.JTTWidgetProvider -> com.aragaer.jtt.JTTWidgetProvider:
+    com.aragaer.jtt.JTTWidgetProvider singleton$2d21adc7 -> d
+    android.graphics.Paint stroke1 -> a
+    android.graphics.Paint stroke2 -> e
+    android.graphics.Paint solid1 -> b
+    android.graphics.Paint solid2 -> c
+    com.aragaer.jtt.JTTWidgetProvider getInstance$400debd6(android.content.Context) -> a
+com.aragaer.jtt.JTTWidgetProvider$JTTWidget -> com.aragaer.jtt.i:
     java.lang.String cn -> a
     android.content.ComponentName name -> b
     int granularity -> c
     java.util.HashMap last_update -> d
     boolean inverse -> e
     void hour_changed(int) -> a
-    void fill_rv(android.widget.RemoteViews,com.aragaer.jtt.JTTHour) -> a
+    void fill_rv(android.widget.RemoteViews,com.aragaer.jtt.core.Hour) -> a
     void init(android.content.Context) -> a
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
-    void draw(android.content.Context,int[],com.aragaer.jtt.JTTHour) -> a
+    void draw(android.content.Context,int[],com.aragaer.jtt.core.Hour) -> a
 com.aragaer.jtt.JTTWidgetProvider$Widget1 -> com.aragaer.jtt.JTTWidgetProvider$Widget1:
     android.graphics.Paint p1 -> a
     android.graphics.Paint p2 -> b
@@ -181,16 +93,41 @@ com.aragaer.jtt.JTTWidgetProvider$Widget1 -> com.aragaer.jtt.JTTWidgetProvider$W
     android.graphics.RectF inner -> h
     boolean initialized -> i
     void hour_changed(int) -> a
-    void fill_rv(android.widget.RemoteViews,com.aragaer.jtt.JTTHour) -> a
+    void fill_rv(android.widget.RemoteViews,com.aragaer.jtt.core.Hour) -> a
     void init(android.content.Context) -> a
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
 com.aragaer.jtt.JTTWidgetProvider$Widget12 -> com.aragaer.jtt.JTTWidgetProvider$Widget12:
     com.aragaer.jtt.resources.StringResources sr -> a
     com.aragaer.jtt.graphics.WadokeiDraw wd -> b
     int size -> c
     android.graphics.Bitmap bmp -> d
     void hour_changed(int) -> a
-    void fill_rv(android.widget.RemoteViews,com.aragaer.jtt.JTTHour) -> a
+    void fill_rv(android.widget.RemoteViews,com.aragaer.jtt.core.Hour) -> a
     void init(android.content.Context) -> a
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+com.aragaer.jtt.JttService -> com.aragaer.jtt.JttService:
+    com.aragaer.jtt.JttStatus status_notify -> a
+    com.aragaer.jtt.JttService$JttServiceBinder binder -> b
+    android.os.IBinder onBind(android.content.Intent) -> onBind
+    int onStartCommand(android.content.Intent,int,int) -> onStartCommand
+    void onDestroy() -> onDestroy
+    void toggle_notify(boolean) -> a
+    void onSharedPreferenceChanged(android.content.SharedPreferences,java.lang.String) -> onSharedPreferenceChanged
+    void move() -> a
+com.aragaer.jtt.JttService$JttServiceBinder -> com.aragaer.jtt.j:
+    com.aragaer.jtt.JttService this$0 -> a
+    com.aragaer.jtt.JttService getService() -> a
+com.aragaer.jtt.JttStatus -> com.aragaer.jtt.k:
+    android.content.Context context -> a
+    com.aragaer.jtt.resources.StringResources sr -> b
+    com.aragaer.jtt.core.Hour h -> c
+    long start -> d
+    long end -> e
+    android.app.NotificationManager nm -> f
+    void release() -> b
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+    void show() -> c
+    void onStringResourcesChanged$13462e() -> a
 com.aragaer.jtt.LocationPreference -> com.aragaer.jtt.LocationPreference:
     float accuracy -> a
     android.location.LocationManager lm -> b
@@ -211,71 +148,114 @@ com.aragaer.jtt.LocationPreference -> com.aragaer.jtt.LocationPreference:
     void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
     void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
     void onDialogClosed(boolean) -> onDialogClosed
-    void access$0(com.aragaer.jtt.LocationPreference) -> a
-com.aragaer.jtt.LocationPreference$1 -> com.aragaer.jtt.t:
+    void access$000(com.aragaer.jtt.LocationPreference) -> a
+com.aragaer.jtt.LocationPreference$1 -> com.aragaer.jtt.l:
     com.aragaer.jtt.LocationPreference this$0 -> a
     void onClick(android.view.View) -> onClick
-com.aragaer.jtt.LocationPreference$InputFilterMinMax -> com.aragaer.jtt.u:
+com.aragaer.jtt.LocationPreference$InputFilterMinMax -> com.aragaer.jtt.m:
     float min -> a
     float max -> b
     java.lang.CharSequence filter(java.lang.CharSequence,int,int,android.text.Spanned,int,int) -> filter
-com.aragaer.jtt.TodayAdapter -> com.aragaer.jtt.v:
-    java.lang.String TAG -> b
-    java.util.LinkedList transitions -> c
-    long prev_transition -> d
-    long next_transition -> e
+com.aragaer.jtt.Settings -> com.aragaer.jtt.Settings:
+    com.aragaer.jtt.JttService service -> a
+    android.content.ServiceConnection connection -> b
+    java.lang.String[] prefcodes -> c
+    java.util.Map listeners -> d
+    android.preference.Preference$OnPreferenceChangeListener listener -> e
+    android.content.DialogInterface$OnClickListener stop_dlg_listener -> f
+    void onCreate(android.os.Bundle) -> onCreate
+    float[] getLocation(android.content.Context) -> a
+    com.aragaer.jtt.JttService access$002(com.aragaer.jtt.Settings,com.aragaer.jtt.JttService) -> a
+    java.util.Map access$100(com.aragaer.jtt.Settings) -> a
+    android.content.DialogInterface$OnClickListener access$200(com.aragaer.jtt.Settings) -> b
+    com.aragaer.jtt.JttService access$000(com.aragaer.jtt.Settings) -> c
+com.aragaer.jtt.Settings$1 -> com.aragaer.jtt.n:
+    com.aragaer.jtt.Settings this$0 -> a
+    void onServiceConnected(android.content.ComponentName,android.os.IBinder) -> onServiceConnected
+    void onServiceDisconnected(android.content.ComponentName) -> onServiceDisconnected
+com.aragaer.jtt.Settings$2 -> com.aragaer.jtt.o:
+    com.aragaer.jtt.Settings this$0 -> a
+    boolean onPreferenceChange(android.preference.Preference,java.lang.Object) -> onPreferenceChange
+com.aragaer.jtt.Settings$3 -> com.aragaer.jtt.p:
+    com.aragaer.jtt.Settings this$0 -> a
+    boolean onPreferenceClick(android.preference.Preference) -> onPreferenceClick
+com.aragaer.jtt.Settings$4 -> com.aragaer.jtt.q:
+    com.aragaer.jtt.Settings this$0 -> a
+    void onClick(android.content.DialogInterface,int) -> onClick
+com.aragaer.jtt.TodayAdapter -> com.aragaer.jtt.r:
+    boolean is_day -> b
+    long[] transitions -> c
     java.util.TimeZone tz -> a
-    boolean expecting_data -> f
-    long jdn_min -> g
-    long jdn_max -> h
     android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
     long add24h(long) -> a
-    void addTransitions(android.os.Bundle) -> a
-    void reset() -> b
-    void getDay(long) -> b
-    void updateItems() -> c
     void setCurrent(int) -> a
     boolean isEnabled(int) -> isEnabled
     void onStringResourcesChanged$13462e() -> a
-com.aragaer.jtt.TodayItem -> com.aragaer.jtt.w:
-    long time -> d
+com.aragaer.jtt.TodayItem -> com.aragaer.jtt.s:
+    long time -> e
     android.view.View toView(android.content.Context) -> a
+com.aragaer.jtt.core.Calculator -> com.aragaer.jtt.core.Calculator:
+    android.net.Uri TRANSITIONS -> c
+    android.net.Uri LOCATION -> a
+    java.util.Map cache -> d
+    android.content.UriMatcher matcher -> e
+    com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator calculator -> f
+    java.lang.String[] PROJECTION_TR -> g
+    long ms_per_day -> b
+    boolean onCreate() -> onCreate
+    android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String) -> query
+    int delete(android.net.Uri,java.lang.String,java.lang.String[]) -> delete
+    java.lang.String getType(android.net.Uri) -> getType
+    android.net.Uri insert(android.net.Uri,android.content.ContentValues) -> insert
+    int update(android.net.Uri,android.content.ContentValues,java.lang.String,java.lang.String[]) -> update
+    boolean getSurroundingTransitions(android.content.Context,long,long[]) -> a
+    long[] getTrForJDN(long) -> a
+com.aragaer.jtt.core.Clockwork -> com.aragaer.jtt.core.Clockwork:
+    android.content.Intent TickAction -> a
+    com.aragaer.jtt.core.Hour hour -> b
+    void schedule(android.content.Context) -> a
+    void onHandleIntent(android.content.Intent) -> onHandleIntent
+com.aragaer.jtt.core.Clockwork$TimeChangeReceiver -> com.aragaer.jtt.core.Clockwork$TimeChangeReceiver:
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+com.aragaer.jtt.core.Hour -> com.aragaer.jtt.core.a:
+    java.lang.String[] Glyphs -> a
+    int num -> b
+    int quarter -> c
+    int quarter_parts -> d
+    int wrapped -> e
+    void setTo(int,int,int) -> a
+    com.aragaer.jtt.core.Hour fromTimestamps(long[],boolean,long,com.aragaer.jtt.core.Hour) -> a
+    com.aragaer.jtt.core.Hour fromWrapped(int,com.aragaer.jtt.core.Hour) -> a
+    boolean compareAndUpdate(int,int) -> a
+    int lowerBoundary(int) -> a
+    int upperBoundary(int) -> b
+    long getHourBoundary(long,long,int) -> a
 com.aragaer.jtt.graphics.ArrowView -> com.aragaer.jtt.a.a:
-    com.aragaer.jtt.graphics.Paints paints -> a
+    com.aragaer.jtt.JTTWidgetProvider paints$2d21adc7 -> a
     android.graphics.Path path -> b
     void onSizeChanged(int,int,int,int) -> onSizeChanged
     void onDraw(android.graphics.Canvas) -> onDraw
-com.aragaer.jtt.graphics.Paints -> com.aragaer.jtt.a.b:
-    com.aragaer.jtt.graphics.Paints singleton -> d
-    android.graphics.Paint stroke1 -> a
-    android.graphics.Paint stroke2 -> e
-    android.graphics.Paint solid1 -> b
-    android.graphics.Paint solid2 -> c
-    com.aragaer.jtt.graphics.Paints getInstance(android.content.Context) -> a
-com.aragaer.jtt.graphics.WadokeiDraw -> com.aragaer.jtt.a.c:
+com.aragaer.jtt.graphics.WadokeiDraw -> com.aragaer.jtt.a.b:
     android.graphics.Paint cache_paint -> a
     android.graphics.Paint stroke -> b
     android.graphics.Paint solid -> c
-    android.graphics.Matrix clock_matrix -> d
-    android.graphics.Matrix sun_matrix -> e
-    android.graphics.Matrix glyph_matrix -> f
-    com.aragaer.jtt.graphics.Paints paints -> g
-    android.graphics.Bitmap clock -> h
-    android.graphics.Bitmap sun_stages -> i
-    android.graphics.Bitmap glyphs -> j
-    int size -> k
-    int iR -> l
-    int arc_start -> m
-    int arc_end -> n
-    int arc_len -> o
+    android.graphics.Matrix matrix -> d
+    com.aragaer.jtt.JTTWidgetProvider paints$2d21adc7 -> e
+    android.graphics.Bitmap clock -> f
+    android.graphics.Bitmap sun_stages -> g
+    android.graphics.Bitmap glyphs -> h
+    int size -> i
+    int iR -> j
+    int arc_start -> k
+    int arc_end -> l
+    int arc_len -> m
     void set_dial_size(int) -> a
     void prepare_dial() -> a
     void prepare_glyphs(int) -> b
-    void draw_dial(int,int,android.graphics.Canvas) -> a
-com.aragaer.jtt.graphics.WadokeiView -> com.aragaer.jtt.a.d:
+    void draw_dial(com.aragaer.jtt.core.Hour,android.graphics.Canvas) -> a
+com.aragaer.jtt.graphics.WadokeiView -> com.aragaer.jtt.a.c:
     com.aragaer.jtt.graphics.WadokeiDraw wd -> a
-    int hour -> b
-    int fraction -> c
+    com.aragaer.jtt.core.Hour hour -> b
     void onSizeChanged(int,int,int,int) -> onSizeChanged
     void onDraw(android.graphics.Canvas) -> onDraw
 com.aragaer.jtt.resources.RuntimeResources -> com.aragaer.jtt.b.a:
@@ -286,24 +266,37 @@ com.aragaer.jtt.resources.RuntimeResources -> com.aragaer.jtt.b.a:
     java.lang.Object getInstance(java.lang.Class) -> a
 com.aragaer.jtt.resources.StringResources -> com.aragaer.jtt.b.b:
     int change_pending -> a
-    android.content.Context c -> b
-    android.content.res.Resources r -> c
-    java.lang.String[] Hours -> d
-    java.lang.String[] HrOf -> e
-    java.text.DateFormat df -> f
-    int hour_name_option -> g
-    java.util.Map listeners -> h
-    int[] hnh -> i
-    int[] hnhof -> j
+    android.content.BroadcastReceiver TZChangeReceiver -> b
+    android.content.IntentFilter filter -> c
+    android.content.Context c -> d
+    android.content.res.Resources r -> e
+    java.lang.String[] Hours -> f
+    java.lang.String[] HrOf -> g
+    java.lang.String[] Quarters -> h
+    java.text.DateFormat df -> i
+    int hour_name_option -> j
+    java.util.Map listeners -> k
+    int[] hnh -> l
+    int[] hnhof -> m
+    int[] q -> n
     void setLocale(java.lang.String) -> a
     void onSharedPreferenceChanged(android.content.SharedPreferences,java.lang.String) -> onSharedPreferenceChanged
     java.lang.String getHour(int) -> a
     java.lang.String getHrOf(int) -> b
+    java.lang.String getQuarter(int) -> c
     void registerStringResourceChangeListener(com.aragaer.jtt.resources.StringResources$StringResourceChangeListener,int) -> a
+    void unregisterStringResourceChangeListener(com.aragaer.jtt.resources.StringResources$StringResourceChangeListener) -> a
     void notifyChange() -> a
     void load_hour_names() -> b
     java.lang.String format_time(long) -> a
-com.aragaer.jtt.resources.StringResources$StringResourceChangeListener -> com.aragaer.jtt.b.c:
+    java.text.DateFormat access$002(com.aragaer.jtt.resources.StringResources,java.text.DateFormat) -> a
+    android.content.Context access$100(com.aragaer.jtt.resources.StringResources) -> a
+    int access$276$7bbe85e9(com.aragaer.jtt.resources.StringResources) -> b
+    void access$300(com.aragaer.jtt.resources.StringResources) -> c
+com.aragaer.jtt.resources.StringResources$1 -> com.aragaer.jtt.b.c:
+    com.aragaer.jtt.resources.StringResources this$0 -> a
+    void onReceive(android.content.Context,android.content.Intent) -> onReceive
+com.aragaer.jtt.resources.StringResources$StringResourceChangeListener -> com.aragaer.jtt.b.d:
     void onStringResourcesChanged$13462e() -> a
 com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator -> com.a.a.a:
     com.luckycatlabs.sunrisesunset.calculator.SolarEventCalculator calculator -> a
@@ -316,7 +309,7 @@ com.luckycatlabs.sunrisesunset.calculator.SolarEventCalculator -> com.a.a.a.a:
     java.util.TimeZone timeZone -> b
     java.math.BigDecimal computeSolarEventTime(com.luckycatlabs.sunrisesunset.Zenith,java.util.Calendar,boolean) -> a
     java.math.BigDecimal getBaseLongitudeHour() -> a
-    java.util.Calendar getLocalTimeAsCalendar(java.math.BigDecimal,java.util.Calendar) -> a
+    long getLocalTimeInMillis(java.math.BigDecimal,java.util.Calendar) -> a
     java.math.BigDecimal convertRadiansToDegrees(java.math.BigDecimal) -> a
     java.math.BigDecimal convertDegreesToRadians(java.math.BigDecimal) -> b
     java.math.BigDecimal multiplyBy(java.math.BigDecimal,java.math.BigDecimal) -> a
