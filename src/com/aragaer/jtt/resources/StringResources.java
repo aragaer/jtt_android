@@ -8,7 +8,10 @@ import java.util.Map;
 import com.aragaer.jtt.Settings;
 import com.aragaer.jtt.R;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -20,6 +23,17 @@ public class StringResources implements
 	public static final int TYPE_TIME_FORMAT = 0x2;
 	private int change_pending;
 
+	private final BroadcastReceiver TZChangeReceiver = new BroadcastReceiver() {
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
+				df = android.text.format.DateFormat.getTimeFormat(c);
+				change_pending |= TYPE_TIME_FORMAT;
+				notifyChange();
+			}
+		}
+	};
+
+	private static final IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
 	private final Context c;
 	private final Resources r;
 	private String Hours[], HrOf[], Quarters[];
@@ -79,12 +93,16 @@ public class StringResources implements
 
 	public synchronized void registerStringResourceChangeListener(
 			final StringResourceChangeListener listener, final int changeMask) {
+		if (listeners.size() == 0)
+			c.registerReceiver(TZChangeReceiver, filter);
 		listeners.put(listener, changeMask);
 	}
 
 	public synchronized void unregisterStringResourceChangeListener(
 			final StringResourceChangeListener listener) {
 		listeners.remove(listener);
+		if (listeners.size() == 0)
+			c.unregisterReceiver(TZChangeReceiver);
 	}
 
 	private synchronized void notifyChange() {
