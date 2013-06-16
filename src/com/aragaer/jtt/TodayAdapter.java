@@ -41,7 +41,7 @@ class HourItem extends TodayItem {
 			extras = new String[] { c.getString(R.string.sunset), "", "",
 					c.getString(R.string.midnight), "", "",
 					c.getString(R.string.sunrise), "", "",
-					c.getString(R.string.midday), "", "" };
+					c.getString(R.string.noon), "", "" };
 
 		}
 		View v = View.inflate(c, R.layout.today_item, null);
