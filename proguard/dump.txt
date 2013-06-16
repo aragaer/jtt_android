@@ -10303,38 +10303,50 @@ _____________________________________________________________________
 
 Interfaces (count = 0):
 
-Constant Pool (count = 34):
+Constant Pool (count = 46):
+  + String [JTT CLOCKWORK]
+  + String [Time change while service is not running, ignore]
   + String [android.intent.action.DATE_CHANGED]
   + String [android.intent.action.TIME_SET]
   + Class [android/content/BroadcastReceiver]
   + Class [android/content/Intent]
+  + Class [android/util/Log]
   + Class [com/aragaer/jtt/core/Clockwork]
   + Class [com/aragaer/jtt/core/Clockwork$TimeChangeReceiver]
+  + Class [java/lang/IllegalStateException]
   + Class [java/lang/String]
   + Methodref [android/content/BroadcastReceiver.<init> ()V]
   + Methodref [android/content/Intent.getAction ()Ljava/lang/String;]
+  + Methodref [android/util/Log.i (Ljava/lang/String;Ljava/lang/String;)I]
   + Methodref [com/aragaer/jtt/core/Clockwork.a (Landroid/content/Context;)V]
   + Methodref [java/lang/String.equals (Ljava/lang/Object;)Z]
   + NameAndType [<init> ()V]
   + NameAndType [a (Landroid/content/Context;)V]
   + NameAndType [equals (Ljava/lang/Object;)Z]
   + NameAndType [getAction ()Ljava/lang/String;]
+  + NameAndType [i (Ljava/lang/String;Ljava/lang/String;)I]
   + Utf8 [()Ljava/lang/String;]
   + Utf8 [()V]
   + Utf8 [(Landroid/content/Context;)V]
   + Utf8 [(Landroid/content/Context;Landroid/content/Intent;)V]
   + Utf8 [(Ljava/lang/Object;)Z]
+  + Utf8 [(Ljava/lang/String;Ljava/lang/String;)I]
   + Utf8 [<init>]
   + Utf8 [Code]
+  + Utf8 [JTT CLOCKWORK]
+  + Utf8 [Time change while service is not running, ignore]
   + Utf8 [a]
   + Utf8 [android.intent.action.DATE_CHANGED]
   + Utf8 [android.intent.action.TIME_SET]
   + Utf8 [android/content/BroadcastReceiver]
   + Utf8 [android/content/Intent]
+  + Utf8 [android/util/Log]
   + Utf8 [com/aragaer/jtt/core/Clockwork]
   + Utf8 [com/aragaer/jtt/core/Clockwork$TimeChangeReceiver]
   + Utf8 [equals]
   + Utf8 [getAction]
+  + Utf8 [i]
+  + Utf8 [java/lang/IllegalStateException]
   + Utf8 [java/lang/String]
   + Utf8 [onReceive]
 
@@ -10347,7 +10359,7 @@ Methods (count = 2):
     Class member attributes (count = 1):
     + Code attribute instructions (code length = 5, locals = 1, stack = 1):
       [0] aload_0 v0
-      [1] invokespecial #8
+      [1] invokespecial #12
         + Methodref [android/content/BroadcastReceiver.<init> ()V]
       [4] return
       Code attribute exceptions (count = 0):
@@ -10356,28 +10368,39 @@ Methods (count = 2):
     Access flags: 0x1
       = public void onReceive(android.content.Context,android.content.Intent)
     Class member attributes (count = 1):
-    + Code attribute instructions (code length = 28, locals = 3, stack = 2):
+    + Code attribute instructions (code length = 38, locals = 3, stack = 2):
       [0] aload_2 v2
-      [1] invokevirtual #9
+      [1] invokevirtual #13
         + Methodref [android/content/Intent.getAction ()Ljava/lang/String;]
       [4] dup
       [5] astore_2 v2
-      [6] ldc #2
+      [6] ldc #4
         + String [android.intent.action.TIME_SET]
-      [8] invokevirtual #11
+      [8] invokevirtual #16
         + Methodref [java/lang/String.equals (Ljava/lang/Object;)Z]
       [11] ifne +12 (target=23)
       [14] aload_2 v2
-      [15] ldc #1
+      [15] ldc #3
         + String [android.intent.action.DATE_CHANGED]
-      [17] invokevirtual #11
+      [17] invokevirtual #16
         + Methodref [java/lang/String.equals (Ljava/lang/Object;)Z]
-      [20] ifeq +7 (target=27)
+      [20] ifeq +17 (target=37)
       [23] aload_1 v1
-      [24] invokestatic #10
+      [24] invokestatic #15
         + Methodref [com/aragaer/jtt/core/Clockwork.a (Landroid/content/Context;)V]
       [27] return
-      Code attribute exceptions (count = 0):
+      [28] pop
+      [29] ldc #1
+        + String [JTT CLOCKWORK]
+      [31] ldc #2
+        + String [Time change while service is not running, ignore]
+      [33] invokestatic #14
+        + Methodref [android/util/Log.i (Ljava/lang/String;Ljava/lang/String;)I]
+      [36] pop
+      [37] return
+      Code attribute exceptions (count = 1):
+      - ExceptionInfo (23 -> 27: 28):
+      + Class [java/lang/IllegalStateException]
       Code attribute attributes (attribute count = 0):
 
 Class file attributes (count = 0):

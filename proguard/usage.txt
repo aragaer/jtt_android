@@ -53,10 +53,8 @@ com.aragaer.jtt.core.Calculator:
 com.aragaer.jtt.core.Clockwork:
     public static final java.lang.String ACTION_JTT_TICK
     private static final int INTENT_FLAGS
-    private static final int ticks
-    private static final int subs
     private static final double total
-    58:60:public static void unschedule(android.content.Context)
+    61:63:public static void unschedule(android.content.Context)
 com.aragaer.jtt.core.Hour:
     public static final int HOURS
     public static final int QUARTERS
