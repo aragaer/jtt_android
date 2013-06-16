@@ -14,6 +14,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 public class Clockwork extends IntentService {
 	public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
@@ -31,13 +32,15 @@ public class Clockwork extends IntentService {
 			final String action = intent.getAction();
 			if (action.equals(Intent.ACTION_TIME_CHANGED)
 					|| action.equals(Intent.ACTION_DATE_CHANGED))
-				schedule(context);
+				try {
+					schedule(context);
+				} catch (IllegalStateException e) {
+					Log.i("JTT CLOCKWORK", "Time change while service is not running, ignore");
+				}
 		}
 	};
 
-	private final static int ticks = Hour.HOURS;
-	private final static int subs = Hour.HOUR_PARTS;
-	private final static double total = ticks * subs;
+	private final static double total = Hour.HOURS * Hour.HOUR_PARTS;
 
 	public static void schedule(final Context context) {
 		final AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
