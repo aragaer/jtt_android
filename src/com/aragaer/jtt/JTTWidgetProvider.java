@@ -26,7 +26,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-interface WidgetHandler {
+interface WidgetPainter {
 	void hour_changed(final int n);
 	void fill_rv(final RemoteViews rv, final Hour h);
 	void init(final Context c);
@@ -35,44 +35,43 @@ interface WidgetHandler {
 public class JTTWidgetProvider {
 	private static final String PKG_NAME = "com.aragaer.jtt";
 
-
 	private static final class WidgetHolder {
 		final ComponentName cn;
 		Hour last_update;
-		final WidgetHandler handler;
+		final WidgetPainter painter;
 		final int granularity;
 
-		WidgetHolder(final Class cls, final WidgetHandler handler, int granularity) {
+		WidgetHolder(final Class cls, final WidgetPainter painter, int granularity) {
 			cn = new ComponentName(PKG_NAME, cls.getName());
-			this.handler = handler;
+			this.painter = painter;
 			this.granularity = granularity;
 		}
 	}
 
 	static private final Map<Class<?>, WidgetHolder> classes = new HashMap<Class<?>, WidgetHolder>();
 	static void draw_all(final Context c) {
-		for (Class<?> cls : classes.keySet())
-			draw(c, null, cls);
+		for (WidgetHolder holder : classes.values())
+			draw(c, null, holder);
 	}
 
 	private static abstract class JTTWidget extends AppWidgetProvider {
-		protected JTTWidget(final int frequency, final Class<? extends WidgetHandler> handler_class) {
+		protected JTTWidget(final int frequency, final Class<? extends WidgetPainter> painter_class) {
 			int granularity = Hour.QUARTERS * Hour.QUARTER_PARTS / frequency;
 
 			final Class<?> cls = getClass();
 			if (!classes.containsKey(cls))
 				try {
-					classes.put(cls, new WidgetHolder(cls, handler_class.newInstance(), granularity));
+					classes.put(cls, new WidgetHolder(cls, painter_class.newInstance(), granularity));
 				} catch (IllegalAccessException e) {
-					Log.e("JTT WIDGET", "Failed to instantiate handler", e);
+					Log.e("JTT WIDGET", "Failed to instantiate painter", e);
 				} catch (InstantiationException e) {
-					Log.e("JTT WIDGET", "Failed to instantiate handler", e);
+					Log.e("JTT WIDGET", "Failed to instantiate painter", e);
 				}
 		}
 
 		public void onReceive(Context c, Intent i) {
 			final String action = i.getAction();
-			classes.get(getClass()).handler.init(c);
+			classes.get(getClass()).painter.init(c);
 			if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
 				update(c, i);
 			else if (action.equals(Clockwork.ACTION_JTT_TICK))
@@ -83,7 +82,7 @@ public class JTTWidgetProvider {
 
 		private void update(Context c, Intent i) {
 			int[] ids = i.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-			draw(c, ids, getClass());
+			draw(c, ids, classes.get(getClass()));
 		}
 	}
 
@@ -95,33 +94,31 @@ public class JTTWidgetProvider {
 		if (prev == null) {
 			wrapped -= wrapped % holder.granularity;
 			holder.last_update = prev = Hour.fromWrapped(wrapped, null);
-			holder.handler.hour_changed(n);
+			holder.painter.hour_changed(n);
 		} else {
 			if (prev.num != n)
-				holder.handler.hour_changed(n);
+				holder.painter.hour_changed(n);
 			if (!prev.compareAndUpdate(wrapped, holder.granularity))
 				return; // do nothing
 		}
-		draw(c, null, cls);
+		draw(c, null, holder);
 	}
 
-	private static void draw(Context c, int[] ids, Class<?> cls) {
-		final WidgetHolder holder = classes.get(cls);
+	private static void draw(Context c, int[] ids, final WidgetHolder holder) {
 		final AppWidgetManager awm = AppWidgetManager.getInstance(c.getApplicationContext());
 		if (ids == null)
 			ids = awm.getAppWidgetIds(holder.cn);
 		if (ids.length == 0)
 			return;
 
-		Hour h = holder.last_update;
 		RemoteViews rv;
-		if (h == null)
+		if (holder.last_update == null)
 			rv = new RemoteViews(PKG_NAME, R.layout.widget_loading);
 		else {
 			boolean inverse = PreferenceManager.getDefaultSharedPreferences(c)
 					.getBoolean(Settings.PREF_WIDGET_INVERSE, false);
 			rv = new RemoteViews(PKG_NAME, inverse ? R.layout.widget_inverse : R.layout.widget);
-			holder.handler.fill_rv(rv, h);
+			holder.painter.fill_rv(rv, holder.last_update);
 		}
 		PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, new Intent(c, JTTMainActivity.class), 0);
 		rv.setOnClickPendingIntent(R.id.clock, pendingIntent);
@@ -133,19 +130,19 @@ public class JTTWidgetProvider {
 	/* Widget showing only 1 hour */
 	public static class Widget1 extends JTTWidget {
 		public Widget1() {
-			super(20, WidgetHandler1.class);
+			super(20, WidgetPainter1.class);
 		}
 	}
 
 	/* Widget showing 12 hours */
 	public static class Widget12 extends JTTWidget {
 		public Widget12() {
-			super(8, WidgetHandler12.class);
+			super(8, WidgetPainter12.class);
 		}
 	}
 }
 
-class WidgetHandler1 implements WidgetHandler {
+class WidgetPainter1 implements WidgetPainter {
 	/* Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG == 0x07 */
 	private static final Paint p1 = new Paint(0x07), p2 = new Paint(p1);
 	private static final Bitmap bmp = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_4444);
@@ -194,7 +191,7 @@ class WidgetHandler1 implements WidgetHandler {
 	}
 }
 
-class WidgetHandler12 implements WidgetHandler {
+class WidgetPainter12 implements WidgetPainter {
 	static StringResources sr;
 	static WadokeiDraw wd;
 	static int size;
