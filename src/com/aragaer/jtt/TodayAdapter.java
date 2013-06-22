@@ -8,6 +8,7 @@ import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -185,7 +186,14 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 			return;
 		}
 
-		is_day = Calculator.getSurroundingTransitions(getContext(), now, transitions);
+		try {
+			is_day = Calculator.getSurroundingTransitions(getContext(), now, transitions);
+		} catch (IllegalStateException e) {
+			Log.w(TAG, "Content provider has no location");
+			// starting the JttService should solve this
+			getContext().startService(new Intent(getContext(), JttService.class));
+			return;
+		}
 
 		HourItem.prev_transition = transitions[1];
 		HourItem.next_transition = transitions[2];
