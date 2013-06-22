@@ -11,7 +11,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -20,21 +19,23 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 	private static final String TAG = "JTT_SERVICE";
 	private JttStatus status_notify;
 
-	public class JttServiceBinder extends Binder {
-		public JttService getService() {
-			return JttService.this;
-		}
-	}
-	private final JttServiceBinder binder = new JttServiceBinder();
+	static final String STOP_ACTION = "com.aragaer.jtt.action.SERVICE_STOP";
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		return binder;
+		return null;
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startid) {
 		Log.i(TAG, "Service starting");
+		if (intent != null && STOP_ACTION.equals(intent.getAction())) {
+			if (status_notify != null) {
+				status_notify.release();
+				status_notify = null;
+			}
+			return START_NOT_STICKY;
+		}
 		move();
 
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -43,17 +44,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 		toggle_notify(pref.getBoolean("jtt_notify", true));
 
 		return START_STICKY;
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		Log.i(TAG, "Service destroying");
-
-		if (status_notify != null) {
-			status_notify.release();
-			status_notify = null;
-		}
 	}
 
 	private void toggle_notify(final boolean notify) {

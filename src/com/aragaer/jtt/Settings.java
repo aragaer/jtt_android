@@ -11,8 +11,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -29,21 +27,6 @@ public class Settings extends PreferenceActivity {
 			PREF_NOTIFY = "jtt_notify";
 	public final static String JTT_SETTINGS_CHANGED = "com.aragaer.jtt.ACTION_JTT_SETTINGS";
 	private final static String TAG = "JTT_SETTINGS";
-
-	private JttService service = null;
-	private ServiceConnection connection = new ServiceConnection() {
-		@Override
-		public void onServiceConnected(ComponentName cn, IBinder binder) {
-			Log.d(TAG, "Connected to service");
-			service = ((JttService.JttServiceBinder) binder).getService();
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName cn) {
-			Log.d(TAG, "Disconnected from service");
-			service = null;
-		}
-	};
 
 	private static final String prefcodes[] = new String[] {PREF_LOCATION, PREF_NOTIFY, "jtt_widget_text_invert", PREF_LOCALE, "jtt_theme", PREF_HNAME};
 
@@ -94,7 +77,6 @@ public class Settings extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getApplicationContext().bindService(new Intent(this, JttService.class), connection, Context.BIND_AUTO_CREATE);
 
 		addPreferencesFromResource(R.layout.preferences);
 		ListPreference pref_locale = (ListPreference) findPreference(PREF_LOCALE);
@@ -134,7 +116,7 @@ public class Settings extends PreferenceActivity {
 		public void onClick(DialogInterface dialog, int id) {
 			switch (id) {
 			case Dialog.BUTTON_POSITIVE:
-				service.stopSelf();
+				startService(new Intent(getParent(), JttService.class).setAction(JttService.STOP_ACTION));
 				getParent().finish();
 				break;
 			case Dialog.BUTTON_NEGATIVE:
