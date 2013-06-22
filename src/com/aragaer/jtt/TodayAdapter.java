@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 /* A single item in TodayList */
 abstract class TodayItem {
@@ -53,11 +54,11 @@ class HourItem extends TodayItem {
 
 		final StringResources sr = RuntimeResources.get(c).getInstance(StringResources.class);
 
-		JTTUtil.t(v, R.id.time, sr.format_time(time));
-		JTTUtil.t(v, R.id.glyph, Hour.Glyphs[hnum]);
-		JTTUtil.t(v, R.id.name, sr.getHrOf(hnum));
-		JTTUtil.t(v, R.id.extra, extras[hnum]);
-		JTTUtil.t(v, R.id.curr, is_current ? "▶" : "");
+		((TextView) v.findViewById(R.id.time)).setText(sr.format_time(time));
+		((TextView) v.findViewById(R.id.glyph)).setText(Hour.Glyphs[hnum]);
+		((TextView) v.findViewById(R.id.name)).setText(sr.getHrOf(hnum));
+		((TextView) v.findViewById(R.id.extra)).setText(extras[hnum]);
+		((TextView) v.findViewById(R.id.curr)).setText(is_current ? "▶" : "");
 
 		return v;
 	}
@@ -71,7 +72,7 @@ class DayItem extends TodayItem {
 
 	public View toView(Context c) {
 		View v = View.inflate(c, android.R.layout.preference_category, null);
-		JTTUtil.t(v, android.R.id.title, dateToString(time, c));
+		((TextView) v.findViewById(R.id.title)).setText(dateToString(time, c));
 
 		return v;
 	}

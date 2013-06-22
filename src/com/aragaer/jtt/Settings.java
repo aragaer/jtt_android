@@ -100,4 +100,12 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 				.split(":");
 		return new float[] { Float.parseFloat(ll[0]), Float.parseFloat(ll[1]) };
 	}
+
+	static final int themes[] = {R.style.JTTTheme, R.style.DarkTheme};
+	public static final int getTheme(final Context context) {
+		String theme = PreferenceManager
+				.getDefaultSharedPreferences(context)
+				.getString("jtt_theme", context.getString(R.string.theme_default));
+		return themes[Integer.parseInt(theme)];
+	}
 }
