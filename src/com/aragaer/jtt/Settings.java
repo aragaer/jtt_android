@@ -24,48 +24,30 @@ public class Settings extends PreferenceActivity {
 	public static final String PREF_LOCATION = "jtt_loc",
 			PREF_LOCALE = "jtt_locale",
 			PREF_HNAME = "jtt_hname",
-			PREF_NOTIFY = "jtt_notify";
+			PREF_NOTIFY = "jtt_notify",
+			PREF_WIDGET_INVERSE = "jtt_widget_text_invert";
 	public final static String JTT_SETTINGS_CHANGED = "com.aragaer.jtt.ACTION_JTT_SETTINGS";
 	private final static String TAG = "JTT_SETTINGS";
 
-	private static final String prefcodes[] = new String[] {PREF_LOCATION, PREF_NOTIFY, "jtt_widget_text_invert", PREF_LOCALE, "jtt_theme", PREF_HNAME};
+	private static final String prefcodes[] = new String[] {PREF_LOCATION, PREF_NOTIFY, PREF_WIDGET_INVERSE, PREF_LOCALE, "jtt_theme", PREF_HNAME};
 
 	private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 
 	final OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
 		public boolean onPreferenceChange(Preference preference, Object newValue) {
-			Bundle b = new Bundle();
-			Intent i = new Intent(JTT_SETTINGS_CHANGED);
 			int code = listeners.get(preference.getKey());
-			switch (code) {
-			case 2:
-				i.putExtra("inverse", (Boolean) newValue);
-				break;
-			case 3:
-				i.putExtra("locale", (String) newValue);
-				break;
-			case 5:
-				final ListPreference lp = (ListPreference) preference;
-				i.putExtra("hname", (String) newValue);
-				lp.setSummary(lp.getEntries()[lp.findIndexOfValue((String) newValue)]);
-				break;
-			default:
-				break;
-			}
 
 			switch (code) {
-			case 2:
-			case 5:
-				sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
-				break;
 			case 3:
-				sendBroadcast(i, "com.aragaer.jtt.JTT_SETTINGS");
-				/* fall-through */
 			case 4:
-				i = getParent().getIntent();
+				Intent i = getParent().getIntent();
 				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 				getParent().finish();
 				startActivity(i);
+				break;
+			case 5:
+				final ListPreference lp = (ListPreference) preference;
+				lp.setSummary(lp.getEntries()[lp.findIndexOfValue((String) newValue)]);
 				break;
 			default:
 				break;

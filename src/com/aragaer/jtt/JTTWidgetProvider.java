@@ -49,15 +49,13 @@ public class JTTWidgetProvider {
 		}
 	}
 
+	static private final Map<Class<?>, WidgetHolder> classes = new HashMap<Class<?>, WidgetHolder>();
+	static void draw_all(final Context c) {
+		for (Class<?> cls : classes.keySet())
+			draw(c, null, cls);
+	}
+
 	private static abstract class JTTWidget extends AppWidgetProvider {
-		static private final Map<Class<?>, WidgetHolder> classes = new HashMap<Class<?>, WidgetHolder>();
-
-		static boolean inverse;
-
-		private WidgetHolder myHolder() {
-			return classes.get(getClass());
-		}
-
 		protected JTTWidget(final int frequency, final Class<? extends WidgetHandler> handler_class) {
 			int granularity = Hour.QUARTERS * Hour.QUARTER_PARTS / frequency;
 
@@ -74,65 +72,62 @@ public class JTTWidgetProvider {
 
 		public void onReceive(Context c, Intent i) {
 			final String action = i.getAction();
-			myHolder().handler.init(c);
-			inverse = PreferenceManager.getDefaultSharedPreferences(c)
-					.getBoolean("jtt_widget_text_invert", false);
+			classes.get(getClass()).handler.init(c);
 			if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
 				update(c, i);
 			else if (action.equals(Clockwork.ACTION_JTT_TICK))
 				tick(c, i, getClass());
-			else if (action.equals(Settings.JTT_SETTINGS_CHANGED)) {
-				inverse = i.getBooleanExtra("inverse", inverse);
-				draw(c, null, getClass());
-			} else
+			else
 				Log.d("Widgets", "Got action "+action);
-		}
-
-		private static void tick(Context c, Intent i, Class<?> cls) {
-			int n = i.getIntExtra("hour", 0);
-			int wrapped = i.getIntExtra("jtt", 0);
-			final WidgetHolder holder = classes.get(cls);
-			Hour prev = holder.last_update;
-			if (prev == null) {
-				wrapped -= wrapped % holder.granularity;
-				holder.last_update = prev = Hour.fromWrapped(wrapped, null);
-				holder.handler.hour_changed(n);
-			} else {
-				if (prev.num != n)
-					holder.handler.hour_changed(n);
-				if (!prev.compareAndUpdate(wrapped, holder.granularity))
-					return; // do nothing
-			}
-			draw(c, null, cls);
 		}
 
 		private void update(Context c, Intent i) {
 			int[] ids = i.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
 			draw(c, ids, getClass());
 		}
+	}
 
-		private static void draw(Context c, int[] ids, Class<?> cls) {
-			final WidgetHolder holder = classes.get(cls);
-			final AppWidgetManager awm = AppWidgetManager.getInstance(c.getApplicationContext());
-			if (ids == null)
-				ids = awm.getAppWidgetIds(holder.cn);
-			if (ids.length == 0)
-				return;
-
-			Hour h = holder.last_update;
-			RemoteViews rv;
-			if (h == null)
-				rv = new RemoteViews(PKG_NAME, R.layout.widget_loading);
-			else {
-				rv = new RemoteViews(PKG_NAME, inverse ? R.layout.widget_inverse : R.layout.widget);
-				holder.handler.fill_rv(rv, h);
-			}
-			PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, new Intent(c, JTTMainActivity.class), 0);
-			rv.setOnClickPendingIntent(R.id.clock, pendingIntent);
-
-			for (int id : ids)
-				awm.updateAppWidget(id, rv);
+	private static void tick(Context c, Intent i, Class<?> cls) {
+		int n = i.getIntExtra("hour", 0);
+		int wrapped = i.getIntExtra("jtt", 0);
+		final WidgetHolder holder = classes.get(cls);
+		Hour prev = holder.last_update;
+		if (prev == null) {
+			wrapped -= wrapped % holder.granularity;
+			holder.last_update = prev = Hour.fromWrapped(wrapped, null);
+			holder.handler.hour_changed(n);
+		} else {
+			if (prev.num != n)
+				holder.handler.hour_changed(n);
+			if (!prev.compareAndUpdate(wrapped, holder.granularity))
+				return; // do nothing
 		}
+		draw(c, null, cls);
+	}
+
+	private static void draw(Context c, int[] ids, Class<?> cls) {
+		final WidgetHolder holder = classes.get(cls);
+		final AppWidgetManager awm = AppWidgetManager.getInstance(c.getApplicationContext());
+		if (ids == null)
+			ids = awm.getAppWidgetIds(holder.cn);
+		if (ids.length == 0)
+			return;
+
+		Hour h = holder.last_update;
+		RemoteViews rv;
+		if (h == null)
+			rv = new RemoteViews(PKG_NAME, R.layout.widget_loading);
+		else {
+			boolean inverse = PreferenceManager.getDefaultSharedPreferences(c)
+					.getBoolean(Settings.PREF_WIDGET_INVERSE, false);
+			rv = new RemoteViews(PKG_NAME, inverse ? R.layout.widget_inverse : R.layout.widget);
+			holder.handler.fill_rv(rv, h);
+		}
+		PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, new Intent(c, JTTMainActivity.class), 0);
+		rv.setOnClickPendingIntent(R.id.clock, pendingIntent);
+
+		for (int id : ids)
+			awm.updateAppWidget(id, rv);
 	}
 
 	/* Widget showing only 1 hour */
