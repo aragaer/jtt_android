@@ -6,10 +6,8 @@ import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -18,43 +16,36 @@ import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.util.Log;
 
-public class Settings extends PreferenceActivity {
+public class Settings extends PreferenceActivity implements OnPreferenceChangeListener, OnPreferenceClickListener, DialogInterface.OnClickListener {
 	public static final String PREF_LOCATION = "jtt_loc",
 			PREF_LOCALE = "jtt_locale",
 			PREF_HNAME = "jtt_hname",
 			PREF_NOTIFY = "jtt_notify",
 			PREF_WIDGET_INVERSE = "jtt_widget_text_invert";
-	public final static String JTT_SETTINGS_CHANGED = "com.aragaer.jtt.ACTION_JTT_SETTINGS";
-	private final static String TAG = "JTT_SETTINGS";
 
 	private static final String prefcodes[] = new String[] {PREF_LOCATION, PREF_NOTIFY, PREF_WIDGET_INVERSE, PREF_LOCALE, "jtt_theme", PREF_HNAME};
 
 	private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 
-	final OnPreferenceChangeListener listener = new OnPreferenceChangeListener() {
-		public boolean onPreferenceChange(Preference preference, Object newValue) {
-			int code = listeners.get(preference.getKey());
-
-			switch (code) {
-			case 3:
-			case 4:
-				Intent i = getParent().getIntent();
-				i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-				getParent().finish();
-				startActivity(i);
-				break;
-			case 5:
-				final ListPreference lp = (ListPreference) preference;
-				lp.setSummary(lp.getEntries()[lp.findIndexOfValue((String) newValue)]);
-				break;
-			default:
-				break;
-			}
-			return true;
+	public boolean onPreferenceChange(Preference preference, Object newValue) {
+		switch (listeners.get(preference.getKey())) {
+		case 3:
+		case 4:
+			Intent i = getParent().getIntent();
+			i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+			getParent().finish();
+			startActivity(i);
+			break;
+		case 5:
+			final ListPreference lp = (ListPreference) preference;
+			lp.setSummary(lp.getEntries()[lp.findIndexOfValue((String) newValue)]);
+			break;
+		default:
+			break;
 		}
-	};
+		return true;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,21 +63,12 @@ public class Settings extends PreferenceActivity {
 		}
 		pref_locale.setEntries(lnames);
 
-		((Preference) findPreference("jtt_stop")).setOnPreferenceClickListener(new OnPreferenceClickListener() {
-			public boolean onPreferenceClick(Preference preference) {
-				(new AlertDialog.Builder(Settings.this))
-				.setTitle(R.string.stop)
-				.setMessage(R.string.stop_ask)
-				.setPositiveButton(android.R.string.yes, stop_dlg_listener)
-				.setNegativeButton(android.R.string.no, stop_dlg_listener).show();
-				return false;
-			}
-		});
+		((Preference) findPreference("jtt_stop")).setOnPreferenceClickListener(this);
 
 		for (int i = 0; i < prefcodes.length; i++) {
 			listeners.put(prefcodes[i], i);
 			final Preference pref = (Preference) findPreference(prefcodes[i]);
-			pref.setOnPreferenceChangeListener(listener);
+			pref.setOnPreferenceChangeListener(this);
 			if (pref instanceof ListPreference) {
 				final ListPreference lp = (ListPreference) pref;
 				lp.setSummary(lp.getEntry());
@@ -94,25 +76,27 @@ public class Settings extends PreferenceActivity {
 		}
 	}
 
-	private final OnClickListener stop_dlg_listener = new OnClickListener() {
-		public void onClick(DialogInterface dialog, int id) {
-			switch (id) {
-			case Dialog.BUTTON_POSITIVE:
-				startService(new Intent(getParent(), JttService.class).setAction(JttService.STOP_ACTION));
-				getParent().finish();
-				break;
-			case Dialog.BUTTON_NEGATIVE:
-			default:
-				dialog.cancel();
-				break;
-			}
-		}
-	};
+	public boolean onPreferenceClick(Preference preference) {
+		(new AlertDialog.Builder(this))
+		.setTitle(R.string.stop)
+		.setMessage(R.string.stop_ask)
+		.setPositiveButton(android.R.string.yes, this)
+		.setNegativeButton(android.R.string.no, this).show();
+		return false;
+	}
+
+	public void onClick(DialogInterface dialog, int id) {
+		if (id == Dialog.BUTTON_POSITIVE) {
+			startService(new Intent(this, JttService.class).setAction(JttService.STOP_ACTION));
+			getParent().finish();
+		} else
+			dialog.cancel();
+	}
 
 	public static float[] getLocation(final Context context) {
 		String[] ll = PreferenceManager
 				.getDefaultSharedPreferences(context)
-				.getString(Settings.PREF_LOCATION, LocationPreference.DEFAULT)
+				.getString(PREF_LOCATION, LocationPreference.DEFAULT)
 				.split(":");
 		return new float[] { Float.parseFloat(ll[0]), Float.parseFloat(ll[1]) };
 	}
