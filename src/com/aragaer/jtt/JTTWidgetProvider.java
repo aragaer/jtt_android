@@ -1,5 +1,6 @@
 package com.aragaer.jtt;
 
+import java.util.Map;
 import java.util.HashMap;
 
 import com.aragaer.jtt.core.Clockwork;
@@ -29,10 +30,9 @@ public class JTTWidgetProvider {
 	private static final String PKG_NAME = "com.aragaer.jtt";
 
 	private static abstract class JTTWidget extends AppWidgetProvider {
-		private final String cn;
 		private final ComponentName name;
 		private final int granularity;
-		static private final HashMap<String, Hour> last_update = new HashMap<String, Hour>();
+		static private final Map<Class<JTTWidget>, Hour> last_update = new HashMap<Class<JTTWidget>, Hour>();
 
 		abstract protected void hour_changed(int n);
 		abstract protected void fill_rv(RemoteViews rv, Hour h);
@@ -41,7 +41,6 @@ public class JTTWidgetProvider {
 		static boolean inverse;
 
 		protected JTTWidget(final int frequency) {
-			cn = this.getClass().getSimpleName();
 			name = new ComponentName(PKG_NAME, this.getClass().getName());
 			this.granularity = Hour.QUARTERS * Hour.QUARTER_PARTS / frequency;
 		}
@@ -57,7 +56,7 @@ public class JTTWidgetProvider {
 				tick(c, i);
 			else if (action.equals(Settings.JTT_SETTINGS_CHANGED)) {
 				inverse = i.getBooleanExtra("inverse", inverse);
-				draw(c, null, last_update.get(cn));
+				draw(c, null, last_update.get(getClass()));
 			} else
 				Log.d("Widgets", "Got action "+action);
 		}
@@ -65,11 +64,11 @@ public class JTTWidgetProvider {
 		private void tick(Context c, Intent i) {
 			int n = i.getIntExtra("hour", 0);
 			int wrapped = i.getIntExtra("jtt", 0);
-			Hour prev = last_update.get(cn);
+			Hour prev = last_update.get(getClass());
 			if (prev == null) {
 				wrapped -= wrapped % granularity;
 				prev = Hour.fromWrapped(wrapped, null);
-				last_update.put(cn, prev);
+				last_update.put((Class<JTTWidget>) getClass(), prev);
 				hour_changed(n);
 			} else {
 				if (prev.num != n)
@@ -82,7 +81,7 @@ public class JTTWidgetProvider {
 
 		private void update(Context c, Intent i) {
 			int[] ids = i.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-			Hour h = last_update.get(cn);
+			Hour h = last_update.get(getClass());
 			if (h == null)
 				return;
 			draw(c, ids, h);
