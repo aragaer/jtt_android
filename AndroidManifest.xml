@@ -50,7 +50,6 @@
                 android:label="@string/widget1">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.aragaer.jtt.ACTION_JTT_SETTINGS" />
                 <action android:name="com.aragaer.jtt.action.TICK" />
             </intent-filter>
             <meta-data
@@ -62,7 +61,6 @@
                 android:label="@string/widget12">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.aragaer.jtt.ACTION_JTT_SETTINGS" />
                 <action android:name="com.aragaer.jtt.action.TICK" />
             </intent-filter>
             <meta-data
