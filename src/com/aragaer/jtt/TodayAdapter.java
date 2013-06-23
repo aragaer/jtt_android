@@ -72,7 +72,7 @@ class DayItem extends TodayItem {
 
 	public View toView(Context c) {
 		View v = View.inflate(c, android.R.layout.preference_category, null);
-		((TextView) v.findViewById(R.id.title)).setText(dateToString(time, c));
+		((TextView) v.findViewById(android.R.id.title)).setText(dateToString(time, c));
 
 		return v;
 	}
