@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.aragaer.jtt.core.Clockwork;
 import com.aragaer.jtt.core.Hour;
+import com.aragaer.jtt.graphics.Paints;
 import com.aragaer.jtt.graphics.WadokeiDraw;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
@@ -143,51 +144,48 @@ public class JTTWidgetProvider {
 }
 
 class WidgetPainter1 implements WidgetPainter {
-	/* Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG == 0x07 */
-	private static final Paint p1 = new Paint(0x07), p2 = new Paint(p1);
-	private static final Bitmap bmp = Bitmap.createBitmap(80, 80, Bitmap.Config.ARGB_4444);
-	private static final Canvas c = new Canvas(bmp);
+	private static Paints paints;
+	private static Bitmap bmp;
+	private static final Canvas c = new Canvas();
 	private static final Path path1 = new Path(), path2 = new Path();
-	private static final RectF outer = new RectF(10, 10, 70, 70), inner = new RectF(20, 20, 60, 60);
-	static boolean initialized = false;
-
-	static {
-		p1.setStyle(Paint.Style.FILL);
-		p1.setColor(Color.TRANSPARENT);
-		p2.setStyle(Paint.Style.FILL);
-		p2.setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xFFCCCCCC));
-
-		path1.addCircle(40, 40, 20, Path.Direction.CW);
-		path1.addCircle(40, 40, 30, Path.Direction.CCW);
-	}
+	private static final RectF outer = new RectF(), inner = new RectF();
 
 	public void hour_changed(final int n) { }
 
-	private static final float QUARTER_ANGLE = 360f / Hour.QUARTERS,
+	private static final float QUARTER_ANGLE = 355f / Hour.QUARTERS,
 			PART_ANGLE = QUARTER_ANGLE / Hour.QUARTER_PARTS;
 	public void fill_rv(final RemoteViews rv, final Hour h) {
 		bmp.eraseColor(Color.TRANSPARENT);
 
-		c.drawPath(path1, p1);
+		final float angle = 2.5f + QUARTER_ANGLE * h.quarter + PART_ANGLE * h.quarter_parts;
 
-		final float angle = QUARTER_ANGLE * h.quarter + PART_ANGLE * h.quarter_parts;
+		path1.rewind();
+		path1.arcTo(inner, angle - 90, -angle);
+		path1.arcTo(outer, -90, angle);
 
-		path2.reset();
-		path2.addArc(inner, angle - 90, -angle);
-		path2.arcTo(outer, -90, angle);
-		c.drawPath(path2, p2);
+		path2.rewind();
+		path2.arcTo(outer, -90, angle - 360);
+		path2.arcTo(inner, angle - 90, 360 - angle);
+
+		c.drawPath(path1, paints.solid1);
+		c.drawPath(path2, paints.solid2);
+		c.drawPath(path1, paints.stroke1);
+		c.drawPath(path2, paints.stroke1);
 
 		rv.setImageViewBitmap(R.id.clock, bmp);
 		rv.setTextViewText(R.id.glyph, Hour.Glyphs[h.num]);
 	}
 
-	public void init(final Context c) {
-		if (initialized)
+	public void init(final Context ctx) {
+		if (paints != null)
 			return;
 
-		p1.setShadowLayer(10f, 0, 0, Color.parseColor(c.getString(R.color.night)));
-		p2.setColor(Color.parseColor(c.getString(R.color.fill)));
-		initialized = true;
+		paints = Paints.getInstance(ctx);
+		final float scale = ctx.getResources().getDisplayMetrics().density;
+		bmp = Bitmap.createBitmap((int) (80 * scale), (int) (80 * scale), Bitmap.Config.ARGB_4444);
+		c.setBitmap(bmp);
+		outer.set(3 * scale, 3 * scale, 77 * scale, 77 * scale);
+		inner.set(15 * scale, 15 * scale, 65 * scale, 65 * scale);
 	}
 }
 
