@@ -2,4 +2,7 @@
 <resources>
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="today_time_width">75dp</dimen>
+    <dimen name="today_boundary">1dp</dimen>
+    <dimen name="today_current">5dp</dimen>
+    <dimen name="today_divider_neg">12dp</dimen>
 </resources>
