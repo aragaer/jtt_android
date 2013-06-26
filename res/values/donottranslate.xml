@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="abbr_app_name">JTT</string>
     <string-array name="locales">
         <item></item>
         <item>en</item>

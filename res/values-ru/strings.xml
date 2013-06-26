@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">Традиционное Японское Время</string>
-    <string name="abbr_app_name">JTT</string>
     <string name="auto_lat_long">Использовать текущее</string>
     <string name="location">Координаты</string>
     <string name="location_ex">Изменить сохраненные координаты</string>
@@ -25,9 +24,6 @@
     <string name="sunset">Закат</string>
     <string name="noon">Полдень</string>
     <string name="midnight">Полночь</string>
-    <string name="day_prev">Вчера</string>
-    <string name="day_curr">Сегодня</string>
-    <string name="day_next">Завтра</string>
     <string name="hour_names">Названия часов</string>
 
     <string-array name="hour_name_option_names">
@@ -35,17 +31,6 @@
         <item>Ромадзи</item>
         <item>Хирагана</item>
     </string-array>
-
-    <plurals name="days_past">
-        <item quantity="one">%d день назад</item>
-        <item quantity="few">%d дня назад</item>
-        <item quantity="other">%d дней назад</item>
-    </plurals>
-    <plurals name="days_future">
-        <item quantity="one">Через %d день</item>
-        <item quantity="few">Через %d дня</item>
-        <item quantity="other">Через %d дней</item>
-    </plurals>
 
     <string-array name="hour">
         <item>Петух</item>
