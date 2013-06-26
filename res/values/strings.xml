@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">Japanese Traditional Time</string>
-    <string name="abbr_app_name">JTT</string>
     <string name="auto_lat_long">Use current location</string>
     <string name="location">Location</string>
     <string name="location_ex">Change stored location</string>
@@ -25,9 +24,6 @@
     <string name="sunset">Sunset</string>
     <string name="noon">Noon</string>
     <string name="midnight">Midnight</string>
-    <string name="day_prev">Yesterday</string>
-    <string name="day_curr">Today</string>
-    <string name="day_next">Tomorrow</string>
     <string name="hour_names">Hour names</string>
 
     <string-array name="hour_name_option_names">
@@ -35,15 +31,6 @@
         <item>Romaji</item>
         <item>Hiragana</item>
     </string-array>
-
-    <plurals name="days_past">
-        <item quantity="one">%d day ago</item>
-        <item quantity="other">%d days ago</item>
-    </plurals>
-    <plurals name="days_future">
-        <item quantity="one">In %d day</item>
-        <item quantity="other">In %d days</item>
-    </plurals>
 
     <string-array name="hour">
         <item>The Cock</item>

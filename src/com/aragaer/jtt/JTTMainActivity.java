@@ -31,7 +31,7 @@ public class JTTMainActivity extends ActivityGroup {
 			final int wrapped = intent.getIntExtra("jtt", 0);
 
 			clock.setHour(wrapped);
-			today.setCurrent(n);
+			today.tick();
 		}
 	};
 
@@ -50,6 +50,7 @@ public class JTTMainActivity extends ActivityGroup {
 		final ListView today_list = new ListView(this);
 		today = new TodayAdapter(this, 0);
 		today_list.setAdapter(today);
+		today_list.setDividerHeight(-getResources().getDimensionPixelSize(R.dimen.today_divider_neg));
 		pager.addTab(today_list, R.string.today);
 
 		final Window sw = getLocalActivityManager().startActivity("settings",
