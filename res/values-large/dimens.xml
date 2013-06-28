@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="today_boundary">2dp</dimen>
+    <dimen name="today_current">10dp</dimen>
+    <dimen name="today_glyph_size">45dp</dimen>
+    <dimen name="today_text_size">20sp</dimen>
+</resources>
