@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aragaer.jtt"
-    android:versionCode="19"
-    android:versionName="1.4.3.1" >
+    android:versionCode="20"
+    android:versionName="1.4.4 RC1" >
 
     <uses-sdk android:minSdkVersion="6"
         android:targetSdkVersion="17"/>
 
-    <permission android:name="com.aragaer.jtt.JTT_SETTINGS"
-        android:protectionLevel="signature" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="com.aragaer.jtt.JTT_SETTINGS" />
 
     <application
         android:allowBackup="true"
@@ -50,7 +46,6 @@
                 android:label="@string/widget1">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.aragaer.jtt.ACTION_JTT_SETTINGS" />
                 <action android:name="com.aragaer.jtt.action.TICK" />
             </intent-filter>
             <meta-data
@@ -62,7 +57,6 @@
                 android:label="@string/widget12">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.aragaer.jtt.ACTION_JTT_SETTINGS" />
                 <action android:name="com.aragaer.jtt.action.TICK" />
             </intent-filter>
             <meta-data

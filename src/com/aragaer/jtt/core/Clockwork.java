@@ -76,7 +76,11 @@ public class Clockwork extends IntentService {
 					.putExtra("jtt", hour.wrapped);
 			sendStickyBroadcast(TickAction);
 		} else
-			schedule(this);
+			try {
+				schedule(this);
+			} catch (IllegalStateException e) {
+				Log.i("JTT CLOCKWORK", "Transition passed while service is not running, ignore");
+			}
 
 		stopSelf();
 	}

@@ -18,9 +18,9 @@ import android.view.Window;
 import android.widget.ListView;
 
 public class JTTMainActivity extends ActivityGroup {
-    private ClockView clock;
-    private JTTPager pager;
-    private TodayAdapter today;
+	private ClockView clock;
+	private JTTPager pager;
+	private TodayAdapter today;
 
 	private final BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
@@ -31,55 +31,56 @@ public class JTTMainActivity extends ActivityGroup {
 			final int wrapped = intent.getIntExtra("jtt", 0);
 
 			clock.setHour(wrapped);
-			today.setCurrent(n);
+			today.tick();
 		}
 	};
 
-    private int settings_tab = 0;
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        JTTUtil.setTheme(this);
-        super.onCreate(savedInstanceState);
-        startService(new Intent(this, JttService.class));
+	private int settings_tab = 0;
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		setTheme(Settings.getTheme(this));
+		super.onCreate(savedInstanceState);
+		startService(new Intent(this, JttService.class));
 
-        pager = new JTTPager(this);
+		pager = new JTTPager(this);
 
-        clock = new ClockView(this);
-        pager.addTab(clock, R.string.clock);
+		clock = new ClockView(this);
+		pager.addTab(clock, R.string.clock);
 
-        final ListView today_list = new ListView(this);
-        today = new TodayAdapter(this, 0);
-        today_list.setAdapter(today);
-        pager.addTab(today_list, R.string.today);
+		final ListView today_list = new ListView(this);
+		today = new TodayAdapter(this, 0);
+		today_list.setAdapter(today);
+		today_list.setDividerHeight(-getResources().getDimensionPixelSize(R.dimen.today_divider_neg));
+		pager.addTab(today_list, R.string.today);
 
-        final Window sw = getLocalActivityManager().startActivity("settings",
-                new Intent(this, Settings.class));
-        settings_tab = pager.addTab(sw.getDecorView(), R.string.settings);
+		final Window sw = getLocalActivityManager().startActivity("settings",
+				new Intent(this, Settings.class));
+		settings_tab = pager.addTab(sw.getDecorView(), R.string.settings);
 
-        setContentView(pager);
+		setContentView(pager);
 
 		registerReceiver(receiver, new IntentFilter(Clockwork.ACTION_JTT_TICK));
-    }
+	}
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        SharedPreferences settings = PreferenceManager
-                .getDefaultSharedPreferences(this);
-        if (settings.getBoolean("jtt_first", true)) {
-            settings.edit().putBoolean("jtt_first", false).commit();
-            if (settings.contains("jtt_loc")) // it's already configured
-                return;
-            pager.selectScreen(settings_tab);
-            PreferenceActivity pa = (PreferenceActivity) getLocalActivityManager()
-                    .getActivity("settings");
-            ((LocationPreference) pa.findPreference("jtt_loc")).showMe();
-        }
-    }
+	@Override
+	protected void onStart() {
+		super.onStart();
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		if (settings.getBoolean("jtt_first", true)) {
+			settings.edit().putBoolean("jtt_first", false).commit();
+			if (settings.contains("jtt_loc")) // it's already configured
+				return;
+			pager.selectScreen(settings_tab);
+			PreferenceActivity pa = (PreferenceActivity) getLocalActivityManager()
+					.getActivity("settings");
+			((LocationPreference) pa.findPreference("jtt_loc")).showMe();
+		}
+	}
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
 		unregisterReceiver(receiver);
-    }
+	}
 }
