@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.util.TypedValue;
 
 public class ClockView extends ViewGroup implements StringResources.StringResourceChangeListener {
 	private int hn, hf;
@@ -50,7 +51,7 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 		final int h = MeasureSpec.getSize(hms);
 		vertical = h > w;
 		text.setText(vertical ? sr.getHrOf(hour.num) : sr.getHour(hour.num));
-		text.setTextSize(vertical ? w / 20 : w / 15);
+		text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, vertical ? w / 20 : w / 15);
 		text.measure(0, 0);
 		setMeasuredDimension(w, h);
 	}
