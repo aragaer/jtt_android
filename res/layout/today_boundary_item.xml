@@ -10,6 +10,7 @@
         android:layout_gravity="left"
         android:gravity="right"
         android:shadowColor="@android:color/black"
+        android:layout_marginRight="5dp"
         android:shadowRadius="2" />
 
     <ImageView

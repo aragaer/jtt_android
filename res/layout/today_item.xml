@@ -9,8 +9,8 @@
         android:layout_width="@dimen/today_time_width"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:layout_gravity="center"
-        android:gravity="center" />
+        android:layout_gravity="center_vertical"
+        android:gravity="right" />
 
     <TextView
         android:id="@+id/glyph"
@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textSize="@dimen/today_glyph_size"
-        android:layout_marginLeft="5dp"
+        android:layout_marginTop="-3dp"
+        android:layout_marginLeft="7dp"
         android:layout_marginRight="5dp"/>
 
     <TextView
@@ -35,6 +36,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:gravity="right"
-        android:layout_marginRight="5dp"/>
+        android:layout_marginRight="7dp"/>
 
 </LinearLayout>
