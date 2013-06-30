@@ -5,16 +5,12 @@ com.aragaer.jtt.ClockView:
     private static final int granularity
 com.aragaer.jtt.JTTPager$ScrollContents:
     private static final int ID
-com.aragaer.jtt.JTTUtil:
-    8:8:public JTTUtil()
 com.aragaer.jtt.JTTWidgetProvider:
     private static final java.lang.String PKG_NAME
-    28:166:public JTTWidgetProvider()
-com.aragaer.jtt.JTTWidgetProvider$Widget1:
-    private static final float QUARTER_ANGLE
-    private static final float PART_ANGLE
+    36:139:public JTTWidgetProvider()
 com.aragaer.jtt.JttService:
     private static final java.lang.String TAG
+    static final java.lang.String STOP_ACTION
 com.aragaer.jtt.JttStatus:
     private static final int APP_ID
     private static final int flags_ongoing
@@ -23,8 +19,6 @@ com.aragaer.jtt.LocationPreference:
     private static final java.lang.String fmt1
     private static final java.lang.String fmt2
     private static final java.lang.String fmt3
-com.aragaer.jtt.Manifest
-com.aragaer.jtt.Manifest$permission
 com.aragaer.jtt.R
 com.aragaer.jtt.R$array
 com.aragaer.jtt.R$attr
@@ -33,7 +27,6 @@ com.aragaer.jtt.R$dimen
 com.aragaer.jtt.R$drawable
 com.aragaer.jtt.R$id
 com.aragaer.jtt.R$layout
-com.aragaer.jtt.R$plurals
 com.aragaer.jtt.R$string
 com.aragaer.jtt.R$style
 com.aragaer.jtt.R$xml
@@ -42,10 +35,12 @@ com.aragaer.jtt.Settings:
     public static final java.lang.String PREF_LOCALE
     public static final java.lang.String PREF_HNAME
     public static final java.lang.String PREF_NOTIFY
-    public static final java.lang.String JTT_SETTINGS_CHANGED
-    private static final java.lang.String TAG
+    public static final java.lang.String PREF_WIDGET_INVERSE
 com.aragaer.jtt.TodayAdapter:
     private static final java.lang.String TAG
+com.aragaer.jtt.WidgetPainter1:
+    private static final float QUARTER_ANGLE
+    private static final float PART_ANGLE
 com.aragaer.jtt.core.Calculator:
     public static final java.lang.String AUTHORITY
     private static final int TR

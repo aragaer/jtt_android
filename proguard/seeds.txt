@@ -2,7 +2,7 @@ com.aragaer.jtt.BootReceiver
 com.aragaer.jtt.BootReceiver: BootReceiver()
 com.aragaer.jtt.JTTMainActivity
 com.aragaer.jtt.JTTMainActivity: JTTMainActivity()
-com.aragaer.jtt.JTTWidgetProvider$JTTWidget: JTTWidgetProvider$JTTWidget(int)
+com.aragaer.jtt.JTTWidgetProvider$JTTWidget: JTTWidgetProvider$JTTWidget(int,java.lang.Class)
 com.aragaer.jtt.JTTWidgetProvider$Widget1
 com.aragaer.jtt.JTTWidgetProvider$Widget1: JTTWidgetProvider$Widget1()
 com.aragaer.jtt.JTTWidgetProvider$Widget12
