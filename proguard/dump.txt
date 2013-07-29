@@ -6042,7 +6042,7 @@ Interfaces (count = 3):
   + Class [android/preference/Preference$OnPreferenceChangeListener]
   + Class [android/preference/Preference$OnPreferenceClickListener]
 
-Constant Pool (count = 252):
+Constant Pool (count = 254):
   + Integer [65536]
   + Integer [17039369]
   + Integer [17039379]
@@ -6081,6 +6081,7 @@ Constant Pool (count = 252):
   + Class [java/lang/CharSequence]
   + Class [java/lang/Float]
   + Class [java/lang/Integer]
+  + Class [java/lang/NumberFormatException]
   + Class [java/lang/String]
   + Class [java/util/HashMap]
   + Class [java/util/Locale]
@@ -6261,6 +6262,7 @@ Constant Pool (count = 252):
   + Utf8 [java/lang/CharSequence]
   + Utf8 [java/lang/Float]
   + Utf8 [java/lang/Integer]
+  + Utf8 [java/lang/NumberFormatException]
   + Utf8 [java/lang/String]
   + Utf8 [java/util/HashMap]
   + Utf8 [java/util/Locale]
@@ -6313,15 +6315,15 @@ Methods (count = 8):
     Class member attributes (count = 1):
     + Code attribute instructions (code length = 16, locals = 1, stack = 3):
       [0] aload_0 v0
-      [1] invokespecial #67
+      [1] invokespecial #68
         + Methodref [android/preference/PreferenceActivity.<init> ()V]
       [4] aload_0 v0
-      [5] new #40
+      [5] new #41
         + Class [java/util/HashMap]
       [8] dup
-      [9] invokespecial #81
+      [9] invokespecial #82
         + Methodref [java/util/HashMap.<init> ()V]
-      [12] putfield #44
+      [12] putfield #45
         + Fieldref [com/aragaer/jtt/Settings.b Ljava/util/Map;]
       [15] return
       Code attribute exceptions (count = 0):
@@ -6332,16 +6334,16 @@ Methods (count = 8):
     Class member attributes (count = 1):
     + Code attribute instructions (code length = 98, locals = 3, stack = 4):
       [0] aload_0 v0
-      [1] getfield #44
+      [1] getfield #45
         + Fieldref [com/aragaer/jtt/Settings.b Ljava/util/Map;]
       [4] aload_1 v1
-      [5] invokevirtual #64
+      [5] invokevirtual #65
         + Methodref [android/preference/Preference.getKey ()Ljava/lang/String;]
-      [8] invokeinterface #87
+      [8] invokeinterface #88
         + InterfaceMethodref [java/util/Map.get (Ljava/lang/Object;)Ljava/lang/Object;]
       [13] checkcast #38
         + Class [java/lang/Integer]
-      [16] invokevirtual #77
+      [16] invokevirtual #78
         + Methodref [java/lang/Integer.intValue ()I]
       [19] tableswitch (3 offsets, default=77) (target=96)
         3: offset = 25, target = 44
@@ -6349,25 +6351,25 @@ Methods (count = 8):
         5: offset = 55, target = 74
         default: offset = 77, target = 96
       [44] aload_0 v0
-      [45] invokevirtual #72
+      [45] invokevirtual #73
         + Methodref [com/aragaer/jtt/Settings.getParent ()Landroid/app/Activity;]
-      [48] invokevirtual #47
+      [48] invokevirtual #48
         + Methodref [android/app/Activity.getIntent ()Landroid/content/Intent;]
       [51] dup
       [52] astore_1 v1
       [53] ldc #1
         + Integer [65536]
-      [55] invokevirtual #56
+      [55] invokevirtual #57
         + Methodref [android/content/Intent.addFlags (I)Landroid/content/Intent;]
       [58] pop
       [59] aload_0 v0
-      [60] invokevirtual #72
+      [60] invokevirtual #73
         + Methodref [com/aragaer/jtt/Settings.getParent ()Landroid/app/Activity;]
-      [63] invokevirtual #46
+      [63] invokevirtual #47
         + Methodref [android/app/Activity.finish ()V]
       [66] aload_0 v0
       [67] aload_1 v1
-      [68] invokevirtual #74
+      [68] invokevirtual #75
         + Methodref [com/aragaer/jtt/Settings.startActivity (Landroid/content/Intent;)V]
       [71] goto +25 (target=96)
       [74] aload_1 v1
@@ -6376,16 +6378,16 @@ Methods (count = 8):
       [78] dup
       [79] dup
       [80] astore_1 v1
-      [81] invokevirtual #59
+      [81] invokevirtual #60
         + Methodref [android/preference/ListPreference.getEntries ()[Ljava/lang/CharSequence;]
       [84] aload_1 v1
       [85] aload_2 v2
-      [86] checkcast #39
+      [86] checkcast #40
         + Class [java/lang/String]
-      [89] invokevirtual #58
+      [89] invokevirtual #59
         + Methodref [android/preference/ListPreference.findIndexOfValue (Ljava/lang/String;)I]
       [92] aaload
-      [93] invokevirtual #63
+      [93] invokevirtual #64
         + Methodref [android/preference/ListPreference.setSummary (Ljava/lang/CharSequence;)V]
       [96] iconst_1
       [97] ireturn
@@ -6398,23 +6400,23 @@ Methods (count = 8):
     + Code attribute instructions (code length = 178, locals = 6, stack = 4):
       [0] aload_0 v0
       [1] aload_1 v1
-      [2] invokespecial #68
+      [2] invokespecial #69
         + Methodref [android/preference/PreferenceActivity.onCreate (Landroid/os/Bundle;)V]
       [5] aload_0 v0
       [6] ldc #4
         + Integer [2130903042]
-      [8] invokevirtual #70
+      [8] invokevirtual #71
         + Methodref [com/aragaer/jtt/Settings.addPreferencesFromResource (I)V]
       [11] aload_0 v0
       [12] ldc #16
         + String [jtt_locale]
-      [14] invokevirtual #71
+      [14] invokevirtual #72
         + Methodref [com/aragaer/jtt/Settings.findPreference (Ljava/lang/CharSequence;)Landroid/preference/Preference;]
       [17] checkcast #28
         + Class [android/preference/ListPreference]
       [20] dup
       [21] astore_1 v1
-      [22] invokevirtual #61
+      [22] invokevirtual #62
         + Methodref [android/preference/ListPreference.getEntryValues ()[Ljava/lang/CharSequence;]
       [25] dup
       [26] astore_2 v2
@@ -6427,7 +6429,7 @@ Methods (count = 8):
       [34] aload_0 v0
       [35] ldc #8
         + Integer [2131165217]
-      [37] invokevirtual #73
+      [37] invokevirtual #74
         + Methodref [com/aragaer/jtt/Settings.getString (I)Ljava/lang/String;]
       [40] aastore
       [41] iconst_1
@@ -6436,69 +6438,69 @@ Methods (count = 8):
       [46] aload_2 v2
       [47] arraylength
       [48] ificmpge +38 (target=86)
-      [51] new #41
+      [51] new #42
         + Class [java/util/Locale]
       [54] dup
       [55] aload_2 v2
       [56] iload v4
       [58] aaload
-      [59] invokeinterface #86
+      [59] invokeinterface #87
         + InterfaceMethodref [java/lang/CharSequence.toString ()Ljava/lang/String;]
-      [64] invokespecial #82
+      [64] invokespecial #83
         + Methodref [java/util/Locale.<init> (Ljava/lang/String;)V]
       [67] astore v5
       [69] aload_3 v3
       [70] iload v4
       [72] aload v5
       [74] aload v5
-      [76] invokevirtual #83
+      [76] invokevirtual #84
         + Methodref [java/util/Locale.getDisplayLanguage (Ljava/util/Locale;)Ljava/lang/String;]
       [79] aastore
       [80] iinc v4, 1
       [83] goto -39 (target=44)
       [86] aload_1 v1
       [87] aload_3 v3
-      [88] invokevirtual #62
+      [88] invokevirtual #63
         + Methodref [android/preference/ListPreference.setEntries ([Ljava/lang/CharSequence;)V]
       [91] aload_0 v0
       [92] ldc #18
         + String [jtt_stop]
-      [94] invokevirtual #71
+      [94] invokevirtual #72
         + Methodref [com/aragaer/jtt/Settings.findPreference (Ljava/lang/CharSequence;)Landroid/preference/Preference;]
       [97] aload_0 v0
-      [98] invokevirtual #66
+      [98] invokevirtual #67
         + Methodref [android/preference/Preference.setOnPreferenceClickListener (Landroid/preference/Preference$OnPreferenceClickListener;)V]
       [101] iconst_0
       [102] istore v4
       [104] iload v4
-      [106] getstatic #43
+      [106] getstatic #44
         + Fieldref [com/aragaer/jtt/Settings.a [Ljava/lang/String;]
       [109] arraylength
       [110] ificmpge +67 (target=177)
       [113] aload_0 v0
-      [114] getfield #44
+      [114] getfield #45
         + Fieldref [com/aragaer/jtt/Settings.b Ljava/util/Map;]
-      [117] getstatic #43
+      [117] getstatic #44
         + Fieldref [com/aragaer/jtt/Settings.a [Ljava/lang/String;]
       [120] iload v4
       [122] aaload
       [123] iload v4
-      [125] invokestatic #79
+      [125] invokestatic #80
         + Methodref [java/lang/Integer.valueOf (I)Ljava/lang/Integer;]
-      [128] invokeinterface #88
+      [128] invokeinterface #89
         + InterfaceMethodref [java/util/Map.put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;]
       [133] pop
       [134] aload_0 v0
-      [135] getstatic #43
+      [135] getstatic #44
         + Fieldref [com/aragaer/jtt/Settings.a [Ljava/lang/String;]
       [138] iload v4
       [140] aaload
-      [141] invokevirtual #71
+      [141] invokevirtual #72
         + Methodref [com/aragaer/jtt/Settings.findPreference (Ljava/lang/CharSequence;)Landroid/preference/Preference;]
       [144] dup
       [145] astore v5
       [147] aload_0 v0
-      [148] invokevirtual #65
+      [148] invokevirtual #66
         + Methodref [android/preference/Preference.setOnPreferenceChangeListener (Landroid/preference/Preference$OnPreferenceChangeListener;)V]
       [151] aload v5
       [153] instanceof #28
@@ -6508,9 +6510,9 @@ Methods (count = 8):
       [161] checkcast #28
         + Class [android/preference/ListPreference]
       [164] dup
-      [165] invokevirtual #60
+      [165] invokevirtual #61
         + Methodref [android/preference/ListPreference.getEntry ()Ljava/lang/CharSequence;]
-      [168] invokevirtual #63
+      [168] invokevirtual #64
         + Methodref [android/preference/ListPreference.setSummary (Ljava/lang/CharSequence;)V]
       [171] iinc v4, 1
       [174] goto -70 (target=104)
@@ -6526,27 +6528,27 @@ Methods (count = 8):
         + Class [android/app/AlertDialog$Builder]
       [3] dup
       [4] aload_0 v0
-      [5] invokespecial #48
+      [5] invokespecial #49
         + Methodref [android/app/AlertDialog$Builder.<init> (Landroid/content/Context;)V]
       [8] ldc #6
         + Integer [2131165201]
-      [10] invokevirtual #52
+      [10] invokevirtual #53
         + Methodref [android/app/AlertDialog$Builder.setTitle (I)Landroid/app/AlertDialog$Builder;]
       [13] ldc #7
         + Integer [2131165203]
-      [15] invokevirtual #49
+      [15] invokevirtual #50
         + Methodref [android/app/AlertDialog$Builder.setMessage (I)Landroid/app/AlertDialog$Builder;]
       [18] ldc #3
         + Integer [17039379]
       [20] aload_0 v0
-      [21] invokevirtual #51
+      [21] invokevirtual #52
         + Methodref [android/app/AlertDialog$Builder.setPositiveButton (ILandroid/content/DialogInterface$OnClickListener;)Landroid/app/AlertDialog$Builder;]
       [24] ldc #2
         + Integer [17039369]
       [26] aload_0 v0
-      [27] invokevirtual #50
+      [27] invokevirtual #51
         + Methodref [android/app/AlertDialog$Builder.setNegativeButton (ILandroid/content/DialogInterface$OnClickListener;)Landroid/app/AlertDialog$Builder;]
-      [30] invokevirtual #53
+      [30] invokevirtual #54
         + Methodref [android/app/AlertDialog$Builder.show ()Landroid/app/AlertDialog;]
       [33] pop
       [34] iconst_0
@@ -6568,23 +6570,23 @@ Methods (count = 8):
       [10] aload_0 v0
       [11] ldc #34
         + Class [com/aragaer/jtt/JttService]
-      [13] invokespecial #55
+      [13] invokespecial #56
         + Methodref [android/content/Intent.<init> (Landroid/content/Context;Ljava/lang/Class;)V]
       [16] ldc #13
         + String [com.aragaer.jtt.action.SERVICE_STOP]
-      [18] invokevirtual #57
+      [18] invokevirtual #58
         + Methodref [android/content/Intent.setAction (Ljava/lang/String;)Landroid/content/Intent;]
-      [21] invokevirtual #75
+      [21] invokevirtual #76
         + Methodref [com/aragaer/jtt/Settings.startService (Landroid/content/Intent;)Landroid/content/ComponentName;]
       [24] pop
       [25] aload_0 v0
-      [26] invokevirtual #72
+      [26] invokevirtual #73
         + Methodref [com/aragaer/jtt/Settings.getParent ()Landroid/app/Activity;]
-      [29] invokevirtual #46
+      [29] invokevirtual #47
         + Methodref [android/app/Activity.finish ()V]
       [32] return
       [33] aload_1 v1
-      [34] invokeinterface #84
+      [34] invokeinterface #85
         + InterfaceMethodref [android/content/DialogInterface.cancel ()V]
       [39] return
       Code attribute exceptions (count = 0):
@@ -6593,19 +6595,19 @@ Methods (count = 8):
     Access flags: 0x9
       = public static float[] a(android.content.Context)
     Class member attributes (count = 1):
-    + Code attribute instructions (code length = 41, locals = 1, stack = 5):
+    + Code attribute instructions (code length = 54, locals = 1, stack = 5):
       [0] aload_0 v0
-      [1] invokestatic #69
+      [1] invokestatic #70
         + Methodref [android/preference/PreferenceManager.getDefaultSharedPreferences (Landroid/content/Context;)Landroid/content/SharedPreferences;]
       [4] ldc #15
         + String [jtt_loc]
       [6] ldc #11
         + String [0.0:0.0]
-      [8] invokeinterface #85
+      [8] invokeinterface #86
         + InterfaceMethodref [android/content/SharedPreferences.getString (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;]
       [13] ldc #12
         + String [:]
-      [15] invokevirtual #80
+      [15] invokevirtual #81
         + Methodref [java/lang/String.split (Ljava/lang/String;)[Ljava/lang/String;]
       [18] astore_0 v0
       [19] iconst_2
@@ -6615,7 +6617,7 @@ Methods (count = 8):
       [24] aload_0 v0
       [25] iconst_0
       [26] aaload
-      [27] invokestatic #76
+      [27] invokestatic #77
         + Methodref [java/lang/Float.parseFloat (Ljava/lang/String;)F]
       [30] fastore
       [31] dup
@@ -6623,38 +6625,60 @@ Methods (count = 8):
       [33] aload_0 v0
       [34] iconst_1
       [35] aaload
-      [36] invokestatic #76
+      [36] invokestatic #77
         + Methodref [java/lang/Float.parseFloat (Ljava/lang/String;)F]
       [39] fastore
       [40] areturn
-      Code attribute exceptions (count = 0):
+      [41] pop
+      [42] iconst_2
+      [43] newarray 6
+      [45] dup
+      [46] iconst_0
+      [47] fconst_0
+      [48] fastore
+      [49] dup
+      [50] iconst_1
+      [51] fconst_0
+      [52] fastore
+      [53] areturn
+      Code attribute exceptions (count = 1):
+      - ExceptionInfo (19 -> 40: 41):
+      + Class [java/lang/NumberFormatException]
       Code attribute attributes (attribute count = 0):
   + Method:       b(Landroid/content/Context;)I
     Access flags: 0x19
       = public static final int b(android.content.Context)
     Class member attributes (count = 1):
-    + Code attribute instructions (code length = 27, locals = 1, stack = 4):
+    + Code attribute instructions (code length = 34, locals = 1, stack = 4):
       [0] aload_0 v0
-      [1] invokestatic #69
+      [1] invokestatic #70
         + Methodref [android/preference/PreferenceManager.getDefaultSharedPreferences (Landroid/content/Context;)Landroid/content/SharedPreferences;]
       [4] ldc #19
         + String [jtt_theme]
       [6] aload_0 v0
       [7] ldc #5
         + Integer [2131165185]
-      [9] invokevirtual #54
+      [9] invokevirtual #55
         + Methodref [android/content/Context.getString (I)Ljava/lang/String;]
-      [12] invokeinterface #85
+      [12] invokeinterface #86
         + InterfaceMethodref [android/content/SharedPreferences.getString (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;]
       [17] astore_0 v0
-      [18] getstatic #45
+      [18] getstatic #46
         + Fieldref [com/aragaer/jtt/Settings.c [I]
       [21] aload_0 v0
-      [22] invokestatic #78
+      [22] invokestatic #79
         + Methodref [java/lang/Integer.parseInt (Ljava/lang/String;)I]
       [25] iaload
       [26] ireturn
-      Code attribute exceptions (count = 0):
+      [27] pop
+      [28] getstatic #46
+        + Fieldref [com/aragaer/jtt/Settings.c [I]
+      [31] iconst_0
+      [32] iaload
+      [33] ireturn
+      Code attribute exceptions (count = 1):
+      - ExceptionInfo (18 -> 26: 27):
+      + Class [java/lang/NumberFormatException]
       Code attribute attributes (attribute count = 0):
   - Method:       <clinit>()V
     Access flags: 0x8
@@ -6662,7 +6686,7 @@ Methods (count = 8):
     Class member attributes (count = 1):
     + Code attribute instructions (code length = 55, locals = 0, stack = 4):
       [0] bipush 6
-      [2] anewarray #39
+      [2] anewarray #40
         + Class [java/lang/String]
       [5] dup
       [6] iconst_0
@@ -6694,7 +6718,7 @@ Methods (count = 8):
       [32] ldc #14
         + String [jtt_hname]
       [34] aastore
-      [35] putstatic #43
+      [35] putstatic #44
         + Fieldref [com/aragaer/jtt/Settings.a [Ljava/lang/String;]
       [38] iconst_2
       [39] newarray 10
@@ -6708,7 +6732,7 @@ Methods (count = 8):
       [48] ldc #9
         + Integer [2131296256]
       [50] iastore
-      [51] putstatic #45
+      [51] putstatic #46
         + Fieldref [com/aragaer/jtt/Settings.c [I]
       [54] return
       Code attribute exceptions (count = 0):
@@ -6727,7 +6751,7 @@ _____________________________________________________________________
 Interfaces (count = 1):
   + Class [com/aragaer/jtt/o]
 
-Constant Pool (count = 141):
+Constant Pool (count = 144):
   + Integer [2131165205]
   + Integer [2131165206]
   + Integer [2131165207]
@@ -6773,6 +6797,7 @@ Constant Pool (count = 141):
   + Methodref [com/aragaer/jtt/m.add (Ljava/lang/Object;)V]
   + Methodref [com/aragaer/jtt/m.clear ()V]
   + Methodref [com/aragaer/jtt/m.getContext ()Landroid/content/Context;]
+  + Methodref [com/aragaer/jtt/m.getCount ()I]
   + Methodref [com/aragaer/jtt/m.getItem (I)Ljava/lang/Object;]
   + Methodref [com/aragaer/jtt/m.notifyDataSetChanged ()V]
   + Methodref [com/aragaer/jtt/m.setNotifyOnChange (Z)V]
@@ -6795,6 +6820,7 @@ Constant Pool (count = 141):
   + NameAndType [clear ()V]
   + NameAndType [currentTimeMillis ()J]
   + NameAndType [getContext ()Landroid/content/Context;]
+  + NameAndType [getCount ()I]
   + NameAndType [getItem (I)Ljava/lang/Object;]
   + NameAndType [getString (I)Ljava/lang/String;]
   + NameAndType [notifyDataSetChanged ()V]
@@ -6853,6 +6879,7 @@ Constant Pool (count = 141):
   + Utf8 [com/aragaer/jtt/o]
   + Utf8 [currentTimeMillis]
   + Utf8 [getContext]
+  + Utf8 [getCount]
   + Utf8 [getItem]
   + Utf8 [getItemViewType]
   + Utf8 [getString]
@@ -6983,7 +7010,7 @@ Methods (count = 7):
         + Fieldref [com/aragaer/jtt/c.a [Ljava/lang/String;]
       [120] aload_0 v0
       [121] iconst_0
-      [122] invokevirtual #50
+      [122] invokevirtual #51
         + Methodref [com/aragaer/jtt/m.setNotifyOnChange (Z)V]
       [125] return
       Code attribute exceptions (count = 0):
@@ -6995,7 +7022,7 @@ Methods (count = 7):
     + Code attribute instructions (code length = 23, locals = 4, stack = 5):
       [0] aload_0 v0
       [1] iload_1 v1
-      [2] invokevirtual #48
+      [2] invokevirtual #49
         + Methodref [com/aragaer/jtt/m.getItem (I)Ljava/lang/Object;]
       [5] checkcast #20
         + Class [com/aragaer/jtt/n]
@@ -7008,7 +7035,7 @@ Methods (count = 7):
         + Fieldref [com/aragaer/jtt/m.b I]
       [17] iload_1 v1
       [18] isub
-      [19] invokevirtual #51
+      [19] invokevirtual #52
         + Methodref [com/aragaer/jtt/n.a (Landroid/content/Context;Landroid/view/View;I)Landroid/view/View;]
       [22] areturn
       Code attribute exceptions (count = 0):
@@ -7017,8 +7044,8 @@ Methods (count = 7):
     Access flags: 0x11
       = public final void b()
     Class member attributes (count = 1):
-    + Code attribute instructions (code length = 271, locals = 10, stack = 9):
-      [0] invokestatic #52
+    + Code attribute instructions (code length = 293, locals = 10, stack = 9):
+      [0] invokestatic #53
         + Methodref [java/lang/System.currentTimeMillis ()J]
       [3] dup2
       [4] lstore_1 v1
@@ -7028,7 +7055,7 @@ Methods (count = 7):
       [9] iconst_1
       [10] laload
       [11] lcmp
-      [12] iflt +58 (target=70)
+      [12] iflt +80 (target=92)
       [15] lload_1 v1
       [16] aload_0 v0
       [17] getfield #30
@@ -7036,183 +7063,200 @@ Methods (count = 7):
       [20] iconst_2
       [21] laload
       [22] lcmp
-      [23] ifge +47 (target=70)
+      [23] ifge +69 (target=92)
       [26] aload_0 v0
-      [27] iconst_0
-      [28] putfield #31
-        + Fieldref [com/aragaer/jtt/m.b I]
-      [31] aload_0 v0
+      [27] invokevirtual #48
+        + Methodref [com/aragaer/jtt/m.getCount ()I]
+      [30] bipush 6
       [32] aload_0 v0
-      [33] getfield #31
+      [33] getfield #30
+        + Fieldref [com/aragaer/jtt/m.a [J]
+      [36] arraylength
+      [37] iconst_1
+      [38] isub
+      [39] imul
+      [40] iconst_1
+      [41] ishl
+      [42] iconst_1
+      [43] isub
+      [44] ificmpge +4 (target=48)
+      [47] return
+      [48] aload_0 v0
+      [49] iconst_0
+      [50] putfield #31
         + Fieldref [com/aragaer/jtt/m.b I]
-      [36] iconst_1
-      [37] iadd
-      [38] invokevirtual #48
+      [53] aload_0 v0
+      [54] aload_0 v0
+      [55] getfield #31
+        + Fieldref [com/aragaer/jtt/m.b I]
+      [58] iconst_1
+      [59] iadd
+      [60] invokevirtual #49
         + Methodref [com/aragaer/jtt/m.getItem (I)Ljava/lang/Object;]
-      [41] checkcast #20
+      [63] checkcast #20
         + Class [com/aragaer/jtt/n]
-      [44] getfield #32
+      [66] getfield #32
         + Fieldref [com/aragaer/jtt/n.b J]
-      [47] lload_1 v1
-      [48] lcmp
-      [49] ifge +16 (target=65)
-      [52] aload_0 v0
-      [53] dup
-      [54] getfield #31
+      [69] lload_1 v1
+      [70] lcmp
+      [71] ifge +16 (target=87)
+      [74] aload_0 v0
+      [75] dup
+      [76] getfield #31
         + Fieldref [com/aragaer/jtt/m.b I]
-      [57] iconst_2
-      [58] iadd
-      [59] putfield #31
+      [79] iconst_2
+      [80] iadd
+      [81] putfield #31
         + Fieldref [com/aragaer/jtt/m.b I]
-      [62] goto -31 (target=31)
-      [65] aload_0 v0
-      [66] invokevirtual #49
+      [84] goto -31 (target=53)
+      [87] aload_0 v0
+      [88] invokevirtual #50
         + Methodref [com/aragaer/jtt/m.notifyDataSetChanged ()V]
-      [69] return
-      [70] aload_0 v0
-      [71] invokevirtual #47
+      [91] return
+      [92] aload_0 v0
+      [93] invokevirtual #47
         + Methodref [com/aragaer/jtt/m.getContext ()Landroid/content/Context;]
-      [74] astore_3 v3
-      [75] aload_3 v3
-      [76] lload_1 v1
-      [77] aload_0 v0
-      [78] getfield #30
+      [96] astore_3 v3
+      [97] aload_3 v3
+      [98] lload_1 v1
+      [99] aload_0 v0
+      [100] getfield #30
         + Fieldref [com/aragaer/jtt/m.a [J]
-      [81] invokestatic #44
+      [103] invokestatic #44
         + Methodref [com/aragaer/jtt/core/Calculator.a (Landroid/content/Context;J[J)Z]
-      [84] istore_1 v1
-      [85] aload_0 v0
-      [86] iload_1 v1
-      [87] istore_2 v2
-      [88] dup
-      [89] astore_1 v1
-      [90] invokevirtual #46
+      [106] istore_1 v1
+      [107] aload_0 v0
+      [108] iload_1 v1
+      [109] istore_2 v2
+      [110] dup
+      [111] astore_1 v1
+      [112] invokevirtual #46
         + Methodref [com/aragaer/jtt/m.clear ()V]
-      [93] iload_2 v2
-      [94] ifeq +7 (target=101)
-      [97] iconst_0
-      [98] goto +5 (target=103)
-      [101] bipush 6
-      [103] istore_2 v2
-      [104] aload_1 v1
-      [105] new #17
-        + Class [com/aragaer/jtt/c]
-      [108] dup
-      [109] aload_1 v1
-      [110] getfield #30
-        + Fieldref [com/aragaer/jtt/m.a [J]
-      [113] iconst_0
-      [114] laload
       [115] iload_2 v2
-      [116] invokespecial #43
-        + Methodref [com/aragaer/jtt/c.<init> (JI)V]
-      [119] invokevirtual #45
-        + Methodref [com/aragaer/jtt/m.add (Ljava/lang/Object;)V]
-      [122] iconst_1
-      [123] istore v4
-      [125] iload v4
-      [127] aload_1 v1
-      [128] getfield #30
-        + Fieldref [com/aragaer/jtt/m.a [J]
-      [131] arraylength
-      [132] ificmpge +113 (target=245)
-      [135] aload_1 v1
-      [136] getfield #30
-        + Fieldref [com/aragaer/jtt/m.a [J]
-      [139] iload v4
-      [141] iconst_1
-      [142] isub
-      [143] laload
-      [144] lstore v6
-      [146] aload_1 v1
-      [147] getfield #30
-        + Fieldref [com/aragaer/jtt/m.a [J]
-      [150] iload v4
-      [152] laload
-      [153] lload v6
-      [155] lsub
-      [156] lstore v8
-      [158] iconst_1
-      [159] istore v5
-      [161] iload v5
-      [163] bipush 6
-      [165] ificmpgt +69 (target=234)
-      [168] aload_1 v1
-      [169] new #14
-        + Class [com/aragaer/jtt/a]
-      [172] dup
-      [173] lload v6
-      [175] iload v5
-      [177] iconst_1
-      [178] ishl
-      [179] iconst_1
-      [180] isub
-      [181] i2l
-      [182] lload v8
-      [184] lmul
-      [185] ldc2_w #27
-        + Long [6]
-      [188] ldiv
-      [189] ldc2_w #25
-        + Long [2]
-      [192] ldiv
-      [193] ladd
-      [194] invokespecial #39
-        + Methodref [com/aragaer/jtt/a.<init> (J)V]
-      [197] invokevirtual #45
-        + Methodref [com/aragaer/jtt/m.add (Ljava/lang/Object;)V]
-      [200] aload_1 v1
-      [201] new #17
+      [116] ifeq +7 (target=123)
+      [119] iconst_0
+      [120] goto +5 (target=125)
+      [123] bipush 6
+      [125] istore_2 v2
+      [126] aload_1 v1
+      [127] new #17
         + Class [com/aragaer/jtt/c]
-      [204] dup
-      [205] lload v6
-      [207] iload v5
-      [209] i2l
-      [210] lload v8
-      [212] lmul
-      [213] ldc2_w #27
-        + Long [6]
-      [216] ldiv
-      [217] ladd
-      [218] iload_2 v2
-      [219] iload v5
-      [221] iadd
-      [222] invokespecial #43
+      [130] dup
+      [131] aload_1 v1
+      [132] getfield #30
+        + Fieldref [com/aragaer/jtt/m.a [J]
+      [135] iconst_0
+      [136] laload
+      [137] iload_2 v2
+      [138] invokespecial #43
         + Methodref [com/aragaer/jtt/c.<init> (JI)V]
-      [225] invokevirtual #45
+      [141] invokevirtual #45
         + Methodref [com/aragaer/jtt/m.add (Ljava/lang/Object;)V]
-      [228] iinc v5, 1
-      [231] goto -70 (target=161)
-      [234] bipush 6
-      [236] iload_2 v2
-      [237] isub
-      [238] istore_2 v2
-      [239] iinc v4, 1
-      [242] goto -117 (target=125)
-      [245] return
-      [246] pop
-      [247] ldc #7
+      [144] iconst_1
+      [145] istore v4
+      [147] iload v4
+      [149] aload_1 v1
+      [150] getfield #30
+        + Fieldref [com/aragaer/jtt/m.a [J]
+      [153] arraylength
+      [154] ificmpge +113 (target=267)
+      [157] aload_1 v1
+      [158] getfield #30
+        + Fieldref [com/aragaer/jtt/m.a [J]
+      [161] iload v4
+      [163] iconst_1
+      [164] isub
+      [165] laload
+      [166] lstore v6
+      [168] aload_1 v1
+      [169] getfield #30
+        + Fieldref [com/aragaer/jtt/m.a [J]
+      [172] iload v4
+      [174] laload
+      [175] lload v6
+      [177] lsub
+      [178] lstore v8
+      [180] iconst_1
+      [181] istore v5
+      [183] iload v5
+      [185] bipush 6
+      [187] ificmpgt +69 (target=256)
+      [190] aload_1 v1
+      [191] new #14
+        + Class [com/aragaer/jtt/a]
+      [194] dup
+      [195] lload v6
+      [197] iload v5
+      [199] iconst_1
+      [200] ishl
+      [201] iconst_1
+      [202] isub
+      [203] i2l
+      [204] lload v8
+      [206] lmul
+      [207] ldc2_w #27
+        + Long [6]
+      [210] ldiv
+      [211] ldc2_w #25
+        + Long [2]
+      [214] ldiv
+      [215] ladd
+      [216] invokespecial #39
+        + Methodref [com/aragaer/jtt/a.<init> (J)V]
+      [219] invokevirtual #45
+        + Methodref [com/aragaer/jtt/m.add (Ljava/lang/Object;)V]
+      [222] aload_1 v1
+      [223] new #17
+        + Class [com/aragaer/jtt/c]
+      [226] dup
+      [227] lload v6
+      [229] iload v5
+      [231] i2l
+      [232] lload v8
+      [234] lmul
+      [235] ldc2_w #27
+        + Long [6]
+      [238] ldiv
+      [239] ladd
+      [240] iload_2 v2
+      [241] iload v5
+      [243] iadd
+      [244] invokespecial #43
+        + Methodref [com/aragaer/jtt/c.<init> (JI)V]
+      [247] invokevirtual #45
+        + Methodref [com/aragaer/jtt/m.add (Ljava/lang/Object;)V]
+      [250] iinc v5, 1
+      [253] goto -70 (target=183)
+      [256] bipush 6
+      [258] iload_2 v2
+      [259] isub
+      [260] istore_2 v2
+      [261] iinc v4, 1
+      [264] goto -117 (target=147)
+      [267] return
+      [268] pop
+      [269] ldc #7
         + String [JTT TODAY]
-      [249] ldc #6
+      [271] ldc #6
         + String [Content provider has no location]
-      [251] invokestatic #36
+      [273] invokestatic #36
         + Methodref [android/util/Log.w (Ljava/lang/String;Ljava/lang/String;)I]
-      [254] pop
-      [255] aload_3 v3
-      [256] new #9
+      [276] pop
+      [277] aload_3 v3
+      [278] new #9
         + Class [android/content/Intent]
-      [259] dup
-      [260] aload_3 v3
-      [261] ldc #13
+      [281] dup
+      [282] aload_3 v3
+      [283] ldc #13
         + Class [com/aragaer/jtt/JttService]
-      [263] invokespecial #35
+      [285] invokespecial #35
         + Methodref [android/content/Intent.<init> (Landroid/content/Context;Ljava/lang/Class;)V]
-      [266] invokevirtual #34
+      [288] invokevirtual #34
         + Methodref [android/content/Context.startService (Landroid/content/Intent;)Landroid/content/ComponentName;]
-      [269] pop
-      [270] return
+      [291] pop
+      [292] return
       Code attribute exceptions (count = 1):
-      - ExceptionInfo (75 -> 245: 246):
+      - ExceptionInfo (97 -> 267: 268):
       + Class [java/lang/IllegalStateException]
       Code attribute attributes (attribute count = 0):
   + Method:       isEnabled(I)Z
@@ -7230,7 +7274,7 @@ Methods (count = 7):
     Class member attributes (count = 1):
     + Code attribute instructions (code length = 5, locals = 1, stack = 1):
       [0] aload_0 v0
-      [1] invokevirtual #49
+      [1] invokevirtual #50
         + Methodref [com/aragaer/jtt/m.notifyDataSetChanged ()V]
       [4] return
       Code attribute exceptions (count = 0):

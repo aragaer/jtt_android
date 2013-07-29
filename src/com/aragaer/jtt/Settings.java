@@ -98,7 +98,11 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 				.getDefaultSharedPreferences(context)
 				.getString(PREF_LOCATION, LocationPreference.DEFAULT)
 				.split(":");
-		return new float[] { Float.parseFloat(ll[0]), Float.parseFloat(ll[1]) };
+		try {
+			return new float[] { Float.parseFloat(ll[0]), Float.parseFloat(ll[1]) };
+		} catch (NumberFormatException e) {
+			return new float[] { 0, 0 };
+		}
 	}
 
 	static final int themes[] = {R.style.JTTTheme, R.style.DarkTheme};
@@ -106,6 +110,10 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		String theme = PreferenceManager
 				.getDefaultSharedPreferences(context)
 				.getString("jtt_theme", context.getString(R.string.theme_default));
-		return themes[Integer.parseInt(theme)];
+		try {
+			return themes[Integer.parseInt(theme)];
+		} catch (NumberFormatException e) {
+			return themes[0];
+		}
 	}
 }
