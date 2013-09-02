@@ -5,11 +5,16 @@
     android:versionName="1.4.4.1" >
 
     <uses-sdk android:minSdkVersion="6"
-        android:targetSdkVersion="17"/>
+        android:targetSdkVersion="18"/>
+
+    <permission android:name="com.aragaer.jtt.permission.CLOCK"
+	    android:protectionLevel="signature" />
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <uses-permission android:name="com.aragaer.jtt.permission.CLOCK" />
 
     <application
         android:allowBackup="true"
@@ -70,6 +75,7 @@
             </intent-filter>
         </receiver>
         <provider android:name=".core.Calculator"
-            android:authorities="com.aragaer.jtt.provider.calculator" />
+            android:authorities="com.aragaer.jtt.provider.calculator"
+            android:permission="com.aragaer.jtt.permission.CLOCK" />
     </application>
 </manifest>
