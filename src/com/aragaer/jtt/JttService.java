@@ -2,13 +2,9 @@ package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.Calculator;
 import com.aragaer.jtt.core.Clockwork;
-import com.aragaer.jtt.resources.RuntimeResources;
-import com.aragaer.jtt.resources.StringResources;
-import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
 
 import android.app.Service;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;

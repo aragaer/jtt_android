@@ -1,19 +1,11 @@
 package com.aragaer.jtt.core;
 
-import java.util.Calendar;
-import java.util.TimeZone;
-
-import com.aragaer.jtt.Settings;
-import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
-import com.luckycatlabs.sunrisesunset.dto.Location;
-
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.util.Log;
 
 public class Clockwork extends IntentService {
