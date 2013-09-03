@@ -1,6 +1,7 @@
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.today.TodayAdapter;
 
 import android.app.ActivityGroup;
 import android.content.BroadcastReceiver;

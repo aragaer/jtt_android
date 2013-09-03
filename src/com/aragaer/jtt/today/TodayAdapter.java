@@ -1,5 +1,7 @@
-package com.aragaer.jtt;
+package com.aragaer.jtt.today;
 
+import com.aragaer.jtt.JttService;
+import com.aragaer.jtt.R;
 import com.aragaer.jtt.core.Calculator;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.resources.RuntimeResources;
@@ -13,17 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-/* A single item in TodayList */
-abstract class TodayItem {
-	public final long time;
-	abstract public View toView(Context c, View convert,
-		int sel_p_diff /* difference from selected position */);
-
-	public TodayItem(long t) {
-		time = t;
-	}
-}
 
 /* Hour item in TodayList */
 class HourItem extends TodayItem {
@@ -123,7 +114,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 
 		if (now >= transitions[1] && now < transitions[2]) {
 			// check that items are built
-			// expect 35 items
+			// expect 37 items
 			if (getCount() < Hour.HOURS * (transitions.length - 1) * 2 - 1)
 				// transitions are set but items aren't built
 				// this means we're currently in the build process
