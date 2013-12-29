@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Традиционное Японское Время</string>
-    <string name="auto_lat_long">Использовать текущее</string>
+    <string name="auto_lat_long">Использовать текущие</string>
     <string name="location">Координаты</string>
     <string name="location_ex">Изменить сохраненные координаты</string>
     <string name="latitude">Широта</string>
@@ -27,7 +27,7 @@
     <string name="hour_names">Названия часов</string>
 
     <string-array name="hour_name_option_names">
-        <item>По-умолчанию</item>
+        <item>По умолчанию</item>
         <item>Ромадзи</item>
         <item>Хирагана</item>
     </string-array>
@@ -77,7 +77,7 @@
     <string name="locale_default">Язык системы</string>
 
     <string-array name="theme_names">
-        <item>Полурозрачный</item>
+        <item>Полупрозрачный</item>
         <item>Темный</item>
     </string-array>
 

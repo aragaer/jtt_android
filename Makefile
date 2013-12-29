@@ -23,6 +23,13 @@ bin/$(APP_NAME)-release-unsigned.apk: $(JAVA_FILES)
 
 release: bin/$(APP_NAME)-release.apk
 
+configure:
+	-rm build.xml
+	$(MAKE) build.xml
+
+build.xml:
+	$(TOOLS)/android update project -p . -n $(APP_NAME)
+
 clean:
 	ant clean
 

@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">和時計</string>
+    <string name="auto_lat_long">今の座標を使用</string>
+    <string name="location">座標</string>
+    <string name="location_ex">座標を変更</string>
+    <string name="latitude">緯度</string>
+    <string name="longitude">経度</string>
+    <string name="clock">時計</string>
+    <string name="settings">設定</string>
+    <string name="srv_fail">サービスが停止した</string>
+    <string name="srv_fail_ex">サービスの再起動にはタップ</string>
+    <string name="bootup">自動起動</string>
+    <string name="bootup_ex">デバイスを起動時に自動的に開始</string>
+    <string name="notify">通知</string>
+    <string name="notify_ex">今の刻をステータスバーで表示</string>
+    <string name="status">起動と通知</string>
+    <string name="stop">サービスを停止</string>
+    <string name="stop_ex">サービスを停止が、アプリを閉鎖にはタップ</string>
+    <string name="stop_ask">サービスは停止されます、アプリは閉鎖されます。サービスは次開始の時起動時に自動的に開始\n\n続しますか？</string>
+    <string name="today">今日</string>
+    <string name="sunrise">日出</string>
+    <string name="sunset">日没</string>
+    <string name="noon">正午</string>
+    <string name="midnight">真夜中</string>
+    <string name="hour_names">刻の名前</string>
+
+    <string-array name="hour_name_option_names">
+        <item>デフォルト</item>
+        <item>ローマ字</item>
+        <item>平仮名</item>
+    </string-array>
+
+    <string-array name="hour">
+        <item>酉</item>
+        <item>戌</item>
+        <item>亥</item>
+        <item>子</item>
+        <item>丑</item>
+        <item>寅</item>
+        <item>卯</item>
+        <item>辰</item>
+        <item>巳</item>
+        <item>午</item>
+        <item>未</item>
+        <item>申</item>
+    </string-array>
+    <string-array name="hour_of">
+        <item>酉の刻</item>
+        <item>戌の刻</item>
+        <item>亥の刻</item>
+        <item>子の刻</item>
+        <item>丑の刻</item>
+        <item>寅の刻</item>
+        <item>卯の刻</item>
+        <item>辰の刻</item>
+        <item>巳の刻</item>
+        <item>午の刻</item>
+        <item>未の刻</item>
+        <item>申の刻</item>
+    </string-array>
+    <string-array name="quarter">
+        <item>一つ時</item>
+        <item>二つ時</item>
+        <item>三つ時</item>
+        <item>四つ時</item>
+    </string-array>
+
+    <string name="appearance">外観</string>
+    <string name="no_providers">場所の取得に失敗しました。GPSを有効ください</string>
+    <string name="widget1">JTT:１刻</string>
+    <string name="widget12">JTT:文字盤</string>
+    <string name="widget_invert">ウィジェットのテキストの色を反転</string>
+    <string name="widget_invert_ex">境界線黒の白いテキストとを使用</string>
+    <string name="locale">言語</string>
+    <string name="locale_default">デフォルト</string>
+
+    <string-array name="theme_names">
+        <item>半透明</item>
+        <item>暗い</item>
+    </string-array>
+
+    <string name="pref_theme">スタイル</string>
+</resources>
