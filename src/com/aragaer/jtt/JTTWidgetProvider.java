@@ -165,10 +165,10 @@ class WidgetPainter1 implements WidgetPainter {
 		path2.arcTo(outer, -90, angle - 360);
 		path2.arcTo(inner, angle - 90, 360 - angle);
 
-		c.drawPath(path1, paints.solid1);
-		c.drawPath(path2, paints.solid2);
-		c.drawPath(path1, paints.stroke1);
-		c.drawPath(path2, paints.stroke1);
+		c.drawPath(path1, paints.day_fill);
+		c.drawPath(path2, paints.night_fill);
+		c.drawPath(path1, paints.wadokei_stroke);
+		c.drawPath(path2, paints.wadokei_stroke);
 
 		rv.setImageViewBitmap(R.id.clock, bmp);
 		rv.setTextViewText(R.id.glyph, Hour.Glyphs[h.num]);
@@ -178,7 +178,7 @@ class WidgetPainter1 implements WidgetPainter {
 		if (paints != null)
 			return;
 
-		paints = Paints.getInstance(ctx);
+		paints = Paints.forWidget(ctx);
 		final float scale = ctx.getResources().getDisplayMetrics().density;
 		bmp = Bitmap.createBitmap((int) (80 * scale), (int) (80 * scale), Bitmap.Config.ARGB_4444);
 		c.setBitmap(bmp);
@@ -210,7 +210,7 @@ class WidgetPainter12 implements WidgetPainter {
 		if (sr != null)
 			return;
 		sr = RuntimeResources.get(c).getInstance(StringResources.class);
-		wd = new WadokeiDraw(c);
+		wd = new WadokeiDraw(c, Paints.forWidget(c));
 		size = Math.round(110 * c.getResources().getDisplayMetrics().density);
 
 		bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_4444);

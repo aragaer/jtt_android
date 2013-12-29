@@ -14,7 +14,7 @@ import android.graphics.RectF;
 public class WadokeiDraw {
 	private final static int step = 360 / 12;
 	private final static float gap = 1.5f;
-	private final Paint cache_paint = new Paint(0x07), stroke, solid;
+	private final Paint cache_paint = new Paint(0x07);
 	private final Matrix matrix = new Matrix();
 
 	private final Paints paints;
@@ -22,10 +22,8 @@ public class WadokeiDraw {
 			sun_stages = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444),
 			glyphs = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444);
 
-	public WadokeiDraw(Context context) {
-		paints = Paints.getInstance(context);
-		stroke = new Paint(paints.stroke1);
-		solid = new Paint(paints.solid2);
+	public WadokeiDraw(Context context, Paints paints) {
+		this.paints = paints;
 	}
 
 	private int size, iR;
@@ -34,8 +32,8 @@ public class WadokeiDraw {
 		size = new_size;
 		iR = size * 4 / 9;
 
-		stroke.setTextSize(iR / 3);
-		solid.setTextSize(iR / 3);
+		paints.glyph_stroke.setTextSize(iR / 3);
+		paints.glyph_fill.setTextSize(iR / 3);
 
 		prepare_sun_stages();
 		prepare_dial();
@@ -55,21 +53,21 @@ public class WadokeiDraw {
 
 		final Canvas canvas = new Canvas(sun_stages);
 
-		canvas.drawArc(sun, 0, 360, false, paints.solid1);
-		canvas.drawArc(sun, 0, 360, false, paints.stroke1);
+		canvas.drawArc(sun, 0, 360, false, paints.day_fill);
+		canvas.drawArc(sun, 0, 360, false, paints.wadokei_stroke);
 		canvas.rotate(90, iR, iR);
-		canvas.drawArc(sun, 0, 180, false, paints.solid1);
-		canvas.drawArc(sun, 180, 180, false, paints.solid2);
-		canvas.drawArc(sun, 0, 360, false, paints.stroke1);
-		canvas.drawLine(sun.left, iR, sun.right, iR, paints.stroke1);
+		canvas.drawArc(sun, 0, 180, false, paints.day_fill);
+		canvas.drawArc(sun, 180, 180, false, paints.night_fill);
+		canvas.drawArc(sun, 0, 360, false, paints.wadokei_stroke);
+		canvas.drawLine(sun.left, iR, sun.right, iR, paints.wadokei_stroke);
 		canvas.rotate(90, iR, iR);
-		canvas.drawArc(sun, 0, 360, false, paints.solid2);
-		canvas.drawArc(sun, 0, 360, false, paints.stroke1);
+		canvas.drawArc(sun, 0, 360, false, paints.night_fill);
+		canvas.drawArc(sun, 0, 360, false, paints.wadokei_stroke);
 		canvas.rotate(90, iR, iR);
-		canvas.drawArc(sun, 180, 180, false, paints.solid1);
-		canvas.drawArc(sun, 0, 180, false, paints.solid2);
-		canvas.drawArc(sun, 0, 360, false, paints.stroke1);
-		canvas.drawLine(sun.left, iR, sun.right, iR, paints.stroke1);
+		canvas.drawArc(sun, 180, 180, false, paints.day_fill);
+		canvas.drawArc(sun, 0, 180, false, paints.night_fill);
+		canvas.drawArc(sun, 0, 360, false, paints.wadokei_stroke);
+		canvas.drawLine(sun.left, iR, sun.right, iR, paints.wadokei_stroke);
 	}
 
 	public void prepare_dial() {
@@ -88,8 +86,8 @@ public class WadokeiDraw {
 		path.arcTo(sel, arc_end, -arc_len);
 		path.close();
 
-		canvas.drawPath(path, paints.solid1);
-		canvas.drawPath(path, paints.stroke1);
+		canvas.drawPath(path, paints.wadokei_fill);
+		canvas.drawPath(path, paints.wadokei_stroke);
 
 		path.reset();
 		path.addArc(inner, arc_start, arc_len);
@@ -98,8 +96,8 @@ public class WadokeiDraw {
 
 		for (int hr = 1; hr < 12; hr++) {
 			canvas.rotate(step, size, size);
-			canvas.drawPath(path, paints.solid1);
-			canvas.drawPath(path, paints.stroke1);
+			canvas.drawPath(path, paints.wadokei_fill);
+			canvas.drawPath(path, paints.wadokei_stroke);
 		}
 	}
 
@@ -113,8 +111,8 @@ public class WadokeiDraw {
 
 		for (int hr = 0; hr < 12; hr++) {
 			final int glyph_y = hr == num ? y_s : y;
-			canvas.drawText(Hour.Glyphs[hr], center, glyph_y, solid);
-			canvas.drawText(Hour.Glyphs[hr], center, glyph_y, stroke);
+			canvas.drawText(Hour.Glyphs[hr], center, glyph_y, paints.glyph_fill);
+			canvas.drawText(Hour.Glyphs[hr], center, glyph_y, paints.glyph_stroke);
 			canvas.rotate(step, center, center);
 		}
 	}

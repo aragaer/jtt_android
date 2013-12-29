@@ -2,6 +2,7 @@ package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.graphics.ArrowView;
+import com.aragaer.jtt.graphics.Paints;
 import com.aragaer.jtt.graphics.WadokeiView;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
@@ -25,8 +26,9 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 		super(context);
 		sr = RuntimeResources.get(context).getInstance(StringResources.class);
 		sr.registerStringResourceChangeListener(this, StringResources.TYPE_HOUR_NAME);
-		wadokei = new WadokeiView(context);
-		arrow = new ArrowView(context);
+		final Paints paints = Paints.forApplication(context);
+		wadokei = new WadokeiView(context, paints);
+		arrow = new ArrowView(context, paints);
 		text = new TextView(context);
 
 		text.setTextColor(Color.WHITE);

@@ -10,9 +10,9 @@ public class WadokeiView extends View {
 	private final WadokeiDraw wd;
 	private final Hour hour = new Hour(0);
 
-	public WadokeiView(Context context) {
+	public WadokeiView(Context context, Paints paints) {
 		super(context);
-		wd = new WadokeiDraw(context);
+		wd = new WadokeiDraw(context, paints);
 	}
 
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {

@@ -8,9 +8,9 @@ import android.view.View;
 public class ArrowView extends View {
 	private final Paints paints;
 	private final Path path = new Path();
-	public ArrowView(Context context) {
+	public ArrowView(Context context, Paints paints) {
 		super(context);
-		paints = Paints.getInstance(context);
+		this.paints = paints;
 	}
 
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -22,7 +22,7 @@ public class ArrowView extends View {
 	}
 
 	protected void onDraw(Canvas canvas) {
-		canvas.drawPath(path, paints.solid1);
-		canvas.drawPath(path, paints.stroke1);
+		canvas.drawPath(path, paints.wadokei_fill);
+		canvas.drawPath(path, paints.wadokei_stroke);
 	}
 }
