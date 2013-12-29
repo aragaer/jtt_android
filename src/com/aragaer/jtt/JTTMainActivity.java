@@ -64,15 +64,8 @@ public class JTTMainActivity extends ActivityGroup {
 		super.onStart();
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		if (settings.getBoolean("jtt_first", true)) {
-			settings.edit().putBoolean("jtt_first", false).commit();
-			if (settings.contains("jtt_loc")) // it's already configured
-				return;
+		if (!settings.contains("jtt_loc")) // location is not set
 			pager.selectScreen(settings_tab);
-			PreferenceActivity pa = (PreferenceActivity) getLocalActivityManager()
-					.getActivity("settings");
-			((LocationPreference) pa.findPreference("jtt_loc")).showMe();
-		}
 	}
 
 	@Override

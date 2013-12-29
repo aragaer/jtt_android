@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -116,5 +117,14 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		} catch (NumberFormatException e) {
 			return themes[0];
 		}
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		SharedPreferences settings = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		if (!settings.contains("jtt_loc")) // location is not set
+			((LocationPreference) findPreference("jtt_loc")).showMe();
 	}
 }
