@@ -53,7 +53,7 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		for (int i = 1; i < llist.length; i++) {
 			final Locale l = new Locale(llist[i].toString());
 			final String name = l.getDisplayLanguage(l);
-			lnames[i] = name.substring(0, 1).toUpperCase() + name.substring(1);
+			lnames[i] = name.substring(0, 1).toUpperCase(l) + name.substring(1);
 		}
 		pref_locale.setEntries(lnames);
 
