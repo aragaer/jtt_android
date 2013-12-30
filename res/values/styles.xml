@@ -9,7 +9,6 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">15sp</item>
         <item name="android:radioButtonStyle">@style/JTTTabButton</item>
-        <item name="android:buttonStyle">@style/JTTButton</item>
     </style>
 
     <style name="JTTTheme" parent="DarkTheme">
@@ -20,14 +19,10 @@
         <item name="android:shadowRadius">0.5</item>
     </style>
 
-    <style name="JTTTabButton" parent="@style/JTTButton">
+    <style name="JTTTabButton" parent="@android:style/Widget.Button">
         <item name="android:textColor">@drawable/tab_text_selector</item>
         <item name="android:button">@null</item>
-    </style>
-
-    <style name="JTTButton" parent="@android:style/Widget.Button">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:background">@color/background</item>
+        <item name="android:background">@null</item>
         <item name="android:padding">5dp</item>
     </style>
 
@@ -46,11 +41,11 @@
     </style>
 
     <style name="DarkActionBar" parent="@style/Widget.AppCompat.ActionBar">
-        <item name="displayOptions"></item>
+        <item name="displayOptions">showCustom</item>
         <item name="background">@color/background</item>
-        <item name="backgroundStacked">@color/background</item>
-        <item name="backgroundSplit">@color/background</item>
-        <item name="android:height">30dp</item>
+        <item name="backgroundStacked">@null</item>
+        <item name="backgroundSplit">@null</item>
+        <item name="android:height">@dimen/ab_height</item>
     </style>
 
 </resources>

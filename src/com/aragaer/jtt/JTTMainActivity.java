@@ -3,7 +3,6 @@ package com.aragaer.jtt;
 import com.aragaer.jtt.core.Clockwork;
 import com.aragaer.jtt.today.TodayAdapter;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,13 +10,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-public class JTTMainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class JTTMainActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 	private ClockView clock;
-	private JTTPager pager;
 	private TodayAdapter today;
 
 	private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -38,17 +38,20 @@ public class JTTMainActivity extends Activity implements SharedPreferences.OnSha
 		super.onCreate(savedInstanceState);
 		startService(new Intent(this, JttService.class));
 
-		pager = new JTTPager(this);
+		final ViewPager pager = new ViewPager(this);
+		final ViewPagerAdapter pager_adapter = new ViewPagerAdapter(this, pager);
 
 		clock = new ClockView(this);
-		pager.addTab(clock, R.string.clock);
 
 		final ListView today_list = new ListView(this);
 		today = new TodayAdapter(this, 0);
 		today_list.setAdapter(today);
 		today_list.setDividerHeight(-getResources().getDimensionPixelSize(R.dimen.today_divider_neg));
-		pager.addTab(today_list, R.string.today);
 
+		pager_adapter.addView(clock, R.string.clock);
+		pager_adapter.addView(today_list, R.string.today);
+
+		pager.setAdapter(pager_adapter);
 		setContentView(pager);
 
 		registerReceiver(receiver, new IntentFilter(Clockwork.ACTION_JTT_TICK));

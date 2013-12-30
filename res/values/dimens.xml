@@ -7,4 +7,5 @@
     <dimen name="today_divider_neg">12dp</dimen>
     <dimen name="today_glyph_size">30dp</dimen>
     <dimen name="today_text_size">15sp</dimen>
+    <dimen name="ab_height">30dp</dimen>
 </resources>
