@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
      <color name="background">#25000000</color>
+     <color name="window_background">#60000000</color>
      <color name="tab">#AAAAAA</color>
      <color name="wadokei_stroke">#C0000000</color>
      <color name="wadokei_fill">#80ffffff</color>

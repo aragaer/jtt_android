@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="DarkTheme" parent="android:style/Theme.NoTitleBar">
+    <style name="BaseTheme" parent="@style/Theme.AppCompat">
+        <item name="actionBarStyle">@style/DarkActionBar</item>
+    </style>
+
+    <style name="DarkTheme" parent="BaseTheme">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">15sp</item>
         <item name="android:radioButtonStyle">@style/JTTTabButton</item>
         <item name="android:buttonStyle">@style/JTTButton</item>
     </style>
 
-    <style name="JTTTheme" parent="android:style/Theme.Wallpaper.NoTitleBar">
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.3</item>
-        <item name="android:textColor">@android:color/white</item>
+    <style name="JTTTheme" parent="DarkTheme">
+        <item name="android:windowBackground">@color/window_background</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
         <item name="android:shadowColor">@android:color/black</item>
         <item name="android:shadowRadius">0.5</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:radioButtonStyle">@style/JTTTabButton</item>
     </style>
 
     <style name="JTTTabButton" parent="@style/JTTButton">
@@ -43,15 +45,12 @@
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     </style>
 
-    <style name="DialogNoTitle" parent="android:Theme.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:shadowColor">#FF000000</item>
-        <item name="android:shadowRadius">0.5</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.3</item>
-        <item name="android:buttonStyle">@style/JTTButton</item>
+    <style name="DarkActionBar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="displayOptions"></item>
+        <item name="background">@color/background</item>
+        <item name="backgroundStacked">@color/background</item>
+        <item name="backgroundSplit">@color/background</item>
+        <item name="android:height">30dp</item>
     </style>
 
 </resources>

@@ -4,7 +4,7 @@
     android:versionCode="24"
     android:versionName="1.4.4.2" >
 
-    <uses-sdk android:minSdkVersion="6"
+    <uses-sdk android:minSdkVersion="7"
         android:targetSdkVersion="19"/>
 
     <permission android:name="com.aragaer.jtt.permission.CLOCK"
