@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.aragaer.jtt.R;
-import com.aragaer.jtt.Settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
