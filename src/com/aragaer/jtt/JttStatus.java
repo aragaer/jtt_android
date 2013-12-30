@@ -13,11 +13,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 public class JttStatus extends BroadcastReceiver implements StringResourceChangeListener {
-	private static final int APP_ID = 0,
-			flags_ongoing = Notification.FLAG_ONGOING_EVENT	| Notification.FLAG_NO_CLEAR;
+	private static final int APP_ID = 0;
 
 	private final Context context;
 	private final StringResources sr;
@@ -67,13 +67,8 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 	}
 
 	private void show() {
-		final Notification n = new Notification(R.drawable.notification_icon,
-				context.getString(R.string.app_name), System.currentTimeMillis());
-		final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notification);
-
-		n.flags = flags_ongoing;
-		n.iconLevel = h.num;
 		final int hf = h.quarter * Hour.QUARTER_PARTS + h.quarter_parts;
+		final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notification);
 
 		rv.setTextViewText(R.id.image, Hour.Glyphs[h.num]);
 		rv.setTextViewText(R.id.title, sr.getHrOf(h.num));
@@ -83,8 +78,13 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		rv.setTextViewText(R.id.start, sr.format_time(start));
 		rv.setTextViewText(R.id.end, sr.format_time(end));
 
-		n.contentIntent = PendingIntent.getActivity(context, 0, new Intent(context, JTTMainActivity.class), 0);
-		n.contentView = rv;
+		final Notification n = new NotificationCompat.Builder(context)
+			.setContent(rv)
+			.setOngoing(true)
+			.setSmallIcon(R.drawable.notification_icon, h.num)
+			.setContentIntent(PendingIntent.getActivity(
+					context, 0, new Intent(context, JTTMainActivity.class), 0))
+			.build();
 
 		nm.notify(APP_ID, n);
 	}
