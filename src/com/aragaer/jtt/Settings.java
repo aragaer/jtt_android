@@ -4,8 +4,13 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import com.aragaer.jtt.resources.RuntimeResources;
+import com.aragaer.jtt.resources.StringResources;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -43,7 +48,11 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContent();
+	}
 
+	private void setContent() {
+		StringResources.setLocaleToContext(this);
 		addPreferencesFromResource(R.layout.preferences);
 		ListPreference pref_locale = (ListPreference) findPreference(PREF_LOCALE);
 
@@ -66,6 +75,13 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 				lp.setSummary(lp.getEntry());
 			}
 		}
+	}
+
+	// Unfortunately I can't (yet?) directly control configuration changes in this activity
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		setContent();
 	}
 
 	public static float[] getLocation(final Context context) {

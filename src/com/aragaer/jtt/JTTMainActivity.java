@@ -1,6 +1,7 @@
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.today.TodayAdapter;
 
 import android.content.BroadcastReceiver;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
@@ -37,7 +39,17 @@ public class JTTMainActivity extends ActionBarActivity implements SharedPreferen
 		setTheme(Settings.getTheme(this));
 		super.onCreate(savedInstanceState);
 		startService(new Intent(this, JttService.class));
+		setContent();
+	}
 
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		setContent();
+	}
+
+	private void setContent() {
+		StringResources.setLocaleToContext(this);
 		final ViewPager pager = new ViewPager(this);
 		final ViewPagerAdapter pager_adapter = new ViewPagerAdapter(this, pager);
 
