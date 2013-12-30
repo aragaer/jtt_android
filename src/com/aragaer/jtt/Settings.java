@@ -26,10 +26,10 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		switch (listeners.get(preference.getKey())) {
-		case 4 :
+		case 3:
 			finish();
 			break;
-		case 3:
+		case 4:
 		case 5:
 			final ListPreference lp = (ListPreference) preference;
 			lp.setSummary(lp.getEntries()[lp.findIndexOfValue((String) newValue)]);

@@ -3,7 +3,7 @@ package com.aragaer.jtt;
 import com.aragaer.jtt.core.Clockwork;
 import com.aragaer.jtt.today.TodayAdapter;
 
-import android.app.ActivityGroup;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,11 +11,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.Window;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 
-public class JTTMainActivity extends ActivityGroup implements
-		SharedPreferences.OnSharedPreferenceChangeListener {
+public class JTTMainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
 	private ClockView clock;
 	private JTTPager pager;
 	private TodayAdapter today;
@@ -32,7 +32,6 @@ public class JTTMainActivity extends ActivityGroup implements
 		}
 	};
 
-	private int settings_tab = 0;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(Settings.getTheme(this));
@@ -50,22 +49,21 @@ public class JTTMainActivity extends ActivityGroup implements
 		today_list.setDividerHeight(-getResources().getDimensionPixelSize(R.dimen.today_divider_neg));
 		pager.addTab(today_list, R.string.today);
 
-		final Window sw = getLocalActivityManager().startActivity("settings",
-				new Intent(this, Settings.class));
-		settings_tab = pager.addTab(sw.getDecorView(), R.string.settings);
-
 		setContentView(pager);
 
 		registerReceiver(receiver, new IntentFilter(Clockwork.ACTION_JTT_TICK));
+		final SharedPreferences pref = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		pref.registerOnSharedPreferenceChangeListener(this);
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		SharedPreferences settings = PreferenceManager
+		SharedPreferences pref = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		if (!settings.contains("jtt_loc")) // location is not set
-			pager.selectScreen(settings_tab);
+		if (!pref.contains("jtt_loc")) // location is not set
+			startActivity(new Intent(this, Settings.class));
 	}
 
 	@Override
@@ -82,5 +80,12 @@ public class JTTMainActivity extends ActivityGroup implements
 			// restart settings activity on top of this
 			startActivity(new Intent(this, Settings.class).addFlags(flags));
 		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuItem settings = menu.add(R.string.settings);
+		settings.setIntent(new Intent(this, Settings.class));
+		return super.onCreateOptionsMenu(menu);
 	}
 }
