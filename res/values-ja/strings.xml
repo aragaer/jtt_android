@@ -16,9 +16,6 @@
     <string name="notify">通知</string>
     <string name="notify_ex">今の刻をステータスバーで表示</string>
     <string name="status">起動と通知</string>
-    <string name="stop">サービスを停止</string>
-    <string name="stop_ex">サービスを停止が、アプリを閉鎖にはタップ</string>
-    <string name="stop_ask">サービスは停止されます、アプリは閉鎖されます。サービスは次開始の時起動時に自動的に開始\n\n続しますか？</string>
     <string name="today">今日</string>
     <string name="sunrise">日出</string>
     <string name="sunset">日没</string>

@@ -15,10 +15,6 @@
             android:summary="@string/notify_ex"
             android:title="@string/notify" />
 
-        <Preference
-            android:key="jtt_stop"
-            android:summary="@string/stop_ex"
-            android:title="@string/stop" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/location" >

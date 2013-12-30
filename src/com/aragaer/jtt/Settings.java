@@ -4,10 +4,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,10 +12,9 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 
-public class Settings extends PreferenceActivity implements OnPreferenceChangeListener, OnPreferenceClickListener, DialogInterface.OnClickListener {
+public class Settings extends PreferenceActivity implements OnPreferenceChangeListener {
 	public static final String PREF_LOCATION = "jtt_loc",
 			PREF_LOCALE = "jtt_locale",
 			PREF_HNAME = "jtt_hname",
@@ -65,8 +61,6 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		}
 		pref_locale.setEntries(lnames);
 
-		((Preference) findPreference("jtt_stop")).setOnPreferenceClickListener(this);
-
 		for (int i = 0; i < prefcodes.length; i++) {
 			listeners.put(prefcodes[i], i);
 			final Preference pref = (Preference) findPreference(prefcodes[i]);
@@ -76,23 +70,6 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 				lp.setSummary(lp.getEntry());
 			}
 		}
-	}
-
-	public boolean onPreferenceClick(Preference preference) {
-		(new AlertDialog.Builder(this))
-		.setTitle(R.string.stop)
-		.setMessage(R.string.stop_ask)
-		.setPositiveButton(android.R.string.yes, this)
-		.setNegativeButton(android.R.string.no, this).show();
-		return false;
-	}
-
-	public void onClick(DialogInterface dialog, int id) {
-		if (id == Dialog.BUTTON_POSITIVE) {
-			startService(new Intent(this, JttService.class).setAction(JttService.STOP_ACTION));
-			getParent().finish();
-		} else
-			dialog.cancel();
 	}
 
 	public static float[] getLocation(final Context context) {

@@ -16,9 +16,6 @@
     <string name="notify">Оповещения</string>
     <string name="notify_ex">Показывать иероглиф текущего часа в строке статуса.</string>
     <string name="status">Запуск и оповещения</string>
-    <string name="stop">Остановить сервис</string>
-    <string name="stop_ex">Нажмите для остановки сервиса и выхода из приложения.</string>
-    <string name="stop_ask">Сервис будет остановлен, а приложение закрыто. При следующем запуске приложения сервис автоматически будет запущен.\n\nПродолжить?</string>
     <string name="today">Сегодня</string>
     <string name="sunrise">Рассвет</string>
     <string name="sunset">Закат</string>
