@@ -19,8 +19,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LightingColorFilter;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.preference.PreferenceManager;
@@ -42,7 +40,7 @@ public class JTTWidgetProvider {
 		final WidgetPainter painter;
 		final int granularity;
 
-		WidgetHolder(final Class cls, final WidgetPainter painter, int granularity) {
+		WidgetHolder(final Class<? extends JTTWidget> cls, final WidgetPainter painter, int granularity) {
 			cn = new ComponentName(PKG_NAME, cls.getName());
 			this.painter = painter;
 			this.granularity = granularity;
@@ -59,7 +57,7 @@ public class JTTWidgetProvider {
 		protected JTTWidget(final int frequency, final Class<? extends WidgetPainter> painter_class) {
 			int granularity = Hour.QUARTERS * Hour.QUARTER_PARTS / frequency;
 
-			final Class<?> cls = getClass();
+			final Class<? extends JTTWidget> cls = getClass();
 			if (!classes.containsKey(cls))
 				try {
 					classes.put(cls, new WidgetHolder(cls, painter_class.newInstance(), granularity));

@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.util.TypedValue;
 
 public class ClockView extends ViewGroup implements StringResources.StringResourceChangeListener {
-	private int hn, hf;
 	private final StringResources sr;
 	private final TextView text;
 	private final WadokeiView wadokei;

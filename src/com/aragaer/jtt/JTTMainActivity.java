@@ -1,6 +1,7 @@
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.today.TodayAdapter;
 
 import android.app.ActivityGroup;
 import android.content.BroadcastReceiver;
@@ -9,11 +10,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Window;
 import android.widget.ListView;
 
@@ -27,7 +25,6 @@ public class JTTMainActivity extends ActivityGroup {
 		public void onReceive(Context context, Intent intent) {
 			if (!intent.getAction().equals(Clockwork.ACTION_JTT_TICK))
 				return;
-			final int n = intent.getIntExtra("hour", 0);
 			final int wrapped = intent.getIntExtra("jtt", 0);
 
 			clock.setHour(wrapped);

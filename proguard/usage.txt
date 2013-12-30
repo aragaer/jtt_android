@@ -1,13 +1,11 @@
 com.aragaer.jtt.BuildConfig
 com.aragaer.jtt.ClockView:
-    private int hn
-    private int hf
     private static final int granularity
 com.aragaer.jtt.JTTPager$ScrollContents:
     private static final int ID
 com.aragaer.jtt.JTTWidgetProvider:
     private static final java.lang.String PKG_NAME
-    36:139:public JTTWidgetProvider()
+    34:34:public JTTWidgetProvider()
 com.aragaer.jtt.JttService:
     private static final java.lang.String TAG
     static final java.lang.String STOP_ACTION
@@ -19,6 +17,8 @@ com.aragaer.jtt.LocationPreference:
     private static final java.lang.String fmt1
     private static final java.lang.String fmt2
     private static final java.lang.String fmt3
+com.aragaer.jtt.Manifest
+com.aragaer.jtt.Manifest$permission
 com.aragaer.jtt.R
 com.aragaer.jtt.R$array
 com.aragaer.jtt.R$attr
@@ -36,8 +36,6 @@ com.aragaer.jtt.Settings:
     public static final java.lang.String PREF_HNAME
     public static final java.lang.String PREF_NOTIFY
     public static final java.lang.String PREF_WIDGET_INVERSE
-com.aragaer.jtt.TodayAdapter:
-    private static final java.lang.String TAG
 com.aragaer.jtt.WidgetPainter1:
     private static final float QUARTER_ANGLE
     private static final float PART_ANGLE
@@ -49,7 +47,7 @@ com.aragaer.jtt.core.Clockwork:
     public static final java.lang.String ACTION_JTT_TICK
     private static final int INTENT_FLAGS
     private static final double total
-    61:63:public static void unschedule(android.content.Context)
+    53:55:public static void unschedule(android.content.Context)
 com.aragaer.jtt.core.Hour:
     public static final int HOURS
     public static final int QUARTERS
@@ -64,6 +62,8 @@ com.aragaer.jtt.graphics.WadokeiDraw:
 com.aragaer.jtt.resources.StringResources:
     public static final int TYPE_HOUR_NAME
     public static final int TYPE_TIME_FORMAT
+com.aragaer.jtt.today.TodayAdapter:
+    private static final java.lang.String TAG
 com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator:
     private com.luckycatlabs.sunrisesunset.dto.Location location
     45:47:public SunriseSunsetCalculator(com.luckycatlabs.sunrisesunset.dto.Location,java.lang.String)

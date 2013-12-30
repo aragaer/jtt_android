@@ -1,8 +1,6 @@
 com.aragaer.jtt.BootReceiver -> com.aragaer.jtt.BootReceiver:
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
-com.aragaer.jtt.BoundaryItem -> com.aragaer.jtt.a:
-    android.view.View toView(android.content.Context,android.view.View,int) -> a
-com.aragaer.jtt.ClockView -> com.aragaer.jtt.b:
+com.aragaer.jtt.ClockView -> com.aragaer.jtt.a:
     com.aragaer.jtt.resources.StringResources sr -> a
     android.widget.TextView text -> b
     com.aragaer.jtt.graphics.WadokeiView wadokei -> c
@@ -13,25 +11,21 @@ com.aragaer.jtt.ClockView -> com.aragaer.jtt.b:
     void onMeasure(int,int) -> onMeasure
     void onLayout(boolean,int,int,int,int) -> onLayout
     void onStringResourcesChanged$13462e() -> a
-com.aragaer.jtt.HourItem -> com.aragaer.jtt.c:
-    int hnum -> c
-    java.lang.String[] extras -> a
-    android.view.View toView(android.content.Context,android.view.View,int) -> a
 com.aragaer.jtt.JTTMainActivity -> com.aragaer.jtt.JTTMainActivity:
     com.aragaer.jtt.ClockView clock -> a
     com.aragaer.jtt.JTTPager pager -> b
-    com.aragaer.jtt.TodayAdapter today -> c
+    com.aragaer.jtt.today.TodayAdapter today -> c
     android.content.BroadcastReceiver receiver -> d
     int settings_tab -> e
     void onCreate(android.os.Bundle) -> onCreate
     void onStart() -> onStart
     void onDestroy() -> onDestroy
-    com.aragaer.jtt.ClockView access$000(com.aragaer.jtt.JTTMainActivity) -> a
-    com.aragaer.jtt.TodayAdapter access$100(com.aragaer.jtt.JTTMainActivity) -> b
-com.aragaer.jtt.JTTMainActivity$1 -> com.aragaer.jtt.d:
+    com.aragaer.jtt.ClockView access$0(com.aragaer.jtt.JTTMainActivity) -> a
+    com.aragaer.jtt.today.TodayAdapter access$1(com.aragaer.jtt.JTTMainActivity) -> b
+com.aragaer.jtt.JTTMainActivity$1 -> com.aragaer.jtt.b:
     com.aragaer.jtt.JTTMainActivity this$0 -> a
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
-com.aragaer.jtt.JTTPager -> com.aragaer.jtt.e:
+com.aragaer.jtt.JTTPager -> com.aragaer.jtt.c:
     com.aragaer.jtt.JTTPager$PageScroller scrollview -> b
     com.aragaer.jtt.JTTPager$ScrollContents pageview -> c
     android.widget.RadioGroup tablist -> d
@@ -40,8 +34,8 @@ com.aragaer.jtt.JTTPager -> com.aragaer.jtt.e:
     void onCheckedChanged(android.widget.RadioGroup,int) -> onCheckedChanged
     int addTab(android.view.View,int) -> a
     void selectScreen(int) -> a
-    android.widget.RadioGroup access$000(com.aragaer.jtt.JTTPager) -> a
-com.aragaer.jtt.JTTPager$PageScroller -> com.aragaer.jtt.f:
+    android.widget.RadioGroup access$0(com.aragaer.jtt.JTTPager) -> a
+com.aragaer.jtt.JTTPager$PageScroller -> com.aragaer.jtt.d:
     int scrollFrom -> a
     int minfling -> b
     android.view.VelocityTracker vt -> c
@@ -51,7 +45,7 @@ com.aragaer.jtt.JTTPager$PageScroller -> com.aragaer.jtt.f:
     void trySmoothScrollToScreen(int) -> a
     void onMeasure(int,int) -> onMeasure
     void onLayout(boolean,int,int,int,int) -> onLayout
-com.aragaer.jtt.JTTPager$ScrollContents -> com.aragaer.jtt.g:
+com.aragaer.jtt.JTTPager$ScrollContents -> com.aragaer.jtt.e:
     com.aragaer.jtt.JTTPager this$0 -> a
     void onMeasure(int,int) -> onMeasure
     void onLayout(boolean,int,int,int,int) -> onLayout
@@ -59,16 +53,16 @@ com.aragaer.jtt.JTTWidgetProvider -> com.aragaer.jtt.JTTWidgetProvider:
     java.util.Map classes -> a
     void draw_all(android.content.Context) -> a
     void draw(android.content.Context,int[],com.aragaer.jtt.JTTWidgetProvider$WidgetHolder) -> b
-    java.util.Map access$000() -> a
-    void access$100(android.content.Context,android.content.Intent,java.lang.Class) -> a
-    void access$200(android.content.Context,int[],com.aragaer.jtt.JTTWidgetProvider$WidgetHolder) -> a
-com.aragaer.jtt.JTTWidgetProvider$JTTWidget -> com.aragaer.jtt.h:
+    java.util.Map access$0() -> a
+    void access$1(android.content.Context,android.content.Intent,java.lang.Class) -> a
+    void access$2(android.content.Context,int[],com.aragaer.jtt.JTTWidgetProvider$WidgetHolder) -> a
+com.aragaer.jtt.JTTWidgetProvider$JTTWidget -> com.aragaer.jtt.f:
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
 com.aragaer.jtt.JTTWidgetProvider$Widget1 -> com.aragaer.jtt.JTTWidgetProvider$Widget1:
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
 com.aragaer.jtt.JTTWidgetProvider$Widget12 -> com.aragaer.jtt.JTTWidgetProvider$Widget12:
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
-com.aragaer.jtt.JTTWidgetProvider$WidgetHolder -> com.aragaer.jtt.i:
+com.aragaer.jtt.JTTWidgetProvider$WidgetHolder -> com.aragaer.jtt.g:
     android.content.ComponentName cn -> a
     com.aragaer.jtt.core.Hour last_update -> b
     com.aragaer.jtt.WidgetPainter painter -> c
@@ -80,7 +74,7 @@ com.aragaer.jtt.JttService -> com.aragaer.jtt.JttService:
     void toggle_notify(boolean) -> a
     void onSharedPreferenceChanged(android.content.SharedPreferences,java.lang.String) -> onSharedPreferenceChanged
     void move() -> a
-com.aragaer.jtt.JttStatus -> com.aragaer.jtt.j:
+com.aragaer.jtt.JttStatus -> com.aragaer.jtt.h:
     android.content.Context context -> a
     com.aragaer.jtt.resources.StringResources sr -> b
     com.aragaer.jtt.core.Hour h -> c
@@ -111,11 +105,11 @@ com.aragaer.jtt.LocationPreference -> com.aragaer.jtt.LocationPreference:
     void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
     void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
     void onDialogClosed(boolean) -> onDialogClosed
-    void access$000(com.aragaer.jtt.LocationPreference) -> a
-com.aragaer.jtt.LocationPreference$1 -> com.aragaer.jtt.k:
+    void access$0(com.aragaer.jtt.LocationPreference) -> a
+com.aragaer.jtt.LocationPreference$1 -> com.aragaer.jtt.i:
     com.aragaer.jtt.LocationPreference this$0 -> a
     void onClick(android.view.View) -> onClick
-com.aragaer.jtt.LocationPreference$InputFilterMinMax -> com.aragaer.jtt.l:
+com.aragaer.jtt.LocationPreference$InputFilterMinMax -> com.aragaer.jtt.j:
     float min -> a
     float max -> b
     java.lang.CharSequence filter(java.lang.CharSequence,int,int,android.text.Spanned,int,int) -> filter
@@ -129,24 +123,12 @@ com.aragaer.jtt.Settings -> com.aragaer.jtt.Settings:
     void onClick(android.content.DialogInterface,int) -> onClick
     float[] getLocation(android.content.Context) -> a
     int getTheme(android.content.Context) -> b
-com.aragaer.jtt.TodayAdapter -> com.aragaer.jtt.m:
-    long[] transitions -> a
-    int selected -> b
-    android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-    void tick() -> b
-    boolean isEnabled(int) -> isEnabled
-    void onStringResourcesChanged$13462e() -> a
-    int getViewTypeCount() -> getViewTypeCount
-    int getItemViewType(int) -> getItemViewType
-com.aragaer.jtt.TodayItem -> com.aragaer.jtt.n:
-    long time -> b
-    android.view.View toView(android.content.Context,android.view.View,int) -> a
-com.aragaer.jtt.WidgetPainter -> com.aragaer.jtt.o:
+com.aragaer.jtt.WidgetPainter -> com.aragaer.jtt.k:
     void hour_changed(int) -> b
     void fill_rv(android.widget.RemoteViews,com.aragaer.jtt.core.Hour) -> a
     void init(android.content.Context) -> a
     void onStringResourcesChanged$13462e() -> a
-com.aragaer.jtt.WidgetPainter1 -> com.aragaer.jtt.p:
+com.aragaer.jtt.WidgetPainter1 -> com.aragaer.jtt.l:
     com.aragaer.jtt.graphics.Paints paints -> a
     android.graphics.Bitmap bmp -> b
     android.graphics.Canvas c -> c
@@ -157,7 +139,7 @@ com.aragaer.jtt.WidgetPainter1 -> com.aragaer.jtt.p:
     void hour_changed(int) -> b
     void fill_rv(android.widget.RemoteViews,com.aragaer.jtt.core.Hour) -> a
     void init(android.content.Context) -> a
-com.aragaer.jtt.WidgetPainter12 -> com.aragaer.jtt.q:
+com.aragaer.jtt.WidgetPainter12 -> com.aragaer.jtt.m:
     com.aragaer.jtt.resources.StringResources sr -> a
     com.aragaer.jtt.graphics.WadokeiDraw wd -> b
     int size -> c
@@ -267,13 +249,32 @@ com.aragaer.jtt.resources.StringResources -> com.aragaer.jtt.b.b:
     void notifyChange() -> a
     void load_hour_names() -> b
     java.lang.String format_time(long) -> a
-    java.text.DateFormat access$002(com.aragaer.jtt.resources.StringResources,java.text.DateFormat) -> a
-    android.content.Context access$100(com.aragaer.jtt.resources.StringResources) -> a
-    int access$276$7bbe85e9(com.aragaer.jtt.resources.StringResources) -> b
-    void access$300(com.aragaer.jtt.resources.StringResources) -> c
+    android.content.Context access$0(com.aragaer.jtt.resources.StringResources) -> a
+    void access$1(com.aragaer.jtt.resources.StringResources,java.text.DateFormat) -> a
+    int access$2(com.aragaer.jtt.resources.StringResources) -> b
+    void access$3(com.aragaer.jtt.resources.StringResources,int) -> a
+    void access$4(com.aragaer.jtt.resources.StringResources) -> c
 com.aragaer.jtt.resources.StringResources$1 -> com.aragaer.jtt.b.c:
     com.aragaer.jtt.resources.StringResources this$0 -> a
     void onReceive(android.content.Context,android.content.Intent) -> onReceive
+com.aragaer.jtt.today.BoundaryItem -> com.aragaer.jtt.c.a:
+    android.view.View toView(android.content.Context,android.view.View,int) -> a
+com.aragaer.jtt.today.HourItem -> com.aragaer.jtt.c.b:
+    int hnum -> c
+    java.lang.String[] extras -> a
+    android.view.View toView(android.content.Context,android.view.View,int) -> a
+com.aragaer.jtt.today.TodayAdapter -> com.aragaer.jtt.c.c:
+    long[] transitions -> a
+    int selected -> b
+    android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    void tick() -> b
+    boolean isEnabled(int) -> isEnabled
+    void onStringResourcesChanged$13462e() -> a
+    int getViewTypeCount() -> getViewTypeCount
+    int getItemViewType(int) -> getItemViewType
+com.aragaer.jtt.today.TodayItem -> com.aragaer.jtt.c.d:
+    long time -> b
+    android.view.View toView(android.content.Context,android.view.View,int) -> a
 com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator -> com.a.a.a:
     com.luckycatlabs.sunrisesunset.calculator.SolarEventCalculator calculator -> a
 com.luckycatlabs.sunrisesunset.Zenith -> com.a.a.b:
