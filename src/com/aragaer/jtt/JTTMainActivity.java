@@ -88,7 +88,7 @@ public class JTTMainActivity extends ActionBarActivity implements SharedPreferen
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-		if (key.equals("jtt_theme") || key.equals(Settings.PREF_LOCALE)) {
+		if (key.equals(Settings.PREF_THEME) || key.equals(Settings.PREF_LOCALE)) {
 			final int flags = Intent.FLAG_ACTIVITY_NO_ANIMATION;
 			finish();
 			startActivity(getIntent().addFlags(flags));

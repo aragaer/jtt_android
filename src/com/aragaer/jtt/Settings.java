@@ -4,13 +4,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -23,16 +21,17 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 			PREF_LOCALE = "jtt_locale",
 			PREF_HNAME = "jtt_hname",
 			PREF_NOTIFY = "jtt_notify",
+			PREF_THEME = "jtt_theme",
 			PREF_WIDGET_INVERSE = "jtt_widget_text_invert";
 
-	private static final String prefcodes[] = new String[] {PREF_LOCATION, PREF_NOTIFY, PREF_WIDGET_INVERSE, PREF_LOCALE, "jtt_theme", PREF_HNAME};
+	private static final String prefcodes[] = new String[] {PREF_LOCATION, PREF_NOTIFY, PREF_WIDGET_INVERSE, PREF_LOCALE, PREF_THEME, PREF_HNAME};
 
 	private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		switch (listeners.get(preference.getKey())) {
 		case 3:
-			finish();
+			finish(); // Main activity will restart us
 			break;
 		case 4:
 		case 5:
@@ -77,7 +76,6 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		}
 	}
 
-	// Unfortunately I can't (yet?) directly control configuration changes in this activity
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
@@ -100,7 +98,7 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 	public static final int getTheme(final Context context) {
 		String theme = PreferenceManager
 				.getDefaultSharedPreferences(context)
-				.getString("jtt_theme", context.getString(R.string.theme_default));
+				.getString(PREF_THEME, context.getString(R.string.theme_default));
 		try {
 			return themes[Integer.parseInt(theme)];
 		} catch (NumberFormatException e) {
