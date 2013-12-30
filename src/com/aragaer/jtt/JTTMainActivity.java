@@ -14,7 +14,8 @@ import android.preference.PreferenceManager;
 import android.view.Window;
 import android.widget.ListView;
 
-public class JTTMainActivity extends ActivityGroup {
+public class JTTMainActivity extends ActivityGroup implements
+		SharedPreferences.OnSharedPreferenceChangeListener {
 	private ClockView clock;
 	private JTTPager pager;
 	private TodayAdapter today;
@@ -71,5 +72,15 @@ public class JTTMainActivity extends ActivityGroup {
 	protected void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(receiver);
+	}
+
+	public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
+		if (key.equals("jtt_theme") || key.equals(Settings.PREF_LOCALE)) {
+			final int flags = Intent.FLAG_ACTIVITY_NO_ANIMATION;
+			finish();
+			startActivity(getIntent().addFlags(flags));
+			// restart settings activity on top of this
+			startActivity(new Intent(this, Settings.class).addFlags(flags));
+		}
 	}
 }

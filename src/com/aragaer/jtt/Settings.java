@@ -5,7 +5,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -27,13 +26,10 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
 		switch (listeners.get(preference.getKey())) {
-		case 3:
-		case 4:
-			Intent i = getParent().getIntent();
-			i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-			getParent().finish();
-			startActivity(i);
+		case 4 :
+			finish();
 			break;
+		case 3:
 		case 5:
 			final ListPreference lp = (ListPreference) preference;
 			lp.setSummary(lp.getEntries()[lp.findIndexOfValue((String) newValue)]);
