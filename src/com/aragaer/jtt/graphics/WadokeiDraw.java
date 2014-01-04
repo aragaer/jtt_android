@@ -137,4 +137,14 @@ public class WadokeiDraw {
 		matrix.preRotate(angle, size * 4 / 5, size * 4 / 5);
 		canvas.drawBitmap(glyphs, matrix, cache_paint);
 	}
+
+	public void release() {
+		clock.recycle();
+		glyphs.recycle();
+		sun_stages.recycle();
+
+		clock = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444); // make it non-null
+		sun_stages = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444);
+		glyphs = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444);
+	}
 }

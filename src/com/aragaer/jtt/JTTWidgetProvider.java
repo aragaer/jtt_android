@@ -26,9 +26,9 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 interface WidgetPainter {
-	void hour_changed(final int n);
 	void fill_rv(final RemoteViews rv, final Hour h);
 	void init(final Context c);
+	void deinit();
 }
 
 public class JTTWidgetProvider {
@@ -70,7 +70,6 @@ public class JTTWidgetProvider {
 
 		public void onReceive(Context c, Intent i) {
 			final String action = i.getAction();
-			classes.get(getClass()).painter.init(c);
 			if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
 				update(c, i);
 			else if (action.equals(Clockwork.ACTION_JTT_TICK))
@@ -86,17 +85,13 @@ public class JTTWidgetProvider {
 	}
 
 	private static void tick(Context c, Intent i, Class<?> cls) {
-		int n = i.getIntExtra("hour", 0);
 		int wrapped = i.getIntExtra("jtt", 0);
 		final WidgetHolder holder = classes.get(cls);
 		Hour prev = holder.last_update;
 		if (prev == null) {
 			wrapped -= wrapped % holder.granularity;
 			holder.last_update = prev = Hour.fromWrapped(wrapped, null);
-			holder.painter.hour_changed(n);
 		} else {
-			if (prev.num != n)
-				holder.painter.hour_changed(n);
 			if (!prev.compareAndUpdate(wrapped, holder.granularity))
 				return; // do nothing
 		}
@@ -117,6 +112,7 @@ public class JTTWidgetProvider {
 			boolean inverse = PreferenceManager.getDefaultSharedPreferences(c)
 					.getBoolean(Settings.PREF_WIDGET_INVERSE, false);
 			rv = new RemoteViews(PKG_NAME, inverse ? R.layout.widget_inverse : R.layout.widget);
+			holder.painter.init(c);
 			holder.painter.fill_rv(rv, holder.last_update);
 		}
 		PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, new Intent(c, JTTMainActivity.class), 0);
@@ -124,6 +120,8 @@ public class JTTWidgetProvider {
 
 		for (int id : ids)
 			awm.updateAppWidget(id, rv);
+		if (holder.last_update != null)
+			holder.painter.deinit();
 	}
 
 	/* Widget showing only 1 hour */
@@ -147,8 +145,6 @@ class WidgetPainter1 implements WidgetPainter {
 	private static final Canvas c = new Canvas();
 	private static final Path path1 = new Path(), path2 = new Path();
 	private static final RectF outer = new RectF(), inner = new RectF();
-
-	public void hour_changed(final int n) { }
 
 	private static final float QUARTER_ANGLE = 355f / Hour.QUARTERS,
 			PART_ANGLE = QUARTER_ANGLE / Hour.QUARTER_PARTS;
@@ -174,7 +170,7 @@ class WidgetPainter1 implements WidgetPainter {
 		rv.setTextViewText(R.id.glyph, Hour.Glyphs[h.num]);
 	}
 
-	public void init(final Context ctx) {
+	public synchronized void init(final Context ctx) {
 		if (paints != null)
 			return;
 
@@ -185,6 +181,14 @@ class WidgetPainter1 implements WidgetPainter {
 		outer.set(3 * scale, 3 * scale, 77 * scale, 77 * scale);
 		inner.set(15 * scale, 15 * scale, 65 * scale, 65 * scale);
 	}
+
+	@Override
+	public synchronized void deinit() {
+		if (paints != null)
+			return;
+		bmp.recycle();
+		paints = null;
+	}
 }
 
 class WidgetPainter12 implements WidgetPainter {
@@ -193,12 +197,9 @@ class WidgetPainter12 implements WidgetPainter {
 	static int size;
 	private static Bitmap bmp;
 
-	public void hour_changed(final int n) {
-		wd.prepare_glyphs(n);
-	}
-
 	public void fill_rv(final RemoteViews rv, final Hour h) {
 		bmp.eraseColor(Color.TRANSPARENT);
+		wd.prepare_glyphs(h.num);
 		wd.draw_dial(h, new Canvas(bmp));
 
 		rv.setImageViewBitmap(R.id.clock, bmp);
@@ -206,7 +207,7 @@ class WidgetPainter12 implements WidgetPainter {
 		rv.setTextViewText(R.id.glyph, sr.getHour(h.num));
 	}
 
-	public void init(final Context c) {
+	public synchronized void init(final Context c) {
 		if (sr != null)
 			return;
 		sr = RuntimeResources.get(c).getInstance(StringResources.class);
@@ -215,5 +216,14 @@ class WidgetPainter12 implements WidgetPainter {
 
 		bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_4444);
 		wd.set_dial_size(size);
+	}
+
+	@Override
+	public synchronized void deinit() {
+		if (sr == null)
+			return;
+		wd.release();
+		bmp.recycle();
+		sr = null;
 	}
 }
