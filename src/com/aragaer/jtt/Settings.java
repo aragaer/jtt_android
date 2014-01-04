@@ -47,10 +47,6 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContent();
-	}
-
-	private void setContent() {
 		StringResources.setLocaleToContext(this);
 		addPreferencesFromResource(R.layout.preferences);
 		ListPreference pref_locale = (ListPreference) findPreference(PREF_LOCALE);
@@ -77,9 +73,9 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		setContent();
+	public void onRestoreInstanceState(Bundle state) {
+		StringResources.setLocaleToContext(this);
+		super.onRestoreInstanceState(state);
 	}
 
 	public static float[] getLocation(final Context context) {

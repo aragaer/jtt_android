@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
@@ -39,16 +38,6 @@ public class JTTMainActivity extends ActionBarActivity implements SharedPreferen
 		setTheme(Settings.getTheme(this));
 		super.onCreate(savedInstanceState);
 		startService(new Intent(this, JttService.class));
-		setContent();
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		setContent();
-	}
-
-	private void setContent() {
 		StringResources.setLocaleToContext(this);
 		final ViewPager pager = new ViewPager(this);
 		final ViewPagerAdapter pager_adapter = new ViewPagerAdapter(this, pager);
@@ -70,6 +59,12 @@ public class JTTMainActivity extends ActionBarActivity implements SharedPreferen
 		final SharedPreferences pref = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
+	}
+
+	@Override
+	public void onRestoreInstanceState(Bundle state) {
+		StringResources.setLocaleToContext(this);
+		super.onRestoreInstanceState(state);
 	}
 
 	@Override
