@@ -21,7 +21,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -109,9 +108,7 @@ public class JTTWidgetProvider {
 		if (holder.last_update == null)
 			rv = new RemoteViews(PKG_NAME, R.layout.widget_loading);
 		else {
-			boolean inverse = PreferenceManager.getDefaultSharedPreferences(c)
-					.getBoolean(Settings.PREF_WIDGET_INVERSE, false);
-			rv = new RemoteViews(PKG_NAME, inverse ? R.layout.widget_inverse : R.layout.widget);
+			rv = new RemoteViews(PKG_NAME, R.layout.widget);
 			holder.painter.init(c);
 			holder.painter.fill_rv(rv, holder.last_update);
 		}
@@ -171,11 +168,7 @@ class WidgetPainter1 implements WidgetPainter {
 	}
 
 	public synchronized void init(final Context ctx) {
-		if (paints != null)
-			return;
-
-		ctx.setTheme(Settings.getWidgetTheme(ctx));
-		paints = new Paints(ctx);
+		paints = new Paints(ctx, Settings.getWidgetTheme(ctx));
 		final float scale = ctx.getResources().getDisplayMetrics().density;
 		bmp = Bitmap.createBitmap((int) (80 * scale), (int) (80 * scale), Bitmap.Config.ARGB_4444);
 		c.setBitmap(bmp);
@@ -185,8 +178,6 @@ class WidgetPainter1 implements WidgetPainter {
 
 	@Override
 	public synchronized void deinit() {
-		if (paints != null)
-			return;
 		bmp.recycle();
 		paints = null;
 	}
@@ -209,11 +200,8 @@ class WidgetPainter12 implements WidgetPainter {
 	}
 
 	public synchronized void init(final Context c) {
-		if (sr != null)
-			return;
 		sr = RuntimeResources.get(c).getInstance(StringResources.class);
-		c.setTheme(Settings.getWidgetTheme(c));
-		wd = new WadokeiDraw(c, new Paints(c));
+		wd = new WadokeiDraw(c, new Paints(c, Settings.getWidgetTheme(c)));
 		size = Math.round(110 * c.getResources().getDisplayMetrics().density);
 
 		bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_4444);
@@ -222,8 +210,6 @@ class WidgetPainter12 implements WidgetPainter {
 
 	@Override
 	public synchronized void deinit() {
-		if (sr == null)
-			return;
 		wd.release();
 		bmp.recycle();
 		sr = null;

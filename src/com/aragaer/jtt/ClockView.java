@@ -29,7 +29,7 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 		arrow = new ArrowView(context);
 		text = new TextView(context);
 
-		TypedArray ta = context.obtainStyledAttributes(new int[] {R.styleable.Wadokei_text_stroke});
+		TypedArray ta = context.getTheme().obtainStyledAttributes(null, R.styleable.Wadokei, 0, 0);
 		text.setTextColor(ta.getColor(R.styleable.Wadokei_text_stroke, 0));
 		ta.recycle();
 

@@ -2,15 +2,29 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:jtt="http://schemas.android.com/apk/res/com.aragaer.jtt">
 
+    <!-- pre android-14 version -->
     <style name="BaseTheme" parent="@style/Theme.AppCompat">
         <item name="actionBarStyle">@style/DarkActionBar</item>
     </style>
 
-    <style name="DarkTheme" parent="BaseTheme">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:radioButtonStyle">@style/JTTTabButton</item>
+    <!-- pre android-14 version -->
+    <style name="BaseLightTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="actionBarStyle">@style/DarkActionBar</item>
     </style>
+
+    <style name="DarkTheme" parent="BaseTheme">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:radioButtonStyle">@style/JTTTabButton</item>
+        <item name="glyph_stroke">@android:color/white</item>
+        <item name="wadokei_stroke">@color/wadokei_fill</item>
+        <item name="day_fill">@color/wadokei_fill</item>
+        <item name="glyph_fill">@android:color/background_dark</item>
+        <item name="night_fill">@color/night_fill</item>
+        <item name="wadokei_fill">@color/wadokei_fill</item>
+        <item name="text_stroke">@color/wadokei_fill</item>
+        <item name="item_boundary">@drawable/today_border</item>
+     </style>
 
     <style name="JTTTheme" parent="DarkTheme">
         <item name="android:windowBackground">@color/window_background</item>
@@ -27,9 +41,23 @@
         <item name="text_stroke">@android:color/white</item>
     </style>
 
-    <style name="SolidLight" parent="BaseTheme">
+    <style name="LightTheme" parent="BaseLightTheme">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@android:color/darker_gray</item>
+        <item name="android:radioButtonStyle">@style/JTTTabButtonInverted</item>
         <item name="glyph_stroke">@color/wadokei_stroke</item>
         <item name="wadokei_stroke">@color/wadokei_stroke</item>
+        <item name="day_fill">@color/wadokei_fill</item>
+        <item name="glyph_fill">@color/night_fill</item>
+        <item name="night_fill">@android:color/darker_gray</item>
+        <item name="wadokei_fill">@color/night_fill</item>
+        <item name="text_stroke">@android:color/darker_gray</item>
+        <item name="item_boundary">@drawable/today_border_dark</item>
+    </style>
+
+    <style name="SolidLight" parent="BaseTheme">
+        <item name="glyph_stroke">@android:color/background_light</item>
+        <item name="wadokei_stroke">@android:color/background_light</item>
         <item name="day_fill">@android:color/background_light</item>
         <item name="glyph_fill">@android:color/background_dark</item>
         <item name="night_fill">@android:color/background_dark</item>
@@ -41,6 +69,10 @@
         <item name="android:button">@null</item>
         <item name="android:background">@null</item>
         <item name="android:padding">5dp</item>
+    </style>
+
+    <style name="JTTTabButtonInverted" parent="JTTTabButton">
+        <item name="android:textColor">@drawable/tab_text_selector_inverted</item>
     </style>
 
     <style name="NotificationTitle">

@@ -50,7 +50,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 			toggle_notify(pref.getBoolean("jtt_notify", true));
 		else if (key.equals(Settings.PREF_LOCATION))
 			move();
-		else if (key.equals(Settings.PREF_WIDGET_INVERSE)
+		else if (key.equals(Settings.PREF_WIDGET)
 				|| key.equals(Settings.PREF_LOCALE)
 				|| key.equals(Settings.PREF_HNAME))
 			JTTWidgetProvider.draw_all(this);

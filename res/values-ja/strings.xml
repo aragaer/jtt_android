@@ -76,6 +76,7 @@
     <string-array name="theme_names">
         <item>半透明</item>
         <item>暗い</item>
+        <item>Light</item>
     </string-array>
 
     <string name="pref_theme">スタイル</string>

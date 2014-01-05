@@ -76,6 +76,7 @@
     <string-array name="theme_names">
         <item>Полупрозрачный</item>
         <item>Темный</item>
+        <item>Светлый</item>
     </string-array>
 
     <string name="pref_theme">Стиль оформления</string>

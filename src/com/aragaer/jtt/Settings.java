@@ -15,6 +15,7 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
+import android.util.Log;
 
 public class Settings extends PreferenceActivity implements OnPreferenceChangeListener {
 	public static final String PREF_LOCATION = "jtt_loc",
@@ -22,22 +23,21 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 			PREF_HNAME = "jtt_hname",
 			PREF_NOTIFY = "jtt_notify",
 			PREF_THEME = "jtt_theme",
-			PREF_WIDGET_INVERSE = "jtt_widget_text_invert",
 			PREF_WIDGET = "jtt_widget_theme";
 
-	private static final String prefcodes[] = new String[] {PREF_LOCATION, PREF_NOTIFY, PREF_WIDGET_INVERSE, PREF_LOCALE, PREF_THEME, PREF_HNAME};
+	private static final String prefcodes[] = new String[] {PREF_LOCATION, PREF_NOTIFY, PREF_LOCALE, PREF_HNAME, PREF_THEME, PREF_WIDGET};
 
 	private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
-		switch (listeners.get(preference.getKey())) {
-		case 3:
-			finish(); // Main activity will restart us
-			break;
-		case 4:
-		case 5:
+		if (preference instanceof ListPreference) {
 			final ListPreference lp = (ListPreference) preference;
 			lp.setSummary(lp.getEntries()[lp.findIndexOfValue((String) newValue)]);
+		}
+
+		switch (listeners.get(preference.getKey())) {
+		case 2:
+			finish(); // Main activity will restart us
 			break;
 		default:
 			break;
@@ -91,7 +91,7 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		}
 	}
 
-	static final int app_themes[] = {R.style.JTTTheme, R.style.DarkTheme};
+	static final int app_themes[] = {R.style.JTTTheme, R.style.DarkTheme, R.style.LightTheme};
 	public static final int getAppTheme(final Context context) {
 		String theme = PreferenceManager
 				.getDefaultSharedPreferences(context)

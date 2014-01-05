@@ -9,4 +9,7 @@
         <attr name="night_fill" format="color" />
         <attr name="wadokei_fill" format="color" />
     </declare-styleable>
+    <declare-styleable name="Today">
+        <attr name="item_boundary" format="integer|reference" />
+    </declare-styleable>
 </resources>
