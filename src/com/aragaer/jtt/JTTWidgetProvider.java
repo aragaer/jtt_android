@@ -186,7 +186,7 @@ class WidgetPainter1 implements WidgetPainter {
 class WidgetPainter12 implements WidgetPainter {
 	static StringResources sr;
 	static WadokeiDraw wd;
-	static int size;
+	static int unit;
 	private static Bitmap bmp;
 
 	public void fill_rv(final RemoteViews rv, final Hour h) {
@@ -195,17 +195,17 @@ class WidgetPainter12 implements WidgetPainter {
 		wd.draw_dial(h, new Canvas(bmp));
 
 		rv.setImageViewBitmap(R.id.clock, bmp);
-		rv.setFloat(R.id.glyph, "setTextSize", size / 10);
+		rv.setFloat(R.id.glyph, "setTextSize", unit);
 		rv.setTextViewText(R.id.glyph, sr.getHour(h.num));
 	}
 
 	public synchronized void init(final Context c) {
 		sr = RuntimeResources.get(c).getInstance(StringResources.class);
 		wd = new WadokeiDraw(c, new Paints(c, Settings.getWidgetTheme(c)));
-		size = Math.round(110 * c.getResources().getDisplayMetrics().density);
+		unit = Math.round(11 * c.getResources().getDisplayMetrics().density);
 
-		bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_4444);
-		wd.set_dial_size(size);
+		bmp = Bitmap.createBitmap(unit * 18, unit * 19, Bitmap.Config.ARGB_4444);
+		wd.setUnit(unit);
 	}
 
 	@Override

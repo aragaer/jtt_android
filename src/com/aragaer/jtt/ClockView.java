@@ -62,16 +62,18 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 		final int w = r - l;
 		final int h = b - t;
 		if (vertical) {
+			int unit = Math.round(w / 20f);
 			if (changed) {
-				wadokei.layout(0, h - w, w, h - w / 20);
-				arrow.layout(w * 19 / 40, h - w - w/20, w * 21 / 40, h - w);
+				wadokei.layout(unit, h - unit * 20, unit * 19, h - unit);
+				arrow.layout(unit * 19 / 2, h - unit * 21, unit * 21 / 2, h - unit * 20);
 			}
 			final int tw = text.getMeasuredWidth();
 			text.layout(w / 2 - tw / 2, h / 10, w / 2 + tw / 2, h / 10 + text.getMeasuredHeight());
 		} else {
+			int unit = Math.round(h / 20f);
 			if (changed) {
-				wadokei.layout(w - h * 19 / 20, h / 10, w - h / 20, h);
-				arrow.layout(w - h * 21 / 40, h / 20, w - h * 19 / 40, h / 10);
+				wadokei.layout(w - unit * 19, unit, w - unit, unit * 20);
+				arrow.layout(w - unit * 21 / 2, 0, w - unit * 19 / 2, unit);
 			}
 			final int th = text.getMeasuredHeight();
 			text.layout(w / 40, h / 2 - th / 2, w / 40 + text.getMeasuredWidth(), h / 2 + th / 2);

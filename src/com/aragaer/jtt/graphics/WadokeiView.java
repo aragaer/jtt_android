@@ -27,7 +27,7 @@ public class WadokeiView extends View {
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		if (w == oldw)
 			return;
-		wd.set_dial_size(w / 2);
+		wd.setUnit(Math.round(w / 18f));
 		wd.prepare_glyphs(hour.num);
 	}
 
