@@ -101,7 +101,7 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		}
 	}
 
-	static final int widget_themes[] = {R.style.JTTTheme, R.style.SolidLight};
+	static final int widget_themes[] = {R.style.JTTTheme, R.style.SolidDark, R.style.SolidLight};
 	public static final int getWidgetTheme(final Context context) {
 		String theme = PreferenceManager
 				.getDefaultSharedPreferences(context)

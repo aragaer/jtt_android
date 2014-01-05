@@ -90,10 +90,8 @@ public class JTTWidgetProvider {
 		if (prev == null) {
 			wrapped -= wrapped % holder.granularity;
 			holder.last_update = prev = Hour.fromWrapped(wrapped, null);
-		} else {
-			if (!prev.compareAndUpdate(wrapped, holder.granularity))
-				return; // do nothing
-		}
+		} else if (!prev.compareAndUpdate(wrapped, holder.granularity))
+			return; // do nothing
 		draw(c, null, holder);
 	}
 
@@ -146,8 +144,6 @@ class WidgetPainter1 implements WidgetPainter {
 	private static final float QUARTER_ANGLE = 355f / Hour.QUARTERS,
 			PART_ANGLE = QUARTER_ANGLE / Hour.QUARTER_PARTS;
 	public void fill_rv(final RemoteViews rv, final Hour h) {
-		bmp.eraseColor(Color.TRANSPARENT);
-
 		final float angle = 2.5f + QUARTER_ANGLE * h.quarter + PART_ANGLE * h.quarter_parts;
 
 		path1.rewind();
@@ -174,6 +170,7 @@ class WidgetPainter1 implements WidgetPainter {
 		c.setBitmap(bmp);
 		outer.set(3 * scale, 3 * scale, 77 * scale, 77 * scale);
 		inner.set(15 * scale, 15 * scale, 65 * scale, 65 * scale);
+		c.drawArc(outer, 0, 360, false, paints.background);
 	}
 
 	@Override
@@ -190,7 +187,6 @@ class WidgetPainter12 implements WidgetPainter {
 	private static Bitmap bmp;
 
 	public void fill_rv(final RemoteViews rv, final Hour h) {
-		bmp.eraseColor(Color.TRANSPARENT);
 		wd.prepare_glyphs(h.num);
 		wd.draw_dial(h, new Canvas(bmp));
 
@@ -200,11 +196,13 @@ class WidgetPainter12 implements WidgetPainter {
 	}
 
 	public synchronized void init(final Context c) {
+		final Paints paints = new Paints(c, Settings.getWidgetTheme(c));
 		sr = RuntimeResources.get(c).getInstance(StringResources.class);
-		wd = new WadokeiDraw(c, new Paints(c, Settings.getWidgetTheme(c)));
+		wd = new WadokeiDraw(paints);
 		unit = Math.round(11 * c.getResources().getDisplayMetrics().density);
 
 		bmp = Bitmap.createBitmap(unit * 18, unit * 19, Bitmap.Config.ARGB_4444);
+		new Canvas(bmp).drawCircle(unit * 9, unit * 10, unit * 9, paints.background);
 		wd.setUnit(unit);
 	}
 

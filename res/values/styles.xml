@@ -55,13 +55,24 @@
         <item name="item_boundary">@drawable/today_border_dark</item>
     </style>
 
-    <style name="SolidLight" parent="BaseTheme">
-        <item name="glyph_stroke">@android:color/background_light</item>
-        <item name="wadokei_stroke">@android:color/background_light</item>
+    <style name="SolidLight">
+        <item name="glyph_stroke">@android:color/background_dark</item>
+        <item name="wadokei_stroke">@android:color/background_dark</item>
         <item name="day_fill">@android:color/background_light</item>
         <item name="glyph_fill">@android:color/background_dark</item>
-        <item name="night_fill">@android:color/background_dark</item>
+        <item name="night_fill">@color/night_fill</item>
         <item name="wadokei_fill">@android:color/background_light</item>
+        <item name="widget_background">@color/wadokei_fill</item>
+    </style>
+
+    <style name="SolidDark">
+        <item name="glyph_stroke">@android:color/background_light</item>
+        <item name="wadokei_stroke">@android:color/background_light</item>
+        <item name="day_fill">#CCCCCC</item>
+        <item name="glyph_fill">@color/wadokei_fill</item>
+        <item name="night_fill">#444444</item>
+        <item name="wadokei_fill">#444444</item>
+        <item name="widget_background">@color/tab</item>
     </style>
 
     <style name="JTTTabButton" parent="@android:style/Widget.Button">

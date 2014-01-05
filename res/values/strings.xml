@@ -78,7 +78,8 @@
 
     <string-array name="widget_theme_names">
         <item>Translucent</item>
-        <item>Solid light</item>
+        <item>Dark</item>
+        <item>Light</item>
     </string-array>
 
     <string name="pref_theme">Theme</string>

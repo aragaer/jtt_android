@@ -2,7 +2,6 @@ package com.aragaer.jtt.graphics;
 
 import com.aragaer.jtt.core.Hour;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -22,7 +21,7 @@ public class WadokeiDraw {
 			sun_stages = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444),
 			glyphs = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444);
 
-	public WadokeiDraw(Context context, Paints paints) {
+	public WadokeiDraw(Paints paints) {
 		this.paints = paints;
 	}
 
