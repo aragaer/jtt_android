@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Wadokei">
+        <attr name="text_stroke" format="color" />
+        <attr name="glyph_stroke" format="color" />
+        <attr name="wadokei_stroke" format="color" />
+        <attr name="day_fill" format="color" />
+        <attr name="glyph_fill" format="color" />
+        <attr name="night_fill" format="color" />
+        <attr name="wadokei_fill" format="color" />
+    </declare-styleable>
+</resources>

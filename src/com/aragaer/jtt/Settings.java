@@ -22,7 +22,8 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 			PREF_HNAME = "jtt_hname",
 			PREF_NOTIFY = "jtt_notify",
 			PREF_THEME = "jtt_theme",
-			PREF_WIDGET_INVERSE = "jtt_widget_text_invert";
+			PREF_WIDGET_INVERSE = "jtt_widget_text_invert",
+			PREF_WIDGET = "jtt_widget_theme";
 
 	private static final String prefcodes[] = new String[] {PREF_LOCATION, PREF_NOTIFY, PREF_WIDGET_INVERSE, PREF_LOCALE, PREF_THEME, PREF_HNAME};
 
@@ -90,15 +91,27 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		}
 	}
 
-	static final int themes[] = {R.style.JTTTheme, R.style.DarkTheme};
-	public static final int getTheme(final Context context) {
+	static final int app_themes[] = {R.style.JTTTheme, R.style.DarkTheme};
+	public static final int getAppTheme(final Context context) {
 		String theme = PreferenceManager
 				.getDefaultSharedPreferences(context)
 				.getString(PREF_THEME, context.getString(R.string.theme_default));
 		try {
-			return themes[Integer.parseInt(theme)];
+			return app_themes[Integer.parseInt(theme)];
 		} catch (NumberFormatException e) {
-			return themes[0];
+			return app_themes[0];
+		}
+	}
+
+	static final int widget_themes[] = {R.style.JTTTheme, R.style.SolidLight};
+	public static final int getWidgetTheme(final Context context) {
+		String theme = PreferenceManager
+				.getDefaultSharedPreferences(context)
+				.getString(PREF_WIDGET, context.getString(R.string.theme_default));
+		try {
+			return widget_themes[Integer.parseInt(theme)];
+		} catch (NumberFormatException e) {
+			return widget_themes[0];
 		}
 	}
 

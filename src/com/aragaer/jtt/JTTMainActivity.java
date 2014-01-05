@@ -35,7 +35,7 @@ public class JTTMainActivity extends ActionBarActivity implements SharedPreferen
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		setTheme(Settings.getTheme(this));
+		setTheme(Settings.getAppTheme(this));
 		super.onCreate(savedInstanceState);
 		startService(new Intent(this, JttService.class));
 		StringResources.setLocaleToContext(this);

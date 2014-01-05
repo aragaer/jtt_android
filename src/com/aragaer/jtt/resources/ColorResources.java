@@ -39,12 +39,12 @@ public class ColorResources implements
 
 	private final Map<ColorResourceChangeListener, Integer> listeners = new HashMap<ColorResourceChangeListener, Integer>();
 
-	public synchronized void registerStringResourceChangeListener(
+	public synchronized void registerColorResourceChangeListener(
 			final ColorResourceChangeListener listener, final int changeMask) {
 		listeners.put(listener, changeMask);
 	}
 
-	public synchronized void unregisterStringResourceChangeListener(
+	public synchronized void unregisterColorResourceChangeListener(
 			final ColorResourceChangeListener listener) {
 		listeners.remove(listener);
 	}

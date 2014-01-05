@@ -4,15 +4,24 @@ import com.aragaer.jtt.core.Hour;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.util.AttributeSet;
 import android.view.View;
 
 public class WadokeiView extends View {
 	private final WadokeiDraw wd;
 	private final Hour hour = new Hour(0);
 
-	public WadokeiView(Context context, Paints paints) {
-		super(context);
-		wd = new WadokeiDraw(context, paints);
+	public WadokeiView(Context context) {
+		this(context, null);
+	}
+
+	public WadokeiView(Context context, AttributeSet attrs) {
+		this(context, attrs, 0);
+	}
+
+	public WadokeiView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		wd = new WadokeiDraw(context, new Paints(context));
 	}
 
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {

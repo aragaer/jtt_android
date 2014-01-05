@@ -2,13 +2,12 @@ package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.graphics.ArrowView;
-import com.aragaer.jtt.graphics.Paints;
 import com.aragaer.jtt.graphics.WadokeiView;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.res.TypedArray;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -26,12 +25,14 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 		super(context);
 		sr = RuntimeResources.get(context).getInstance(StringResources.class);
 		sr.registerStringResourceChangeListener(this, StringResources.TYPE_HOUR_NAME);
-		final Paints paints = Paints.forApplication(context);
-		wadokei = new WadokeiView(context, paints);
-		arrow = new ArrowView(context, paints);
+		wadokei = new WadokeiView(context);
+		arrow = new ArrowView(context);
 		text = new TextView(context);
 
-		text.setTextColor(Color.WHITE);
+		TypedArray ta = context.obtainStyledAttributes(new int[] {R.styleable.Wadokei_text_stroke});
+		text.setTextColor(ta.getColor(R.styleable.Wadokei_text_stroke, 0));
+		ta.recycle();
+
 		text.setGravity(Gravity.CENTER);
 
 		addView(wadokei);

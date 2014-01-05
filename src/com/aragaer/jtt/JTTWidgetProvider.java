@@ -174,7 +174,8 @@ class WidgetPainter1 implements WidgetPainter {
 		if (paints != null)
 			return;
 
-		paints = Paints.forWidget(ctx);
+		ctx.setTheme(Settings.getWidgetTheme(ctx));
+		paints = new Paints(ctx);
 		final float scale = ctx.getResources().getDisplayMetrics().density;
 		bmp = Bitmap.createBitmap((int) (80 * scale), (int) (80 * scale), Bitmap.Config.ARGB_4444);
 		c.setBitmap(bmp);
@@ -211,7 +212,8 @@ class WidgetPainter12 implements WidgetPainter {
 		if (sr != null)
 			return;
 		sr = RuntimeResources.get(c).getInstance(StringResources.class);
-		wd = new WadokeiDraw(c, Paints.forWidget(c));
+		c.setTheme(Settings.getWidgetTheme(c));
+		wd = new WadokeiDraw(c, new Paints(c));
 		size = Math.round(110 * c.getResources().getDisplayMetrics().density);
 
 		bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_4444);
