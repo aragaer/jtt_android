@@ -10,6 +10,7 @@
     <string name="clock">Clock</string>
     <string name="settings">Settings</string>
     <string name="bootup">Start on bootup</string>
+    <string name="no_providers">Unable to determine location.\nPlease enable location service.</string>
     <string name="bootup_ex">Start the service automatically when the device is turned on.</string>
     <string name="notify">Display notifications</string>
     <string name="notify_ex">Display current hour glyph in status bar.</string>

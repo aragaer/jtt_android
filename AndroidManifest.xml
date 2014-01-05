@@ -10,7 +10,7 @@
     <permission android:name="com.aragaer.jtt.permission.CLOCK"
 	    android:protectionLevel="signature" />
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 

@@ -8,14 +8,12 @@ import com.aragaer.jtt.resources.StringResources;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
-import android.util.Log;
 
 public class Settings extends PreferenceActivity implements OnPreferenceChangeListener {
 	public static final String PREF_LOCATION = "jtt_loc",
@@ -121,6 +119,6 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		if (!settings.contains("jtt_loc")) // location is not set
-			((LocationPreference) findPreference("jtt_loc")).showMe();
+			((LocationPreference) findPreference("jtt_loc")).showDialog(null);
 	}
 }

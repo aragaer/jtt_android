@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
-import android.util.Log;
 
 import com.aragaer.jtt.R;
 
