@@ -15,13 +15,7 @@ public class Paints {
 			day_fill = new Paint(0x01),
 			glyph_fill = new Paint(0x01),
 			night_fill = new Paint(0x01),
-			wadokei_fill = new Paint(0x01),
-
-			background = new Paint(0x01);
-
-	interface PaintChangeListener {
-		public void onPaintChanged();
-	}
+			wadokei_fill = new Paint(0x01);
 
 	public Paints(Context context) {
 		load(context.getTheme());
@@ -51,7 +45,6 @@ public class Paints {
 		glyph_fill.setColor(ta.getColor(R.styleable.Wadokei_glyph_fill, 0));
 		night_fill.setColor(ta.getColor(R.styleable.Wadokei_night_fill, 0));
 		wadokei_fill.setColor(ta.getColor(R.styleable.Wadokei_wadokei_fill, 0));
-		background.setColor(ta.getColor(R.styleable.Wadokei_widget_background, 0));
 
 		ta.recycle();
 	}

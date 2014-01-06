@@ -39,6 +39,7 @@
         <item name="night_fill">@color/night_fill</item>
         <item name="wadokei_fill">@color/wadokei_fill</item>
         <item name="text_stroke">@android:color/white</item>
+        <item name="text_color">@color/tab</item>
     </style>
 
     <style name="LightTheme" parent="BaseLightTheme">
@@ -63,6 +64,7 @@
         <item name="night_fill">@color/night_fill</item>
         <item name="wadokei_fill">@android:color/background_light</item>
         <item name="widget_background">@color/wadokei_fill</item>
+        <item name="text_color">@android:color/background_dark</item>
     </style>
 
     <style name="SolidDark">
@@ -73,6 +75,7 @@
         <item name="night_fill">#444444</item>
         <item name="wadokei_fill">#444444</item>
         <item name="widget_background">@color/tab</item>
+        <item name="text_color">@android:color/background_light</item>
     </style>
 
     <style name="JTTTabButton" parent="@android:style/Widget.Button">
