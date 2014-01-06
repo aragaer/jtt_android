@@ -1,7 +1,6 @@
 package com.aragaer.jtt.graphics;
 
 import android.content.Context;
-import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
 
@@ -17,17 +16,7 @@ public class Paints {
 			night_fill = new Paint(0x01),
 			wadokei_fill = new Paint(0x01);
 
-	public Paints(Context context) {
-		load(context.getTheme());
-	}
-
 	public Paints(Context context, int themeId) {
-		Theme theme = context.getResources().newTheme();
-		theme.applyStyle(themeId, true);
-		load(theme);
-	}
-
-	private void load(Theme theme) {
 		// default is FILL
 		glyph_stroke.setStyle(Paint.Style.STROKE);
 		wadokei_stroke.setStyle(Paint.Style.STROKE);
@@ -36,7 +25,7 @@ public class Paints {
 		glyph_stroke.setTextAlign(Paint.Align.CENTER);
 		glyph_fill.setTextAlign(Paint.Align.CENTER);
 
-		TypedArray ta = theme.obtainStyledAttributes(null, R.styleable.Wadokei, 0, 0);
+		TypedArray ta = context.obtainStyledAttributes(null, R.styleable.Wadokei, 0, themeId);
 
 		glyph_stroke.setColor(ta.getColor(R.styleable.Wadokei_glyph_stroke, 0));
 		wadokei_stroke.setColor(ta.getColor(R.styleable.Wadokei_wadokei_stroke, 0));

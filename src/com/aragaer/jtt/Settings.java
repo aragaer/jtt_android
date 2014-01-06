@@ -33,13 +33,8 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 			lp.setSummary(lp.getEntries()[lp.findIndexOfValue((String) newValue)]);
 		}
 
-		switch (listeners.get(preference.getKey())) {
-		case 2:
+		if (preference.getKey().equals(PREF_LOCALE))
 			finish(); // Main activity will restart us
-			break;
-		default:
-			break;
-		}
 		return true;
 	}
 

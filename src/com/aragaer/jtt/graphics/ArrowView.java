@@ -16,7 +16,7 @@ public class ArrowView extends View {
 
 	public ArrowView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		this.paints = new Paints(context);
+		this.paints = new Paints(context, 0);
 	}
 
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {

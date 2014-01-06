@@ -115,15 +115,13 @@ public class JTTWidgetProvider {
 			Canvas canvas = new Canvas(bmp);
 
 			// text_paint
-			final Theme widget_theme = c.getResources().newTheme();
 			int theme = Settings.getWidgetTheme(c);
-			widget_theme.applyStyle(theme, true);
 			final Paint text_paint = new Paint(0x07);
 			text_paint.setTextAlign(Paint.Align.CENTER);
-			TypedArray ta = widget_theme.obtainStyledAttributes(null, R.styleable.Widget, 0, 0);
+			TypedArray ta = c.obtainStyledAttributes(null, R.styleable.Widget, 0, theme);
 			text_paint.setColor(ta.getColor(R.styleable.Widget_text_color, 0));
 			ta.recycle();
-			ta = widget_theme.obtainStyledAttributes(null, R.styleable.Wadokei, 0, 0);
+			ta = c.obtainStyledAttributes(null, R.styleable.Wadokei, 0, theme);
 			text_paint.setShadowLayer(3, 0, 0, ta.getColor(R.styleable.Wadokei_wadokei_stroke, 0));
 			ta.recycle();
 
@@ -170,10 +168,8 @@ class WidgetPainter1 implements WidgetPainter {
 		RectF outer = new RectF(3 * scale, 3 * scale, 77 * scale, 77 * scale);
 		RectF inner = new RectF(15 * scale, 15 * scale, 65 * scale, 65 * scale);
 
-		final Theme widget_theme = context.getResources().newTheme();
-		widget_theme.applyStyle(theme, true);
 		final Paint background = new Paint(0x01);
-		TypedArray ta = widget_theme.obtainStyledAttributes(null, R.styleable.Widget, 0, 0);
+		TypedArray ta = context.obtainStyledAttributes(null, R.styleable.Widget, 0, theme);
 		background.setColor(ta.getColor(R.styleable.Widget_widget_background, 0));
 		ta.recycle();
 

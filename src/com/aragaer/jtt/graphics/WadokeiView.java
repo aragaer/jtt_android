@@ -16,12 +16,8 @@ public class WadokeiView extends View {
 	}
 
 	public WadokeiView(Context context, AttributeSet attrs) {
-		this(context, attrs, 0);
-	}
-
-	public WadokeiView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		wd = new WadokeiDraw(new Paints(context));
+		super(context, attrs);
+		wd = new WadokeiDraw(new Paints(context, 0));
 	}
 
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
