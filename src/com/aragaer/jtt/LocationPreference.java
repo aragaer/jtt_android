@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -35,10 +36,6 @@ public class LocationPreference extends DialogPreference implements
     private final static String fmt1 = "%.2f";
     private final static String fmt2 = "%s:%s";
     private final static String fmt3 = "%.2f:%.2f";
-
-    public void showMe() {
-        showDialog(null);
-    }
 
     public LocationPreference(Context ctx, AttributeSet attrs, int defStyle) {
         super(ctx, attrs, defStyle);
@@ -140,33 +137,24 @@ public class LocationPreference extends DialogPreference implements
     }
 
     private void acquireLocation() {
-        boolean got_provider = false;
         lm = (LocationManager) getContext().getSystemService(
                 Context.LOCATION_SERVICE);
 
-        Location last = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (last != null)
-            makeUseOfNewLocation(last, false);
-
-        last = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if (last != null)
-            makeUseOfNewLocation(last, false);
-
-        try {
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-            got_provider = true;
-        } catch (IllegalArgumentException e) {
-            Log.d("LocationPref", "No GPS provider");
+        if (!lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            Toast.makeText(getContext(), R.string.no_providers, Toast.LENGTH_SHORT).show();
+            getContext().startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            return;
         }
+
+        Location last = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if (last != null)
+            makeUseOfNewLocation(last, false);
+
         try {
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-            got_provider = true;
         } catch (IllegalArgumentException e) {
             Log.d("LocationPref", "No network provider");
         }
-
-        if (!got_provider)
-            Toast.makeText(getContext(), R.string.no_providers, Toast.LENGTH_SHORT).show();
     }
 
     public void onLocationChanged(Location location) {

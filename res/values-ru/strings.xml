@@ -65,19 +65,25 @@
     </string-array>
 
     <string name="appearance">Внешний вид</string>
-    <string name="no_providers">Не удается определить местоположение. Пожалуйста, включите GPS.</string>
+    <string name="no_providers">Не удается определить координаты. Пожалуйста, включите сервис определения местоположения.</string>
     <string name="widget1">JTT: Один час</string>
     <string name="widget12">JTT: Циферблат</string>
-    <string name="widget_invert">Белый текст в виджете</string>
-    <string name="widget_invert_ex">Использовать белый текст с черным контуром</string>
     <string name="locale">Язык</string>
     <string name="locale_default">Язык системы</string>
 
     <string-array name="theme_names">
         <item>Полупрозрачный</item>
         <item>Темный</item>
+        <item>Светлый</item>
+    </string-array>
+
+    <string-array name="widget_theme_names">
+        <item>Полупрозрачный</item>
+        <item>Темный</item>
+        <item>Светлый</item>
     </string-array>
 
     <string name="pref_theme">Стиль оформления</string>
+    <string name="pref_widget">Стиль виджета</string>
 
 </resources>

@@ -25,13 +25,7 @@
             android:title="@string/location_ex" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/appearance" >
-
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="jtt_widget_text_invert"
-            android:summary="@string/widget_invert_ex"
-            android:title="@string/widget_invert" />
+    <PreferenceCategory android:title="@string/language" >
 
         <ListPreference
             android:defaultValue=""
@@ -43,16 +37,28 @@
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/hour_name_option_names"
-            android:entryValues="@array/hour_name_options"
+            android:entryValues="@array/array_of_3"
             android:key="jtt_hname"
             android:title="@string/hour_names" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/appearance" >
 
         <ListPreference
             android:defaultValue="@string/theme_default"
             android:entries="@array/theme_names"
-            android:entryValues="@array/themes"
+            android:entryValues="@array/array_of_3"
             android:key="jtt_theme"
             android:title="@string/pref_theme" />
-    </PreferenceCategory>
+
+        <ListPreference
+            android:defaultValue="@string/theme_default"
+            android:entries="@array/widget_theme_names"
+            android:entryValues="@array/array_of_3"
+            android:key="jtt_widget_theme"
+            android:title="@string/pref_widget" />
+
+	</PreferenceCategory>
 
 </PreferenceScreen>

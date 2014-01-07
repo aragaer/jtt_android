@@ -5,6 +5,10 @@
         <item name="android:actionBarStyle">@style/DarkActionBar</item>
     </style>
 
+    <style name="BaseLightTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
+    </style>
+
     <style name="DarkActionBar" parent="@style/Widget.AppCompat.ActionBar">
         <item name="android:displayOptions">showCustom</item>
         <item name="android:background">@color/background</item>

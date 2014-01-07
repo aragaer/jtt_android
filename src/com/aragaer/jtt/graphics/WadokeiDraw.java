@@ -2,7 +2,6 @@ package com.aragaer.jtt.graphics;
 
 import com.aragaer.jtt.core.Hour;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -22,23 +21,22 @@ public class WadokeiDraw {
 			sun_stages = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444),
 			glyphs = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444);
 
-	public WadokeiDraw(Context context, Paints paints) {
+	public WadokeiDraw(Paints paints) {
 		this.paints = paints;
 	}
 
-	private int size, iR;
+	private int unit;
 
-	public void set_dial_size(final int new_size) {
-		size = new_size;
-		iR = size * 4 / 9;
+	public void setUnit(final int new_unit) {
+		unit = new_unit;
 
-		paints.glyph_stroke.setTextSize(iR / 3);
-		paints.glyph_fill.setTextSize(iR / 3);
+		paints.glyph_stroke.setTextSize(unit * 3 / 2);
+		paints.glyph_fill.setTextSize(unit * 3 / 2);
 
 		prepare_sun_stages();
 		prepare_dial();
 		glyphs.recycle();
-		glyphs = Bitmap.createBitmap(size * 8 / 5, size * 8 / 5, Bitmap.Config.ARGB_4444);
+		glyphs = Bitmap.createBitmap(unit * 16, unit * 16, Bitmap.Config.ARGB_4444);
 	}
 
 	final static int arc_start = -90 - Math.round(step / 2 - gap);
@@ -46,38 +44,50 @@ public class WadokeiDraw {
 	final static int arc_len = arc_end - arc_start;
 
 	final private void prepare_sun_stages() {
-		final RectF sun = new RectF(iR * 0.05f, iR * 0.8f, iR * 0.45f, iR * 1.2f);
+		final RectF sun = new RectF(0, 0, unit * 2.5f, unit * 2.5f);
+		sun.inset(2, 2);
+		int iR = unit * 7 / 2;
 
 		sun_stages.recycle();
-		sun_stages = Bitmap.createBitmap(iR * 2, iR * 2, Bitmap.Config.ARGB_4444);
+		sun_stages = Bitmap.createBitmap(unit * 7, unit * 7, Bitmap.Config.ARGB_4444);
 
 		final Canvas canvas = new Canvas(sun_stages);
 
 		canvas.drawArc(sun, 0, 360, false, paints.day_fill);
 		canvas.drawArc(sun, 0, 360, false, paints.wadokei_stroke);
 		canvas.rotate(90, iR, iR);
+		canvas.rotate(45, sun.centerX(), sun.centerY());
 		canvas.drawArc(sun, 0, 180, false, paints.day_fill);
 		canvas.drawArc(sun, 180, 180, false, paints.night_fill);
 		canvas.drawArc(sun, 0, 360, false, paints.wadokei_stroke);
-		canvas.drawLine(sun.left, iR, sun.right, iR, paints.wadokei_stroke);
+		canvas.drawLine(sun.left, sun.centerY(), sun.right, sun.centerY(), paints.wadokei_stroke);
+		canvas.rotate(-45, sun.centerX(), sun.centerY());
 		canvas.rotate(90, iR, iR);
 		canvas.drawArc(sun, 0, 360, false, paints.night_fill);
 		canvas.drawArc(sun, 0, 360, false, paints.wadokei_stroke);
 		canvas.rotate(90, iR, iR);
+		canvas.rotate(45, sun.centerX(), sun.centerY());
 		canvas.drawArc(sun, 180, 180, false, paints.day_fill);
 		canvas.drawArc(sun, 0, 180, false, paints.night_fill);
 		canvas.drawArc(sun, 0, 360, false, paints.wadokei_stroke);
-		canvas.drawLine(sun.left, iR, sun.right, iR, paints.wadokei_stroke);
+		canvas.drawLine(sun.left, sun.centerY(), sun.right, sun.centerY(), paints.wadokei_stroke);
+		canvas.rotate(-45, sun.centerX(), sun.centerY());
 	}
 
 	public void prepare_dial() {
-		final RectF outer = new RectF(size / 9, size / 9, size * 17 / 9, size * 17 / 9),
-				inner = new RectF(size - iR, size - iR, size + iR, size + iR),
-				sel = new RectF(2, 2, size * 2 - 2, size * 2 - 2); // extra couple pixels on the edge
+		// with extra couple pixels on the edge
+		final RectF outer = new RectF(0, 0, unit * 18, unit * 18),
+				inner = new RectF(0, 0, unit * 9, unit * 9),
+				sel = new RectF(0, 0, unit * 20, unit * 20);
+		outer.inset(2, 2);
+		outer.offset(0, unit);
+		inner.offset(unit * 4.5f, unit * 5.5f);
+		sel.inset(2, 2);
+		sel.offset(-unit, 0);
 		final Path path = new Path();
 
 		clock.recycle();
-		clock = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_4444);
+		clock = Bitmap.createBitmap(unit * 18, unit * 19, Bitmap.Config.ARGB_4444);
 
 		final Canvas canvas = new Canvas(clock);
 
@@ -95,7 +105,7 @@ public class WadokeiDraw {
 		path.close();
 
 		for (int hr = 1; hr < 12; hr++) {
-			canvas.rotate(step, size, size);
+			canvas.rotate(step, unit * 9, unit * 10);
 			canvas.drawPath(path, paints.wadokei_fill);
 			canvas.drawPath(path, paints.wadokei_stroke);
 		}
@@ -106,8 +116,8 @@ public class WadokeiDraw {
 		canvas.drawColor(0, Mode.CLEAR);
 		final int center = glyphs.getWidth() / 2;
 		// magic numbers here!
-		final int y = size * 16 / 81;
-		final int y_s = size * 10 / 81;
+		final int y = unit * 2;
+		final int y_s = unit * 3 / 2;
 
 		for (int hr = 0; hr < 12; hr++) {
 			final int glyph_y = hr == num ? y_s : y;
@@ -126,15 +136,15 @@ public class WadokeiDraw {
 				- PART_ANGLE * hour.quarter_parts;
 		final float angle = clock_angle - hour.num * step;
 
-		matrix.setRotate(clock_angle, size, size);
+		matrix.setRotate(clock_angle, unit * 9, unit * 10);
 		canvas.drawBitmap(clock, matrix, cache_paint);
 
-		matrix.setTranslate(size - iR, size - iR);
-		matrix.preRotate(angle, iR, iR);
+		matrix.setTranslate(unit * 5.5f, unit * 6.5f);
+		matrix.preRotate(angle - 45, unit * 7 / 2, unit * 7 / 2);
 		canvas.drawBitmap(sun_stages, matrix, cache_paint);
 
-		matrix.setTranslate(size / 5, size / 5);
-		matrix.preRotate(angle, size * 4 / 5, size * 4 / 5);
+		matrix.setTranslate(unit * 1, unit * 2);
+		matrix.preRotate(angle, unit * 8, unit * 8);
 		canvas.drawBitmap(glyphs, matrix, cache_paint);
 	}
 
@@ -143,7 +153,7 @@ public class WadokeiDraw {
 		glyphs.recycle();
 		sun_stages.recycle();
 
-		clock = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444); // make it non-null
+		clock = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444);
 		sun_stages = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444);
 		glyphs = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_4444);
 	}

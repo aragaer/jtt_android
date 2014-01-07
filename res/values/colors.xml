@@ -6,5 +6,4 @@
      <color name="wadokei_stroke">#C0000000</color>
      <color name="wadokei_fill">#80ffffff</color>
      <color name="night_fill">#80808080</color>
-	 <color name="text_stroke">@android:color/white</color>
 </resources>

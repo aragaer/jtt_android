@@ -9,8 +9,6 @@
     <string name="longitude">経度</string>
     <string name="clock">時計</string>
     <string name="settings">設定</string>
-    <string name="srv_fail">サービスが停止した</string>
-    <string name="srv_fail_ex">サービスの再起動にはタップ</string>
     <string name="bootup">自動起動</string>
     <string name="bootup_ex">デバイスを起動時に自動的に開始</string>
     <string name="notify">通知</string>
@@ -68,14 +66,19 @@
     <string name="no_providers">場所の取得に失敗しました。GPSを有効ください</string>
     <string name="widget1">JTT:１刻</string>
     <string name="widget12">JTT:文字盤</string>
-    <string name="widget_invert">ウィジェットのテキストの色を反転</string>
-    <string name="widget_invert_ex">境界線黒の白いテキストとを使用</string>
     <string name="locale">言語</string>
     <string name="locale_default">デフォルト</string>
 
     <string-array name="theme_names">
         <item>半透明</item>
         <item>暗い</item>
+        <item>Light</item>
+    </string-array>
+
+    <string-array name="widget_theme_names">
+        <item>半透明</item>
+        <item>暗い</item>
+        <item>Light</item>
     </string-array>
 
     <string name="pref_theme">スタイル</string>

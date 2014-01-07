@@ -8,7 +8,6 @@ import com.aragaer.jtt.resources.StringResources;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -22,25 +21,20 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 			PREF_HNAME = "jtt_hname",
 			PREF_NOTIFY = "jtt_notify",
 			PREF_THEME = "jtt_theme",
-			PREF_WIDGET_INVERSE = "jtt_widget_text_invert";
+			PREF_WIDGET = "jtt_widget_theme";
 
-	private static final String prefcodes[] = new String[] {PREF_LOCATION, PREF_NOTIFY, PREF_WIDGET_INVERSE, PREF_LOCALE, PREF_THEME, PREF_HNAME};
+	private static final String prefcodes[] = new String[] {PREF_LOCATION, PREF_NOTIFY, PREF_LOCALE, PREF_HNAME, PREF_THEME, PREF_WIDGET};
 
 	private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 
 	public boolean onPreferenceChange(Preference preference, Object newValue) {
-		switch (listeners.get(preference.getKey())) {
-		case 3:
-			finish(); // Main activity will restart us
-			break;
-		case 4:
-		case 5:
+		if (preference instanceof ListPreference) {
 			final ListPreference lp = (ListPreference) preference;
 			lp.setSummary(lp.getEntries()[lp.findIndexOfValue((String) newValue)]);
-			break;
-		default:
-			break;
 		}
+
+		if (preference.getKey().equals(PREF_LOCALE))
+			finish(); // Main activity will restart us
 		return true;
 	}
 
@@ -48,7 +42,7 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		StringResources.setLocaleToContext(this);
-		addPreferencesFromResource(R.layout.preferences);
+		addPreferencesFromResource(R.xml.preferences);
 		ListPreference pref_locale = (ListPreference) findPreference(PREF_LOCALE);
 
 		final CharSequence[] llist = pref_locale.getEntryValues();
@@ -90,15 +84,27 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		}
 	}
 
-	static final int themes[] = {R.style.JTTTheme, R.style.DarkTheme};
-	public static final int getTheme(final Context context) {
+	static final int app_themes[] = {R.style.JTTTheme, R.style.DarkTheme, R.style.LightTheme};
+	public static final int getAppTheme(final Context context) {
 		String theme = PreferenceManager
 				.getDefaultSharedPreferences(context)
 				.getString(PREF_THEME, context.getString(R.string.theme_default));
 		try {
-			return themes[Integer.parseInt(theme)];
+			return app_themes[Integer.parseInt(theme)];
 		} catch (NumberFormatException e) {
-			return themes[0];
+			return app_themes[0];
+		}
+	}
+
+	static final int widget_themes[] = {R.style.JTTTheme, R.style.SolidDark, R.style.SolidLight};
+	public static final int getWidgetTheme(final Context context) {
+		String theme = PreferenceManager
+				.getDefaultSharedPreferences(context)
+				.getString(PREF_WIDGET, context.getString(R.string.theme_default));
+		try {
+			return widget_themes[Integer.parseInt(theme)];
+		} catch (NumberFormatException e) {
+			return widget_themes[0];
 		}
 	}
 
@@ -108,6 +114,6 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		if (!settings.contains("jtt_loc")) // location is not set
-			((LocationPreference) findPreference("jtt_loc")).showMe();
+			((LocationPreference) findPreference("jtt_loc")).showDialog(null);
 	}
 }

@@ -16,6 +16,6 @@
         android:id="@+id/border"
         android:layout_width="match_parent"
         android:layout_height="@dimen/today_current"
-        android:src="@drawable/today_border" />
+        android:src="?attr/item_boundary" />
 
 </LinearLayout>
