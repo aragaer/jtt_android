@@ -8,17 +8,7 @@
         <item>ru</item>
         <item>ja</item>
     </string-array>
-    <string-array name="themes">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-    <string-array name="widget_themes">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-    <string-array name="hour_name_options">
+    <string-array name="array_of_3">
         <item>0</item>
         <item>1</item>
         <item>2</item>

@@ -42,7 +42,7 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		StringResources.setLocaleToContext(this);
-		addPreferencesFromResource(R.layout.preferences);
+		addPreferencesFromResource(R.xml.preferences);
 		ListPreference pref_locale = (ListPreference) findPreference(PREF_LOCALE);
 
 		final CharSequence[] llist = pref_locale.getEntryValues();

@@ -37,7 +37,7 @@
         <ListPreference
             android:defaultValue="0"
             android:entries="@array/hour_name_option_names"
-            android:entryValues="@array/hour_name_options"
+            android:entryValues="@array/array_of_3"
             android:key="jtt_hname"
             android:title="@string/hour_names" />
 
@@ -48,14 +48,14 @@
         <ListPreference
             android:defaultValue="@string/theme_default"
             android:entries="@array/theme_names"
-            android:entryValues="@array/themes"
+            android:entryValues="@array/array_of_3"
             android:key="jtt_theme"
             android:title="@string/pref_theme" />
 
         <ListPreference
             android:defaultValue="@string/theme_default"
             android:entries="@array/widget_theme_names"
-            android:entryValues="@array/widget_themes"
+            android:entryValues="@array/array_of_3"
             android:key="jtt_widget_theme"
             android:title="@string/pref_widget" />
 
