@@ -12,6 +12,7 @@
     <declare-styleable name="Widget">
         <attr name="widget_background" format="color" />
         <attr name="text_color" format="color" />
+        <attr name="text_shadow" format="color" />
     </declare-styleable>
     <declare-styleable name="Today">
         <attr name="item_boundary" format="integer|reference" />

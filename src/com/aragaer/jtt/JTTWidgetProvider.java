@@ -120,9 +120,7 @@ public class JTTWidgetProvider {
 			text_paint.setTextAlign(Paint.Align.CENTER);
 			TypedArray ta = c.obtainStyledAttributes(null, R.styleable.Widget, 0, theme);
 			text_paint.setColor(ta.getColor(R.styleable.Widget_text_color, 0));
-			ta.recycle();
-			ta = c.obtainStyledAttributes(null, R.styleable.Wadokei, 0, theme);
-			text_paint.setShadowLayer(3, 0, 0, ta.getColor(R.styleable.Wadokei_wadokei_stroke, 0));
+			text_paint.setShadowLayer(3, 0, 0, ta.getColor(R.styleable.Widget_text_shadow, 0));
 			ta.recycle();
 
 			text_paint.setTextSize(holder.painter.get_text_size(c) * c.getResources().getDisplayMetrics().density);

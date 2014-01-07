@@ -16,10 +16,10 @@
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:radioButtonStyle">@style/JTTTabButton</item>
-        <item name="glyph_stroke">@android:color/white</item>
-        <item name="wadokei_stroke">@color/wadokei_fill</item>
+        <item name="glyph_stroke">#C0000000</item>
+        <item name="wadokei_stroke">#C0FFFFFF</item>
         <item name="day_fill">@color/wadokei_fill</item>
-        <item name="glyph_fill">@android:color/background_dark</item>
+        <item name="glyph_fill">#CCCCCC</item>
         <item name="night_fill">@color/night_fill</item>
         <item name="wadokei_fill">@color/wadokei_fill</item>
         <item name="text_stroke">@color/wadokei_fill</item>
@@ -39,14 +39,15 @@
         <item name="night_fill">@color/night_fill</item>
         <item name="wadokei_fill">@color/wadokei_fill</item>
         <item name="text_stroke">@android:color/white</item>
-        <item name="text_color">@color/tab</item>
+        <item name="text_color">#808080</item>
+        <item name="text_shadow">@android:color/white</item>
     </style>
 
     <style name="LightTheme" parent="BaseLightTheme">
         <item name="android:textSize">15sp</item>
         <item name="android:textColor">@android:color/darker_gray</item>
         <item name="android:radioButtonStyle">@style/JTTTabButtonInverted</item>
-        <item name="glyph_stroke">@color/wadokei_stroke</item>
+        <item name="glyph_stroke">#C0444444</item>
         <item name="wadokei_stroke">@color/wadokei_stroke</item>
         <item name="day_fill">@color/wadokei_fill</item>
         <item name="glyph_fill">@color/night_fill</item>
@@ -54,28 +55,31 @@
         <item name="wadokei_fill">@color/night_fill</item>
         <item name="text_stroke">@android:color/darker_gray</item>
         <item name="item_boundary">@drawable/today_border_dark</item>
+        <item name="text_color">@color/tab</item>
     </style>
 
     <style name="SolidLight">
-        <item name="glyph_stroke">@android:color/background_dark</item>
+        <item name="glyph_stroke">#C0000000</item>
         <item name="wadokei_stroke">@android:color/background_dark</item>
         <item name="day_fill">@android:color/background_light</item>
-        <item name="glyph_fill">@android:color/background_dark</item>
+        <item name="glyph_fill">@color/tab</item>
         <item name="night_fill">@color/night_fill</item>
         <item name="wadokei_fill">@android:color/background_light</item>
         <item name="widget_background">@color/wadokei_fill</item>
         <item name="text_color">@android:color/background_dark</item>
+        <item name="text_shadow">@android:color/background_light</item>
     </style>
 
     <style name="SolidDark">
-        <item name="glyph_stroke">@android:color/background_light</item>
-        <item name="wadokei_stroke">@android:color/background_light</item>
+        <item name="glyph_stroke">#C0000000</item>
+        <item name="wadokei_stroke">#C0FFFFFF</item>
         <item name="day_fill">#CCCCCC</item>
-        <item name="glyph_fill">@color/wadokei_fill</item>
+        <item name="glyph_fill">@android:color/white</item>
         <item name="night_fill">#444444</item>
         <item name="wadokei_fill">#444444</item>
         <item name="widget_background">@color/tab</item>
-        <item name="text_color">@android:color/background_light</item>
+        <item name="text_color">@android:color/white</item>
+        <item name="text_shadow">#444444</item>
     </style>
 
     <style name="JTTTabButton" parent="@android:style/Widget.Button">
