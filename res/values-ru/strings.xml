@@ -64,6 +64,7 @@
         <item>Четвертая четверть</item>
     </string-array>
 
+    <string name="language">Язык и названия</string>
     <string name="appearance">Внешний вид</string>
     <string name="no_providers">Не удается определить координаты. Пожалуйста, включите сервис определения местоположения.</string>
     <string name="widget1">JTT: Один час</string>
