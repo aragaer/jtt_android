@@ -9,8 +9,6 @@
     <string name="longitude">Долгота</string>
     <string name="clock">Часы</string>
     <string name="settings">Настройки</string>
-    <string name="srv_fail">Сервис остановлен</string>
-    <string name="srv_fail_ex">Нажмите для перезапуска сервиса.</string>
     <string name="bootup">Автозапуск</string>
     <string name="bootup_ex">Автоматически запускать сервис при загрузке устройства.</string>
     <string name="notify">Оповещения</string>
@@ -22,6 +20,7 @@
     <string name="noon">Полдень</string>
     <string name="midnight">Полночь</string>
     <string name="hour_names">Названия часов</string>
+    <string name="no_providers">Не удается определить координаты. Пожалуйста, включите сервис определения местоположения.</string>
 
     <string-array name="hour_name_option_names">
         <item>По умолчанию</item>
@@ -66,7 +65,6 @@
 
     <string name="language">Язык и названия</string>
     <string name="appearance">Внешний вид</string>
-    <string name="no_providers">Не удается определить координаты. Пожалуйста, включите сервис определения местоположения.</string>
     <string name="widget1">JTT: Один час</string>
     <string name="widget12">JTT: Циферблат</string>
     <string name="locale">Язык</string>

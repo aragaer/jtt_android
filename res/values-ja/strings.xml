@@ -20,6 +20,7 @@
     <string name="noon">正午</string>
     <string name="midnight">真夜中</string>
     <string name="hour_names">刻の名前</string>
+    <string name="no_providers">場所の取得に失敗しました。位置情報サービスを有効ください</string>
 
     <string-array name="hour_name_option_names">
         <item>デフォルト</item>
@@ -62,8 +63,8 @@
         <item>四つ時</item>
     </string-array>
 
+    <string name="language">名前と言語</string>
     <string name="appearance">外観</string>
-    <string name="no_providers">場所の取得に失敗しました。GPSを有効ください</string>
     <string name="widget1">JTT:１刻</string>
     <string name="widget12">JTT:文字盤</string>
     <string name="locale">言語</string>
@@ -72,14 +73,16 @@
     <string-array name="theme_names">
         <item>半透明</item>
         <item>暗い</item>
-        <item>Light</item>
+        <item>薄い</item>
     </string-array>
 
     <string-array name="widget_theme_names">
         <item>半透明</item>
         <item>暗い</item>
-        <item>Light</item>
+        <item>薄い</item>
     </string-array>
 
     <string name="pref_theme">スタイル</string>
+    <string name="pref_widget">ウィジェットのスタイル</string>
+
 </resources>
