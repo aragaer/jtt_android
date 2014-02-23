@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import java.lang.System;
+import java.util.Arrays;
 
 /* Hour item in TodayList */
 class HourItem extends TodayItem {
@@ -109,37 +111,27 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 		}
 	}
 
-	public void tick() {
+	public void tick(long tr[], boolean is_day) {
 		long now = System.currentTimeMillis();
 
-		if (now >= transitions[1] && now < transitions[2]) {
-			// check that items are built
-			// expect 37 items
-			if (getCount() < Hour.HOURS * (transitions.length - 1) * 2 - 1)
-				// transitions are set but items aren't built
-				// this means we're currently in the build process
-				return;
-
-			// odd items - boundaries
-			selected = 0;
-			while (getItem(selected + 1).time < now)
-				selected += 2;
-
-			notifyDataSetChanged();
-			return;
-		}
-
-		final Context ctx = getContext();
-		try {
-			boolean is_day = Calculator.getSurroundingTransitions(ctx, now, transitions);
+		if (now < transitions[1] || now < transitions[2] || !Arrays.equals(transitions, tr)) {
+			System.arraycopy(tr, 0, transitions, 0, tr.length);
 			buildItems(is_day);
-		} catch (IllegalStateException e) {
-			Log.w(TAG, "Content provider has no location");
-			// starting the JttService should solve this
-			ctx.startService(new Intent(ctx, JttService.class));
-			return;
 		}
 
+		// check that items are built
+		// expect 37 items
+		if (getCount() < Hour.HOURS * (transitions.length - 1) * 2 - 1)
+			// transitions are set but items aren't built
+			// this means we're currently in the build process
+			return;
+
+		// odd items - boundaries
+		selected = 0;
+		while (getItem(selected + 1).time < now)
+			selected += 2;
+
+		notifyDataSetChanged();
 	}
 
 	@Override

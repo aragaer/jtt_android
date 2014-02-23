@@ -29,7 +29,7 @@ public class JTTMainActivity extends ActionBarActivity implements SharedPreferen
 			final int wrapped = intent.getIntExtra("jtt", 0);
 
 			clock.setHour(wrapped);
-			today.tick();
+			today.tick(intent.getLongArrayExtra("tr"), intent.getBooleanExtra("day", false));
 		}
 	};
 
