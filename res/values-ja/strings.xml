@@ -9,22 +9,18 @@
     <string name="longitude">経度</string>
     <string name="clock">時計</string>
     <string name="settings">設定</string>
-    <string name="srv_fail">サービスが停止した</string>
-    <string name="srv_fail_ex">サービスの再起動にはタップ</string>
     <string name="bootup">自動起動</string>
     <string name="bootup_ex">デバイスを起動時に自動的に開始</string>
     <string name="notify">通知</string>
     <string name="notify_ex">今の刻をステータスバーで表示</string>
     <string name="status">起動と通知</string>
-    <string name="stop">サービスを停止</string>
-    <string name="stop_ex">サービスを停止が、アプリを閉鎖にはタップ</string>
-    <string name="stop_ask">サービスは停止されます、アプリは閉鎖されます。サービスは次開始の時起動時に自動的に開始\n\n続しますか？</string>
     <string name="today">今日</string>
     <string name="sunrise">日出</string>
     <string name="sunset">日没</string>
     <string name="noon">正午</string>
     <string name="midnight">真夜中</string>
     <string name="hour_names">刻の名前</string>
+    <string name="no_providers">場所の取得に失敗しました。位置情報サービスを有効ください</string>
 
     <string-array name="hour_name_option_names">
         <item>デフォルト</item>
@@ -67,19 +63,26 @@
         <item>四つ時</item>
     </string-array>
 
+    <string name="language">名前と言語</string>
     <string name="appearance">外観</string>
-    <string name="no_providers">場所の取得に失敗しました。GPSを有効ください</string>
     <string name="widget1">JTT:１刻</string>
     <string name="widget12">JTT:文字盤</string>
-    <string name="widget_invert">ウィジェットのテキストの色を反転</string>
-    <string name="widget_invert_ex">境界線黒の白いテキストとを使用</string>
     <string name="locale">言語</string>
     <string name="locale_default">デフォルト</string>
 
     <string-array name="theme_names">
         <item>半透明</item>
         <item>暗い</item>
+        <item>淡い</item>
+    </string-array>
+
+    <string-array name="widget_theme_names">
+        <item>半透明</item>
+        <item>暗い</item>
+        <item>淡い</item>
     </string-array>
 
     <string name="pref_theme">スタイル</string>
+    <string name="pref_widget">ウィジェットのスタイル</string>
+
 </resources>

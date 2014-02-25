@@ -15,8 +15,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 	private static final String TAG = "JTT_SERVICE";
 	private JttStatus status_notify;
 
-	static final String STOP_ACTION = "com.aragaer.jtt.action.SERVICE_STOP";
-
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
@@ -25,13 +23,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startid) {
 		Log.i(TAG, "Service starting");
-		if (intent != null && STOP_ACTION.equals(intent.getAction())) {
-			if (status_notify != null) {
-				status_notify.release();
-				status_notify = null;
-			}
-			return START_NOT_STICKY;
-		}
 		move();
 
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -59,7 +50,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 			toggle_notify(pref.getBoolean("jtt_notify", true));
 		else if (key.equals(Settings.PREF_LOCATION))
 			move();
-		else if (key.equals(Settings.PREF_WIDGET_INVERSE)
+		else if (key.equals(Settings.PREF_WIDGET)
 				|| key.equals(Settings.PREF_LOCALE)
 				|| key.equals(Settings.PREF_HNAME))
 			JTTWidgetProvider.draw_all(this);

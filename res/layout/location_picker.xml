@@ -26,11 +26,4 @@
         android:layout_height="wrap_content"
         android:inputType="numberSigned|numberDecimal" />
 
-    <Button
-        android:id="@+id/auto_loc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/auto_lat_long"
-        style="@android:style/Widget.Button"/>
-
 </LinearLayout>

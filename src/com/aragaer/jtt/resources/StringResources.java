@@ -50,14 +50,23 @@ public class StringResources implements
 		pref.registerOnSharedPreferenceChangeListener(this);
 	}
 
-	private synchronized void setLocale(final String l) {
+	private static void setLocaleToResources(final String l, final Resources r) {
 		final Locale locale = l.length() == 0
 				? Resources.getSystem().getConfiguration().locale
 				: new Locale(l);
-
 		final Configuration config = r.getConfiguration();
 		config.locale = locale;
 		r.updateConfiguration(config, null);
+	}
+
+	public static void setLocaleToContext(Context context) {
+		final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+		final String lang = pref.getString(Settings.PREF_LOCALE, "");
+		setLocaleToResources(lang, context.getResources());
+	}
+
+	private synchronized void setLocale(final String l) {
+		setLocaleToResources(l, c.getApplicationContext().getResources());
 		load_hour_names();
 		df = android.text.format.DateFormat.getTimeFormat(c);
 		change_pending |= TYPE_TIME_FORMAT;

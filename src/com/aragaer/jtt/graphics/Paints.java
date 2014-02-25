@@ -1,39 +1,40 @@
 package com.aragaer.jtt.graphics;
 
-import com.aragaer.jtt.R;
-
 import android.content.Context;
-import android.graphics.Color;
+import android.content.res.TypedArray;
 import android.graphics.Paint;
 
+import com.aragaer.jtt.R;
+
 public class Paints {
-	private static Paints singleton;
-	public final Paint stroke1 = new Paint(0x07),
-			stroke2 = new Paint(0x07),
-			solid1 = new Paint(0x01),
-			solid2 = new Paint(0x01);
+	public final Paint
+			glyph_stroke = new Paint(0x07),
+			wadokei_stroke = new Paint(0x07),
 
-	public Paints(Context ctx) {
-		stroke1.setStyle(Paint.Style.STROKE);
-		stroke1.setTextAlign(Paint.Align.CENTER);
-		stroke1.setColor(Color.parseColor(ctx.getString(R.color.stroke)));
+			day_fill = new Paint(0x01),
+			glyph_fill = new Paint(0x01),
+			night_fill = new Paint(0x01),
+			wadokei_fill = new Paint(0x01);
 
-		stroke2.setTextAlign(Paint.Align.CENTER);
-		stroke2.setStyle(Paint.Style.STROKE);
-		stroke2.setColor(Color.WHITE);
+	public Paints(Context context, int themeId) {
+		// default is FILL
+		glyph_stroke.setStyle(Paint.Style.STROKE);
+		wadokei_stroke.setStyle(Paint.Style.STROKE);
 
-		solid1.setStyle(Paint.Style.FILL);
-		solid1.setTextAlign(Paint.Align.CENTER);
-		solid1.setColor(Color.parseColor(ctx.getString(R.color.fill)));
+		// only these are used for text at all
+		glyph_stroke.setTextAlign(Paint.Align.CENTER);
+		glyph_fill.setTextAlign(Paint.Align.CENTER);
 
-		solid2.setStyle(Paint.Style.FILL);
-		solid2.setTextAlign(Paint.Align.CENTER);
-		solid2.setColor(Color.parseColor(ctx.getString(R.color.night)));
-	}
+		TypedArray ta = context.obtainStyledAttributes(null, R.styleable.Wadokei, 0, themeId);
 
-	public static Paints getInstance(Context ctx) {
-		if (singleton == null)
-			singleton = new Paints(ctx);
-		return singleton;
+		glyph_stroke.setColor(ta.getColor(R.styleable.Wadokei_glyph_stroke, 0));
+		wadokei_stroke.setColor(ta.getColor(R.styleable.Wadokei_wadokei_stroke, 0));
+
+		day_fill.setColor(ta.getColor(R.styleable.Wadokei_day_fill, 0));
+		glyph_fill.setColor(ta.getColor(R.styleable.Wadokei_glyph_fill, 0));
+		night_fill.setColor(ta.getColor(R.styleable.Wadokei_night_fill, 0));
+		wadokei_fill.setColor(ta.getColor(R.styleable.Wadokei_wadokei_fill, 0));
+
+		ta.recycle();
 	}
 }

@@ -3,5 +3,5 @@
     android:shape="line">
 	<stroke
         android:width="@dimen/today_boundary"
-        android:color="@color/wadokei_fill" />
+        android:color="@color/night_fill" />
 </shape>

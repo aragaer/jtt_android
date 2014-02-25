@@ -16,19 +16,20 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources.Theme;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 interface WidgetPainter {
-	void hour_changed(final int n);
-	void fill_rv(final RemoteViews rv, final Hour h);
-	void init(final Context c);
+	Bitmap get_bmp(final Context c, final Hour h);
+	String get_text(final Context c, final Hour h);
+	int get_text_size(final Context c);
 }
 
 public class JTTWidgetProvider {
@@ -70,7 +71,6 @@ public class JTTWidgetProvider {
 
 		public void onReceive(Context c, Intent i) {
 			final String action = i.getAction();
-			classes.get(getClass()).painter.init(c);
 			if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
 				update(c, i);
 			else if (action.equals(Clockwork.ACTION_JTT_TICK))
@@ -86,20 +86,14 @@ public class JTTWidgetProvider {
 	}
 
 	private static void tick(Context c, Intent i, Class<?> cls) {
-		int n = i.getIntExtra("hour", 0);
 		int wrapped = i.getIntExtra("jtt", 0);
 		final WidgetHolder holder = classes.get(cls);
 		Hour prev = holder.last_update;
 		if (prev == null) {
 			wrapped -= wrapped % holder.granularity;
 			holder.last_update = prev = Hour.fromWrapped(wrapped, null);
-			holder.painter.hour_changed(n);
-		} else {
-			if (prev.num != n)
-				holder.painter.hour_changed(n);
-			if (!prev.compareAndUpdate(wrapped, holder.granularity))
-				return; // do nothing
-		}
+		} else if (!prev.compareAndUpdate(wrapped, holder.granularity))
+			return; // do nothing
 		draw(c, null, holder);
 	}
 
@@ -111,19 +105,36 @@ public class JTTWidgetProvider {
 			return;
 
 		RemoteViews rv;
+		Bitmap bmp = null;
 		if (holder.last_update == null)
 			rv = new RemoteViews(PKG_NAME, R.layout.widget_loading);
 		else {
-			boolean inverse = PreferenceManager.getDefaultSharedPreferences(c)
-					.getBoolean(Settings.PREF_WIDGET_INVERSE, false);
-			rv = new RemoteViews(PKG_NAME, inverse ? R.layout.widget_inverse : R.layout.widget);
-			holder.painter.fill_rv(rv, holder.last_update);
+			String text = holder.painter.get_text(c, holder.last_update);
+			rv = new RemoteViews(PKG_NAME, R.layout.widget);
+			bmp = holder.painter.get_bmp(c, holder.last_update);
+			Canvas canvas = new Canvas(bmp);
+
+			// text_paint
+			int theme = Settings.getWidgetTheme(c);
+			final Paint text_paint = new Paint(0x07);
+			text_paint.setTextAlign(Paint.Align.CENTER);
+			TypedArray ta = c.obtainStyledAttributes(null, R.styleable.Widget, 0, theme);
+			text_paint.setColor(ta.getColor(R.styleable.Widget_text_color, 0));
+			text_paint.setShadowLayer(3, 0, 0, ta.getColor(R.styleable.Widget_text_shadow, 0));
+			ta.recycle();
+
+			text_paint.setTextSize(holder.painter.get_text_size(c) * c.getResources().getDisplayMetrics().density);
+
+			canvas.drawText(text, canvas.getWidth() / 2, (canvas.getHeight() - text_paint.ascent() - text_paint.descent()) / 2, text_paint);
+			rv.setImageViewBitmap(R.id.clock, bmp);
 		}
 		PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, new Intent(c, JTTMainActivity.class), 0);
 		rv.setOnClickPendingIntent(R.id.clock, pendingIntent);
 
 		for (int id : ids)
 			awm.updateAppWidget(id, rv);
+		if (bmp != null)
+			bmp.recycle();
 	}
 
 	/* Widget showing only 1 hour */
@@ -142,78 +153,86 @@ public class JTTWidgetProvider {
 }
 
 class WidgetPainter1 implements WidgetPainter {
-	private static Paints paints;
-	private static Bitmap bmp;
-	private static final Canvas c = new Canvas();
-	private static final Path path1 = new Path(), path2 = new Path();
-	private static final RectF outer = new RectF(), inner = new RectF();
-
-	public void hour_changed(final int n) { }
-
 	private static final float QUARTER_ANGLE = 355f / Hour.QUARTERS,
 			PART_ANGLE = QUARTER_ANGLE / Hour.QUARTER_PARTS;
-	public void fill_rv(final RemoteViews rv, final Hour h) {
-		bmp.eraseColor(Color.TRANSPARENT);
 
+	@Override
+	public Bitmap get_bmp(Context context, Hour h) {
+		int theme = Settings.getWidgetTheme(context);
+		Paints paints = new Paints(context, theme);
+		final float scale = context.getResources().getDisplayMetrics().density;
+		Bitmap bmp = Bitmap.createBitmap((int) (80 * scale), (int) (80 * scale), Bitmap.Config.ARGB_4444);
+		Canvas c = new Canvas(bmp);
+		RectF outer = new RectF(3 * scale, 3 * scale, 77 * scale, 77 * scale);
+		RectF inner = new RectF(15 * scale, 15 * scale, 65 * scale, 65 * scale);
+
+		final Paint background = new Paint(0x01);
+		TypedArray ta = context.obtainStyledAttributes(null, R.styleable.Widget, 0, theme);
+		background.setColor(ta.getColor(R.styleable.Widget_widget_background, 0));
+		ta.recycle();
+
+		c.drawArc(outer, 0, 360, false, background);
 		final float angle = 2.5f + QUARTER_ANGLE * h.quarter + PART_ANGLE * h.quarter_parts;
 
-		path1.rewind();
+		Path path1 = new Path();
 		path1.arcTo(inner, angle - 90, -angle);
 		path1.arcTo(outer, -90, angle);
 
-		path2.rewind();
+		Path path2 = new Path();
 		path2.arcTo(outer, -90, angle - 360);
 		path2.arcTo(inner, angle - 90, 360 - angle);
 
-		c.drawPath(path1, paints.solid1);
-		c.drawPath(path2, paints.solid2);
-		c.drawPath(path1, paints.stroke1);
-		c.drawPath(path2, paints.stroke1);
+		c.drawPath(path1, paints.day_fill);
+		c.drawPath(path2, paints.night_fill);
+		c.drawPath(path1, paints.wadokei_stroke);
+		c.drawPath(path2, paints.wadokei_stroke);
 
-		rv.setImageViewBitmap(R.id.clock, bmp);
-		rv.setTextViewText(R.id.glyph, Hour.Glyphs[h.num]);
+		return bmp;
 	}
 
-	public void init(final Context ctx) {
-		if (paints != null)
-			return;
+	@Override
+	public String get_text(Context c, Hour h) {
+		return Hour.Glyphs[h.num];
+	}
 
-		paints = Paints.getInstance(ctx);
-		final float scale = ctx.getResources().getDisplayMetrics().density;
-		bmp = Bitmap.createBitmap((int) (80 * scale), (int) (80 * scale), Bitmap.Config.ARGB_4444);
-		c.setBitmap(bmp);
-		outer.set(3 * scale, 3 * scale, 77 * scale, 77 * scale);
-		inner.set(15 * scale, 15 * scale, 65 * scale, 65 * scale);
+	@Override
+	public int get_text_size(Context c) {
+		return 40;
 	}
 }
 
 class WidgetPainter12 implements WidgetPainter {
-	static StringResources sr;
-	static WadokeiDraw wd;
-	static int size;
-	private static Bitmap bmp;
 
-	public void hour_changed(final int n) {
-		wd.prepare_glyphs(n);
-	}
+	@Override
+	public Bitmap get_bmp(Context c, Hour h) {
+		int theme = Settings.getWidgetTheme(c);
+		final Paints paints = new Paints(c, theme);
+		WadokeiDraw wd = new WadokeiDraw(paints);
+		int unit = Math.round(11 * c.getResources().getDisplayMetrics().density);
 
-	public void fill_rv(final RemoteViews rv, final Hour h) {
-		bmp.eraseColor(Color.TRANSPARENT);
+		final Theme widget_theme = c.getResources().newTheme();
+		widget_theme.applyStyle(theme, true);
+		final Paint background = new Paint(0x01);
+		TypedArray ta = widget_theme.obtainStyledAttributes(null, R.styleable.Widget, 0, 0);
+		background.setColor(ta.getColor(R.styleable.Widget_widget_background, 0));
+		ta.recycle();
+
+		Bitmap bmp = Bitmap.createBitmap(unit * 18, unit * 19, Bitmap.Config.ARGB_4444);
+		new Canvas(bmp).drawCircle(unit * 9, unit * 10, unit * 9, background);
+		wd.setUnit(unit);
+		wd.prepare_glyphs(h.num);
 		wd.draw_dial(h, new Canvas(bmp));
-
-		rv.setImageViewBitmap(R.id.clock, bmp);
-		rv.setFloat(R.id.glyph, "setTextSize", size / 10);
-		rv.setTextViewText(R.id.glyph, sr.getHour(h.num));
+		wd.release();
+		return bmp;
 	}
 
-	public void init(final Context c) {
-		if (sr != null)
-			return;
-		sr = RuntimeResources.get(c).getInstance(StringResources.class);
-		wd = new WadokeiDraw(c);
-		size = Math.round(110 * c.getResources().getDisplayMetrics().density);
+	@Override
+	public String get_text(Context c, Hour h) {
+		return RuntimeResources.get(c).getInstance(StringResources.class).getHour(h.num);
+	}
 
-		bmp = Bitmap.createBitmap(size * 2, size * 2, Bitmap.Config.ARGB_4444);
-		wd.set_dial_size(size);
+	@Override
+	public int get_text_size(Context c) {
+		return 33;
 	}
 }

@@ -3,14 +3,20 @@ package com.aragaer.jtt.graphics;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Path;
+import android.util.AttributeSet;
 import android.view.View;
 
 public class ArrowView extends View {
 	private final Paints paints;
 	private final Path path = new Path();
+
 	public ArrowView(Context context) {
-		super(context);
-		paints = Paints.getInstance(context);
+		this(context, null);
+	}
+
+	public ArrowView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		this.paints = new Paints(context, 0);
 	}
 
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -22,7 +28,7 @@ public class ArrowView extends View {
 	}
 
 	protected void onDraw(Canvas canvas) {
-		canvas.drawPath(path, paints.solid1);
-		canvas.drawPath(path, paints.stroke1);
+		canvas.drawPath(path, paints.wadokei_fill);
+		canvas.drawPath(path, paints.wadokei_stroke);
 	}
 }

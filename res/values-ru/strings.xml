@@ -2,29 +2,25 @@
 <resources>
 
     <string name="app_name">Традиционное Японское Время</string>
-    <string name="auto_lat_long">Использовать текущие</string>
+    <string name="auto_lat_long">Текущие</string>
     <string name="location">Координаты</string>
     <string name="location_ex">Изменить сохраненные координаты</string>
     <string name="latitude">Широта</string>
     <string name="longitude">Долгота</string>
     <string name="clock">Часы</string>
     <string name="settings">Настройки</string>
-    <string name="srv_fail">Сервис остановлен</string>
-    <string name="srv_fail_ex">Нажмите для перезапуска сервиса.</string>
     <string name="bootup">Автозапуск</string>
     <string name="bootup_ex">Автоматически запускать сервис при загрузке устройства.</string>
     <string name="notify">Оповещения</string>
     <string name="notify_ex">Показывать иероглиф текущего часа в строке статуса.</string>
     <string name="status">Запуск и оповещения</string>
-    <string name="stop">Остановить сервис</string>
-    <string name="stop_ex">Нажмите для остановки сервиса и выхода из приложения.</string>
-    <string name="stop_ask">Сервис будет остановлен, а приложение закрыто. При следующем запуске приложения сервис автоматически будет запущен.\n\nПродолжить?</string>
     <string name="today">Сегодня</string>
     <string name="sunrise">Рассвет</string>
     <string name="sunset">Закат</string>
     <string name="noon">Полдень</string>
     <string name="midnight">Полночь</string>
     <string name="hour_names">Названия часов</string>
+    <string name="no_providers">Не удается определить координаты. Пожалуйста, включите сервис определения местоположения.</string>
 
     <string-array name="hour_name_option_names">
         <item>По умолчанию</item>
@@ -67,20 +63,26 @@
         <item>Четвертая четверть</item>
     </string-array>
 
+    <string name="language">Язык и названия</string>
     <string name="appearance">Внешний вид</string>
-    <string name="no_providers">Не удается определить местоположение. Пожалуйста, включите GPS.</string>
     <string name="widget1">JTT: Один час</string>
     <string name="widget12">JTT: Циферблат</string>
-    <string name="widget_invert">Белый текст в виджете</string>
-    <string name="widget_invert_ex">Использовать белый текст с черным контуром</string>
     <string name="locale">Язык</string>
     <string name="locale_default">Язык системы</string>
 
     <string-array name="theme_names">
         <item>Полупрозрачный</item>
         <item>Темный</item>
+        <item>Светлый</item>
+    </string-array>
+
+    <string-array name="widget_theme_names">
+        <item>Полупрозрачный</item>
+        <item>Темный</item>
+        <item>Светлый</item>
     </string-array>
 
     <string name="pref_theme">Стиль оформления</string>
+    <string name="pref_widget">Стиль виджета</string>
 
 </resources>

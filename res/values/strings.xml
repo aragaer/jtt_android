@@ -9,22 +9,18 @@
     <string name="longitude">Longitude</string>
     <string name="clock">Clock</string>
     <string name="settings">Settings</string>
-    <string name="srv_fail">Service killed</string>
-    <string name="srv_fail_ex">Touch to restart the service.</string>
     <string name="bootup">Start on bootup</string>
     <string name="bootup_ex">Start the service automatically when the device is turned on.</string>
     <string name="notify">Display notifications</string>
     <string name="notify_ex">Display current hour glyph in status bar.</string>
     <string name="status">Startup and notifications</string>
-    <string name="stop">Stop service</string>
-    <string name="stop_ex">Tap to stop service and close application.</string>
-    <string name="stop_ask">This will stop service and close the application. The service will be restarted when application is started again.\n\nContinue?</string>
     <string name="today">Today</string>
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
     <string name="noon">Noon</string>
     <string name="midnight">Midnight</string>
     <string name="hour_names">Hour names</string>
+    <string name="no_providers">Unable to determine location.\nPlease enable location service.</string>
 
     <string-array name="hour_name_option_names">
         <item>Default</item>
@@ -67,19 +63,26 @@
         <item>Fourth quarter</item>
     </string-array>
 
+    <string name="language">Names and languages</string>
     <string name="appearance">Look and feel</string>
-    <string name="no_providers">No location providers found. Please enable GPS.</string>
     <string name="widget1">JTT: Single hour</string>
     <string name="widget12">JTT: Clock</string>
-    <string name="widget_invert">Invert widget text color</string>
-    <string name="widget_invert_ex">Use white text with black border</string>
     <string name="locale">Language</string>
     <string name="locale_default">Default</string>
 
     <string-array name="theme_names">
         <item>Translucent</item>
         <item>Dark</item>
+        <item>Light</item>
+    </string-array>
+
+    <string-array name="widget_theme_names">
+        <item>Translucent</item>
+        <item>Dark</item>
+        <item>Light</item>
     </string-array>
 
     <string name="pref_theme">Theme</string>
+    <string name="pref_widget">Widget theme</string>
+
 </resources>
