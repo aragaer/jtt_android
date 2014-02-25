@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Традиционное Японское Время</string>
-    <string name="auto_lat_long">Использовать текущие</string>
+    <string name="auto_lat_long">Текущие</string>
     <string name="location">Координаты</string>
     <string name="location_ex">Изменить сохраненные координаты</string>
     <string name="latitude">Широта</string>
