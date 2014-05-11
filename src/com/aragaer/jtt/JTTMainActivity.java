@@ -4,6 +4,7 @@ import com.aragaer.jtt.core.Clockwork;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.today.TodayAdapter;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,12 +13,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-public class JTTMainActivity extends ActionBarActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class JTTMainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
 	private ClockView clock;
 	private TodayAdapter today;
 
