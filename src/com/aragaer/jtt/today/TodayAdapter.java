@@ -1,15 +1,11 @@
 package com.aragaer.jtt.today;
 
-import com.aragaer.jtt.JttService;
 import com.aragaer.jtt.R;
-import com.aragaer.jtt.core.Calculator;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -69,7 +65,6 @@ class BoundaryItem extends TodayItem {
 
 public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 		StringResources.StringResourceChangeListener {
-	private static final String TAG = "JTT TODAY";
 	private final long transitions[] = new long[4];
 	private int selected;
 
