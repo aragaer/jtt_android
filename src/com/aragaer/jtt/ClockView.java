@@ -5,6 +5,7 @@ import com.aragaer.jtt.graphics.ArrowView;
 import com.aragaer.jtt.graphics.WadokeiView;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
+import com.aragaer.jtt.wadokei.AutoresizeTextView;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -27,7 +28,7 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 		sr.registerStringResourceChangeListener(this, StringResources.TYPE_HOUR_NAME);
 		wadokei = new WadokeiView(context);
 		arrow = new ArrowView(context);
-		text = new TextView(context);
+		text = new AutoresizeTextView(context);
 
 		TypedArray ta = context.obtainStyledAttributes(null, R.styleable.Wadokei, 0, 0);
 		text.setTextColor(ta.getColor(R.styleable.Wadokei_text_stroke, 0));
@@ -54,7 +55,7 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 		vertical = h > w;
 		text.setText(vertical ? sr.getHrOf(hour.num) : sr.getHour(hour.num));
 		text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, vertical ? w / 20 : w / 15);
-		text.measure(0, 0);
+		text.measure(vertical ? w : w - h / 2, 0);
 		setMeasuredDimension(w, h);
 	}
 

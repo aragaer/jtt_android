@@ -2,14 +2,12 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:jtt="http://schemas.android.com/apk/res/com.aragaer.jtt">
 
-    <!-- pre android-14 version -->
-    <style name="BaseTheme" parent="@style/Theme.AppCompat">
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+    <style name="BaseTheme" parent="@android:style/Theme.Holo">
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
     </style>
 
-    <!-- pre android-14 version -->
-    <style name="BaseLightTheme" parent="@style/Theme.AppCompat.Light">
-        <item name="actionBarStyle">@style/DarkActionBar</item>
+    <style name="BaseLightTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/DarkActionBar</item>
     </style>
 
     <style name="DarkTheme" parent="BaseTheme">
@@ -93,26 +91,18 @@
         <item name="android:textColor">@drawable/tab_text_selector_inverted</item>
     </style>
 
-    <style name="NotificationTitle">
-        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="NotificationGlyph">
-        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
-        <item name="android:textSize">25dp</item>
-    </style>
-
-    <style name="NotificationText">
-        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
-    </style>
-
-    <style name="DarkActionBar" parent="@style/Widget.AppCompat.ActionBar">
-        <item name="displayOptions">showCustom</item>
-        <item name="background">@color/background</item>
-        <item name="backgroundStacked">@null</item>
-        <item name="backgroundSplit">@null</item>
+    <style name="DarkActionBar" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:displayOptions">showCustom</item>
+        <item name="android:background">@color/background</item>
         <item name="android:height">@dimen/ab_height</item>
+        <item name="android:backgroundStacked">@null</item>
+        <item name="android:backgroundSplit">@null</item>
+    </style>
+
+    <style name="NotificationText" parent="android:TextAppearance.StatusBar.EventContent" />
+    <style name="NotificationTitle" parent="android:TextAppearance.StatusBar.EventContent.Title" />
+    <style name="NotificationGlyph" parent="android:TextAppearance.StatusBar.EventContent.Title" >
+        <item name="android:textSize">25dp</item>
     </style>
 
 </resources>

@@ -2,10 +2,10 @@ package com.aragaer.jtt;
 
 import java.util.ArrayList;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -18,15 +18,15 @@ public class ViewPagerAdapter extends PagerAdapter implements RadioGroup.OnCheck
 	ArrayList<View> views = new ArrayList<View>();
 	private final ViewPager pager;
 	private RadioGroup tablist;
-	private final ActionBarActivity context;
+	private final Activity context;
 
-	public ViewPagerAdapter(final ActionBarActivity ctx, final ViewPager pager) {
+	public ViewPagerAdapter(final Activity ctx, final ViewPager pager) {
 		this.pager = pager;
 		context = ctx;
 		tablist = new RadioGroup(ctx);
 		tablist.setOnCheckedChangeListener(this);
 		tablist.setOrientation(LinearLayout.HORIZONTAL);
-		ctx.getSupportActionBar().setCustomView(tablist, new ActionBar.LayoutParams(
+		ctx.getActionBar().setCustomView(tablist, new ActionBar.LayoutParams(
 		        ViewGroup.LayoutParams.MATCH_PARENT,
 		        ViewGroup.LayoutParams.MATCH_PARENT));
 		pager.setOnPageChangeListener(this);
