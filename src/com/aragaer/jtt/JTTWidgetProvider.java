@@ -128,7 +128,7 @@ public class JTTWidgetProvider {
 			canvas.drawText(text, canvas.getWidth() / 2, (canvas.getHeight() - text_paint.ascent() - text_paint.descent()) / 2, text_paint);
 			rv.setImageViewBitmap(R.id.clock, bmp);
 		}
-		PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, new Intent(c, JTTMainActivity.class), 0);
+		PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, new Intent(c, MainActivity.class), 0);
 		rv.setOnClickPendingIntent(R.id.clock, pendingIntent);
 
 		for (int id : ids)

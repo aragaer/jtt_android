@@ -83,7 +83,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 			.setOngoing(true)
 			.setSmallIcon(R.drawable.notification_icon, h.num)
 			.setContentIntent(PendingIntent.getActivity(
-					context, 0, new Intent(context, JTTMainActivity.class), 0))
+					context, 0, new Intent(context, MainActivity.class), 0))
 			.build();
 
 		nm.notify(APP_ID, n);

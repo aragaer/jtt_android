@@ -17,7 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-public class JTTMainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
 	private ClockView clock;
 	private TodayAdapter today;
 
