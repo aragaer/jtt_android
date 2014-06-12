@@ -109,6 +109,11 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 	public void tick(long tr[], boolean is_day) {
 		long now = System.currentTimeMillis();
 
+		if (now < tr[1] || now >= tr[2]) {
+			clear();
+			return;
+		}
+
 		if (now < transitions[1] || now < transitions[2] || !Arrays.equals(transitions, tr)) {
 			System.arraycopy(tr, 0, transitions, 0, tr.length);
 			buildItems(is_day);
