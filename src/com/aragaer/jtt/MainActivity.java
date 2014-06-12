@@ -29,7 +29,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 			final int wrapped = intent.getIntExtra("jtt", 0);
 
 			clock.setHour(wrapped);
-			today.tick(intent.getLongArrayExtra("tr"), intent.getBooleanExtra("day", false));
+			today.setTimestamps(intent.getLongArrayExtra("tr"), intent.getBooleanExtra("day", false));
 		}
 	};
 

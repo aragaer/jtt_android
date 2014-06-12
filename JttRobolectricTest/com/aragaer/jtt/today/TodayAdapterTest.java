@@ -30,31 +30,31 @@ public class TodayAdapterTest {
 
 	@Test
 	public void shouldHaveFullSetAfterTick() {
-		adapter.tick(timestampsAroundNowWithOffset(400), true);
+		adapter.setTimestamps(timestampsAroundNowWithOffset(400), true);
 		assertThat(adapter.getCount(), equalTo(37));
 	}
 
 	@Test
 	public void shouldBeEmptyWhenDataIsStale() {
-		adapter.tick(timestampsAroundNowWithOffset(-400), true);
+		adapter.setTimestamps(timestampsAroundNowWithOffset(-400), true);
 		assertThat(adapter.getCount(), equalTo(0));
 	}
 
 	@Test
 	public void shouldBeEmptyWhenDataIsVeryStale() {
-		adapter.tick(timestampsAroundNowWithOffset(-1000), true);
+		adapter.setTimestamps(timestampsAroundNowWithOffset(-1000), true);
 		assertThat(adapter.getCount(), equalTo(0));
 	}
 
 	@Test
 	public void shouldBeEmptyWhenDataIsInFuture() {
-		adapter.tick(timestampsAroundNowWithOffset(800), true);
+		adapter.setTimestamps(timestampsAroundNowWithOffset(800), true);
 		assertThat(adapter.getCount(), equalTo(0));
 	}
 
 	@Test
 	public void shouldBeEmptyWhenDataIsFarInFuture() {
-		adapter.tick(timestampsAroundNowWithOffset(1400), true);
+		adapter.setTimestamps(timestampsAroundNowWithOffset(1400), true);
 		assertThat(adapter.getCount(), equalTo(0));
 	}
 }

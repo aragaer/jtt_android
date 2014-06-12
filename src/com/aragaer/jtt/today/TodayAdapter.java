@@ -11,8 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.lang.System;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /* Hour item in TodayList */
 class HourItem extends TodayItem {
@@ -29,12 +33,14 @@ class HourItem extends TodayItem {
 	public View toView(Context c, View v, int sel_p_diff) {
 		if (v == null)
 			v = View.inflate(c, R.layout.today_item, null);
-		final StringResources sr = RuntimeResources.get(c).getInstance(StringResources.class);
+		final StringResources sr = RuntimeResources.get(c).getInstance(
+				StringResources.class);
 
 		((TextView) v.findViewById(R.id.glyph)).setText(Hour.Glyphs[hnum]);
 		((TextView) v.findViewById(R.id.name)).setText(sr.getHrOf(hnum));
 		((TextView) v.findViewById(R.id.extra)).setText(extras[hnum]);
-		((TextView) v.findViewById(R.id.curr)).setText(sel_p_diff == 0 ? "▶" : "");
+		((TextView) v.findViewById(R.id.curr)).setText(sel_p_diff == 0 ? "▶"
+				: "");
 
 		return v;
 	}
@@ -46,33 +52,57 @@ class BoundaryItem extends TodayItem {
 		super(t);
 	}
 
+	enum NearSelected {
+		DEFAULT, BEFORE, AFTER;
+	}
+
 	@Override
 	public View toView(Context c, View v, int sel_p_diff) {
 		if (v == null)
 			v = View.inflate(c, R.layout.today_boundary_item, null);
-		final StringResources sr = RuntimeResources.get(c).getInstance(StringResources.class);
+		final StringResources sr = RuntimeResources.get(c).getInstance(
+				StringResources.class);
 		((TextView) v.findViewById(R.id.time)).setText(sr.format_time(time));
-		int level;
-		switch (sel_p_diff) {
-			case 1: level = 1; break;
-			case -1: level = 2; break;
-			default: level = 0; break;
-		}
-		((ImageView) v.findViewById(R.id.border)).setImageLevel(level);
+		((ImageView) v.findViewById(R.id.border))
+				.setImageLevel(imageLevelFromDifference(sel_p_diff));
 		return v;
+	}
+
+	private int imageLevelFromDifference(int difference) {
+		NearSelected result;
+		switch (difference) {
+		case 1:
+			result = NearSelected.AFTER;
+			break;
+		case -1:
+			result = NearSelected.BEFORE;
+			break;
+		default:
+			result = NearSelected.DEFAULT;
+			break;
+		}
+		return result.ordinal();
 	}
 }
 
 public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 		StringResources.StringResourceChangeListener {
-	private final long transitions[] = new long[4];
+	private static final int DAY_PART_COUNT = 3;
+	private static final int TRANSITION_COUNT = DAY_PART_COUNT + 1;
+	private static final int HOUR_COUNT = DAY_PART_COUNT * Hour.HOURS;
+	private static final int ITEM_COUNT = HOUR_COUNT * 2 - 1;
+	private final long transitions[] = new long[TRANSITION_COUNT];
 	private int selected;
 
 	public TodayAdapter(Context c, int layout_id) {
 		super(c, layout_id);
-		RuntimeResources.get(c).getInstance(StringResources.class)
-			.registerStringResourceChangeListener(this,
-				StringResources.TYPE_HOUR_NAME | StringResources.TYPE_TIME_FORMAT);
+		RuntimeResources
+				.get(c)
+				.getInstance(StringResources.class)
+				.registerStringResourceChangeListener(
+						this,
+						StringResources.TYPE_HOUR_NAME
+								| StringResources.TYPE_TIME_FORMAT);
 		HourItem.extras = new String[] { c.getString(R.string.sunset), "", "",
 				c.getString(R.string.midnight), "", "",
 				c.getString(R.string.sunrise), "", "",
@@ -82,31 +112,32 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 
 	@Override
 	public View getView(int position, View v, ViewGroup parent) {
-		return getItem(position).toView(parent.getContext(), v, selected - position);
+		return getItem(position).toView(parent.getContext(), v,
+				selected - position);
 	}
 
-	/* takes a sublist of hours
-	 * creates a list to display by adding day names
+	/*
+	 * takes a sublist of hours creates a list to display by adding day names
 	 */
-	void buildItems(final boolean is_day) {
-		clear();
-
+	private Collection<TodayItem> buildItems(boolean is_day) {
+		List<TodayItem> result = new ArrayList<TodayItem>(ITEM_COUNT);
 		int h_add = is_day ? 0 : Hour.HOURS;
-
-		/* start with first transition */
-		add(new HourItem(transitions[0], h_add));
-		for (int i = 1; i < transitions.length; i++) {
+		result.add(new HourItem(transitions[0], h_add));
+		for (int i = 1; i < TRANSITION_COUNT; i++) {
 			final long start = transitions[i - 1];
 			final long diff = transitions[i] - start;
 			for (int j = 1; j <= Hour.HOURS; j++) {
-				add(new BoundaryItem(start + (j * 2 - 1) * diff / Hour.HOURS / 2));
-				add(new HourItem(start + j * diff / Hour.HOURS, h_add + j));
+				result.add(new BoundaryItem(start + (j * 2 - 1) * diff
+						/ Hour.HOURS / 2));
+				result.add(new HourItem(start + j * diff / Hour.HOURS, h_add
+						+ j));
 			}
 			h_add = Hour.HOURS - h_add;
 		}
+		return result;
 	}
 
-	public void tick(long tr[], boolean is_day) {
+	public synchronized void setTimestamps(long tr[], boolean is_day) {
 		long now = System.currentTimeMillis();
 
 		if (now < tr[1] || now >= tr[2]) {
@@ -114,17 +145,12 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 			return;
 		}
 
-		if (now < transitions[1] || now < transitions[2] || !Arrays.equals(transitions, tr)) {
+		if (now < transitions[1] || now >= transitions[2]
+				|| !Arrays.equals(transitions, tr)) {
 			System.arraycopy(tr, 0, transitions, 0, tr.length);
-			buildItems(is_day);
+			clear();
+			addAll(buildItems(is_day));
 		}
-
-		// check that items are built
-		// expect 37 items
-		if (getCount() < Hour.HOURS * (transitions.length - 1) * 2 - 1)
-			// transitions are set but items aren't built
-			// this means we're currently in the build process
-			return;
 
 		// odd items - boundaries
 		selected = 0;
