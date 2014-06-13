@@ -1,6 +1,7 @@
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.core.FourTransitions;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
@@ -51,16 +52,16 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		final int wrapped = intent.getIntExtra("jtt", 0);
 		Hour.fromWrapped(wrapped, h);
 
-		final long tr[] = intent.getLongArrayExtra("tr");
+		FourTransitions transitions = (FourTransitions) intent.getParcelableExtra("transitions");
 		final int lower = Hour.lowerBoundary(h.num),
 			upper = Hour.upperBoundary(h.num);
-		start = Hour.getHourBoundary(tr[1], tr[2], lower);
-		end = Hour.getHourBoundary(tr[1], tr[2], upper);
+		start = Hour.getHourBoundary(transitions.currentStart, transitions.currentEnd, lower);
+		end = Hour.getHourBoundary(transitions.currentStart, transitions.currentEnd, upper);
 		if (end < start) {// Cock or Hare
 			if (h.quarter >= 2) // we've passed the transition
-				start = Hour.getHourBoundary(tr[0], tr[1], lower);
+				start = Hour.getHourBoundary(transitions.previousStart, transitions.currentStart, lower);
 			else
-				end = Hour.getHourBoundary(tr[2], tr[3], upper);
+				end = Hour.getHourBoundary(transitions.currentEnd, transitions.nextEnd, upper);
 		}
 
 		show();

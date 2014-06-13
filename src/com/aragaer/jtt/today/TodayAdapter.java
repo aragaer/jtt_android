@@ -50,14 +50,14 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 	 */
 	private Collection<TodayItem> buildItems() {
 		List<TodayItem> result = new ArrayList<TodayItem>(ITEM_COUNT);
-		result.add(new HourItem(transitions.getPreviousStart(), transitions.isDay() ? 0
+		result.add(new HourItem(transitions.previousStart, transitions.isDayCurrently ? 0
 				: Hour.HOURS));
-		result.addAll(addInterval(transitions.getPreviousStart(),
-				transitions.getCurrentStart(), transitions.isDay()));
-		result.addAll(addInterval(transitions.getCurrentStart(),
-				transitions.getCurrentEnd(), !transitions.isDay()));
-		result.addAll(addInterval(transitions.getCurrentEnd(),
-				transitions.getNextEnd(), transitions.isDay()));
+		result.addAll(addInterval(transitions.previousStart,
+				transitions.currentStart, transitions.isDayCurrently));
+		result.addAll(addInterval(transitions.currentStart,
+				transitions.currentEnd, !transitions.isDayCurrently));
+		result.addAll(addInterval(transitions.currentEnd,
+				transitions.nextEnd, transitions.isDayCurrently));
 		return result;
 	}
 

@@ -32,7 +32,7 @@ interface WidgetPainter {
 	int get_text_size(final Context c);
 }
 
-public class JTTWidgetProvider {
+public class WidgetProvider {
 	private static final String PKG_NAME = "com.aragaer.jtt";
 
 	private static final class WidgetHolder {

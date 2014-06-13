@@ -21,15 +21,16 @@ import android.util.Log;
 
 public class Calculator extends ContentProvider {
 	public static final String AUTHORITY = "com.aragaer.jtt.provider.calculator";
-	public static final Uri TRANSITIONS = Uri.parse("content://" + AUTHORITY + "/transitions"),
-		LOCATION = Uri.parse("content://" + AUTHORITY + "/location");
+	public static final Uri TRANSITIONS = Uri.parse("content://" + AUTHORITY
+			+ "/transitions"), LOCATION = Uri.parse("content://" + AUTHORITY
+			+ "/location");
 
 	private final Map<Long, long[]> cache = new HashMap<Long, long[]>();
 
-	private static final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
+	private static final UriMatcher matcher = new UriMatcher(
+			UriMatcher.NO_MATCH);
 
-	private static final int TR = 1,
-		LOC = 2;
+	private static final int TR = 1, LOC = 2;
 
 	static {
 		matcher.addURI(AUTHORITY, "transitions/#", TR);
@@ -43,26 +44,25 @@ public class Calculator extends ContentProvider {
 		return true;
 	}
 
-	private static final String PROJECTION_TR[] = { "prev", "start", "end", "next", "is_day" };
+	private static final String PROJECTION_TR[] = { "prev", "start", "end",
+			"next", "is_day" };
 
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
 		final int action = matcher.match(uri);
 		if (action != TR)
-			throw new IllegalArgumentException("Unsupported uri for query: " + uri);
+			throw new IllegalArgumentException("Unsupported uri for query: "
+					+ uri);
 		if (calculator == null)
 			throw new IllegalStateException("Location not set");
 		final long now = ContentUris.parseId(uri);
 		long jdn = longToJDN(now);
 
 		/* fill 4 transitions at once */
-		final long tr[] = new long[] {
-			getTrForJDN(jdn - 1)[1],
-			getTrForJDN(jdn)[0],
-			getTrForJDN(jdn)[1],
-			getTrForJDN(jdn + 1)[0]
-		};
+		final long tr[] = new long[] { getTrForJDN(jdn - 1)[1],
+				getTrForJDN(jdn)[0], getTrForJDN(jdn)[1],
+				getTrForJDN(jdn + 1)[0] };
 		boolean is_day = true;
 
 		// if tr2 is before now
@@ -92,7 +92,7 @@ public class Calculator extends ContentProvider {
 		}
 
 		final MatrixCursor c = new MatrixCursor(PROJECTION_TR, 1);
-		c.addRow(new Object[] {tr[0], tr[1], tr[2], tr[3], is_day ? 1 : 0});
+		c.addRow(new Object[] { tr[0], tr[1], tr[2], tr[3], is_day ? 1 : 0 });
 		return c;
 	}
 
@@ -112,21 +112,25 @@ public class Calculator extends ContentProvider {
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
 		if (matcher.match(uri) != LOC)
-			throw new IllegalArgumentException("Unsupported uri for update: " + uri);
-		calculator = new SunriseSunsetCalculator(
-				new Location(
-					values.getAsFloat("lat"),
-					values.getAsFloat("lon")),
+			throw new IllegalArgumentException("Unsupported uri for update: "
+					+ uri);
+		calculator = new SunriseSunsetCalculator(new Location(
+				values.getAsFloat("lat"), values.getAsFloat("lon")),
 				TimeZone.getDefault());
 		cache.clear();
 		Log.d("PROVIDER", "Location updated");
 		return 0;
 	}
 
-	/* Calculate a total of 4 transitions, tr[1] <= now < tr[2]. Return true if it is day now */
-	public static boolean getSurroundingTransitions(final Context context, final long now, final long tr[]) {
-		final Cursor c = context.getContentResolver()
-				.query(ContentUris.withAppendedId(TRANSITIONS, now), null, null, null, null);
+	/*
+	 * Calculate a total of 4 transitions, tr[1] <= now < tr[2]. Return true if
+	 * it is day now
+	 */
+	public static boolean getSurroundingTransitions(final Context context,
+			final long now, final long tr[]) {
+		final Cursor c = context.getContentResolver().query(
+				ContentUris.withAppendedId(TRANSITIONS, now), null, null, null,
+				null);
 		c.moveToFirst();
 		for (int i = 0; i < 4; i++)
 			tr[i] = c.getLong(i);
@@ -135,7 +139,15 @@ public class Calculator extends ContentProvider {
 		return is_day;
 	}
 
-	public static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
+	public static FourTransitions getSurroundingTransitions(Context context,
+			long now) {
+		long[] tr = new long[4];
+		boolean is_day = getSurroundingTransitions(context, now, tr);
+		return new FourTransitions(tr, is_day);
+	}
+
+	public static final long ms_per_day = TimeUnit.SECONDS
+			.toMillis(60 * 60 * 24);
 
 	private static long longToJDN(long time) {
 		return (long) Math.floor(longToJD(time));
@@ -155,7 +167,7 @@ public class Calculator extends ContentProvider {
 			final Calendar date = Calendar.getInstance();
 			date.setTimeInMillis(JDToLong(jdn));
 			result = new long[] { calculator.getOfficialSunriseForDate(date),
-				calculator.getOfficialSunsetForDate(date) };
+					calculator.getOfficialSunsetForDate(date) };
 			cache.put(jdn, result);
 		}
 		return result;

@@ -1,19 +1,21 @@
 package com.aragaer.jtt.core;
 
 public class Hour {
-	public static final int HOURS = 6,
-			QUARTERS = 4,
-			QUARTER_PARTS = 10,
-			HOUR_PARTS = QUARTERS * QUARTER_PARTS,
-			TOTAL_PARTS = HOURS * HOUR_PARTS * 2;
+	public static final int HOURS = 6;
+	public static final int QUARTERS = 4;
+	public static final int QUARTER_PARTS = 10;
+	public static final int HOUR_PARTS = QUARTERS * QUARTER_PARTS;
+	public static final int TOTAL_PARTS = HOURS * HOUR_PARTS * 2;
+	public static final int INTERVAL_TICKS = HOURS * HOUR_PARTS;
 	public static final String Glyphs[] = "酉戌亥子丑寅卯辰巳午未申".split("(?!^)");
 
 	public int num, // 0 to 11, where 0 is hour of Cock and 11 is hour of Monkey
-		quarter, // 0 to 3
-		quarter_parts, // 0 to PARTS
-		wrapped; // wrapped into single integer
+			quarter, // 0 to 3
+			quarter_parts, // 0 to PARTS
+			wrapped; // wrapped into single integer
 
-	private Hour() { } // just allocate
+	private Hour() {
+	} // just allocate
 
 	public Hour(int num) {
 		this(num, 0, 0);
@@ -28,13 +30,21 @@ public class Hour {
 		num = n;
 		quarter = q;
 		quarter_parts = f;
-		wrapped = (num * QUARTERS + quarter - 2) * QUARTER_PARTS + quarter_parts;
+		wrapped = (num * QUARTERS + quarter - 2) * QUARTER_PARTS
+				+ quarter_parts;
 		wrapped = (wrapped + TOTAL_PARTS) % TOTAL_PARTS;
 	}
 
-	public static Hour fromTimestamps(final long tr[], final boolean is_day, final long now, Hour reuse) {
-		final double passed = (1. * now - tr[1]) / (tr[2] - tr[1]) + (is_day ? 1 : 0);
-		return fromWrapped((int) (HOURS * HOUR_PARTS * passed), reuse);
+	public static Hour fromTransitions(FourTransitions transitions,
+			final long now, Hour reuse) {
+		long timeSinceStart = now - transitions.currentStart;
+		long intervalLength = transitions.currentEnd
+				- transitions.currentStart;
+		double fractionPassed = (1. * timeSinceStart) / intervalLength;
+		int ticksPassed = (int) (INTERVAL_TICKS * fractionPassed);
+		int wrappedValue = transitions.isDayCurrently ? ticksPassed + INTERVAL_TICKS
+				: ticksPassed;
+		return fromWrapped(wrappedValue, reuse);
 	}
 
 	public static Hour fromWrapped(final int f, Hour reuse) {
@@ -46,8 +56,9 @@ public class Hour {
 		return reuse;
 	}
 
-	/* truncate new value according to granularity
-	 * if new value is different from current, update and return true
+	/*
+	 * truncate new value according to granularity if new value is different
+	 * from current, update and return true
 	 */
 	public boolean compareAndUpdate(int new_wrapped, final int granularity) {
 		new_wrapped -= new_wrapped % granularity;
@@ -67,9 +78,12 @@ public class Hour {
 		return hour % HOURS;
 	}
 
-
-	/* given start and end of time interval return hour boundary for given position */
-	public static long getHourBoundary(final long start, final long end, final int pos) {
+	/*
+	 * given start and end of time interval return hour boundary for given
+	 * position
+	 */
+	public static long getHourBoundary(final long start, final long end,
+			final int pos) {
 		final long half_hlen = (end - start) / HOURS / 2;
 		return start + half_hlen * pos * 2 + half_hlen;
 	}

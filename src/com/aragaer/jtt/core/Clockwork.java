@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.util.Log;
 
 public class Clockwork extends IntentService {
+	private static final String TAG = "JTT CLOCKWORK";
 	public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
 	private static final Intent TickAction = new Intent(ACTION_JTT_TICK);
 	private static final int INTENT_FLAGS = PendingIntent.FLAG_UPDATE_CURRENT;
@@ -19,6 +20,7 @@ public class Clockwork extends IntentService {
 	}
 
 	public static class TimeChangeReceiver extends BroadcastReceiver {
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			final String action = intent.getAction();
@@ -27,53 +29,52 @@ public class Clockwork extends IntentService {
 				try {
 					schedule(context);
 				} catch (IllegalStateException e) {
-					Log.i("JTT CLOCKWORK", "Time change while service is not running, ignore");
+					Log.i(TAG,
+							"Time change while service is not running, ignore");
 				}
 		}
 	};
 
-	private final static double total = Hour.HOURS * Hour.HOUR_PARTS;
-
 	public static void schedule(final Context context) {
-		final AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		final long tr[] = new long[4];
-		final boolean is_day = Calculator.getSurroundingTransitions(context, System.currentTimeMillis(), tr);
+		final AlarmManager am = (AlarmManager) context
+				.getSystemService(Context.ALARM_SERVICE);
+		FourTransitions transitions = Calculator.getSurroundingTransitions(
+				context, System.currentTimeMillis());
 
-		final long freq = Math.round((tr[2] - tr[1])/total);
+		final long tickFrequency = (transitions.currentEnd - transitions.currentStart) / (Hour.HOURS * Hour.HOUR_PARTS);
 
 		final Intent TickActionInternal = new Intent(context, Clockwork.class)
-				.putExtra("tr", tr)
-				.putExtra("day", is_day);
+				.putExtra("transitions", transitions);
 
-		/* Tell alarm manager to start ticking at tr[1], it will automatically calculate the next tick time */
-		am.setRepeating(AlarmManager.RTC, tr[1], freq, PendingIntent.getService(context, 0, TickActionInternal, INTENT_FLAGS));
+		am.setRepeating(AlarmManager.RTC, transitions.currentStart,
+				tickFrequency, PendingIntent.getService(context, 0,
+						TickActionInternal, INTENT_FLAGS));
 	}
 
 	public static void unschedule(final Context context) {
-		final AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		am.cancel(PendingIntent.getService(context, 0, new Intent(context, Clockwork.class), 0));
+		final AlarmManager am = (AlarmManager) context
+				.getSystemService(Context.ALARM_SERVICE);
+		am.cancel(PendingIntent.getService(context, 0, new Intent(context,
+				Clockwork.class), 0));
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		final long tr[] = intent.getLongArrayExtra("tr");
-		final boolean is_day = intent.getBooleanExtra("day", false);
 		final long now = System.currentTimeMillis();
-		Hour.fromTimestamps(tr, is_day, now, hour);
-		FourTransitions transitions = new FourTransitions(tr, is_day);
+		FourTransitions transitions = (FourTransitions) intent
+				.getParcelableExtra("transitions");
+		Hour.fromTransitions(transitions, now, hour);
 
-		if (now >= tr[1] && now < tr[2]) {
-			TickAction.putExtra("tr", tr)
-					.putExtra("day", is_day)
-					.putExtra("hour", hour.num)
-					.putExtra("jtt", hour.wrapped)
+		if (transitions.isInCurrentInterval(now)) {
+			TickAction.putExtra("hour", hour.num).putExtra("jtt", hour.wrapped)
 					.putExtra("transitions", transitions);
 			sendStickyBroadcast(TickAction);
 		} else
 			try {
 				schedule(this);
 			} catch (IllegalStateException e) {
-				Log.i("JTT CLOCKWORK", "Transition passed while service is not running, ignore");
+				Log.i(TAG,
+						"Transition passed while service is not running, ignore");
 			}
 
 		stopSelf();

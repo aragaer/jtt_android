@@ -47,7 +47,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="JTTWidgetProvider$Widget1"
+        <receiver android:name="WidgetProvider$Widget1"
                 android:icon="@drawable/widget1"
                 android:label="@string/widget1">
             <intent-filter>
@@ -58,7 +58,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget1" />
         </receiver>
-        <receiver android:name="JTTWidgetProvider$Widget12"
+        <receiver android:name="WidgetProvider$Widget12"
                 android:icon="@drawable/widget12"
                 android:label="@string/widget12">
             <intent-filter>

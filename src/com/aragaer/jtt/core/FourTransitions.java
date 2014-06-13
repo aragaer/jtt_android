@@ -4,28 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class FourTransitions implements Parcelable {
-	private long previousStart, currentStart, currentEnd, nextEnd;
-	private boolean isDayCurrently;
-
-	public long getPreviousStart() {
-		return previousStart;
-	}
-
-	public long getCurrentStart() {
-		return currentStart;
-	}
-
-	public long getCurrentEnd() {
-		return currentEnd;
-	}
-
-	public long getNextEnd() {
-		return nextEnd;
-	}
-
-	public boolean isDay() {
-		return isDayCurrently;
-	}
+	public final long previousStart, currentStart, currentEnd, nextEnd;
+	public final boolean isDayCurrently;
 
 	public FourTransitions(long[] transitions, boolean isDayCurrently) {
 		previousStart = transitions[0];

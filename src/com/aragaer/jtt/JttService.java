@@ -53,7 +53,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 		else if (key.equals(Settings.PREF_WIDGET)
 				|| key.equals(Settings.PREF_LOCALE)
 				|| key.equals(Settings.PREF_HNAME))
-			JTTWidgetProvider.draw_all(this);
+			WidgetProvider.draw_all(this);
 	}
 
 	private void move() {
