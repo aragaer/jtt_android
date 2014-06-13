@@ -1,10 +1,6 @@
 package com.aragaer.jtt.core;
 
-import android.content.ContentProvider;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.UriMatcher;
+import android.content.*;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
@@ -27,6 +23,7 @@ public class TransitionProvider extends ContentProvider {
 	}
 
 	TransitionCalculator calculator;
+
 	@Override
 	public boolean onCreate() {
 		calculator = new TransitionCalculator();
@@ -44,12 +41,12 @@ public class TransitionProvider extends ContentProvider {
 			throw new IllegalArgumentException("Unsupported uri for query: "
 					+ uri);
 		final long now = ContentUris.parseId(uri);
-
-		final long tr[] = new long[4];
-		boolean is_day = calculator.calculateTransitions(now, tr);
+		FourTransitions result = calculator.calculateTransitions(now);
 
 		final MatrixCursor c = new MatrixCursor(PROJECTION_TR, 1);
-		c.addRow(new Object[] { tr[0], tr[1], tr[2], tr[3], is_day ? 1 : 0 });
+		c.addRow(new Object[] { result.previousStart, result.currentStart,
+				result.currentEnd, result.nextEnd,
+				result.isDayCurrently ? 1 : 0 });
 		return c;
 	}
 
@@ -77,7 +74,6 @@ public class TransitionProvider extends ContentProvider {
 		Log.d("PROVIDER", "Location updated");
 		return 0;
 	}
-
 
 	/*
 	 * Calculate a total of 4 transitions, tr[1] <= now < tr[2]. Return true if

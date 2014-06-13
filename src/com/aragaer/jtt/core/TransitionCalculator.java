@@ -1,9 +1,6 @@
 package com.aragaer.jtt.core;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
@@ -12,56 +9,48 @@ import com.luckycatlabs.sunrisesunset.dto.Location;
 public class TransitionCalculator {
 	public static final long ms_per_day = TimeUnit.SECONDS
 			.toMillis(60 * 60 * 24);
-	final Map<Long, long[]> cache = new HashMap<Long, long[]>();
+	final Map<Long, Day> cache = new HashMap<Long, Day>();
 	SunriseSunsetCalculator calculator;
 
-	boolean calculateTransitions(long now, long[] tr) {
+	public FourTransitions calculateTransitions(long now) {
 		if (calculator == null)
 			throw new IllegalStateException("Location not set");
 
 		long jdn = TransitionCalculator.longToJDN(now);
-		boolean is_day = true;
-		tr[0] = getTrForJDN(jdn - 1)[1];
-		tr[1] = getTrForJDN(jdn)[0];
-		tr[2] = getTrForJDN(jdn)[1];
-		tr[3] = getTrForJDN(jdn + 1)[0];
+		Day yesterday = getDayForJDN(jdn - 1);
+		Day today = getDayForJDN(jdn);
+		Day tomorrow = getDayForJDN(jdn + 1);
+		FourTransitions result = new FourTransitions(yesterday.sunset,
+				today.sunrise, today.sunset, tomorrow.sunrise, true);
 
-		// if tr2 is before now
-		while (now >= tr[2]) {
-			for (int i = 0; i < 3; i++)
-				tr[i] = tr[i + 1];
-			if (is_day)
-				tr[3] = getTrForJDN(jdn + 1)[1];
+		while (now >= result.currentEnd)
+			if (result.isDayCurrently)
+				result = result.shiftToPast(tomorrow.sunset);
 			else {
 				jdn++;
-				tr[3] = getTrForJDN(jdn + 1)[0];
+				tomorrow = getDayForJDN(jdn + 1);
+				result = result.shiftToPast(tomorrow.sunrise);
 			}
-			is_day = !is_day;
-		}
 
-		// (else) if tr1 is after now
-		while (now < tr[1]) {
-			for (int i = 0; i < 3; i++)
-				tr[i + 1] = tr[i];
-			if (is_day)
-				tr[0] = getTrForJDN(jdn - 1)[0];
+		while (now < result.currentStart)
+			if (result.isDayCurrently)
+				result = result.shiftToFuture(yesterday.sunrise);
 			else {
 				jdn--;
-				tr[0] = getTrForJDN(jdn - 1)[1];
+				yesterday = getDayForJDN(jdn - 1);
+				result = result.shiftToFuture(yesterday.sunset);
 			}
-			is_day = !is_day;
-		}
 
-		return is_day;
+		return result;
 	}
 
-	private long[] getTrForJDN(final long jdn) {
-		long[] result = cache.get(jdn);
+	private Day getDayForJDN(final long jdn) {
+		Day result = cache.get(jdn);
 		if (result == null) {
 			final Calendar date = Calendar.getInstance();
 			date.setTimeInMillis(TransitionCalculator.JDToLong(jdn));
-			result = new long[] { calculator.getOfficialSunriseForDate(date),
-					calculator.getOfficialSunsetForDate(date) };
+			result = new Day(calculator.getOfficialSunriseForDate(date),
+					calculator.getOfficialSunsetForDate(date));
 			cache.put(jdn, result);
 		}
 		return result;
