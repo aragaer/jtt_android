@@ -1,6 +1,7 @@
 package com.aragaer.jtt.today;
 
 import com.aragaer.jtt.R;
+import com.aragaer.jtt.core.FourTransitions;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
@@ -47,16 +48,16 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 	/*
 	 * takes a sublist of hours creates a list to display by adding day names
 	 */
-	private Collection<TodayItem> buildItems(boolean is_day) {
+	private Collection<TodayItem> buildItems() {
 		List<TodayItem> result = new ArrayList<TodayItem>(ITEM_COUNT);
-		result.add(new HourItem(transitions.getPreviousStart(), is_day ? 0
+		result.add(new HourItem(transitions.getPreviousStart(), transitions.isDay() ? 0
 				: Hour.HOURS));
 		result.addAll(addInterval(transitions.getPreviousStart(),
-				transitions.getCurrentStart(), is_day));
+				transitions.getCurrentStart(), transitions.isDay()));
 		result.addAll(addInterval(transitions.getCurrentStart(),
-				transitions.getCurrentEnd(), !is_day));
+				transitions.getCurrentEnd(), !transitions.isDay()));
 		result.addAll(addInterval(transitions.getCurrentEnd(),
-				transitions.getNextEnd(), is_day));
+				transitions.getNextEnd(), transitions.isDay()));
 		return result;
 	}
 
@@ -74,12 +75,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 		return result;
 	}
 
-	public void setTimestamps(long tr[], boolean is_day) {
-		setTimestamps(new FourTransitions(tr), is_day);
-	}
-
-	private synchronized void setTimestamps(FourTransitions newTransitions,
-			boolean is_day) {
+	public synchronized void setTransitions(FourTransitions newTransitions) {
 		long now = System.currentTimeMillis();
 
 		if (newTransitions.notInCurrentInterval(now)) {
@@ -90,7 +86,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 		if (!newTransitions.equals(transitions)) {
 			transitions = newTransitions;
 			clear();
-			addAll(buildItems(is_day));
+			addAll(buildItems());
 		}
 
 		selected = 0;

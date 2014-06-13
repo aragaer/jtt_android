@@ -60,12 +60,14 @@ public class Clockwork extends IntentService {
 		final boolean is_day = intent.getBooleanExtra("day", false);
 		final long now = System.currentTimeMillis();
 		Hour.fromTimestamps(tr, is_day, now, hour);
+		FourTransitions transitions = new FourTransitions(tr, is_day);
 
 		if (now >= tr[1] && now < tr[2]) {
 			TickAction.putExtra("tr", tr)
 					.putExtra("day", is_day)
 					.putExtra("hour", hour.num)
-					.putExtra("jtt", hour.wrapped);
+					.putExtra("jtt", hour.wrapped)
+					.putExtra("transitions", transitions);
 			sendStickyBroadcast(TickAction);
 		} else
 			try {

@@ -5,6 +5,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
+import com.aragaer.jtt.core.FourTransitions;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
@@ -22,39 +24,39 @@ public class TodayAdapterTest {
 		assertThat(adapter.getCount(), equalTo(0));
 	}
 
-	private long[] timestampsAroundNowWithOffset(long offset) {
+	private FourTransitions timestampsAroundNowWithOffset(long offset) {
 		long now = System.currentTimeMillis();
-		return new long[] { now - 1200 + offset, now - 600 + offset,
-				now + offset, now + 600 + offset };
+		return new FourTransitions(new long[] { now - 1200 + offset, now - 600 + offset,
+				now + offset, now + 600 + offset }, true);
 	}
 
 	@Test
 	public void shouldHaveFullSetAfterTick() {
-		adapter.setTimestamps(timestampsAroundNowWithOffset(400), true);
+		adapter.setTransitions(timestampsAroundNowWithOffset(400));
 		assertThat(adapter.getCount(), equalTo(37));
 	}
 
 	@Test
 	public void shouldBeEmptyWhenDataIsStale() {
-		adapter.setTimestamps(timestampsAroundNowWithOffset(-400), true);
+		adapter.setTransitions(timestampsAroundNowWithOffset(-400));
 		assertThat(adapter.getCount(), equalTo(0));
 	}
 
 	@Test
 	public void shouldBeEmptyWhenDataIsVeryStale() {
-		adapter.setTimestamps(timestampsAroundNowWithOffset(-1000), true);
+		adapter.setTransitions(timestampsAroundNowWithOffset(-1000));
 		assertThat(adapter.getCount(), equalTo(0));
 	}
 
 	@Test
 	public void shouldBeEmptyWhenDataIsInFuture() {
-		adapter.setTimestamps(timestampsAroundNowWithOffset(800), true);
+		adapter.setTransitions(timestampsAroundNowWithOffset(800));
 		assertThat(adapter.getCount(), equalTo(0));
 	}
 
 	@Test
 	public void shouldBeEmptyWhenDataIsFarInFuture() {
-		adapter.setTimestamps(timestampsAroundNowWithOffset(1400), true);
+		adapter.setTransitions(timestampsAroundNowWithOffset(1400));
 		assertThat(adapter.getCount(), equalTo(0));
 	}
 }
