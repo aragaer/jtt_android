@@ -20,17 +20,18 @@ import android.content.Context;
 @RunWith(RobolectricTestRunner.class)
 public class ClockworkTest {
 
-	private Calculator calculator;
+	private TransitionProvider transitionProvider;
 
 	@Before
 	public void setup() {
-		calculator = new Calculator();
-		ShadowContentResolver
-				.registerProvider(Calculator.AUTHORITY, calculator);
+		transitionProvider = new TransitionProvider();
+		ShadowContentResolver.registerProvider(TransitionProvider.AUTHORITY,
+				transitionProvider);
 		ContentValues location = new ContentValues();
 		location.put("lat", 0);
 		location.put("lon", 0);
-		calculator.update(Calculator.LOCATION, location, null, null);
+		transitionProvider.update(TransitionProvider.LOCATION, location, null,
+				null);
 	}
 
 	@Test

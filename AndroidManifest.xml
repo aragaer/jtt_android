@@ -78,7 +78,7 @@
                 <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
         </receiver>
-        <provider android:name=".core.Calculator"
+        <provider android:name=".core.TransitionProvider"
             android:authorities="com.aragaer.jtt.provider.calculator"
             android:permission="com.aragaer.jtt.permission.CLOCK" />
         <provider android:name=".alarm.AlarmProvider"

@@ -38,7 +38,7 @@ public class Clockwork extends IntentService {
 	public static void schedule(final Context context) {
 		final AlarmManager am = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
-		FourTransitions transitions = Calculator.getSurroundingTransitions(
+		FourTransitions transitions = TransitionProvider.getSurroundingTransitions(
 				context, System.currentTimeMillis());
 
 		final long tickFrequency = (transitions.currentEnd - transitions.currentStart) / (Hour.HOURS * Hour.HOUR_PARTS);

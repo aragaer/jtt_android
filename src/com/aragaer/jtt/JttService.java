@@ -1,6 +1,6 @@
 package com.aragaer.jtt;
 
-import com.aragaer.jtt.core.Calculator;
+import com.aragaer.jtt.core.TransitionProvider;
 import com.aragaer.jtt.core.Clockwork;
 
 import android.app.Service;
@@ -61,7 +61,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 		final ContentValues location = new ContentValues(2);
 		location.put("lat", l[0]);
 		location.put("lon", l[1]);
-		getContentResolver().update(Calculator.LOCATION, location, null, null);
+		getContentResolver().update(TransitionProvider.LOCATION, location, null, null);
 		Clockwork.schedule(this);
 	}
 }
