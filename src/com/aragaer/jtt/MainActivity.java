@@ -1,7 +1,7 @@
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.Clockwork;
-import com.aragaer.jtt.core.FourTransitions;
+import com.aragaer.jtt.core.TransitionProvider;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.today.TodayAdapter;
 
@@ -30,7 +30,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 			final int wrapped = intent.getIntExtra("jtt", 0);
 
 			clock.setHour(wrapped);
-			today.setTransitions((FourTransitions) intent.getParcelableExtra("transitions"));
+			today.setTransitions(TransitionProvider.getSurroundingTransitions(MainActivity.this, System.currentTimeMillis()));
 		}
 	};
 

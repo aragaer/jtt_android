@@ -25,6 +25,7 @@ public class ClockworkTest {
 	@Before
 	public void setup() {
 		transitionProvider = new TransitionProvider();
+		transitionProvider.onCreate();
 		ShadowContentResolver.registerProvider(TransitionProvider.AUTHORITY,
 				transitionProvider);
 		ContentValues location = new ContentValues();

@@ -25,20 +25,20 @@ public class TransitionCalculator {
 
 		while (now >= result.currentEnd)
 			if (result.isDayCurrently)
-				result = result.shiftToPast(tomorrow.sunset);
+				result = result.shiftToFuture(tomorrow.sunset);
 			else {
 				jdn++;
 				tomorrow = getDayForJDN(jdn + 1);
-				result = result.shiftToPast(tomorrow.sunrise);
+				result = result.shiftToFuture(tomorrow.sunrise);
 			}
 
 		while (now < result.currentStart)
 			if (result.isDayCurrently)
-				result = result.shiftToFuture(yesterday.sunrise);
+				result = result.shiftToPast(yesterday.sunrise);
 			else {
 				jdn--;
 				yesterday = getDayForJDN(jdn - 1);
-				result = result.shiftToFuture(yesterday.sunset);
+				result = result.shiftToPast(yesterday.sunset);
 			}
 
 		return result;

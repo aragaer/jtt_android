@@ -1,9 +1,6 @@
 package com.aragaer.jtt.core;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class FourTransitions implements Parcelable {
+public class FourTransitions {
 	public final long previousStart, currentStart, currentEnd, nextEnd;
 	public final boolean isDayCurrently;
 
@@ -41,38 +38,6 @@ public class FourTransitions implements Parcelable {
 				&& currentStart == otherTransitions.currentStart
 				&& currentEnd == otherTransitions.currentEnd
 				&& nextEnd == otherTransitions.nextEnd;
-	}
-
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeLong(previousStart);
-		dest.writeLong(currentStart);
-		dest.writeLong(currentEnd);
-		dest.writeLong(nextEnd);
-		dest.writeByte((byte) (isDayCurrently ? 1 : 0));
-	}
-
-	public static final Parcelable.Creator<FourTransitions> CREATOR = new Parcelable.Creator<FourTransitions>() {
-		public FourTransitions createFromParcel(Parcel in) {
-			return new FourTransitions(in);
-		}
-
-		public FourTransitions[] newArray(int size) {
-			return new FourTransitions[size];
-		}
-	};
-
-	private FourTransitions(Parcel in) {
-		previousStart = in.readLong();
-		currentStart = in.readLong();
-		currentEnd = in.readLong();
-		nextEnd = in.readLong();
-		isDayCurrently = in.readByte() != 0;
 	}
 
 	public FourTransitions shiftToPast(long transition) {

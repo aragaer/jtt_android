@@ -3,6 +3,7 @@ package com.aragaer.jtt;
 import com.aragaer.jtt.core.Clockwork;
 import com.aragaer.jtt.core.FourTransitions;
 import com.aragaer.jtt.core.Hour;
+import com.aragaer.jtt.core.TransitionProvider;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
@@ -52,7 +53,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		final int wrapped = intent.getIntExtra("jtt", 0);
 		Hour.fromWrapped(wrapped, h);
 
-		FourTransitions transitions = (FourTransitions) intent.getParcelableExtra("transitions");
+		FourTransitions transitions = TransitionProvider.getSurroundingTransitions(ctx, System.currentTimeMillis());
 		final int lower = Hour.lowerBoundary(h.num),
 			upper = Hour.upperBoundary(h.num);
 		start = Hour.getHourBoundary(transitions.currentStart, transitions.currentEnd, lower);

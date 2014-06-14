@@ -38,13 +38,13 @@ public class Clockwork extends IntentService {
 	public static void schedule(final Context context) {
 		final AlarmManager am = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
+		long now = System.currentTimeMillis();
 		FourTransitions transitions = TransitionProvider.getSurroundingTransitions(
-				context, System.currentTimeMillis());
+				context, now);
 
 		final long tickFrequency = (transitions.currentEnd - transitions.currentStart) / (Hour.HOURS * Hour.HOUR_PARTS);
 
-		final Intent TickActionInternal = new Intent(context, Clockwork.class)
-				.putExtra("transitions", transitions);
+		final Intent TickActionInternal = new Intent(context, Clockwork.class);
 
 		am.setRepeating(AlarmManager.RTC, transitions.currentStart,
 				tickFrequency, PendingIntent.getService(context, 0,
@@ -61,13 +61,11 @@ public class Clockwork extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		final long now = System.currentTimeMillis();
-		FourTransitions transitions = (FourTransitions) intent
-				.getParcelableExtra("transitions");
+		FourTransitions transitions = TransitionProvider.getSurroundingTransitions(this, now);
 		Hour.fromTransitions(transitions, now, hour);
 
 		if (transitions.isInCurrentInterval(now)) {
-			TickAction.putExtra("hour", hour.num).putExtra("jtt", hour.wrapped)
-					.putExtra("transitions", transitions);
+			TickAction.putExtra("hour", hour.num).putExtra("jtt", hour.wrapped);
 			sendStickyBroadcast(TickAction);
 		} else
 			try {
