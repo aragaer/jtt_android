@@ -14,10 +14,10 @@ import static org.junit.Assert.*;
 import com.aragaer.jtt.core.Hour;
 
 @RunWith(RobolectricTestRunner.class)
-public class AlarmManagerTest {
+public class AlarmRepositoryTest {
 
 	private ContentProvider provider;
-	private AlarmManager manager;
+	private AlarmRepository repo;
 	private ContentValues savedValues;
 
 	@Before
@@ -32,14 +32,14 @@ public class AlarmManagerTest {
 		provider.onCreate();
 		ShadowContentResolver.registerProvider(AlarmProvider.AUTHORITY,
 				provider);
-		manager = new AlarmManager(Robolectric.application);
+		repo = new AlarmRepository(Robolectric.application);
 	}
 
 	@Test
 	public void saveAlarm() throws Exception {
 		Hour hour = new Hour(6);
 		Alarm alarm = new Alarm(hour);
-		manager.saveAlarm(alarm);
+		repo.saveAlarm(alarm);
 		assertNotNull(savedValues);
 		assertThat(savedValues.getAsInteger(Alarm.JTT).intValue(), equalTo(hour.wrapped));
 	}

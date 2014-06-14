@@ -2,10 +2,10 @@ package com.aragaer.jtt.alarm;
 
 import android.content.*;
 
-public class AlarmManager {
+public class AlarmRepository {
 	private ContentResolver resolver;
 
-	public AlarmManager(Context context) {
+	public AlarmRepository(Context context) {
 		resolver = context.getContentResolver();
 	}
 
