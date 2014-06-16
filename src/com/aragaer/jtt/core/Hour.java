@@ -35,14 +35,14 @@ public class Hour {
 		wrapped = (wrapped + TOTAL_PARTS) % TOTAL_PARTS;
 	}
 
-	public static Hour fromTransitions(FourTransitions transitions,
+	public static Hour fromTransitions(ThreeIntervals transitions,
 			final long now, Hour reuse) {
-		long timeSinceStart = now - transitions.currentStart;
-		long intervalLength = transitions.currentEnd
-				- transitions.currentStart;
+		long timeSinceStart = now - transitions.getCurrentStart();
+		long intervalLength = transitions.getCurrentEnd()
+				- transitions.getCurrentStart();
 		double fractionPassed = (1. * timeSinceStart) / intervalLength;
 		int ticksPassed = (int) (INTERVAL_TICKS * fractionPassed);
-		int wrappedValue = transitions.isDayCurrently ? ticksPassed + INTERVAL_TICKS
+		int wrappedValue = transitions.isDayCurrently() ? ticksPassed + INTERVAL_TICKS
 				: ticksPassed;
 		return fromWrapped(wrappedValue, reuse);
 	}

@@ -12,7 +12,7 @@ public class TransitionCalculator {
 	final Map<Long, Day> cache = new HashMap<Long, Day>();
 	SunriseSunsetCalculator calculator;
 
-	public FourTransitions calculateTransitions(long now) {
+	public ThreeIntervals calculateTransitions(long now) {
 		if (calculator == null)
 			throw new IllegalStateException("Location not set");
 
@@ -20,11 +20,11 @@ public class TransitionCalculator {
 		Day yesterday = getDayForJDN(jdn - 1);
 		Day today = getDayForJDN(jdn);
 		Day tomorrow = getDayForJDN(jdn + 1);
-		FourTransitions result = new FourTransitions(yesterday.sunset,
+		ThreeIntervals result = new ThreeIntervals(yesterday.sunset,
 				today.sunrise, today.sunset, tomorrow.sunrise, true);
 
-		while (now >= result.currentEnd)
-			if (result.isDayCurrently)
+		while (now >= result.getCurrentEnd())
+			if (result.isDayCurrently())
 				result = result.shiftToFuture(tomorrow.sunset);
 			else {
 				jdn++;
@@ -32,8 +32,8 @@ public class TransitionCalculator {
 				result = result.shiftToFuture(tomorrow.sunrise);
 			}
 
-		while (now < result.currentStart)
-			if (result.isDayCurrently)
+		while (now < result.getCurrentStart())
+			if (result.isDayCurrently())
 				result = result.shiftToPast(yesterday.sunrise);
 			else {
 				jdn--;

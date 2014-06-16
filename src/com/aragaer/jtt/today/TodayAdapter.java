@@ -1,7 +1,7 @@
 package com.aragaer.jtt.today;
 
 import com.aragaer.jtt.R;
-import com.aragaer.jtt.core.FourTransitions;
+import com.aragaer.jtt.core.ThreeIntervals;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
@@ -20,7 +20,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 	private static final int HOUR_COUNT = DAY_PART_COUNT * Hour.HOURS;
 	private static final int ITEM_TYPE_COUNT = 2;
 	private static final int ITEM_COUNT = HOUR_COUNT * ITEM_TYPE_COUNT - 1;
-	private FourTransitions transitions;
+	private ThreeIntervals transitions;
 	private int selected;
 
 	public TodayAdapter(Context c, int layout_id) {
@@ -50,14 +50,14 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 	 */
 	private Collection<TodayItem> buildItems() {
 		List<TodayItem> result = new ArrayList<TodayItem>(ITEM_COUNT);
-		result.add(new HourItem(transitions.previousStart, transitions.isDayCurrently ? 0
+		result.add(new HourItem(transitions.getPreviousStart(), transitions.isDayCurrently() ? 0
 				: Hour.HOURS));
-		result.addAll(addInterval(transitions.previousStart,
-				transitions.currentStart, transitions.isDayCurrently));
-		result.addAll(addInterval(transitions.currentStart,
-				transitions.currentEnd, !transitions.isDayCurrently));
-		result.addAll(addInterval(transitions.currentEnd,
-				transitions.nextEnd, transitions.isDayCurrently));
+		result.addAll(addInterval(transitions.getPreviousStart(),
+				transitions.getCurrentStart(), transitions.isDayCurrently()));
+		result.addAll(addInterval(transitions.getCurrentStart(),
+				transitions.getCurrentEnd(), !transitions.isDayCurrently()));
+		result.addAll(addInterval(transitions.getCurrentEnd(),
+				transitions.getNextEnd(), transitions.isDayCurrently()));
 		return result;
 	}
 
@@ -75,7 +75,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 		return result;
 	}
 
-	public synchronized void setTransitions(FourTransitions newTransitions) {
+	public synchronized void setTransitions(ThreeIntervals newTransitions) {
 		long now = System.currentTimeMillis();
 
 		if (newTransitions.notInCurrentInterval(now)) {

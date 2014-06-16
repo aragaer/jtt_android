@@ -1,7 +1,7 @@
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.Clockwork;
-import com.aragaer.jtt.core.FourTransitions;
+import com.aragaer.jtt.core.ThreeIntervals;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.core.TransitionProvider;
 import com.aragaer.jtt.resources.RuntimeResources;
@@ -53,16 +53,16 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		final int wrapped = intent.getIntExtra("jtt", 0);
 		Hour.fromWrapped(wrapped, h);
 
-		FourTransitions transitions = TransitionProvider.getSurroundingTransitions(ctx, System.currentTimeMillis());
+		ThreeIntervals transitions = TransitionProvider.getSurroundingTransitions(ctx, System.currentTimeMillis());
 		final int lower = Hour.lowerBoundary(h.num),
 			upper = Hour.upperBoundary(h.num);
-		start = Hour.getHourBoundary(transitions.currentStart, transitions.currentEnd, lower);
-		end = Hour.getHourBoundary(transitions.currentStart, transitions.currentEnd, upper);
+		start = Hour.getHourBoundary(transitions.getCurrentStart(), transitions.getCurrentEnd(), lower);
+		end = Hour.getHourBoundary(transitions.getCurrentStart(), transitions.getCurrentEnd(), upper);
 		if (end < start) {// Cock or Hare
 			if (h.quarter >= 2) // we've passed the transition
-				start = Hour.getHourBoundary(transitions.previousStart, transitions.currentStart, lower);
+				start = Hour.getHourBoundary(transitions.getPreviousStart(), transitions.getCurrentStart(), lower);
 			else
-				end = Hour.getHourBoundary(transitions.currentEnd, transitions.nextEnd, upper);
+				end = Hour.getHourBoundary(transitions.getCurrentEnd(), transitions.getNextEnd(), upper);
 		}
 
 		show();

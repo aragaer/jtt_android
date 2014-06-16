@@ -41,12 +41,12 @@ public class TransitionProvider extends ContentProvider {
 			throw new IllegalArgumentException("Unsupported uri for query: "
 					+ uri);
 		final long now = ContentUris.parseId(uri);
-		FourTransitions result = calculator.calculateTransitions(now);
+		ThreeIntervals result = calculator.calculateTransitions(now);
 
 		final MatrixCursor c = new MatrixCursor(PROJECTION_TR, 1);
-		c.addRow(new Object[] { result.previousStart, result.currentStart,
-				result.currentEnd, result.nextEnd,
-				result.isDayCurrently ? 1 : 0 });
+		c.addRow(new Object[] { result.getPreviousStart(), result.getCurrentStart(),
+				result.getCurrentEnd(), result.getNextEnd(),
+				result.isDayCurrently() ? 1 : 0 });
 		return c;
 	}
 
@@ -92,10 +92,10 @@ public class TransitionProvider extends ContentProvider {
 		return is_day;
 	}
 
-	public static FourTransitions getSurroundingTransitions(Context context,
+	public static ThreeIntervals getSurroundingTransitions(Context context,
 			long now) {
 		long[] tr = new long[4];
 		boolean is_day = getSurroundingTransitions(context, now, tr);
-		return new FourTransitions(tr, is_day);
+		return new ThreeIntervals(tr, is_day);
 	}
 }

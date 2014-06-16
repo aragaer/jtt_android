@@ -39,14 +39,14 @@ public class Clockwork extends IntentService {
 		final AlarmManager am = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
 		long now = System.currentTimeMillis();
-		FourTransitions transitions = TransitionProvider.getSurroundingTransitions(
+		ThreeIntervals transitions = TransitionProvider.getSurroundingTransitions(
 				context, now);
 
-		final long tickFrequency = (transitions.currentEnd - transitions.currentStart) / (Hour.HOURS * Hour.HOUR_PARTS);
+		final long tickFrequency = (transitions.getCurrentEnd() - transitions.getCurrentStart()) / (Hour.HOURS * Hour.HOUR_PARTS);
 
 		final Intent TickActionInternal = new Intent(context, Clockwork.class);
 
-		am.setRepeating(AlarmManager.RTC, transitions.currentStart,
+		am.setRepeating(AlarmManager.RTC, transitions.getCurrentStart(),
 				tickFrequency, PendingIntent.getService(context, 0,
 						TickActionInternal, INTENT_FLAGS));
 	}
@@ -61,7 +61,7 @@ public class Clockwork extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		final long now = System.currentTimeMillis();
-		FourTransitions transitions = TransitionProvider.getSurroundingTransitions(this, now);
+		ThreeIntervals transitions = TransitionProvider.getSurroundingTransitions(this, now);
 		Hour.fromTransitions(transitions, now, hour);
 
 		if (transitions.isInCurrentInterval(now)) {
