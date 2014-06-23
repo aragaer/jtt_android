@@ -77,6 +77,18 @@ public class DayIntervalCalculatorTest {
 				dateToTimestamp(2000, 0, 1, 16, 05));
 	}
 
+	@Test
+	@Timezone(offsetMinutes = 180)
+	public void testMoscowDay22Jun2014() {
+		calculator.setLocation(55.93, 37.79);
+		DayInterval day = calculator.getDay(calendarToJDN(dateToTimestamp(2014,
+				5, 22)));
+		assertTrue(day.isDay());
+		checkValues(day, "03:43", "21:19");
+		checkValues(day, dateToTimestamp(2014, 5, 22, 3, 43),
+				dateToTimestamp(2014, 5, 22, 21, 19));
+	}
+
 	private void checkValues(DayInterval interval, long start, long end) {
 		assertThat(interval.getStart(), equalTo(start));
 		assertThat(interval.getEnd(), equalTo(end));
