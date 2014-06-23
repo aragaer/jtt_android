@@ -17,15 +17,22 @@ public class DayIntervalCalculator implements DayIntervalFactory {
 
 	@Override
 	public DayInterval getIntervalForTimestamp(long timestamp) {
+		DayInterval result;
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(timestamp);
 		long sunrise = calculator.getOfficialSunriseCalendarForDate(calendar).getTimeInMillis();
 		long sunset = calculator.getOfficialSunsetCalendarForDate(calendar).getTimeInMillis();
-		if (timestamp >= sunrise && timestamp < sunset)
-			return new Day(new Sunrise(sunrise), new Sunset(sunset));
-		else
-			return new Night(new Sunset(timestamp - 1), new Sunrise(
-					timestamp + 1));
+		if (timestamp < sunrise) {
+			calendar.add(Calendar.DATE, -1);
+			long previousSunset = calculator.getOfficialSunsetCalendarForDate(calendar).getTimeInMillis();
+			result = new Night(new Sunset(previousSunset), new Sunrise(sunrise));
+		} else if (timestamp >= sunset) {
+			calendar.add(Calendar.DATE, 1);
+			long nextSunrise = calculator.getOfficialSunriseCalendarForDate(calendar).getTimeInMillis();
+			result = new Night(new Sunset(sunset), new Sunrise(nextSunrise));
+		} else
+			result = new Day(new Sunrise(sunrise), new Sunset(sunset));
+		return result;
 	}
 
 }

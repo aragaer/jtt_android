@@ -54,4 +54,62 @@ public class DayIntervalCalculatorTest {
 		assertThat(sunset.getTimestamp(), lessThan(midnight23Jun2014));
 		assertThat(sunrise.getTimestamp(), greaterThan(midnight23Jun2014));
 	}
+
+	@Test
+	@Location(latitude = 55.93, longitude = 37.79)
+	public void testMoscowSunrise() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2014, 5, 23, 12, 0, 0);
+		long noon23Jun2014 = calendar.getTimeInMillis();
+		calendar.set(2014, 5, 23, 0, 0, 0);
+		long midnight23Jun2014 = calendar.getTimeInMillis();
+		DayInterval day = calculator.getIntervalForTimestamp(noon23Jun2014);
+		DayInterval night = calculator
+				.getIntervalForTimestamp(midnight23Jun2014);
+		assertThat(day.getStart().getTimestamp(), equalTo(night.getEnd()
+				.getTimestamp()));
+	}
+
+	@Test
+	@Location(latitude = 55.93, longitude = 37.79)
+	public void testMoscowSunset() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2014, 5, 23, 12, 0, 0);
+		long noon23Jun2014 = calendar.getTimeInMillis();
+		calendar.set(2014, 5, 24, 0, 0, 0);
+		long midnight24Jun2014 = calendar.getTimeInMillis();
+		DayInterval day = calculator.getIntervalForTimestamp(noon23Jun2014);
+		DayInterval night = calculator
+				.getIntervalForTimestamp(midnight24Jun2014);
+		assertThat(day.getEnd().getTimestamp(), equalTo(night.getStart()
+				.getTimestamp()));
+	}
+
+	@Test
+	@Location(latitude = 55.93, longitude = 37.79)
+	public void testMoscowBeforeSunrise() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2014, 5, 23, 12, 0, 0);
+		long noon23Jun2014 = calendar.getTimeInMillis();
+		DayInterval day = calculator.getIntervalForTimestamp(noon23Jun2014);
+		long sunrise23Jun2014 = day.getStart().getTimestamp();
+		DayInterval night = calculator
+				.getIntervalForTimestamp(sunrise23Jun2014 - 1);
+		assertFalse(night.isDay());
+		assertThat(night.getEnd().getTimestamp(), equalTo(sunrise23Jun2014));
+	}
+
+	@Test
+	@Location(latitude = 55.93, longitude = 37.79)
+	public void testMoscowAfterSunset() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2014, 5, 23, 12, 0, 0);
+		long noon23Jun2014 = calendar.getTimeInMillis();
+		DayInterval day = calculator.getIntervalForTimestamp(noon23Jun2014);
+		long sunset23Jun2014 = day.getEnd().getTimestamp();
+		DayInterval night = calculator
+				.getIntervalForTimestamp(sunset23Jun2014 + 1);
+		assertFalse(night.isDay());
+		assertThat(night.getStart().getTimestamp(), equalTo(sunset23Jun2014));
+	}
 }
