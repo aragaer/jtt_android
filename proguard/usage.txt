@@ -10,11 +10,13 @@ android.support.v4.app.ActionBarDrawerToggle$1
 android.support.v4.app.ActionBarDrawerToggle$ActionBarDrawerToggleImpl
 android.support.v4.app.ActionBarDrawerToggle$ActionBarDrawerToggleImplBase
 android.support.v4.app.ActionBarDrawerToggle$ActionBarDrawerToggleImplHC
+android.support.v4.app.ActionBarDrawerToggle$ActionBarDrawerToggleImplJellybeanMR2
 android.support.v4.app.ActionBarDrawerToggle$Delegate
 android.support.v4.app.ActionBarDrawerToggle$DelegateProvider
 android.support.v4.app.ActionBarDrawerToggle$SlideDrawable
 android.support.v4.app.ActionBarDrawerToggleHoneycomb
 android.support.v4.app.ActionBarDrawerToggleHoneycomb$SetIndicatorInfo
+android.support.v4.app.ActionBarDrawerToggleJellybeanMR2
 android.support.v4.app.ActivityCompat
 android.support.v4.app.ActivityCompatHoneycomb
 android.support.v4.app.ActivityCompatJB
@@ -79,55 +81,57 @@ android.support.v4.app.NotificationCompat:
     public static final int PRIORITY_MIN
     public static final int PRIORITY_HIGH
     public static final int PRIORITY_MAX
-    34:819:public NotificationCompat()
+    34:836:public NotificationCompat()
 android.support.v4.app.NotificationCompat$Action:
-    824:828:public NotificationCompat$Action(int,java.lang.CharSequence,android.app.PendingIntent)
+    841:845:public NotificationCompat$Action(int,java.lang.CharSequence,android.app.PendingIntent)
 android.support.v4.app.NotificationCompat$BigPictureStyle:
-    659:661:public NotificationCompat$BigPictureStyle(android.support.v4.app.NotificationCompat$Builder)
-    668:669:public android.support.v4.app.NotificationCompat$BigPictureStyle setBigContentTitle(java.lang.CharSequence)
-    676:678:public android.support.v4.app.NotificationCompat$BigPictureStyle setSummaryText(java.lang.CharSequence)
-    685:686:public android.support.v4.app.NotificationCompat$BigPictureStyle bigPicture(android.graphics.Bitmap)
-    693:695:public android.support.v4.app.NotificationCompat$BigPictureStyle bigLargeIcon(android.graphics.Bitmap)
+    676:678:public NotificationCompat$BigPictureStyle(android.support.v4.app.NotificationCompat$Builder)
+    685:686:public android.support.v4.app.NotificationCompat$BigPictureStyle setBigContentTitle(java.lang.CharSequence)
+    693:695:public android.support.v4.app.NotificationCompat$BigPictureStyle setSummaryText(java.lang.CharSequence)
+    702:703:public android.support.v4.app.NotificationCompat$BigPictureStyle bigPicture(android.graphics.Bitmap)
+    710:712:public android.support.v4.app.NotificationCompat$BigPictureStyle bigLargeIcon(android.graphics.Bitmap)
 android.support.v4.app.NotificationCompat$BigTextStyle:
-    726:728:public NotificationCompat$BigTextStyle(android.support.v4.app.NotificationCompat$Builder)
-    735:736:public android.support.v4.app.NotificationCompat$BigTextStyle setBigContentTitle(java.lang.CharSequence)
-    743:745:public android.support.v4.app.NotificationCompat$BigTextStyle setSummaryText(java.lang.CharSequence)
-    753:754:public android.support.v4.app.NotificationCompat$BigTextStyle bigText(java.lang.CharSequence)
+    743:745:public NotificationCompat$BigTextStyle(android.support.v4.app.NotificationCompat$Builder)
+    752:753:public android.support.v4.app.NotificationCompat$BigTextStyle setBigContentTitle(java.lang.CharSequence)
+    760:762:public android.support.v4.app.NotificationCompat$BigTextStyle setSummaryText(java.lang.CharSequence)
+    770:771:public android.support.v4.app.NotificationCompat$BigTextStyle bigText(java.lang.CharSequence)
 android.support.v4.app.NotificationCompat$Builder:
-    231:232:public android.support.v4.app.NotificationCompat$Builder setWhen(long)
-    247:248:public android.support.v4.app.NotificationCompat$Builder setUsesChronometer(boolean)
-    259:260:public android.support.v4.app.NotificationCompat$Builder setSmallIcon(int)
-    283:284:public android.support.v4.app.NotificationCompat$Builder setContentTitle(java.lang.CharSequence)
-    291:292:public android.support.v4.app.NotificationCompat$Builder setContentText(java.lang.CharSequence)
-    305:306:public android.support.v4.app.NotificationCompat$Builder setSubText(java.lang.CharSequence)
-    315:316:public android.support.v4.app.NotificationCompat$Builder setNumber(int)
-    323:324:public android.support.v4.app.NotificationCompat$Builder setContentInfo(java.lang.CharSequence)
-    332:335:public android.support.v4.app.NotificationCompat$Builder setProgress(int,int,boolean)
-    367:368:public android.support.v4.app.NotificationCompat$Builder setDeleteIntent(android.app.PendingIntent)
-    385:387:public android.support.v4.app.NotificationCompat$Builder setFullScreenIntent(android.app.PendingIntent,boolean)
-    395:396:public android.support.v4.app.NotificationCompat$Builder setTicker(java.lang.CharSequence)
-    405:407:public android.support.v4.app.NotificationCompat$Builder setTicker(java.lang.CharSequence,android.widget.RemoteViews)
-    414:415:public android.support.v4.app.NotificationCompat$Builder setLargeIcon(android.graphics.Bitmap)
-    422:424:public android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri)
-    434:436:public android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri,int)
-    446:447:public android.support.v4.app.NotificationCompat$Builder setVibrate(long[])
-    456:462:public android.support.v4.app.NotificationCompat$Builder setLights(int,int,int)
-    486:487:public android.support.v4.app.NotificationCompat$Builder setOnlyAlertOnce(boolean)
-    497:498:public android.support.v4.app.NotificationCompat$Builder setAutoCancel(boolean)
-    512:516:public android.support.v4.app.NotificationCompat$Builder setDefaults(int)
-    539:540:public android.support.v4.app.NotificationCompat$Builder setPriority(int)
-    560:561:public android.support.v4.app.NotificationCompat$Builder addAction(int,java.lang.CharSequence,android.app.PendingIntent)
-    573:579:public android.support.v4.app.NotificationCompat$Builder setStyle(android.support.v4.app.NotificationCompat$Style)
-    587:587:public android.app.Notification getNotification()
+    248:249:public android.support.v4.app.NotificationCompat$Builder setWhen(long)
+    264:265:public android.support.v4.app.NotificationCompat$Builder setUsesChronometer(boolean)
+    276:277:public android.support.v4.app.NotificationCompat$Builder setSmallIcon(int)
+    300:301:public android.support.v4.app.NotificationCompat$Builder setContentTitle(java.lang.CharSequence)
+    308:309:public android.support.v4.app.NotificationCompat$Builder setContentText(java.lang.CharSequence)
+    322:323:public android.support.v4.app.NotificationCompat$Builder setSubText(java.lang.CharSequence)
+    332:333:public android.support.v4.app.NotificationCompat$Builder setNumber(int)
+    340:341:public android.support.v4.app.NotificationCompat$Builder setContentInfo(java.lang.CharSequence)
+    349:352:public android.support.v4.app.NotificationCompat$Builder setProgress(int,int,boolean)
+    384:385:public android.support.v4.app.NotificationCompat$Builder setDeleteIntent(android.app.PendingIntent)
+    402:404:public android.support.v4.app.NotificationCompat$Builder setFullScreenIntent(android.app.PendingIntent,boolean)
+    412:413:public android.support.v4.app.NotificationCompat$Builder setTicker(java.lang.CharSequence)
+    422:424:public android.support.v4.app.NotificationCompat$Builder setTicker(java.lang.CharSequence,android.widget.RemoteViews)
+    431:432:public android.support.v4.app.NotificationCompat$Builder setLargeIcon(android.graphics.Bitmap)
+    439:441:public android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri)
+    451:453:public android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri,int)
+    463:464:public android.support.v4.app.NotificationCompat$Builder setVibrate(long[])
+    473:479:public android.support.v4.app.NotificationCompat$Builder setLights(int,int,int)
+    503:504:public android.support.v4.app.NotificationCompat$Builder setOnlyAlertOnce(boolean)
+    514:515:public android.support.v4.app.NotificationCompat$Builder setAutoCancel(boolean)
+    529:533:public android.support.v4.app.NotificationCompat$Builder setDefaults(int)
+    556:557:public android.support.v4.app.NotificationCompat$Builder setPriority(int)
+    577:578:public android.support.v4.app.NotificationCompat$Builder addAction(int,java.lang.CharSequence,android.app.PendingIntent)
+    590:596:public android.support.v4.app.NotificationCompat$Builder setStyle(android.support.v4.app.NotificationCompat$Style)
+    604:604:public android.app.Notification getNotification()
 android.support.v4.app.NotificationCompat$InboxStyle:
-    788:790:public NotificationCompat$InboxStyle(android.support.v4.app.NotificationCompat$Builder)
-    797:798:public android.support.v4.app.NotificationCompat$InboxStyle setBigContentTitle(java.lang.CharSequence)
-    805:807:public android.support.v4.app.NotificationCompat$InboxStyle setSummaryText(java.lang.CharSequence)
-    814:815:public android.support.v4.app.NotificationCompat$InboxStyle addLine(java.lang.CharSequence)
+    805:807:public NotificationCompat$InboxStyle(android.support.v4.app.NotificationCompat$Builder)
+    814:815:public android.support.v4.app.NotificationCompat$InboxStyle setBigContentTitle(java.lang.CharSequence)
+    822:824:public android.support.v4.app.NotificationCompat$InboxStyle setSummaryText(java.lang.CharSequence)
+    831:832:public android.support.v4.app.NotificationCompat$InboxStyle addLine(java.lang.CharSequence)
 android.support.v4.app.NotificationCompat$Style:
     android.support.v4.app.NotificationCompat$Builder mBuilder
-    614:620:public void setBuilder(android.support.v4.app.NotificationCompat$Builder)
-    623:627:public android.app.Notification build()
+    631:637:public void setBuilder(android.support.v4.app.NotificationCompat$Builder)
+    640:644:public android.app.Notification build()
+android.support.v4.app.NotificationCompatGingerbread:
+    23:23:NotificationCompatGingerbread()
 android.support.v4.app.NotificationCompatHoneycomb:
     25:25:NotificationCompatHoneycomb()
 android.support.v4.app.NotificationCompatIceCreamSandwich:
@@ -244,6 +248,9 @@ android.support.v4.print.PrintHelper$PrintHelperStubImpl
 android.support.v4.print.PrintHelper$PrintHelperVersionImpl
 android.support.v4.print.PrintHelperKitkat
 android.support.v4.print.PrintHelperKitkat$1
+android.support.v4.print.PrintHelperKitkat$2
+android.support.v4.print.PrintHelperKitkat$2$1
+android.support.v4.print.PrintHelperKitkat$2$1$1
 android.support.v4.text.BidiFormatter
 android.support.v4.text.BidiFormatter$1
 android.support.v4.text.BidiFormatter$Builder
@@ -1102,6 +1109,7 @@ android.support.v4.widget.AutoScrollHelper
 android.support.v4.widget.AutoScrollHelper$1
 android.support.v4.widget.AutoScrollHelper$ClampedScroller
 android.support.v4.widget.AutoScrollHelper$ScrollAnimationRunnable
+android.support.v4.widget.BakedBezierInterpolator
 android.support.v4.widget.ContentLoadingProgressBar
 android.support.v4.widget.ContentLoadingProgressBar$1
 android.support.v4.widget.ContentLoadingProgressBar$2
@@ -1186,6 +1194,16 @@ android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImpl
 android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImplBase
 android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImplJB
 android.support.v4.widget.SlidingPaneLayout$SlidingPanelLayoutImplJBMR1
+android.support.v4.widget.SwipeProgressBar
+android.support.v4.widget.SwipeRefreshLayout
+android.support.v4.widget.SwipeRefreshLayout$1
+android.support.v4.widget.SwipeRefreshLayout$2
+android.support.v4.widget.SwipeRefreshLayout$3
+android.support.v4.widget.SwipeRefreshLayout$4
+android.support.v4.widget.SwipeRefreshLayout$5
+android.support.v4.widget.SwipeRefreshLayout$6
+android.support.v4.widget.SwipeRefreshLayout$BaseAnimationListener
+android.support.v4.widget.SwipeRefreshLayout$OnRefreshListener
 android.support.v4.widget.ViewDragHelper
 android.support.v4.widget.ViewDragHelper$1
 android.support.v4.widget.ViewDragHelper$2
