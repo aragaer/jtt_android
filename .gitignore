@@ -1,6 +1,7 @@
 .metadata/
 gen/
 bin/
+libs/
 
 *.swp
 config.mk
