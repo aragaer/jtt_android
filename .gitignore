@@ -1,11 +1,9 @@
-.metadata/
 gen/
 bin/
 libs/
 
 *.swp
-config.mk
-build.xml
-deploy
 tags
-local.properties
+
+build/
+.gradle/

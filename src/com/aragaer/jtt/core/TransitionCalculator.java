@@ -49,8 +49,8 @@ public class TransitionCalculator {
 		if (result == null) {
 			final Calendar date = Calendar.getInstance();
 			date.setTimeInMillis(TransitionCalculator.JDToLong(jdn));
-			result = new Day(calculator.getOfficialSunriseForDate(date),
-					calculator.getOfficialSunsetForDate(date));
+			result = new Day(calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis(),
+					calculator.getOfficialSunsetCalendarForDate(date).getTimeInMillis());
 			cache.put(jdn, result);
 		}
 		return result;

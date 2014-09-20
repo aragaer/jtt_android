@@ -1,0 +1,58 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.13.+'
+    }
+}
+apply plugin: 'android'
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.luckycatlabs:SunriseSunsetCalculator:1.1'
+    compile 'com.android.support:support-v4:18.0.+'
+}
+
+android {
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+        }
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+    compileSdkVersion 'android-20'
+    buildToolsVersion '20'
+
+    signingConfigs {
+        release {
+            storeFile file(System.getenv("KEYSTORE"))
+            storePassword ''
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword ''
+        }
+    }
+    buildTypes {
+        debug {
+        }
+        release {
+            runProguard true
+            proguardFile 'proguard.cfg'
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.hasTask(':assembleRelease')) {
+        def store_pass = System.console().readPassword("\nPlease enter store passphrase: ")
+        android.signingConfigs.release.storePassword = new String(store_pass)
+        def key_pass = System.console().readPassword("\nPlease enter key passphrase: ")
+        android.signingConfigs.release.keyPassword = new String(key_pass)
+    }
+}

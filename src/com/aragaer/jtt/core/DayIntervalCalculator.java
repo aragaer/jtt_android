@@ -28,8 +28,8 @@ public class DayIntervalCalculator {
 		prepareCalculator();
 		Calendar date = Calendar.getInstance();
 		date.setTimeInMillis(jdnToTimestamp(jdn+1));
-		long sunrise = roundToMinute(calculator.getOfficialSunriseForDate(date));
-		long sunset = roundToMinute(calculator.getOfficialSunsetForDate(date));
+		long sunrise = roundToMinute(calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis());
+		long sunset = roundToMinute(calculator.getOfficialSunsetCalendarForDate(date).getTimeInMillis());
 		return new DayInterval(sunrise, sunset, true);
 	}
 
@@ -37,9 +37,9 @@ public class DayIntervalCalculator {
 		prepareCalculator();
 		Calendar date = Calendar.getInstance();
 		date.setTimeInMillis(jdnToTimestamp(jdn+1));
-		long sunrise = roundToMinute(calculator.getOfficialSunriseForDate(date));
+		long sunrise = roundToMinute(calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis());
 		date.add(Calendar.DATE, -1);
-		long sunset = roundToMinute(calculator.getOfficialSunsetForDate(date));
+		long sunset = roundToMinute(calculator.getOfficialSunsetCalendarForDate(date).getTimeInMillis());
 		return new DayInterval(sunset, sunrise, false);
 	}
 
