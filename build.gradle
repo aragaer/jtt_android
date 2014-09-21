@@ -1,4 +1,4 @@
-// vim: et ts=4 sts=4 sw=4
+// vim: et ts=4 sts=4 sw=4 syntax=groovy
 buildscript {
     repositories {
         mavenCentral()
@@ -42,9 +42,20 @@ android {
         }
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
+
+        androidTest.setRoot('JttAndroidTest')
+        androidTest {
+           java.srcDirs = ['JttAndroidTest/src']
+           res.srcDirs = ['JttAndroidTest/res']
+        }
     }
     compileSdkVersion 'android-20'
     buildToolsVersion '20'
+
+    defaultConfig {
+        testApplicationId "com.aragaer.jtt.test"
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+    }
 
     signingConfigs {
         release {
@@ -54,6 +65,7 @@ android {
             keyPassword ''
         }
     }
+
     buildTypes {
         debug {
         }
