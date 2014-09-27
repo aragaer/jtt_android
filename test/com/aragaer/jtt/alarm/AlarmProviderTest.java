@@ -3,6 +3,7 @@ package com.aragaer.jtt.alarm;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
 import org.robolectric.RobolectricTestRunner;
 
 import android.content.ContentProvider;
@@ -13,6 +14,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 import static com.aragaer.jtt.alarm.AlarmProvider.ALARM_URI;
 
+@Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
 public class AlarmProviderTest {
 	private ContentProvider provider;

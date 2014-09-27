@@ -31,6 +31,7 @@ dependencies {
     unitTestCompile 'org.hamcrest:hamcrest-library:1.1'
     unitTestCompile 'org.robolectric:robolectric:2.3'
     unitTestCompile 'com.google.android:android:4.1.1.4'
+    unitTestCompile 'com.luckycatlabs:SunriseSunsetCalculator:1.1'
 }
 
 sourceSets {

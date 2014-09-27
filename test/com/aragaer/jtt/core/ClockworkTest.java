@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.annotation.Config;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.ShadowAlarmManager;
 import org.robolectric.shadows.ShadowAlarmManager.ScheduledAlarm;
@@ -18,6 +19,7 @@ import android.content.ContentValues;
 import android.content.Context;
 
 @RunWith(RobolectricTestRunner.class)
+@Config(emulateSdk = 18)
 public class ClockworkTest {
 
 	private TransitionProvider transitionProvider;

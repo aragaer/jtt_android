@@ -3,6 +3,7 @@ package com.aragaer.jtt.alarm;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.annotation.Config;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.ShadowContentResolver;
 
@@ -13,6 +14,7 @@ import static org.junit.Assert.*;
 
 import com.aragaer.jtt.core.Hour;
 
+@Config(emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
 public class AlarmRepositoryTest {
 

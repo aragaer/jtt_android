@@ -4,12 +4,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.annotation.Config;
 
 import android.database.sqlite.SQLiteDatabase;
 
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(org.robolectric.RobolectricTestRunner.class)
+@Config(emulateSdk = 18)
 public class AlarmSQLiteHelperTest {
 
 	private AlarmSQLiteHelper helper;

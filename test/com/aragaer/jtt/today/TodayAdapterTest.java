@@ -1,6 +1,8 @@
+// vim: et ts=4 sts=4 sw=4
 package com.aragaer.jtt.today;
 
 import org.junit.*;
+import org.robolectric.annotation.Config;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
@@ -11,6 +13,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
+@Config(emulateSdk=18)
 public class TodayAdapterTest {
 	private TodayAdapter adapter;
 
