@@ -4,12 +4,14 @@ import java.util.Calendar;
 
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
 import org.robolectric.RobolectricTestRunner;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
+@Config(emulateSdk = 18)
 public class DayIntervalCalculatorTest {
 
 	private DayIntervalCalculator calculator;

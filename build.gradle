@@ -26,9 +26,9 @@ dependencies {
     // unitTestCompile files("$project.buildDir/classes/debug")
     unitTestCompile files("$project.buildDir/intermediates/classes/debug")
     unitTestCompile 'junit:junit:4.11'
-    unitTestCompile 'org.hamcrest:hamcrest-integration:1.1'
-    unitTestCompile 'org.hamcrest:hamcrest-core:1.1'
-    unitTestCompile 'org.hamcrest:hamcrest-library:1.1'
+    unitTestCompile 'org.hamcrest:hamcrest-integration:1.3'
+    unitTestCompile 'org.hamcrest:hamcrest-core:1.3'
+    unitTestCompile 'org.hamcrest:hamcrest-library:1.3'
     unitTestCompile 'org.robolectric:robolectric:2.3'
     unitTestCompile 'com.google.android:android:4.1.1.4'
     unitTestCompile 'com.luckycatlabs:SunriseSunsetCalculator:1.1'
