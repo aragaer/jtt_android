@@ -98,4 +98,8 @@ public class TransitionProvider extends ContentProvider {
 		boolean is_day = getSurroundingTransitions(context, now, tr);
 		return new ThreeIntervals(tr, is_day);
 	}
+
+	public static ThreeIntervals getSurroundingTransitions(Context context) {
+		return getSurroundingTransitions(context, System.currentTimeMillis());
+	}
 }

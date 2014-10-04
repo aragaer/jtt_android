@@ -7,10 +7,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.shadows.ShadowAlarmManager;
 import org.robolectric.shadows.ShadowAlarmManager.ScheduledAlarm;
-import org.robolectric.shadows.ShadowContentResolver;
-import org.robolectric.shadows.ShadowPendingIntent;
+import org.robolectric.shadows.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -24,7 +22,7 @@ import android.net.Uri;
 @Config(emulateSdk = 18)
 public class ClockworkTest {
 
-	private TransitionProvider transitionProvider;
+	private FakeTransitionProvider transitionProvider;
 
 	@Before
 	public void setup() {
@@ -38,12 +36,9 @@ public class ClockworkTest {
 	}
 
 	@Test
-	public void shouldAlarmSelf() {
-		AlarmManager am = (AlarmManager) Robolectric.application
-				.getSystemService(Context.ALARM_SERVICE);
-		ShadowAlarmManager shadowAlarmManager = Robolectric.shadowOf(am);
+	public void shouldScheduleAlarm() {
 		Clockwork.schedule(Robolectric.application);
-		List<ScheduledAlarm> alarms = shadowAlarmManager.getScheduledAlarms();
+		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
 		ScheduledAlarm alarm = alarms.get(0);
 		ShadowPendingIntent pending = Robolectric.shadowOf(alarm.operation);
@@ -51,13 +46,31 @@ public class ClockworkTest {
 	}
 
 	@Test
+	public void shouldScheduleAlarmWithCorrectStartTime() {
+		transitionProvider.offset = 30;
+		long now = System.currentTimeMillis();
+		Clockwork.schedule(Robolectric.application);
+		List<ScheduledAlarm> alarms = getScheduledAlarms();
+		assertThat(alarms.size(), equalTo(1));
+		ScheduledAlarm alarm = alarms.get(0);
+		assertThat(alarm.triggerAtTime, equalTo(now - 30));
+	}
+
+	@Test
+	public void shouldScheduleAlarmWithCorrectInterval() {
+		long now = System.currentTimeMillis();
+		Clockwork.schedule(Robolectric.application);
+		List<ScheduledAlarm> alarms = getScheduledAlarms();
+		assertThat(alarms.size(), equalTo(1));
+		ScheduledAlarm alarm = alarms.get(0);
+		assertThat(alarm.interval, equalTo(transitionProvider.secondIntervalLength / Hour.INTERVAL_TICKS));
+	}
+
+	@Test
 	public void shouldUnscheduleAlarm() {
-		AlarmManager am = (AlarmManager) Robolectric.application
-				.getSystemService(Context.ALARM_SERVICE);
-		ShadowAlarmManager shadowAlarmManager = Robolectric.shadowOf(am);
 		Clockwork.schedule(Robolectric.application);
 		Clockwork.unschedule(Robolectric.application);
-		List<ScheduledAlarm> alarms = shadowAlarmManager.getScheduledAlarms();
+		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(0));
 	}
 
@@ -75,21 +88,20 @@ public class ClockworkTest {
 		TestReceiver receiver = new TestReceiver();
 		Robolectric.application.registerReceiver(receiver, new IntentFilter(Clockwork.ACTION_JTT_TICK));
 		assertThat(receiver.wrapped, equalTo(-1));
-		new ClockworkMock().onHandleIntent(null);
+		new Clockwork().onTick(Robolectric.application);
 		assertThat(receiver.wrapped, equalTo(0));
 	}
 
-	class ClockworkMock extends Clockwork {
-		@Override
-		public void onHandleIntent(Intent intent) {
-			super.onHandleIntent(intent);
-		}
+	private List<ScheduledAlarm> getScheduledAlarms() {
+		AlarmManager am = (AlarmManager) Robolectric.application
+			.getSystemService(Context.ALARM_SERVICE);
+		return Robolectric.shadowOf(am).getScheduledAlarms();
 	}
 
 	static class FakeTransitionProvider extends TransitionProvider {
-		long firstIntervalLength = 200;
-		long secondIntervalLength = 200;
-		long thirdIntervalLength = 200;
+		long firstIntervalLength = 20000;
+		long secondIntervalLength = 20000;
+		long thirdIntervalLength = 20000;
 		long offset = 0;
 		boolean is_day = false;
 		@Override

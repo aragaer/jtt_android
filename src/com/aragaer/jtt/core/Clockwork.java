@@ -8,22 +8,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class Clockwork extends IntentService {
+public class Clockwork implements TickCallback {
 	private static final String TAG = "JTT CLOCKWORK";
 	public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
 	private static final Intent TickAction = new Intent(ACTION_JTT_TICK);
-	private static final int INTENT_FLAGS = PendingIntent.FLAG_UPDATE_CURRENT;
-	private final Hour hour = new Hour(0);
-
-	public Clockwork() {
-		super("CLOCKWORK");
-	}
 
 	public static class TimeChangeReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			final String action = intent.getAction();
+			String action = intent.getAction();
 			if (action.equals(Intent.ACTION_TIME_CHANGED)
 					|| action.equals(Intent.ACTION_DATE_CHANGED))
 				try {
@@ -35,37 +29,20 @@ public class Clockwork extends IntentService {
 	};
 
 	public static void schedule(final Context context) {
-		final AlarmManager am = (AlarmManager) context
-				.getSystemService(Context.ALARM_SERVICE);
-		long now = System.currentTimeMillis();
-		ThreeIntervals transitions = TransitionProvider.getSurroundingTransitions(
-				context, now);
-
-		final long tickFrequency = (transitions.getCurrentEnd() - transitions.getCurrentStart()) / (Hour.HOURS * Hour.HOUR_PARTS);
-
-		final Intent TickActionInternal = new Intent(context, Clockwork.class);
-
-		am.setRepeating(AlarmManager.RTC, transitions.getCurrentStart(),
-				tickFrequency, PendingIntent.getService(context, 0,
-						TickActionInternal, INTENT_FLAGS));
+		TickService.setCallback(new Clockwork());
+		ThreeIntervals transitions = TransitionProvider.getSurroundingTransitions(context);
+		TickService.start(context, transitions.getCurrentStart(), transitions.getCurrentEnd(), Hour.INTERVAL_TICKS);
 	}
 
 	public static void unschedule(final Context context) {
-		final AlarmManager am = (AlarmManager) context
-				.getSystemService(Context.ALARM_SERVICE);
-		am.cancel(PendingIntent.getService(context, 0, new Intent(context,
-				Clockwork.class), 0));
+		TickService.stop(context);
 	}
 
-	@Override
-	protected void onHandleIntent(Intent intent) {
-		final long now = System.currentTimeMillis();
-		ThreeIntervals transitions = TransitionProvider.getSurroundingTransitions(this, now);
-		Hour.fromTransitions(transitions, now, hour);
+	public void onTick(Context context) {
+		ThreeIntervals transitions = TransitionProvider.getSurroundingTransitions(context);
+		Hour hour = Hour.fromTransitions(transitions, System.currentTimeMillis(), null);
 
 		TickAction.putExtra("hour", hour.num).putExtra("jtt", hour.wrapped);
-		sendStickyBroadcast(TickAction);
-
-		stopSelf();
+		context.sendStickyBroadcast(TickAction);
 	}
 }
