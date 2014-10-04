@@ -41,6 +41,9 @@ sourceSets {
     }
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     sourceSets {
         main {
@@ -67,9 +70,9 @@ android {
 
     signingConfigs {
         release {
-            storeFile file(System.getenv("KEYSTORE"))
+            storeFile file(properties.getProperty('key.file'))
             storePassword ''
-            keyAlias System.getenv("KEY_ALIAS")
+            keyAlias properties.getProperty('key.alias')
             keyPassword ''
         }
     }
