@@ -9,6 +9,7 @@ buildscript {
 }
 
 apply plugin: 'android'
+apply plugin: 'jacoco'
 
 repositories {
     mavenCentral()
@@ -105,3 +106,21 @@ task unitTest(type: Test, dependsOn: assembleDebug) {
 }
 
 check.dependsOn unitTest
+
+task jacocoTestReport(type: JacocoReport, dependsOn: "unitTest") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+
+    // Class R is used, but usage will not be covered, so ignore this class from report
+    classDirectories = fileTree(
+        dir: './build/intermediates/classes/debug',
+        excludes: ['**/R.class',
+                   '**/R$*.class'
+    ])
+    sourceDirectories = files('src')
+    executionData = files('build/jacoco/unitTest.exec')
+}
