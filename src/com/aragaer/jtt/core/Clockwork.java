@@ -29,8 +29,7 @@ public class Clockwork extends IntentService {
 				try {
 					schedule(context);
 				} catch (IllegalStateException e) {
-					Log.i(TAG,
-							"Time change while service is not running, ignore");
+					Log.i(TAG, "Time change while service is not running, ignore");
 				}
 		}
 	};
@@ -64,16 +63,8 @@ public class Clockwork extends IntentService {
 		ThreeIntervals transitions = TransitionProvider.getSurroundingTransitions(this, now);
 		Hour.fromTransitions(transitions, now, hour);
 
-		if (transitions.isInCurrentInterval(now)) {
-			TickAction.putExtra("hour", hour.num).putExtra("jtt", hour.wrapped);
-			sendStickyBroadcast(TickAction);
-		} else
-			try {
-				schedule(this);
-			} catch (IllegalStateException e) {
-				Log.i(TAG,
-						"Transition passed while service is not running, ignore");
-			}
+		TickAction.putExtra("hour", hour.num).putExtra("jtt", hour.wrapped);
+		sendStickyBroadcast(TickAction);
 
 		stopSelf();
 	}
