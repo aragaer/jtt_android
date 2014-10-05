@@ -22,7 +22,7 @@ import com.aragaer.jtt.core.TransitionProvider;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
-public class ClockTest {
+public class AndroidClockTest {
 
     private TransitionProvider transitionProvider;
 
@@ -39,17 +39,17 @@ public class ClockTest {
 
     @Test
     public void shouldStartTicking() {
-        Clock clock = new Clock(Robolectric.application);
+        AndroidClock clock = new AndroidClock(Robolectric.application);
         clock.adjust();
 
-		List<ScheduledAlarm> alarms = getScheduledAlarms();
-		assertThat(alarms.size(), equalTo(1));
+        List<ScheduledAlarm> alarms = getScheduledAlarms();
+        assertThat(alarms.size(), equalTo(1));
     }
 
     private List<ScheduledAlarm> getScheduledAlarms() {
-		AlarmManager am = (AlarmManager) Robolectric.application
-				.getSystemService(Context.ALARM_SERVICE);
-		return Robolectric.shadowOf(am).getScheduledAlarms();
+        AlarmManager am = (AlarmManager) Robolectric.application
+            .getSystemService(Context.ALARM_SERVICE);
+        return Robolectric.shadowOf(am).getScheduledAlarms();
     }
 
 }

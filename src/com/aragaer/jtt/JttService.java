@@ -1,6 +1,7 @@
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.TransitionProvider;
+import com.aragaer.jtt.clockwork.AndroidClock;
 import com.aragaer.jtt.clockwork.Clock;
 
 import android.app.Service;
@@ -17,7 +18,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 	private final Clock clock;
 
 	public JttService() {
-		clock = new Clock(this);
+		clock = new AndroidClock(this);
 	}
 
 	@Override
