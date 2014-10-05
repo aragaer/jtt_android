@@ -1,7 +1,7 @@
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.TransitionProvider;
-import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.clockwork.Clock;
 
 import android.app.Service;
 import android.content.ContentValues;
@@ -14,6 +14,11 @@ import android.util.Log;
 public class JttService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
 	private static final String TAG = "JTT_SERVICE";
 	private JttStatus status_notify;
+	private final Clock clock;
+
+	public JttService() {
+		clock = new Clock(this);
+	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -62,6 +67,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 		location.put("lat", l[0]);
 		location.put("lon", l[1]);
 		getContentResolver().update(TransitionProvider.LOCATION, location, null, null);
-		Clockwork.schedule(this);
+		clock.adjust();
 	}
 }
