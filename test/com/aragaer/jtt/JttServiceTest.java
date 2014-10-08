@@ -43,6 +43,18 @@ public class JttServiceTest {
         assertThat(alarms.size(), equalTo(1));
     }
 
+    @Test
+    public void shouldNotUpdateLocationTwice() {
+        ServiceController<JttService> controller = Robolectric.buildService(JttService.class);
+        controller
+            .attach()
+            .create()
+            .withIntent(new Intent(Robolectric.application, JttService.class))
+            .startCommand(0, 0)
+            .startCommand(0, 0);
+        assertThat(transitionProvider.locationUpdateCount, equalTo(1));
+    }
+
     private List<ScheduledAlarm> getScheduledAlarms() {
         AlarmManager am = (AlarmManager) Robolectric.application
             .getSystemService(Context.ALARM_SERVICE);

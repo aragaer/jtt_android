@@ -27,7 +27,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 	}
 
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startid) {
+	public void onCreate() {
+		super.onCreate();
 		Log.i(TAG, "Service starting");
 		move();
 
@@ -36,7 +37,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
 		toggle_notify(pref.getBoolean("jtt_notify", true));
 
-		return START_STICKY;
 	}
 
 	private void toggle_notify(final boolean notify) {
