@@ -17,6 +17,7 @@ import static org.junit.Assert.*;
 
 import android.app.*;
 import android.content.*;
+import android.net.Uri;
 
 import com.aragaer.jtt.core.TransitionProvider;
 
@@ -24,32 +25,37 @@ import com.aragaer.jtt.core.TransitionProvider;
 @Config(emulateSdk = 18)
 public class JttServiceTest {
 
-	private TransitionProvider transitionProvider;
+    private TransitionProviderProbe transitionProvider;
 
-	@Before
-	public void setup() {
-		transitionProvider = new TransitionProvider();
-		transitionProvider.onCreate();
-		ShadowContentResolver.registerProvider(TransitionProvider.AUTHORITY, transitionProvider);
-		ContentValues location = new ContentValues();
-		location.put("lat", 0);
-		location.put("lon", 0);
-		transitionProvider.update(TransitionProvider.LOCATION, location, null, null);
-	}
+    @Before
+    public void setup() {
+        transitionProvider = new TransitionProviderProbe();
+        transitionProvider.onCreate();
+        ShadowContentResolver.registerProvider(TransitionProvider.AUTHORITY, transitionProvider);
+    }
 
     @Test
     public void shouldStartTicking() {
         ServiceController<JttService> controller = Robolectric.buildService(JttService.class);
         controller.attach().create().withIntent(new Intent(Robolectric.application, JttService.class)).startCommand(0, 0);
 
-		List<ScheduledAlarm> alarms = getScheduledAlarms();
-		assertThat(alarms.size(), equalTo(1));
+        List<ScheduledAlarm> alarms = getScheduledAlarms();
+        assertThat(alarms.size(), equalTo(1));
     }
 
     private List<ScheduledAlarm> getScheduledAlarms() {
-		AlarmManager am = (AlarmManager) Robolectric.application
-				.getSystemService(Context.ALARM_SERVICE);
-		return Robolectric.shadowOf(am).getScheduledAlarms();
+        AlarmManager am = (AlarmManager) Robolectric.application
+            .getSystemService(Context.ALARM_SERVICE);
+        return Robolectric.shadowOf(am).getScheduledAlarms();
     }
 
+    static class TransitionProviderProbe extends TransitionProvider {
+        public int locationUpdateCount;
+
+        @Override
+        public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+            locationUpdateCount++;
+            return super.update(uri, values, selection, selectionArgs);
+        }
+    }
 }
