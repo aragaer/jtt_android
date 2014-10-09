@@ -5,5 +5,5 @@ import android.content.Context;
 
 
 public interface TickCallback {
-    public void onTick(Context context);
+    public void onTick();
 }

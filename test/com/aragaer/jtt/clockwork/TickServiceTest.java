@@ -103,7 +103,7 @@ public class TickServiceTest {
     static private class TestCallback implements TickCallback {
         int calls;
 
-        public void onTick(Context context) {
+        public void onTick() {
             calls++;
         }
     }

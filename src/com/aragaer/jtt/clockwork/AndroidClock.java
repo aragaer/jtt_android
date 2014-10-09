@@ -8,12 +8,14 @@ import com.aragaer.jtt.core.Clockwork;
 
 public class AndroidClock implements Clock {
     private final Context context;
+    private final Clockwork clockwork;
 
     public AndroidClock(Context context) {
         this.context = context;
+        clockwork = new Clockwork(context);
     }
 
     public void adjust() {
-        Clockwork.schedule(this.context);
+        clockwork.schedule();
     }
 }

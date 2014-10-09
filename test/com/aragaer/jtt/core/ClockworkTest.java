@@ -23,6 +23,7 @@ import android.net.Uri;
 public class ClockworkTest {
 
 	private FakeTransitionProvider transitionProvider;
+	private Clockwork clockwork;
 
 	@Before
 	public void setup() {
@@ -33,11 +34,12 @@ public class ClockworkTest {
 		location.put("lat", 0);
 		location.put("lon", 0);
 		transitionProvider.update(TransitionProvider.LOCATION, location, null, null);
+		clockwork = new Clockwork(Robolectric.application);
 	}
 
 	@Test
 	public void shouldScheduleAlarm() {
-		Clockwork.schedule(Robolectric.application);
+		clockwork.schedule();
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
 		ScheduledAlarm alarm = alarms.get(0);
@@ -49,7 +51,7 @@ public class ClockworkTest {
 	public void shouldScheduleAlarmWithCorrectStartTime() {
 		transitionProvider.offset = 30;
 		long now = System.currentTimeMillis();
-		Clockwork.schedule(Robolectric.application);
+		clockwork.schedule();
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
 		ScheduledAlarm alarm = alarms.get(0);
@@ -59,7 +61,7 @@ public class ClockworkTest {
 	@Test
 	public void shouldScheduleAlarmWithCorrectInterval() {
 		long now = System.currentTimeMillis();
-		Clockwork.schedule(Robolectric.application);
+		clockwork.schedule();
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
 		ScheduledAlarm alarm = alarms.get(0);
@@ -68,8 +70,8 @@ public class ClockworkTest {
 
 	@Test
 	public void shouldUnscheduleAlarm() {
-		Clockwork.schedule(Robolectric.application);
-		Clockwork.unschedule(Robolectric.application);
+		clockwork.schedule();
+		clockwork.unschedule();
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(0));
 	}
@@ -88,7 +90,7 @@ public class ClockworkTest {
 		TestReceiver receiver = new TestReceiver();
 		Robolectric.application.registerReceiver(receiver, new IntentFilter(Clockwork.ACTION_JTT_TICK));
 		assertThat(receiver.wrapped, equalTo(-1));
-		new Clockwork().onTick(Robolectric.application);
+		clockwork.onTick();
 		assertThat(receiver.wrapped, equalTo(0));
 	}
 

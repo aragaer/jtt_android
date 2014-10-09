@@ -21,7 +21,7 @@ public class TickService extends IntentService {
     }
 
     protected void onHandleIntent(Intent intent) {
-        callback.onTick(this);
+        callback.onTick();
         stopSelf();
     }
 
