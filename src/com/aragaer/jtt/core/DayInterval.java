@@ -22,6 +22,10 @@ public class DayInterval {
 		return isDay;
 	}
 
+	public long getLength() {
+		return end - start;
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof DayInterval) {

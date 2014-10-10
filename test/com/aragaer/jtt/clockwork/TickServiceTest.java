@@ -35,13 +35,13 @@ public class TickServiceTest {
 
     @Test(expected=IllegalStateException.class)
     public void shouldRequireCallback() {
-        TickService.start(Robolectric.application, 0, 100, 5);
+        TickService.start(Robolectric.application, 0, 20);
     }
 
 	@Test
 	public void shouldScheduleAlarm() {
         TickService.setCallback(new TestCallback());
-        TickService.start(Robolectric.application, 0, 100, 5);
+        TickService.start(Robolectric.application, 0, 20);
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
 		ScheduledAlarm alarm = alarms.get(0);
@@ -52,7 +52,7 @@ public class TickServiceTest {
 	@Test
 	public void shouldScheduleAlarmWithCorrectStartTime() {
         TickService.setCallback(new TestCallback());
-        TickService.start(Robolectric.application, 30, 100, 5);
+        TickService.start(Robolectric.application, 30, 20);
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
 		ScheduledAlarm alarm = alarms.get(0);
@@ -62,7 +62,7 @@ public class TickServiceTest {
 	@Test
 	public void shouldScheduleAlarmWithCorrectInterval() {
         TickService.setCallback(new TestCallback());
-        TickService.start(Robolectric.application, 0, 100, 5);
+        TickService.start(Robolectric.application, 0, 20);
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
 		ScheduledAlarm alarm = alarms.get(0);
@@ -72,7 +72,7 @@ public class TickServiceTest {
     @Test
 	public void shouldUnscheduleAlarm() {
         TickService.setCallback(new TestCallback());
-        TickService.start(Robolectric.application, 0, 100, 5);
+        TickService.start(Robolectric.application, 0, 20);
 		TickService.stop(Robolectric.application);
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(0));

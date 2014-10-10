@@ -27,13 +27,12 @@ public class TickService extends IntentService {
 
 	private static final int INTENT_FLAGS = PendingIntent.FLAG_UPDATE_CURRENT;
 
-    public static void start(Context context, long start, long end, int count) {
+    public static void start(Context context, long start, long tickLength) {
         if (TickService.callback == null)
             throw new IllegalStateException("Must set callback first");
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        long tick_length = (end - start) / count;
 		Intent TickActionInternal = new Intent(context, TickService.class);
-		am.setRepeating(AlarmManager.RTC, start, tick_length,
+		am.setRepeating(AlarmManager.RTC, start, tickLength,
                         PendingIntent.getService(context, 0, TickActionInternal, INTENT_FLAGS));
     }
 

@@ -62,4 +62,8 @@ public class ThreeIntervals {
 	public boolean isDayCurrently() {
 		return current.isDay();
 	}
+
+	public DayInterval getCurrent() {
+		return current;
+	}
 }

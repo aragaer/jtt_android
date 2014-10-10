@@ -3,18 +3,25 @@ package com.aragaer.jtt.clockwork;
 
 import android.content.Context;
 
+import com.aragaer.jtt.core.DayInterval;
+import com.aragaer.jtt.core.Hour;
+
 
 public class AndroidClock implements Clock {
     private final Context context;
     private final AndroidClockwork clockwork;
+    private final Metronome metronome;
 
     public AndroidClock(Context context) {
         this.context = context;
         clockwork = new AndroidClockwork(context);
-        clockwork.attachTo(clockwork);
+        metronome = new AndroidMetronome(context);
+        metronome.attachTo(clockwork);
     }
 
     public void adjust() {
-        clockwork.schedule();
+        DayInterval interval = clockwork.getCurrentInterval();
+		long tickLength = interval.getLength() / Hour.INTERVAL_TICKS;
+        metronome.start(interval.getStart(), tickLength);
     }
 }

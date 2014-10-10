@@ -18,7 +18,6 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 
-import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.core.TickCallback;
 import com.aragaer.jtt.core.TransitionProvider;
 
@@ -26,60 +25,12 @@ import com.aragaer.jtt.core.TransitionProvider;
 @Config(emulateSdk = 18)
 public class AndroidClockworkTest {
 
-	private FakeTransitionProvider transitionProvider;
 	private AndroidClockwork clockwork;
 
 	@Before
 	public void setup() {
-		transitionProvider = new FakeTransitionProvider();
-		transitionProvider.onCreate();
-		ShadowContentResolver.registerProvider(TransitionProvider.AUTHORITY, transitionProvider);
-		ContentValues location = new ContentValues();
-		location.put("lat", 0);
-		location.put("lon", 0);
-		transitionProvider.update(TransitionProvider.LOCATION, location, null, null);
 		clockwork = new AndroidClockwork(Robolectric.application);
 	}
-
-	@Test
-	public void shouldScheduleAlarm() {
-		clockwork.schedule();
-		List<ScheduledAlarm> alarms = getScheduledAlarms();
-		assertThat(alarms.size(), equalTo(1));
-		ScheduledAlarm alarm = alarms.get(0);
-		ShadowPendingIntent pending = Robolectric.shadowOf(alarm.operation);
-		assertTrue(pending.isServiceIntent());
-	}
-
-	@Test
-	public void shouldScheduleAlarmWithCorrectStartTime() {
-		transitionProvider.offset = 30;
-		long now = System.currentTimeMillis();
-		clockwork.schedule();
-		List<ScheduledAlarm> alarms = getScheduledAlarms();
-		assertThat(alarms.size(), equalTo(1));
-		ScheduledAlarm alarm = alarms.get(0);
-		assertThat(alarm.triggerAtTime, equalTo(now - 30));
-	}
-
-	@Test
-	public void shouldScheduleAlarmWithCorrectInterval() {
-		long now = System.currentTimeMillis();
-		clockwork.schedule();
-		List<ScheduledAlarm> alarms = getScheduledAlarms();
-		assertThat(alarms.size(), equalTo(1));
-		ScheduledAlarm alarm = alarms.get(0);
-		assertThat(alarm.interval, equalTo(transitionProvider.secondIntervalLength / Hour.INTERVAL_TICKS));
-	}
-
-	@Test
-	public void shouldUnscheduleAlarm() {
-		clockwork.schedule();
-		clockwork.unschedule();
-		List<ScheduledAlarm> alarms = getScheduledAlarms();
-		assertThat(alarms.size(), equalTo(0));
-	}
-
 	static class TestReceiver extends BroadcastReceiver {
 		int wrapped = -1;
 		public void onReceive(Context context, Intent intent) {
@@ -91,6 +42,13 @@ public class AndroidClockworkTest {
 
 	@Test
 	public void shouldSendBroadcast() {
+		TransitionProvider transitionProvider = new FakeTransitionProvider();
+		transitionProvider.onCreate();
+		ShadowContentResolver.registerProvider(TransitionProvider.AUTHORITY, transitionProvider);
+		ContentValues location = new ContentValues();
+		location.put("lat", 0);
+		location.put("lon", 0);
+		transitionProvider.update(TransitionProvider.LOCATION, location, null, null);
 		TestReceiver receiver = new TestReceiver();
 		Robolectric.application.registerReceiver(receiver, new IntentFilter(AndroidClockwork.ACTION_JTT_TICK));
 		assertThat(receiver.wrapped, equalTo(-1));
