@@ -3,16 +3,15 @@ package com.aragaer.jtt.clockwork;
 
 import android.content.Context;
 
-import com.aragaer.jtt.core.Clockwork;
-
 
 public class AndroidClock implements Clock {
     private final Context context;
-    private final Clockwork clockwork;
+    private final AndroidClockwork clockwork;
 
     public AndroidClock(Context context) {
         this.context = context;
-        clockwork = new Clockwork(context);
+        clockwork = new AndroidClockwork(context);
+        clockwork.attachTo(clockwork);
     }
 
     public void adjust() {

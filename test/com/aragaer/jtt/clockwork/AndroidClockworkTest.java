@@ -1,4 +1,4 @@
-package com.aragaer.jtt.core;
+package com.aragaer.jtt.clockwork;
 
 import java.util.List;
 
@@ -18,12 +18,16 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 
+import com.aragaer.jtt.core.Hour;
+import com.aragaer.jtt.core.TickCallback;
+import com.aragaer.jtt.core.TransitionProvider;
+
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
-public class ClockworkTest {
+public class AndroidClockworkTest {
 
 	private FakeTransitionProvider transitionProvider;
-	private Clockwork clockwork;
+	private AndroidClockwork clockwork;
 
 	@Before
 	public void setup() {
@@ -34,7 +38,7 @@ public class ClockworkTest {
 		location.put("lat", 0);
 		location.put("lon", 0);
 		transitionProvider.update(TransitionProvider.LOCATION, location, null, null);
-		clockwork = new Clockwork(Robolectric.application);
+		clockwork = new AndroidClockwork(Robolectric.application);
 	}
 
 	@Test
@@ -79,7 +83,7 @@ public class ClockworkTest {
 	static class TestReceiver extends BroadcastReceiver {
 		int wrapped = -1;
 		public void onReceive(Context context, Intent intent) {
-			if (!intent.getAction().equals(Clockwork.ACTION_JTT_TICK))
+			if (!intent.getAction().equals(AndroidClockwork.ACTION_JTT_TICK))
 				return;
 			wrapped = intent.getIntExtra("jtt", 0);
 		}
@@ -88,7 +92,7 @@ public class ClockworkTest {
 	@Test
 	public void shouldSendBroadcast() {
 		TestReceiver receiver = new TestReceiver();
-		Robolectric.application.registerReceiver(receiver, new IntentFilter(Clockwork.ACTION_JTT_TICK));
+		Robolectric.application.registerReceiver(receiver, new IntentFilter(AndroidClockwork.ACTION_JTT_TICK));
 		assertThat(receiver.wrapped, equalTo(-1));
 		clockwork.onTick();
 		assertThat(receiver.wrapped, equalTo(0));

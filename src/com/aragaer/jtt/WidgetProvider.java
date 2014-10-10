@@ -3,7 +3,7 @@ package com.aragaer.jtt;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.clockwork.AndroidClockwork;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.graphics.Paints;
 import com.aragaer.jtt.graphics.WadokeiDraw;
@@ -73,7 +73,7 @@ public class WidgetProvider {
 			final String action = i.getAction();
 			if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
 				update(c, i);
-			else if (action.equals(Clockwork.ACTION_JTT_TICK))
+			else if (action.equals(AndroidClockwork.ACTION_JTT_TICK))
 				tick(c, i, getClass());
 			else
 				Log.d("Widgets", "Got action "+action);

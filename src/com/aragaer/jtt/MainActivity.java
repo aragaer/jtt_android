@@ -1,6 +1,6 @@
 package com.aragaer.jtt;
 
-import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.clockwork.AndroidClockwork;
 import com.aragaer.jtt.core.TransitionProvider;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.today.TodayAdapter;
@@ -25,7 +25,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 	private final BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if (!intent.getAction().equals(Clockwork.ACTION_JTT_TICK))
+			if (!intent.getAction().equals(AndroidClockwork.ACTION_JTT_TICK))
 				return;
 			final int wrapped = intent.getIntExtra("jtt", 0);
 
@@ -56,7 +56,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 		pager.setAdapter(pager_adapter);
 		setContentView(pager);
 
-		registerReceiver(receiver, new IntentFilter(Clockwork.ACTION_JTT_TICK));
+		registerReceiver(receiver, new IntentFilter(AndroidClockwork.ACTION_JTT_TICK));
 		final SharedPreferences pref = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
