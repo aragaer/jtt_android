@@ -9,18 +9,20 @@ import com.aragaer.jtt.core.Hour;
 
 public class AndroidClock implements Clock {
     private final Context context;
+    private final Astrolabe astrolabe;
     private final AndroidClockwork clockwork;
     private final Metronome metronome;
 
     public AndroidClock(Context context) {
         this.context = context;
+        astrolabe = new AndroidAstrolabe(context);
         clockwork = new AndroidClockwork(context);
         metronome = new AndroidMetronome(context);
         metronome.attachTo(clockwork);
     }
 
     public void adjust() {
-        DayInterval interval = clockwork.getCurrentInterval();
+        DayInterval interval = astrolabe.getCurrentInterval();
 		long tickLength = interval.getLength() / Hour.INTERVAL_TICKS;
         metronome.start(interval.getStart(), tickLength);
     }

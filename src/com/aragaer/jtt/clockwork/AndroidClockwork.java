@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.aragaer.jtt.core.Hour;
-import com.aragaer.jtt.core.DayInterval;
 import com.aragaer.jtt.core.ThreeIntervals;
-import com.aragaer.jtt.core.TickService;
 import com.aragaer.jtt.core.TickCallback;
 import com.aragaer.jtt.core.TransitionProvider;
 
@@ -19,11 +17,6 @@ public class AndroidClockwork implements TickCallback {
 
 	public AndroidClockwork(Context context) {
 		this.context = context;
-	}
-
-	public DayInterval getCurrentInterval() {
-		ThreeIntervals transitions = TransitionProvider.getSurroundingTransitions(context);
-		return transitions.getCurrent();
 	}
 
 	public void onTick() {
