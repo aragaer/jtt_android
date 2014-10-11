@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import com.aragaer.jtt.core.Location;
 import com.aragaer.jtt.resources.StringResources;
 
 import android.content.Context;
@@ -72,16 +73,18 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		super.onRestoreInstanceState(state);
 	}
 
-	public static float[] getLocation(final Context context) {
+	public static Location getLocation(final Context context) {
 		String[] ll = PreferenceManager
 				.getDefaultSharedPreferences(context)
 				.getString(PREF_LOCATION, LocationPreference.DEFAULT)
 				.split(":");
+		Location location;
 		try {
-			return new float[] { Float.parseFloat(ll[0]), Float.parseFloat(ll[1]) };
+			location = new Location(Float.parseFloat(ll[0]), Float.parseFloat(ll[1]));
 		} catch (NumberFormatException e) {
-			return new float[] { 0, 0 };
+			location = new Location(0, 0);
 		}
+		return location;
 	}
 
 	static final int app_themes[] = {R.style.JTTTheme, R.style.DarkTheme, R.style.LightTheme};
@@ -113,7 +116,7 @@ public class Settings extends PreferenceActivity implements OnPreferenceChangeLi
 		super.onStart();
 		SharedPreferences settings = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		if (!settings.contains("jtt_loc")) // location is not set
-			((LocationPreference) findPreference("jtt_loc")).showDialog(null);
+		if (!settings.contains(PREF_LOCATION)) // location is not set
+			((LocationPreference) findPreference(PREF_LOCATION)).showDialog(null);
 	}
 }

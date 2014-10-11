@@ -22,6 +22,7 @@ public class AndroidClock implements Clock {
     }
 
     public void adjust() {
+        astrolabe.updateLocation();
         DayInterval interval = astrolabe.getCurrentInterval();
 		long tickLength = interval.getLength() / Hour.INTERVAL_TICKS;
         metronome.start(interval.getStart(), tickLength);

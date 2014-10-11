@@ -6,4 +6,5 @@ import com.aragaer.jtt.core.DayInterval;
 
 public interface Astrolabe {
     public DayInterval getCurrentInterval();
+    public void updateLocation();
 }

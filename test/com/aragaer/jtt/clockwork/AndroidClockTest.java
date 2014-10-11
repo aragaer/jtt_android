@@ -10,7 +10,6 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.*;
 import org.robolectric.shadows.ShadowAlarmManager.ScheduledAlarm;
-import org.robolectric.util.ServiceController;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
@@ -31,10 +30,6 @@ public class AndroidClockTest {
         transitionProvider = new TransitionProvider();
         transitionProvider.onCreate();
         ShadowContentResolver.registerProvider(TransitionProvider.AUTHORITY, transitionProvider);
-        ContentValues location = new ContentValues();
-        location.put("lat", 0);
-        location.put("lon", 0);
-        transitionProvider.update(TransitionProvider.LOCATION, location, null, null);
     }
 
     @Test

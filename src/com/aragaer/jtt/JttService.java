@@ -1,12 +1,10 @@
 package com.aragaer.jtt;
 
-import com.aragaer.jtt.core.TransitionProvider;
 import com.aragaer.jtt.clockwork.AndroidClock;
 import com.aragaer.jtt.clockwork.Clock;
 import com.aragaer.jtt.clockwork.TimeDateChangeReceiver;
 
 import android.app.Service;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
@@ -32,7 +30,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 	public void onCreate() {
 		super.onCreate();
 		Log.i(TAG, "Service starting");
-		move();
+		clock.adjust();
 
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 		pref.registerOnSharedPreferenceChangeListener(this);
@@ -59,20 +57,10 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 		if (key.equals(Settings.PREF_NOTIFY))
 			toggle_notify(pref.getBoolean("jtt_notify", true));
 		else if (key.equals(Settings.PREF_LOCATION))
-			move();
+			clock.adjust();
 		else if (key.equals(Settings.PREF_WIDGET)
 				|| key.equals(Settings.PREF_LOCALE)
 				|| key.equals(Settings.PREF_HNAME))
 			WidgetProvider.draw_all(this);
 	}
-
-	private void move() {
-		final float l[] = Settings.getLocation(this);
-		final ContentValues location = new ContentValues(2);
-		location.put("lat", l[0]);
-		location.put("lon", l[1]);
-		getContentResolver().update(TransitionProvider.LOCATION, location, null, null);
-		clock.adjust();
-	}
-
 }
