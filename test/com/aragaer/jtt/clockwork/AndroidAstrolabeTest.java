@@ -1,67 +1,49 @@
 package com.aragaer.jtt.clockwork;
-
-import java.util.List;
+// vim: et ts=4 sts=4 sw=4
 
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.shadows.ShadowAlarmManager.ScheduledAlarm;
 import org.robolectric.shadows.*;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import android.app.AlarmManager;
 import android.content.*;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 
-import com.aragaer.jtt.core.TickCallback;
+import com.aragaer.jtt.core.DayInterval;
 import com.aragaer.jtt.core.TransitionProvider;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
-public class AndroidClockworkTest {
+public class AndroidAstrolabeTest {
+    private AndroidAstrolabe astrolabe;
 
-	private AndroidClockwork clockwork;
+    @Before
+    public void setUp() {
+        astrolabe = new AndroidAstrolabe(Robolectric.application);
+    }
 
-	@Before
-	public void setup() {
-		clockwork = new AndroidClockwork(Robolectric.application);
-	}
-
-	static class TestReceiver extends BroadcastReceiver {
-		int wrapped = -1;
-		public void onReceive(Context context, Intent intent) {
-			if (!intent.getAction().equals(AndroidClockwork.ACTION_JTT_TICK))
-				return;
-			wrapped = intent.getIntExtra("jtt", 0);
-		}
-	}
-
-	@Test
-	public void shouldSendBroadcast() {
-		TransitionProvider transitionProvider = new FakeTransitionProvider();
+    @Test
+    public void shouldReturnCurrentInterval() {
+		FakeTransitionProvider transitionProvider = new FakeTransitionProvider();
 		transitionProvider.onCreate();
 		ShadowContentResolver.registerProvider(TransitionProvider.AUTHORITY, transitionProvider);
 		ContentValues location = new ContentValues();
 		location.put("lat", 0);
 		location.put("lon", 0);
 		transitionProvider.update(TransitionProvider.LOCATION, location, null, null);
-		TestReceiver receiver = new TestReceiver();
-		Robolectric.application.registerReceiver(receiver, new IntentFilter(AndroidClockwork.ACTION_JTT_TICK));
-		assertThat(receiver.wrapped, equalTo(-1));
-		clockwork.onTick();
-		assertThat(receiver.wrapped, equalTo(0));
-	}
 
-	private List<ScheduledAlarm> getScheduledAlarms() {
-		AlarmManager am = (AlarmManager) Robolectric.application
-			.getSystemService(Context.ALARM_SERVICE);
-		return Robolectric.shadowOf(am).getScheduledAlarms();
-	}
+        long now = System.currentTimeMillis();
+        DayInterval interval = astrolabe.getCurrentInterval();
+        assertThat(interval.getStart(), lessThanOrEqualTo(now));
+        assertThat(interval.getEnd(), greaterThan(now));
+        assertThat(interval.getLength(), equalTo(transitionProvider.secondIntervalLength));
+    }
 
 	static class FakeTransitionProvider extends TransitionProvider {
 		long firstIntervalLength = 20000;
