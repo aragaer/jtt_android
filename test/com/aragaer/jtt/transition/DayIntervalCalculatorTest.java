@@ -10,6 +10,9 @@ import org.robolectric.RobolectricTestRunner;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import com.aragaer.jtt.test.*;
+
+
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class DayIntervalCalculatorTest {
@@ -27,7 +30,7 @@ public class DayIntervalCalculatorTest {
 	}
 
 	@Test
-	@Location(latitude = 55.93, longitude = 37.79)
+	@TestLocation(latitude = 55.93, longitude = 37.79)
 	public void testMoscowNoon() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2014, 5, 23, 12, 0, 0);
@@ -43,7 +46,7 @@ public class DayIntervalCalculatorTest {
 	}
 
 	@Test
-	@Location(latitude = 55.93, longitude = 37.79)
+	@TestLocation(latitude = 55.93, longitude = 37.79)
 	public void testMoscowMidnight() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2014, 5, 23, 0, 0, 0);
@@ -58,7 +61,7 @@ public class DayIntervalCalculatorTest {
 	}
 
 	@Test
-	@Location(latitude = 55.93, longitude = 37.79)
+	@TestLocation(latitude = 55.93, longitude = 37.79)
 	public void testMoscowSunrise() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2014, 5, 23, 12, 0, 0);
@@ -73,7 +76,7 @@ public class DayIntervalCalculatorTest {
 	}
 
 	@Test
-	@Location(latitude = 55.93, longitude = 37.79)
+	@TestLocation(latitude = 55.93, longitude = 37.79)
 	public void testMoscowSunset() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2014, 5, 23, 12, 0, 0);
@@ -88,7 +91,7 @@ public class DayIntervalCalculatorTest {
 	}
 
 	@Test
-	@Location(latitude = 55.93, longitude = 37.79)
+	@TestLocation(latitude = 55.93, longitude = 37.79)
 	public void testMoscowBeforeSunrise() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2014, 5, 23, 12, 0, 0);
@@ -102,7 +105,7 @@ public class DayIntervalCalculatorTest {
 	}
 
 	@Test
-	@Location(latitude = 55.93, longitude = 37.79)
+	@TestLocation(latitude = 55.93, longitude = 37.79)
 	public void testMoscowAfterSunset() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2014, 5, 23, 12, 0, 0);
