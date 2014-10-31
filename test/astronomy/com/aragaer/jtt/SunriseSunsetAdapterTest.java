@@ -18,8 +18,14 @@ public class SunriseSunsetAdapterTest {
 	@Rule
 	public TestWithLocation locationAnnotation = new TestWithLocation();
 
+    @Before
+    public void setUp() {
+        calculator = new SscAdapter();
+        calculator.setLocation(locationAnnotation.getLocation());
+    }
+
     @Test
-    @TestLocation(latitude = 55.93, longitude = 37.79)
+    @TestLocation(latitude=55.93, longitude=37.79)
     public void testMoscowNoon() {
     }
 }

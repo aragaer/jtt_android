@@ -4,6 +4,8 @@ package com.aragaer.jtt.test;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
+import com.aragaer.jtt.Location;
+
 
 public class TestWithLocation extends TestWatcher {
     private TestLocation location;
@@ -19,5 +21,9 @@ public class TestWithLocation extends TestWatcher {
 
     public double getLongitude() {
         return location.longitude();
+    }
+
+    public Location getLocation() {
+        return new Location(location.latitude(), location.longitude());
     }
 }
