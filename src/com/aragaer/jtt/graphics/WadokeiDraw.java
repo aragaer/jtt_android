@@ -1,14 +1,10 @@
 package com.aragaer.jtt.graphics;
 
 import com.aragaer.jtt.core.Hour;
+import com.aragaer.jtt.core.JttTime;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Path;
+import android.graphics.*;
 import android.graphics.PorterDuff.Mode;
-import android.graphics.RectF;
 
 public class WadokeiDraw {
 	private final static int step = 360 / 12;
@@ -127,8 +123,8 @@ public class WadokeiDraw {
 		}
 	}
 
-	private static final float QUARTER_ANGLE = (step - gap * 2) / Hour.QUARTERS,
-			PART_ANGLE = QUARTER_ANGLE / Hour.QUARTER_PARTS;
+	private static final float QUARTER_ANGLE = (step - gap * 2) / JttTime.QUARTERS_PER_HOUR,
+			PART_ANGLE = QUARTER_ANGLE / JttTime.TICKS_PER_QUARTER;
 
 	public void draw_dial(final Hour hour, final Canvas canvas) {
 		final float clock_angle = step / 2 - gap

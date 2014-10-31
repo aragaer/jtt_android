@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.aragaer.jtt.clockwork.AndroidClockwork;
 import com.aragaer.jtt.core.Hour;
+import com.aragaer.jtt.core.JttTime;
 import com.aragaer.jtt.graphics.Paints;
 import com.aragaer.jtt.graphics.WadokeiDraw;
 import com.aragaer.jtt.resources.RuntimeResources;
@@ -18,11 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RectF;
+import android.graphics.*;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -56,7 +53,7 @@ public class WidgetProvider {
 
 	private static abstract class JTTWidget extends AppWidgetProvider {
 		protected JTTWidget(final int frequency, final Class<? extends WidgetPainter> painter_class) {
-			int granularity = Hour.QUARTERS * Hour.QUARTER_PARTS / frequency;
+			int granularity = JttTime.QUARTERS_PER_HOUR * JttTime.TICKS_PER_QUARTER / frequency;
 
 			final Class<? extends JTTWidget> cls = getClass();
 			if (!classes.containsKey(cls))
@@ -153,8 +150,8 @@ public class WidgetProvider {
 }
 
 class WidgetPainter1 implements WidgetPainter {
-	private static final float QUARTER_ANGLE = 355f / Hour.QUARTERS,
-			PART_ANGLE = QUARTER_ANGLE / Hour.QUARTER_PARTS;
+	private static final float QUARTER_ANGLE = 355f / JttTime.QUARTERS_PER_HOUR,
+			PART_ANGLE = QUARTER_ANGLE / JttTime.TICKS_PER_QUARTER;
 
 	@Override
 	public Bitmap get_bmp(Context context, Hour h) {

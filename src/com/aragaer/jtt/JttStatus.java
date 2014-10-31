@@ -1,9 +1,7 @@
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.clockwork.AndroidClockwork;
-import com.aragaer.jtt.core.ThreeIntervals;
-import com.aragaer.jtt.core.Hour;
-import com.aragaer.jtt.core.TransitionProvider;
+import com.aragaer.jtt.core.*;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
@@ -11,10 +9,7 @@ import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
@@ -69,14 +64,13 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 	}
 
 	private void show() {
-		final int hf = h.quarter * Hour.QUARTER_PARTS + h.quarter_parts;
+		final int hf = h.quarter * JttTime.TICKS_PER_QUARTER + h.quarter_parts;
 		final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notification);
 
 		rv.setTextViewText(R.id.image, Hour.Glyphs[h.num]);
 		rv.setTextViewText(R.id.title, sr.getHrOf(h.num));
 		rv.setTextViewText(R.id.quarter, sr.getQuarter(h.quarter));
-		rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
-		rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
+		rv.setProgressBar(R.id.fraction, JttTime.TICKS_PER_HOUR, hf, false);
 		rv.setTextViewText(R.id.start, sr.format_time(start));
 		rv.setTextViewText(R.id.end, sr.format_time(end));
 

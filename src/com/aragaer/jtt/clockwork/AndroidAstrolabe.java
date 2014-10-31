@@ -4,9 +4,9 @@ package com.aragaer.jtt.clockwork;
 import android.content.ContentValues;
 import android.content.Context;
 
+import com.aragaer.jtt.Location;
 import com.aragaer.jtt.Settings;
 import com.aragaer.jtt.core.DayInterval;
-import com.aragaer.jtt.core.Location;
 import com.aragaer.jtt.core.ThreeIntervals;
 import com.aragaer.jtt.core.TransitionProvider;
 

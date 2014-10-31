@@ -1,12 +1,7 @@
 package com.aragaer.jtt.core;
 
 public class Hour {
-	public static final int HOURS = 6;
-	public static final int QUARTERS = 4;
-	public static final int QUARTER_PARTS = 10;
-	public static final int HOUR_PARTS = QUARTERS * QUARTER_PARTS;
-	public static final int TOTAL_PARTS = HOURS * HOUR_PARTS * 2;
-	public static final int INTERVAL_TICKS = HOURS * HOUR_PARTS;
+	public static final int TOTAL_PARTS = JttTime.HOURS_PER_INTERVAL * JttTime.TICKS_PER_HOUR * 2;
 	public static final String Glyphs[] = "酉戌亥子丑寅卯辰巳午未申".split("(?!^)");
 
 	public int num, // 0 to 11, where 0 is hour of Cock and 11 is hour of Monkey
@@ -30,7 +25,7 @@ public class Hour {
 		num = n;
 		quarter = q;
 		quarter_parts = f;
-		wrapped = (num * QUARTERS + quarter - 2) * QUARTER_PARTS
+		wrapped = (num * JttTime.QUARTERS_PER_HOUR + quarter - 2) * JttTime.TICKS_PER_QUARTER
 				+ quarter_parts;
 		wrapped = (wrapped + TOTAL_PARTS) % TOTAL_PARTS;
 	}
@@ -41,18 +36,18 @@ public class Hour {
 		long intervalLength = transitions.getCurrentEnd()
 				- transitions.getCurrentStart();
 		double fractionPassed = (1. * timeSinceStart) / intervalLength;
-		int ticksPassed = (int) (INTERVAL_TICKS * fractionPassed);
-		int wrappedValue = transitions.isDayCurrently() ? ticksPassed + INTERVAL_TICKS
+		int ticksPassed = (int) (JttTime.TICKS_PER_INTERVAL * fractionPassed);
+		int wrappedValue = transitions.isDayCurrently() ? ticksPassed + JttTime.TICKS_PER_INTERVAL
 				: ticksPassed;
 		return fromWrapped(wrappedValue, reuse);
 	}
 
 	public static Hour fromWrapped(final int f, Hour reuse) {
-		final int q = f / QUARTER_PARTS + 2;
-		final int n = q / QUARTERS;
+		final int q = f / JttTime.TICKS_PER_QUARTER + 2;
+		final int n = q / JttTime.QUARTERS_PER_HOUR;
 		if (reuse == null)
 			reuse = new Hour();
-		reuse.setTo(n % Glyphs.length, q % QUARTERS, f % QUARTER_PARTS);
+		reuse.setTo(n % Glyphs.length, q % JttTime.QUARTERS_PER_HOUR, f % JttTime.TICKS_PER_QUARTER);
 		return reuse;
 	}
 
@@ -70,12 +65,12 @@ public class Hour {
 
 	/* 0, 6 -> 5; 1-5, 7-11 -> 0-4 */
 	public static final int lowerBoundary(final int hour) {
-		return (hour + HOURS - 1) % HOURS;
+		return (hour + JttTime.HOURS_PER_INTERVAL - 1) % JttTime.HOURS_PER_INTERVAL;
 	}
 
 	/* 0-11 -> 0-5 */
 	public static final int upperBoundary(final int hour) {
-		return hour % HOURS;
+		return hour % JttTime.HOURS_PER_INTERVAL;
 	}
 
 	/*
@@ -84,7 +79,7 @@ public class Hour {
 	 */
 	public static long getHourBoundary(final long start, final long end,
 			final int pos) {
-		final long half_hlen = (end - start) / HOURS / 2;
+		final long half_hlen = (end - start) / JttTime.HOURS_PER_INTERVAL / 2;
 		return start + half_hlen * pos * 2 + half_hlen;
 	}
 }

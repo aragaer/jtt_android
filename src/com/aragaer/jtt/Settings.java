@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import com.aragaer.jtt.core.Location;
 import com.aragaer.jtt.resources.StringResources;
 
 import android.content.Context;

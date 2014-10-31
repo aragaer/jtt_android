@@ -37,7 +37,7 @@ dependencies {
 
 sourceSets {
     unitTest {
-        java.srcDirs = ['test']
+        java.srcDirs = ['test', 'test/astronomy']
         resources.srcDirs = ['res']
     }
 }
@@ -49,7 +49,7 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
+            java.srcDirs = ['src', 'src/astronomy', 'src/core']
             res.srcDirs = ['res']
         }
         debug.setRoot('build-types/debug')

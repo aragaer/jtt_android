@@ -15,9 +15,9 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 
+import com.aragaer.jtt.Location;
 import com.aragaer.jtt.Settings;
 import com.aragaer.jtt.core.DayInterval;
-import com.aragaer.jtt.core.Location;
 import com.aragaer.jtt.core.TransitionProvider;
 
 @RunWith(RobolectricTestRunner.class)

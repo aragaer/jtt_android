@@ -4,7 +4,7 @@ package com.aragaer.jtt.clockwork;
 import android.content.Context;
 
 import com.aragaer.jtt.core.DayInterval;
-import com.aragaer.jtt.core.Hour;
+import com.aragaer.jtt.core.JttTime;
 
 
 public class AndroidClock implements Clock {
@@ -24,7 +24,7 @@ public class AndroidClock implements Clock {
     public void adjust() {
         astrolabe.updateLocation();
         DayInterval interval = astrolabe.getCurrentInterval();
-		long tickLength = interval.getLength() / Hour.INTERVAL_TICKS;
+		long tickLength = interval.getLength() / JttTime.TICKS_PER_INTERVAL;
         metronome.start(interval.getStart(), tickLength);
     }
 }

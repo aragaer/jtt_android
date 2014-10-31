@@ -2,7 +2,7 @@ package com.aragaer.jtt.today;
 
 import com.aragaer.jtt.R;
 import com.aragaer.jtt.core.ThreeIntervals;
-import com.aragaer.jtt.core.Hour;
+import com.aragaer.jtt.core.JttTime;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
@@ -17,7 +17,7 @@ import java.util.*;
 public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 		StringResources.StringResourceChangeListener {
 	private static final int DAY_PART_COUNT = 3;
-	private static final int HOUR_COUNT = DAY_PART_COUNT * Hour.HOURS;
+	private static final int HOUR_COUNT = DAY_PART_COUNT * JttTime.HOURS_PER_INTERVAL;
 	private static final int ITEM_TYPE_COUNT = 2;
 	private static final int ITEM_COUNT = HOUR_COUNT * ITEM_TYPE_COUNT - 1;
 	private ThreeIntervals transitions;
@@ -51,7 +51,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 	private Collection<TodayItem> buildItems() {
 		List<TodayItem> result = new ArrayList<TodayItem>(ITEM_COUNT);
 		result.add(new HourItem(transitions.getPreviousStart(), transitions.isDayCurrently() ? 0
-				: Hour.HOURS));
+				: JttTime.HOURS_PER_INTERVAL));
 		result.addAll(addInterval(transitions.getPreviousStart(),
 				transitions.getCurrentStart(), transitions.isDayCurrently()));
 		result.addAll(addInterval(transitions.getCurrentStart(),
@@ -63,14 +63,14 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 
 	private Collection<TodayItem> addInterval(long start, long end,
 			boolean isDay) {
-		List<TodayItem> result = new ArrayList<TodayItem>(Hour.HOURS
+		List<TodayItem> result = new ArrayList<TodayItem>(JttTime.HOURS_PER_INTERVAL
 				* ITEM_TYPE_COUNT);
-		int h_add = isDay ? 0 : Hour.HOURS;
+		int h_add = isDay ? 0 : JttTime.HOURS_PER_INTERVAL;
 		long diff = end - start;
-		for (int j = 1; j <= Hour.HOURS; j++) {
-			result.add(new BoundaryItem(start + (j * 2 - 1) * diff / Hour.HOURS
+		for (int j = 1; j <= JttTime.HOURS_PER_INTERVAL; j++) {
+			result.add(new BoundaryItem(start + (j * 2 - 1) * diff / JttTime.HOURS_PER_INTERVAL
 					/ 2));
-			result.add(new HourItem(start + j * diff / Hour.HOURS, h_add + j));
+			result.add(new HourItem(start + j * diff / JttTime.HOURS_PER_INTERVAL, h_add + j));
 		}
 		return result;
 	}
