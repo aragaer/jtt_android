@@ -1,4 +1,4 @@
-package com.aragaer.jtt;
+package com.aragaer.jtt.astronomy;
 // vim: et ts=4 sts=4 sw=4
 
 
