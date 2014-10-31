@@ -27,5 +27,15 @@ public class SunriseSunsetAdapterTest {
     @Test
     @TestLocation(latitude=55.93, longitude=37.79)
     public void testMoscowNoon() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2014, 5, 23, 12, 0, 0);
+        long noon23Jun2014 = calendar.getTimeInMillis();
+
+        DayInterval interval = calculator.getIntervalFor(noon23Jun2014);
+
+        assertNotNull(interval);
+        assertTrue(interval.isDay());
+        assertThat(interval.getStart(), lessThan(noon23Jun2014));
+        assertThat(interval.getEnd(), greaterThan(noon23Jun2014));
     }
 }

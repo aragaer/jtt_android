@@ -3,4 +3,5 @@ package com.aragaer.jtt;
 
 public interface DayIntervalCalculator {
     public void setLocation(Location location);
+    public DayInterval getIntervalFor(long timestamp);
 }

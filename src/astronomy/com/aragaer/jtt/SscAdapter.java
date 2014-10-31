@@ -4,4 +4,7 @@ package com.aragaer.jtt;
 public class SscAdapter implements DayIntervalCalculator {
     public void setLocation(Location location) {
     }
+    public DayInterval getIntervalFor(long timestamp) {
+        return new Day(timestamp-1, timestamp+1);
+    }
 }
