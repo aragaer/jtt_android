@@ -6,7 +6,7 @@ import java.util.TimeZone;
 
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 
-import com.aragaer.jtt.Location;
+import com.aragaer.jtt.location.Location;
 
 
 public class SscCalculator implements DayIntervalCalculator {

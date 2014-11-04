@@ -1,4 +1,4 @@
-package com.aragaer.jtt;
+package com.aragaer.jtt.location;
 // vim: et ts=4 sts=4 sw=4
 
 

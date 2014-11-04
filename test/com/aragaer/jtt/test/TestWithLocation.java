@@ -4,7 +4,7 @@ package com.aragaer.jtt.test;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
-import com.aragaer.jtt.Location;
+import com.aragaer.jtt.location.Location;
 
 
 public class TestWithLocation extends TestWatcher {

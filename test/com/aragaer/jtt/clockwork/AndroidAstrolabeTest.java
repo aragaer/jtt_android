@@ -16,9 +16,10 @@ import android.database.MatrixCursor;
 import android.net.Uri;
 
 import com.aragaer.jtt.astronomy.DayInterval;
-import com.aragaer.jtt.Location;
+import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.Settings;
 import com.aragaer.jtt.core.TransitionProvider;
+
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)

@@ -1,9 +1,9 @@
-package com.aragaer.jtt.core;
+package com.aragaer.jtt.test;
 
 import java.lang.annotation.*;
 
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(value = { ElementType.METHOD })
-@interface Timezone {
+public @interface TestTimezone {
 	int offsetMinutes();
 }

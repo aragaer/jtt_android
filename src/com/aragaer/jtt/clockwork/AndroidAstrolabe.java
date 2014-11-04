@@ -5,16 +5,17 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import com.aragaer.jtt.astronomy.DayInterval;
-import com.aragaer.jtt.Location;
+import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.Settings;
 import com.aragaer.jtt.core.ThreeIntervals;
 import com.aragaer.jtt.core.TransitionProvider;
 
 
-public class AndroidAstrolabe implements Astrolabe {
+public class AndroidAstrolabe extends Astrolabe {
     private final Context context;
 
     public AndroidAstrolabe(Context context) {
+        super(null, null, 1);
         this.context = context;
     }
 

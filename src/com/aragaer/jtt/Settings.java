@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.aragaer.jtt.resources.StringResources;
+import com.aragaer.jtt.location.Location;
 
 import android.content.Context;
 import android.content.SharedPreferences;

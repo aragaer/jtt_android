@@ -33,23 +33,26 @@ public class DayInterval {
         return new DayInterval(sunset, sunrise, false);
     }
 
-	public long getLength() {
-		return end - start;
-	}
+    public long getLength() {
+        return end - start;
+    }
 
-	@Override
-	public boolean equals(Object other) {
-		if (other instanceof DayInterval) {
-			DayInterval otherInterval = (DayInterval) other;
-			return this.end == otherInterval.end
-					&& this.start == otherInterval.start
-					&& this.isDay == otherInterval.isDay;
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof DayInterval) {
+            DayInterval otherInterval = (DayInterval) other;
+            return this.end == otherInterval.end
+                    && this.start == otherInterval.start
+                    && this.isDay == otherInterval.isDay;
+        }
+        return false;
+    }
 
-	public boolean contains(long timestamp) {
-		return start <= timestamp && timestamp < end;
-	}
+    public boolean contains(long timestamp) {
+        return start <= timestamp && timestamp < end;
+    }
 
+    public DayInterval modified(long start, long end) {
+        return new DayInterval(start, end, isDay);
+    }
 }
