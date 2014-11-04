@@ -40,14 +40,14 @@ public class SscCalculator implements DayIntervalCalculator {
             return calculator.getOfficialSunsetCalendarForDate(calendar).getTimeInMillis();
         }
 
-        private Night previousNight(long sunrise) {
+        private DayInterval previousNight(long sunrise) {
             calendar.add(Calendar.DATE, -1);
-            return new Night(computeSunset(), sunrise);
+            return DayInterval.Night(computeSunset(), sunrise);
         }
 
-        private Night nextNight(long sunset) {
+        private DayInterval nextNight(long sunset) {
             calendar.add(Calendar.DATE, 1);
-            return new Night(sunset, computeSunrise());
+            return DayInterval.Night(sunset, computeSunrise());
         }
 
         DayInterval calculate() {
@@ -59,7 +59,7 @@ public class SscCalculator implements DayIntervalCalculator {
             if (timestamp >= sunset)
                 return nextNight(sunset);
 
-            return new Day(sunrise, sunset);
+            return DayInterval.Day(sunrise, sunset);
         }
     }
 

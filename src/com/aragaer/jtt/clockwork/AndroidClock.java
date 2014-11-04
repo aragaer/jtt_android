@@ -3,7 +3,7 @@ package com.aragaer.jtt.clockwork;
 
 import android.content.Context;
 
-import com.aragaer.jtt.core.DayInterval;
+import com.aragaer.jtt.astronomy.DayInterval;
 import com.aragaer.jtt.core.JttTime;
 
 

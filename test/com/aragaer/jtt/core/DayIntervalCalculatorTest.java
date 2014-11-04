@@ -12,6 +12,9 @@ import org.robolectric.annotation.Config;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import com.aragaer.jtt.astronomy.DayInterval;
+
+
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class DayIntervalCalculatorTest {

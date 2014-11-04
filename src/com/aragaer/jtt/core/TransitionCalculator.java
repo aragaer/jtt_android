@@ -6,10 +6,13 @@ import java.util.concurrent.TimeUnit;
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 
+import com.aragaer.jtt.astronomy.DayInterval;
+
+
 public class TransitionCalculator {
 	public static final long ms_per_day = TimeUnit.SECONDS
 			.toMillis(60 * 60 * 24);
-	final Map<Long, Day> cache = new HashMap<Long, Day>();
+	final Map<Long, DayInterval> cache = new HashMap<Long, DayInterval>();
 	SunriseSunsetCalculator calculator;
 
 	public ThreeIntervals calculateTransitions(long now) {
@@ -17,39 +20,39 @@ public class TransitionCalculator {
 			throw new IllegalStateException("Location not set");
 
 		long jdn = TransitionCalculator.longToJDN(now);
-		Day yesterday = getDayForJDN(jdn - 1);
-		Day today = getDayForJDN(jdn);
-		Day tomorrow = getDayForJDN(jdn + 1);
-		ThreeIntervals result = new ThreeIntervals(yesterday.sunset,
-				today.sunrise, today.sunset, tomorrow.sunrise, true);
+		DayInterval yesterday = getDayForJDN(jdn - 1);
+		DayInterval today = getDayForJDN(jdn);
+		DayInterval tomorrow = getDayForJDN(jdn + 1);
+		ThreeIntervals result = new ThreeIntervals(yesterday.getEnd(),
+				today.getStart(), today.getEnd(), tomorrow.getStart(), true);
 
 		while (now >= result.getCurrentEnd())
 			if (result.isDayCurrently())
-				result = result.shiftToFuture(tomorrow.sunset);
+				result = result.shiftToFuture(tomorrow.getEnd());
 			else {
 				jdn++;
 				tomorrow = getDayForJDN(jdn + 1);
-				result = result.shiftToFuture(tomorrow.sunrise);
+				result = result.shiftToFuture(tomorrow.getStart());
 			}
 
 		while (now < result.getCurrentStart())
 			if (result.isDayCurrently())
-				result = result.shiftToPast(yesterday.sunrise);
+				result = result.shiftToPast(yesterday.getStart());
 			else {
 				jdn--;
 				yesterday = getDayForJDN(jdn - 1);
-				result = result.shiftToPast(yesterday.sunset);
+				result = result.shiftToPast(yesterday.getEnd());
 			}
 
 		return result;
 	}
 
-	private Day getDayForJDN(final long jdn) {
-		Day result = cache.get(jdn);
+	private DayInterval getDayForJDN(final long jdn) {
+		DayInterval result = cache.get(jdn);
 		if (result == null) {
 			final Calendar date = Calendar.getInstance();
 			date.setTimeInMillis(TransitionCalculator.JDToLong(jdn));
-			result = new Day(calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis(),
+			result = DayInterval.Day(calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis(),
 					calculator.getOfficialSunsetCalendarForDate(date).getTimeInMillis());
 			cache.put(jdn, result);
 		}

@@ -1,5 +1,8 @@
 package com.aragaer.jtt.core;
 
+import com.aragaer.jtt.astronomy.DayInterval;
+
+
 public class ThreeIntervals {
 	private final DayInterval previous;
 	private final DayInterval current;
@@ -7,9 +10,15 @@ public class ThreeIntervals {
 
 	public ThreeIntervals(long previousStart, long currentStart,
 			long currentEnd, long nextEnd, boolean isDayCurrently) {
-		previous = new DayInterval(previousStart, currentStart, !isDayCurrently);
-		current = new DayInterval(currentStart, currentEnd, isDayCurrently);
-		next = new DayInterval(currentEnd, nextEnd, !isDayCurrently);
+		if (isDayCurrently) {
+			previous = DayInterval.Night(previousStart, currentStart);
+			current = DayInterval.Day(currentStart, currentEnd);
+			next = DayInterval.Night(currentEnd, nextEnd);
+		} else {
+			previous = DayInterval.Day(previousStart, currentStart);
+			current = DayInterval.Night(currentStart, currentEnd);
+			next = DayInterval.Day(currentEnd, nextEnd);
+		}
 	}
 
 	public ThreeIntervals(long[] transitions, boolean isDayCurrently) {

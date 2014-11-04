@@ -7,6 +7,9 @@ import java.util.concurrent.TimeUnit;
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 
+import com.aragaer.jtt.astronomy.DayInterval;
+
+
 public class DayIntervalCalculator {
 
 	private double latitude, longitude;
@@ -30,7 +33,7 @@ public class DayIntervalCalculator {
 		date.setTimeInMillis(jdnToTimestamp(jdn+1));
 		long sunrise = roundToMinute(calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis());
 		long sunset = roundToMinute(calculator.getOfficialSunsetCalendarForDate(date).getTimeInMillis());
-		return new DayInterval(sunrise, sunset, true);
+		return DayInterval.Day(sunrise, sunset);
 	}
 
 	public DayInterval getNight(long jdn) {
@@ -40,7 +43,7 @@ public class DayIntervalCalculator {
 		long sunrise = roundToMinute(calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis());
 		date.add(Calendar.DATE, -1);
 		long sunset = roundToMinute(calculator.getOfficialSunsetCalendarForDate(date).getTimeInMillis());
-		return new DayInterval(sunset, sunrise, false);
+		return DayInterval.Night(sunset, sunrise);
 	}
 
 	private long roundToMinute(long value) {
