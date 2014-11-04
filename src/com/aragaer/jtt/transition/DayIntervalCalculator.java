@@ -6,6 +6,9 @@ import java.util.TimeZone;
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 
+import com.aragaer.jtt.astronomy.DayInterval;
+
+
 public class DayIntervalCalculator implements DayIntervalFactory {
 
 	private SunriseSunsetCalculator calculator;
@@ -25,13 +28,13 @@ public class DayIntervalCalculator implements DayIntervalFactory {
 		if (timestamp < sunrise) {
 			calendar.add(Calendar.DATE, -1);
 			long previousSunset = calculator.getOfficialSunsetCalendarForDate(calendar).getTimeInMillis();
-			result = new Night(new Sunset(previousSunset), new Sunrise(sunrise));
+			result = DayInterval.Night(previousSunset, sunrise);
 		} else if (timestamp >= sunset) {
 			calendar.add(Calendar.DATE, 1);
 			long nextSunrise = calculator.getOfficialSunriseCalendarForDate(calendar).getTimeInMillis();
-			result = new Night(new Sunset(sunset), new Sunrise(nextSunrise));
+			result = DayInterval.Night(sunset, nextSunrise);
 		} else
-			result = new Day(new Sunrise(sunrise), new Sunset(sunset));
+			result = DayInterval.Day(sunrise, sunset);
 		return result;
 	}
 

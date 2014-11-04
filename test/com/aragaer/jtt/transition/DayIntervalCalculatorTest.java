@@ -10,6 +10,7 @@ import org.robolectric.RobolectricTestRunner;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import com.aragaer.jtt.astronomy.DayInterval;
 import com.aragaer.jtt.test.*;
 
 
@@ -35,14 +36,11 @@ public class DayIntervalCalculatorTest {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2014, 5, 23, 12, 0, 0);
 		long noon23Jun2014 = calendar.getTimeInMillis();
-		DayInterval interval = calculator
-				.getIntervalForTimestamp(noon23Jun2014);
+		DayInterval interval = calculator.getIntervalForTimestamp(noon23Jun2014);
 		assertNotNull(interval);
 		assertTrue(interval.isDay());
-		Sunrise sunrise = (Sunrise) interval.getStart();
-		Sunset sunset = (Sunset) interval.getEnd();
-		assertThat(sunrise.getTimestamp(), lessThan(noon23Jun2014));
-		assertThat(sunset.getTimestamp(), greaterThan(noon23Jun2014));
+		assertThat(interval.getStart(), lessThan(noon23Jun2014));
+		assertThat(interval.getEnd(), greaterThan(noon23Jun2014));
 	}
 
 	@Test
@@ -51,13 +49,10 @@ public class DayIntervalCalculatorTest {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2014, 5, 23, 0, 0, 0);
 		long midnight23Jun2014 = calendar.getTimeInMillis();
-		DayInterval interval = calculator
-				.getIntervalForTimestamp(midnight23Jun2014);
+		DayInterval interval = calculator.getIntervalForTimestamp(midnight23Jun2014);
 		assertFalse(interval.isDay());
-		Sunset sunset = (Sunset) interval.getStart();
-		Sunrise sunrise = (Sunrise) interval.getEnd();
-		assertThat(sunset.getTimestamp(), lessThan(midnight23Jun2014));
-		assertThat(sunrise.getTimestamp(), greaterThan(midnight23Jun2014));
+		assertThat(interval.getStart(), lessThan(midnight23Jun2014));
+		assertThat(interval.getEnd(), greaterThan(midnight23Jun2014));
 	}
 
 	@Test
@@ -69,10 +64,8 @@ public class DayIntervalCalculatorTest {
 		calendar.set(2014, 5, 23, 0, 0, 0);
 		long midnight23Jun2014 = calendar.getTimeInMillis();
 		DayInterval day = calculator.getIntervalForTimestamp(noon23Jun2014);
-		DayInterval night = calculator
-				.getIntervalForTimestamp(midnight23Jun2014);
-		assertThat(day.getStart().getTimestamp(), equalTo(night.getEnd()
-				.getTimestamp()));
+		DayInterval night = calculator.getIntervalForTimestamp(midnight23Jun2014);
+		assertThat(day.getStart(), equalTo(night.getEnd()));
 	}
 
 	@Test
@@ -84,10 +77,8 @@ public class DayIntervalCalculatorTest {
 		calendar.set(2014, 5, 24, 0, 0, 0);
 		long midnight24Jun2014 = calendar.getTimeInMillis();
 		DayInterval day = calculator.getIntervalForTimestamp(noon23Jun2014);
-		DayInterval night = calculator
-				.getIntervalForTimestamp(midnight24Jun2014);
-		assertThat(day.getEnd().getTimestamp(), equalTo(night.getStart()
-				.getTimestamp()));
+		DayInterval night = calculator.getIntervalForTimestamp(midnight24Jun2014);
+		assertThat(day.getEnd(), equalTo(night.getStart()));
 	}
 
 	@Test
@@ -97,11 +88,10 @@ public class DayIntervalCalculatorTest {
 		calendar.set(2014, 5, 23, 12, 0, 0);
 		long noon23Jun2014 = calendar.getTimeInMillis();
 		DayInterval day = calculator.getIntervalForTimestamp(noon23Jun2014);
-		long sunrise23Jun2014 = day.getStart().getTimestamp();
-		DayInterval night = calculator
-				.getIntervalForTimestamp(sunrise23Jun2014 - 1);
+		long sunrise23Jun2014 = day.getStart();
+		DayInterval night = calculator.getIntervalForTimestamp(sunrise23Jun2014 - 1);
 		assertFalse(night.isDay());
-		assertThat(night.getEnd().getTimestamp(), equalTo(sunrise23Jun2014));
+		assertThat(night.getEnd(), equalTo(sunrise23Jun2014));
 	}
 
 	@Test
@@ -111,10 +101,9 @@ public class DayIntervalCalculatorTest {
 		calendar.set(2014, 5, 23, 12, 0, 0);
 		long noon23Jun2014 = calendar.getTimeInMillis();
 		DayInterval day = calculator.getIntervalForTimestamp(noon23Jun2014);
-		long sunset23Jun2014 = day.getEnd().getTimestamp();
-		DayInterval night = calculator
-				.getIntervalForTimestamp(sunset23Jun2014 + 1);
+		long sunset23Jun2014 = day.getEnd();
+		DayInterval night = calculator.getIntervalForTimestamp(sunset23Jun2014 + 1);
 		assertFalse(night.isDay());
-		assertThat(night.getStart().getTimestamp(), equalTo(sunset23Jun2014));
+		assertThat(night.getStart(), equalTo(sunset23Jun2014));
 	}
 }
