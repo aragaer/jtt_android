@@ -1,6 +1,26 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
-public interface Clock {
-    public void adjust();
+import com.aragaer.jtt.astronomy.DayInterval;
+import com.aragaer.jtt.core.JttTime;
+
+
+public class Clock {
+    private final Astrolabe astrolabe;
+    private final Clockwork clockwork;
+    private final Metronome metronome;
+
+    public Clock(Astrolabe astrolabe, Metronome metronome) {
+        this.astrolabe = astrolabe;
+        this.metronome = metronome;
+        this.clockwork = new Clockwork();
+        this.metronome.attachTo(this.clockwork);
+    }
+
+    public void adjust() {
+        astrolabe.updateLocation();
+        DayInterval interval = astrolabe.getCurrentInterval();
+		long tickLength = interval.getLength() / JttTime.TICKS_PER_INTERVAL;
+        metronome.start(interval.getStart(), tickLength);
+    }
 }

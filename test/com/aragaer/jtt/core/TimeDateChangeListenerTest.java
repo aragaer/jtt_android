@@ -26,7 +26,7 @@ public class TimeDateChangeListenerTest {
 
     @Before
     public void setup() {
-        clock = new ClockProbe(Robolectric.application);
+        clock = new ClockProbe(null, new NopMetronome());
         listener = new TimeDateChangeReceiver(clock);
         listener.register(Robolectric.application);
     }
@@ -57,17 +57,22 @@ public class TimeDateChangeListenerTest {
         assertThat(newCount, equalTo(oldCount+1));
     }
 
-    private static class ClockProbe extends AndroidClock {
+    private static class ClockProbe extends Clock {
         public int adjustCount;
 
-        public ClockProbe(Context context) {
-            super(context);
+        public ClockProbe(Astrolabe astrolabe, Metronome metronome) {
+            super(astrolabe, metronome);
         }
 
         @Override
         public void adjust() {
-            super.adjust();
             adjustCount++;
         }
+    }
+
+    private static class NopMetronome implements Metronome {
+        public void attachTo(Clockwork clockwork) {}
+        public void start(long start, long tickLength) {}
+        public void stop() {}
     }
 }

@@ -18,7 +18,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 	private TimeDateChangeReceiver timeDateChangeReceiver;
 
 	public JttService() {
-		clock = new AndroidClock(this);
+		clock = AndroidClock.createFromContext(this);
 	}
 
 	@Override

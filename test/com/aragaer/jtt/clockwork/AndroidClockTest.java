@@ -25,7 +25,7 @@ public class AndroidClockTest {
 
     @Test
     public void shouldStartTicking() {
-        AndroidClock clock = new AndroidClock(Robolectric.application);
+        Clock clock = AndroidClock.createFromContext(Robolectric.application);
         clock.adjust();
 
         List<ScheduledAlarm> alarms = getScheduledAlarms();
