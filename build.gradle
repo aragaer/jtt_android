@@ -1,0 +1,126 @@
+// vim: et ts=4 sts=4 sw=4 syntax=groovy
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.13.+'
+    }
+}
+
+apply plugin: 'android'
+apply plugin: 'jacoco'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    unitTestCompile.extendsFrom runtime
+    unitTestRuntime.extendsFrom unitTestCompile
+}
+
+dependencies {
+    compile 'com.luckycatlabs:SunriseSunsetCalculator:1.1'
+    compile 'com.android.support:support-v4:18.0.+'
+
+    unitTestCompile files("$project.buildDir/intermediates/classes/debug")
+    unitTestCompile 'junit:junit:4.11'
+    unitTestCompile 'org.hamcrest:hamcrest-integration:1.3'
+    unitTestCompile 'org.hamcrest:hamcrest-core:1.3'
+    unitTestCompile 'org.hamcrest:hamcrest-library:1.3'
+    unitTestCompile 'org.robolectric:robolectric:2.3'
+    unitTestCompile 'com.google.android:android:4.1.1.4'
+    unitTestCompile 'com.luckycatlabs:SunriseSunsetCalculator:1.1'
+}
+
+sourceSets {
+    unitTest {
+        java.srcDirs = ['test']
+        resources.srcDirs = ['res']
+    }
+}
+
+android {
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src', 'src/core']
+            res.srcDirs = ['res']
+        }
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+
+        androidTest.setRoot('JttAndroidTest')
+        androidTest {
+           java.srcDirs = ['JttAndroidTest/src']
+           res.srcDirs = ['JttAndroidTest/res']
+        }
+    }
+    compileSdkVersion 'android-21'
+    buildToolsVersion '20'
+
+    defaultConfig {
+        testApplicationId "com.aragaer.jtt.test"
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+    }
+
+    signingConfigs {
+        release {
+        }
+    }
+
+    buildTypes {
+        debug {
+        }
+        release {
+            runProguard true
+            proguardFile 'proguard.cfg'
+            signingConfig signingConfigs.release
+            zipAlign true
+        }
+    }
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.hasTask(':assembleRelease')) {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+        def store_file = file(properties.getProperty('key.file'))
+        def store_pass = System.console().readPassword("\nPlease enter store passphrase: ")
+        def key_alias = properties.getProperty('key.alias')
+        def key_pass = System.console().readPassword("\nPlease enter key passphrase: ")
+
+        android.signingConfigs.release.storeFile = store_file
+        android.signingConfigs.release.storePassword = new String(store_pass)
+        android.signingConfigs.release.keyAlias = new String(key_alias)
+        android.signingConfigs.release.keyPassword = new String(key_pass)
+    }
+}
+
+task unitTest(type: Test, dependsOn: assembleDebug) {
+    description = "run unit tests"
+    testClassesDir = project.sourceSets.unitTest.output.classesDir
+    classpath = project.sourceSets.unitTest.runtimeClasspath
+}
+
+check.dependsOn unitTest
+
+task jacocoTestReport(type: JacocoReport, dependsOn: "unitTest") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+
+    // Class R is used, but usage will not be covered, so ignore this class from report
+    classDirectories = fileTree(
+        dir: './build/intermediates/classes/debug',
+        excludes: ['**/R.class',
+                   '**/R$*.class'
+    ])
+    sourceDirectories = files('src')
+    executionData = files('build/jacoco/unitTest.exec')
+}

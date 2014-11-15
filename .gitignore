@@ -7,4 +7,8 @@ config.mk
 build.xml
 deploy
 tags
+build/
+.gradle/
+gradle/
+gradlew*
 local.properties

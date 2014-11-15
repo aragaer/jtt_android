@@ -1,0 +1,16 @@
+# vim: et ts=2 sts=2 sw=2
+
+language: android
+jdk: oraclejdk7
+env:
+  matrix:
+    - ANDROID_TARGET=android-21  ANDROID_ABI=armeabi-v7a
+
+android:
+  components:
+    - build-tools-20.0.0
+    - android-21
+
+before_script: gradle wrapper -b wrapper.gradle
+
+script: ./gradlew check
