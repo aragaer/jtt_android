@@ -1,11 +1,15 @@
 package com.aragaer.jtt.today;
 
 import com.aragaer.jtt.R;
-import com.aragaer.jtt.core.ThreeIntervals;
+import com.aragaer.jtt.Settings;
 import com.aragaer.jtt.core.JttTime;
+import com.aragaer.jtt.core.ThreeIntervals;
+import com.aragaer.jtt.core.TransitionProvider;
+import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +77,16 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 			result.add(new HourItem(start + j * diff / JttTime.HOURS_PER_INTERVAL, h_add + j));
 		}
 		return result;
+	}
+
+	public void update() {
+		Context context = getContext();
+		Location location = Settings.getLocation(context);
+		ContentValues locationCV = new ContentValues(2);
+		locationCV.put("lat", location.getLatitude());
+		locationCV.put("lon", location.getLongitude());
+		context.getContentResolver().update(TransitionProvider.LOCATION, locationCV, null, null);
+		setTransitions(TransitionProvider.getSurroundingTransitions(context));
 	}
 
 	public synchronized void setTransitions(ThreeIntervals newTransitions) {

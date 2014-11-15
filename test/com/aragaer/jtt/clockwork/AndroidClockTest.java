@@ -23,15 +23,6 @@ import com.aragaer.jtt.core.TransitionProvider;
 @Config(emulateSdk = 18)
 public class AndroidClockTest {
 
-    private TransitionProvider transitionProvider;
-
-    @Before
-    public void setup() {
-        transitionProvider = new TransitionProvider();
-        transitionProvider.onCreate();
-        ShadowContentResolver.registerProvider(TransitionProvider.AUTHORITY, transitionProvider);
-    }
-
     @Test
     public void shouldStartTicking() {
         AndroidClock clock = new AndroidClock(Robolectric.application);
@@ -46,5 +37,4 @@ public class AndroidClockTest {
             .getSystemService(Context.ALARM_SERVICE);
         return Robolectric.shadowOf(am).getScheduledAlarms();
     }
-
 }

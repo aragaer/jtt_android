@@ -6,76 +6,68 @@ import java.util.List;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.annotation.Config;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.shadows.ShadowAlarmManager.ScheduledAlarm;
+import org.robolectric.annotation.Config;
 import org.robolectric.shadows.*;
-import org.robolectric.util.ServiceController;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import android.app.AlarmManager;
 import android.content.*;
-import android.database.Cursor;
-import android.database.MatrixCursor;
-import android.net.Uri;
 
 import com.aragaer.jtt.JttService;
+import com.aragaer.jtt.clockwork.*;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class TimeDateChangeListenerTest {
 
-    private TransitionProviderProbe transitionProvider;
+    private TimeDateChangeReceiver listener;
+    private ClockProbe clock;
 
     @Before
     public void setup() {
-        transitionProvider = new TransitionProviderProbe();
-        transitionProvider.onCreate();
-        ShadowContentResolver.registerProvider(TransitionProvider.AUTHORITY, transitionProvider);
-        ServiceController<JttService> controller = Robolectric.buildService(JttService.class);
-        controller.attach().create().withIntent(new Intent(Robolectric.application, JttService.class)).startCommand(0, 0);
+        clock = new ClockProbe(Robolectric.application);
+        listener = new TimeDateChangeReceiver(clock);
+        listener.register(Robolectric.application);
+    }
+
+    private void testListensFor(String action) {
+        ShadowApplication shadowApplication = Robolectric.getShadowApplication();
+        Intent intent = new Intent(action);
+        List<BroadcastReceiver> receiversForIntent = shadowApplication.getReceiversForIntent(intent);
+        assertThat(receiversForIntent.size(), equalTo(1));
     }
 
     @Test
-    public void testTimeChangeCallback() {
-        int queryCount = transitionProvider.queryCount;
-        ShadowApplication shadowApplication = Robolectric.getShadowApplication();
-        Intent intent = new Intent(Intent.ACTION_TIME_CHANGED);
-        List<BroadcastReceiver> receiversForIntent = shadowApplication.getReceiversForIntent(intent);
-
-        BroadcastReceiver receiver = receiversForIntent.get(0);
-        receiver.onReceive(Robolectric.application, intent);
-
-        AlarmManager am = (AlarmManager) Robolectric.application.getSystemService(Context.ALARM_SERVICE);
-        List<ScheduledAlarm> alarms = Robolectric.shadowOf(am).getScheduledAlarms();
-        assertThat(alarms.size(), equalTo(1));
-        assertThat(transitionProvider.queryCount, equalTo(queryCount + 1));
+    public void shouldListenForTimeChange() {
+        testListensFor(Intent.ACTION_TIME_CHANGED);
     }
 
     @Test
-    public void testDateChangeCallback() {
-        int queryCount = transitionProvider.queryCount;
-        ShadowApplication shadowApplication = Robolectric.getShadowApplication();
-        Intent intent = new Intent(Intent.ACTION_DATE_CHANGED);
-        List<BroadcastReceiver> receiversForIntent = shadowApplication.getReceiversForIntent(intent);
-
-        BroadcastReceiver receiver = receiversForIntent.get(0);
-        receiver.onReceive(Robolectric.application, intent);
-
-        AlarmManager am = (AlarmManager) Robolectric.application.getSystemService(Context.ALARM_SERVICE);
-        List<ScheduledAlarm> alarms = Robolectric.shadowOf(am).getScheduledAlarms();
-        assertThat(alarms.size(), equalTo(1));
-        assertThat(transitionProvider.queryCount, equalTo(queryCount + 1));
+    public void shouldListenForDateChange() {
+        testListensFor(Intent.ACTION_DATE_CHANGED);
     }
 
-    static class TransitionProviderProbe extends TransitionProvider {
-        int queryCount;
+    @Test
+    public void testShouldAdjustClock() {
+        int oldCount = this.clock.adjustCount;
+        listener.onReceive(Robolectric.application, new Intent(Intent.ACTION_DATE_CHANGED));
+        int newCount = this.clock.adjustCount;
+
+        assertThat(newCount, equalTo(oldCount+1));
+    }
+
+    private static class ClockProbe extends AndroidClock {
+        public int adjustCount;
+
+        public ClockProbe(Context context) {
+            super(context);
+        }
+
         @Override
-        public Cursor query(Uri uri, String[] projection, String selection,
-                String[] selectionArgs, String sortOrder) {
-            queryCount++;
-            return super.query(uri, projection, selection, selectionArgs, sortOrder);
+        public void adjust() {
+            super.adjust();
+            adjustCount++;
         }
     }
 }

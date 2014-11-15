@@ -13,8 +13,8 @@ public class AndroidMetronome implements Metronome {
         this.context = context;
     }
 
-    public void attachTo(AndroidClockwork clockwork) {
-		TickService.setCallback(clockwork);
+    public void attachTo(Clockwork clockwork) {
+		TickService.setCallback(new ClockworkTickCallback(clockwork));
     }
 
 	public void start(long start, long tickLength) {
