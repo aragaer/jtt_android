@@ -8,16 +8,18 @@ import com.aragaer.jtt.core.TickService;
 
 public class AndroidMetronome implements Metronome {
     private Context context;
+    private Clockwork clockwork;
 
     public AndroidMetronome(Context context) {
         this.context = context;
     }
 
     public void attachTo(Clockwork clockwork) {
-		TickService.setCallback(new ClockworkTickCallback(clockwork));
+        this.clockwork = clockwork;
     }
 
 	public void start(long start, long tickLength) {
+		TickService.setCallback(new ClockworkTickCallback(clockwork, start, tickLength));
 		TickService.start(context, start, tickLength);
 	}
 
