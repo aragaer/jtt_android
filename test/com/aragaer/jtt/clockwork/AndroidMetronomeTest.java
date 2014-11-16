@@ -16,8 +16,6 @@ import static org.junit.Assert.*;
 import android.app.AlarmManager;
 import android.content.*;
 
-import com.aragaer.jtt.core.TickService;
-
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)

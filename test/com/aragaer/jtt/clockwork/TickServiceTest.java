@@ -1,4 +1,4 @@
-package com.aragaer.jtt.core;
+package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
 import java.util.List;
@@ -8,9 +8,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.shadows.ShadowAlarmManager;
+import org.robolectric.shadows.*;
 import org.robolectric.shadows.ShadowAlarmManager.ScheduledAlarm;
-import org.robolectric.shadows.ShadowPendingIntent;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -39,14 +38,21 @@ public class TickServiceTest {
     }
 
 	@Test
-	public void shouldScheduleAlarm() {
+	public void shouldScheduleAlarmForSelf() {
         TickService.setCallback(new TestCallback());
+
         TickService.start(Robolectric.application, 0, 20);
+
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
+
 		ScheduledAlarm alarm = alarms.get(0);
 		ShadowPendingIntent pending = Robolectric.shadowOf(alarm.operation);
+        ShadowIntent intent = Robolectric.shadowOf(pending.getSavedIntent());
+
 		assertTrue(pending.isServiceIntent());
+        assertEquals(pending.getSavedContext(), Robolectric.application);
+        assertEquals(intent.getIntentClass(), TickService.class);
 	}
 
 	@Test
@@ -80,10 +86,9 @@ public class TickServiceTest {
 
     @Test
     public void shouldTriggerCallback() {
-        TickServiceMock mockService = new TickServiceMock();
         TestCallback callback = new TestCallback();
-        mockService.setCallback(callback);
-        mockService.onHandleIntent(null);
+        TickService.setCallback(callback);
+        new TickServiceMock().onHandleIntent(null);
         assertThat(callback.calls, equalTo(1));
     }
 

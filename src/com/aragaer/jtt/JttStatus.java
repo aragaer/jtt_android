@@ -2,6 +2,7 @@ package com.aragaer.jtt;
 
 import com.aragaer.jtt.clockwork.AndroidClock;
 import com.aragaer.jtt.core.*;
+import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
@@ -39,11 +40,21 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		context.unregisterReceiver(this);
 	}
 
+	private void updateLocation(Context context) {
+		Location location = Settings.getLocation(context);
+		ContentValues locationCV = new ContentValues(2);
+		locationCV.put("lat", location.getLatitude());
+		locationCV.put("lon", location.getLongitude());
+		context.getContentResolver().update(TransitionProvider.LOCATION, locationCV, null, null);
+	}
+
 	@Override
 	public void onReceive(Context ctx, Intent intent) {
 		final String action = intent.getAction();
 		if (!action.equals(AndroidClock.ACTION_JTT_TICK))
 			return;
+
+		updateLocation(ctx);
 
 		final int wrapped = intent.getIntExtra("jtt", 0);
 		Hour.fromWrapped(wrapped, h);

@@ -2,6 +2,7 @@ package com.aragaer.jtt;
 // vim: et ts=4 sts=4 sw=4
 
 import com.aragaer.jtt.clockwork.AndroidClock;
+import com.aragaer.jtt.clockwork.BroadcastClockEvent;
 import com.aragaer.jtt.clockwork.Clock;
 import com.aragaer.jtt.clockwork.TimeDateChangeReceiver;
 
@@ -20,6 +21,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
     public JttService() {
         clock = AndroidClock.createFromContext(this);
+        BroadcastClockEvent event = new BroadcastClockEvent(this, AndroidClock.ACTION_JTT_TICK, 1);
+        clock.addClockEvent(event);
     }
 
     @Override

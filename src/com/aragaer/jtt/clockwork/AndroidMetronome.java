@@ -3,8 +3,6 @@ package com.aragaer.jtt.clockwork;
 
 import android.content.Context;
 
-import com.aragaer.jtt.core.TickService;
-
 
 public class AndroidMetronome implements Metronome {
     private Context context;
