@@ -23,4 +23,20 @@ public class Clock {
 		long tickLength = interval.getLength() / JttTime.TICKS_PER_INTERVAL;
         metronome.start(interval.getStart(), tickLength);
     }
+
+    public void addClockEvent(ClockEvent event) {
+        clockwork.attachBell(new ClockEventBell(event), event.getGranularity());
+    }
+
+    private static class ClockEventBell implements Bell {
+        private final ClockEvent event;
+
+        public ClockEventBell(ClockEvent event) {
+            this.event = event;
+        }
+
+        public void ring(int ticks) {
+            event.trigger(ticks);
+        }
+    }
 }
