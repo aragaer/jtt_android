@@ -1,6 +1,6 @@
 package com.aragaer.jtt;
 
-import com.aragaer.jtt.clockwork.AndroidBell;
+import com.aragaer.jtt.clockwork.AndroidClock;
 import com.aragaer.jtt.core.*;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
@@ -30,7 +30,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		sr.registerStringResourceChangeListener(this,
 			StringResources.TYPE_HOUR_NAME | StringResources.TYPE_TIME_FORMAT);
 
-		context.registerReceiver(this, new IntentFilter(AndroidBell.ACTION_JTT_TICK));
+		context.registerReceiver(this, new IntentFilter(AndroidClock.ACTION_JTT_TICK));
 	}
 
 	public void release() {
@@ -42,7 +42,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 	@Override
 	public void onReceive(Context ctx, Intent intent) {
 		final String action = intent.getAction();
-		if (!action.equals(AndroidBell.ACTION_JTT_TICK))
+		if (!action.equals(AndroidClock.ACTION_JTT_TICK))
 			return;
 
 		final int wrapped = intent.getIntExtra("jtt", 0);

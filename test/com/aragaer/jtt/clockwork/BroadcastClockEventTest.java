@@ -9,28 +9,27 @@ import org.robolectric.RobolectricTestRunner;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import android.app.AlarmManager;
 import android.content.*;
 
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
-public class AndroidBellTest {
+public class BroadcastClockEventTest {
 
-    private AndroidBell clockwork;
+    private BroadcastClockEvent event;
     private TestReceiver receiver;
 
     @Before
     public void setup() {
-        clockwork = new AndroidBell(Robolectric.application);
+        event = new BroadcastClockEvent(Robolectric.application, "Test event", 1);
         receiver = new TestReceiver();
-        Robolectric.application.registerReceiver(receiver, new IntentFilter(AndroidBell.ACTION_JTT_TICK));
+        Robolectric.application.registerReceiver(receiver, new IntentFilter("Test event"));
     }
 
     static class TestReceiver extends BroadcastReceiver {
         int wrapped = -1;
         public void onReceive(Context context, Intent intent) {
-            if (!intent.getAction().equals(AndroidBell.ACTION_JTT_TICK))
+            if (!intent.getAction().equals("Test event"))
                 return;
             wrapped = intent.getIntExtra("jtt", 0);
         }
@@ -39,13 +38,13 @@ public class AndroidBellTest {
     @Test
     public void shouldSendBroadcast() {
         assertThat(receiver.wrapped, equalTo(-1));
-        clockwork.ring(0);
+        event.trigger(0);
         assertThat(receiver.wrapped, equalTo(0));
     }
 
     @Test
     public void shouldSendBroadcastWithCorrectTime() {
-        clockwork.ring(42);
+        event.trigger(42);
         assertThat(receiver.wrapped, equalTo(42));
     }
 }
