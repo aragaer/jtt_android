@@ -11,7 +11,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.*;
-import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 public class JttStatus extends BroadcastReceiver implements StringResourceChangeListener {
@@ -85,13 +84,13 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		rv.setTextViewText(R.id.start, sr.format_time(start));
 		rv.setTextViewText(R.id.end, sr.format_time(end));
 
-		final Notification n = new NotificationCompat.Builder(context)
+		final Notification n = new Notification.Builder(context)
 			.setContent(rv)
 			.setOngoing(true)
 			.setSmallIcon(R.drawable.notification_icon, h.num)
 			.setContentIntent(PendingIntent.getActivity(
 					context, 0, new Intent(context, MainActivity.class), 0))
-			.build();
+			.getNotification();
 
 		nm.notify(APP_ID, n);
 	}

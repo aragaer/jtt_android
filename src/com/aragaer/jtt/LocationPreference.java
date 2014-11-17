@@ -45,6 +45,7 @@ public class LocationPreference extends DialogPreference implements
         super(ctx, attrs);
     }
 
+    @SuppressWarnings("InflateParams")
     @Override
     protected View onCreateDialogView() {
         LayoutInflater li = (LayoutInflater) getContext().getSystemService(

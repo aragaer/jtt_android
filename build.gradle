@@ -4,11 +4,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.13.+'
+        classpath 'com.android.tools.build:gradle:0.13.0'
     }
 }
 
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 apply plugin: 'jacoco'
 
 repositories {
@@ -22,7 +22,7 @@ configurations {
 
 dependencies {
     compile 'com.luckycatlabs:SunriseSunsetCalculator:1.1'
-    compile 'com.android.support:support-v4:18.0.+'
+    compile 'com.android.support:support-v4:21.0.0'
 
     unitTestCompile files("$project.buildDir/intermediates/classes/debug")
     unitTestCompile 'junit:junit:4.11'

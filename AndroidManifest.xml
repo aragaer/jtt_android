@@ -5,7 +5,7 @@
     android:versionName="1.6" >
 
     <uses-sdk android:minSdkVersion="14"
-        android:targetSdkVersion="19"/>
+        android:targetSdkVersion="21"/>
 
     <permission android:name="com.aragaer.jtt.permission.ALARM"
 	    android:protectionLevel="signature" />
