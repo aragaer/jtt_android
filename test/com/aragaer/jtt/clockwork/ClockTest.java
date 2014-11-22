@@ -14,12 +14,17 @@ import com.aragaer.jtt.location.Location;
 public class ClockTest {
 
     private Clock clock;
-    private ManualMetronome metronome;
+    private TestMetronome metronome;
+    private TestAstrolabe astrolabe;
+    private TestCalculator calculator;
+    private TestLocationProvider locationProvider;
 
     @Before
     public void setUp() {
-        metronome = new ManualMetronome();
-        Astrolabe astrolabe = new Astrolabe(new NullCalculator(), new NullLocationProvider(), 1);
+        metronome = new TestMetronome();
+        calculator = new TestCalculator();
+        locationProvider = new TestLocationProvider();
+        astrolabe = new TestAstrolabe(calculator, locationProvider, 1);
         clock = new Clock(astrolabe, metronome);
     }
 
@@ -50,6 +55,15 @@ public class ClockTest {
         assertThat(event2.lastTriggeredAt, equalTo(42));
     }
 
+    @Test
+    public void shouldUpdateLocationWhenAdjusted() {
+        Location location = new Location(1, 2);
+        locationProvider.setCurrentLocation(location);
+        calculator.setNextResult(DayInterval.Day(0, 1));
+        clock.adjust();
+        assertThat(calculator.location, equalTo(location));
+    }
+
     private static class TestEvent implements ClockEvent {
         int lastTriggeredAt;
         final int granularity;
@@ -71,7 +85,7 @@ public class ClockTest {
         }
     }
 
-    private static class ManualMetronome implements Metronome {
+    private static class TestMetronome implements Metronome {
 
         private Clockwork clockwork;
 
@@ -88,16 +102,37 @@ public class ClockTest {
         }
     }
 
-    private static class NullCalculator implements DayIntervalCalculator {
-        public void setLocation(Location location) {}
+    private static class TestCalculator implements DayIntervalCalculator {
+        public Location location;
+        private DayInterval nextResult;
+
+        public void setNextResult(DayInterval nextResult) {
+            this.nextResult = nextResult;
+        }
+
+        public void setLocation(Location location) {
+            this.location = location;
+        }
+
         public DayInterval getIntervalFor(long timestamp) {
-            return null;
+            return nextResult;
         }
     }
 
-    private static class NullLocationProvider implements LocationProvider {
+    private static class TestLocationProvider implements LocationProvider {
+        private Location location;
+        public void setCurrentLocation(Location location) {
+            this.location = location;
+        }
         public Location getCurrentLocation() {
-            return null;
+            return location;
         }
     }
+
+    private static class TestAstrolabe extends Astrolabe {
+        public TestAstrolabe(DayIntervalCalculator calculator, LocationProvider locationProvider, long granularity) {
+            super(calculator, locationProvider, granularity);
+        }
+    }
+
 }
