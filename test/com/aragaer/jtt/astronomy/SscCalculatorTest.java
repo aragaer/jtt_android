@@ -2,6 +2,7 @@ package com.aragaer.jtt.astronomy;
 // vim: et ts=4 sts=4 sw=4
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import org.junit.*;
 import static org.hamcrest.Matchers.*;
@@ -15,15 +16,20 @@ public class SscCalculatorTest {
     private DayIntervalCalculator calculator;
 
     @Rule
+    public TestWithTz tzAnnotation = new TestWithTz();
+
+    @Rule
     public TestWithLocation locationAnnotation = new TestWithLocation();
 
     @Before
     public void setUp() {
+        TimeZone.setDefault(tzAnnotation.getTimeZone());
         calculator = new SscCalculator();
         calculator.setLocation(locationAnnotation.getLocation());
     }
 
     @Test
+    @TestTimezone(offsetMinutes = 180)
     @TestLocation(latitude=55.93, longitude=37.79)
     public void testMoscowNoon() {
         Calendar calendar = Calendar.getInstance();
@@ -39,6 +45,7 @@ public class SscCalculatorTest {
     }
 
     @Test
+    @TestTimezone(offsetMinutes = 180)
     @TestLocation(latitude=55.93, longitude=37.79)
     public void testMoscowMidnight() {
         Calendar calendar = Calendar.getInstance();
@@ -53,6 +60,7 @@ public class SscCalculatorTest {
     }
 
     @Test
+    @TestTimezone(offsetMinutes = 180)
     @TestLocation(latitude = 55.93, longitude = 37.79)
     public void testMoscowSunrise() {
         Calendar calendar = Calendar.getInstance();
@@ -66,6 +74,7 @@ public class SscCalculatorTest {
     }
 
     @Test
+    @TestTimezone(offsetMinutes = 180)
     @TestLocation(latitude = 55.93, longitude = 37.79)
     public void testMoscowSunset() {
         Calendar calendar = Calendar.getInstance();
@@ -79,6 +88,7 @@ public class SscCalculatorTest {
     }
 
     @Test
+    @TestTimezone(offsetMinutes = 180)
     @TestLocation(latitude = 55.93, longitude = 37.79)
     public void testMoscowBeforeSunrise() {
         Calendar calendar = Calendar.getInstance();
@@ -92,6 +102,7 @@ public class SscCalculatorTest {
     }
 
     @Test
+    @TestTimezone(offsetMinutes = 180)
     @TestLocation(latitude = 55.93, longitude = 37.79)
     public void testMoscowAfterSunset() {
         Calendar calendar = Calendar.getInstance();
