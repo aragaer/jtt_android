@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="NotificationText" parent="android:TextAppearance.Material.Notification" />
+    <style name="NotificationTitle" parent="android:TextAppearance.Material.Notification.Title" />
+    <style name="NotificationGlyph" parent="android:TextAppearance.Material.Notification.Title" >
+        <item name="android:textSize">25dp</item>
+    </style>
+
+</resources>
