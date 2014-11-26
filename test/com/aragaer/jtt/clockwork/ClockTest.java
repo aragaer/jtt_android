@@ -6,25 +6,19 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import com.aragaer.jtt.astronomy.DayInterval;
-import com.aragaer.jtt.astronomy.DayIntervalCalculator;
-import com.aragaer.jtt.location.LocationProvider;
-import com.aragaer.jtt.location.Location;
+import com.aragaer.jtt.core.JttTime;
 
 
 public class ClockTest {
 
     private Clock clock;
     private TestMetronome metronome;
-    private TestAstrolabe astrolabe;
-    private TestCalculator calculator;
-    private TestLocationProvider locationProvider;
+    private MockAstrolabe astrolabe;
 
     @Before
     public void setUp() {
         metronome = new TestMetronome();
-        calculator = new TestCalculator();
-        locationProvider = new TestLocationProvider();
-        astrolabe = new TestAstrolabe(calculator, locationProvider, 1);
+        astrolabe = new MockAstrolabe();
         clock = new Clock(astrolabe, metronome);
     }
 
@@ -57,11 +51,30 @@ public class ClockTest {
 
     @Test
     public void shouldUpdateLocationWhenAdjusted() {
-        Location location = new Location(1, 2);
-        locationProvider.setCurrentLocation(location);
-        calculator.setNextResult(DayInterval.Day(0, 1));
+        astrolabe.setNextResult(DayInterval.Day(0, 1));
+        assertThat(astrolabe.updateLocationCalls, equalTo(0));
         clock.adjust();
-        assertThat(calculator.location, equalTo(location));
+        assertThat(astrolabe.updateLocationCalls, equalTo(1));
+    }
+
+    @Test
+    public void shouldStartMetronomeBasedOnAstrolabeResult() {
+        astrolabe.setNextResult(DayInterval.Day(10, 10 + JttTime.TICKS_PER_INTERVAL * 5));
+
+        clock.adjust();
+
+        assertThat(metronome.start, equalTo(10L));
+        assertThat(metronome.tickLength, equalTo(5L));
+    }
+
+    @Test
+    public void shouldReAdjustWhenIntervalEnds() {
+        astrolabe.setNextResult(DayInterval.Day(10, 10 + JttTime.TICKS_PER_INTERVAL * 5));
+
+        metronome.tick(JttTime.TICKS_PER_INTERVAL + 5);
+
+        assertThat(metronome.start, equalTo(10L));
+        assertThat(metronome.tickLength, equalTo(5L));
     }
 
     private static class TestEvent implements ClockEvent {
@@ -88,12 +101,17 @@ public class ClockTest {
     private static class TestMetronome implements Metronome {
 
         private Clockwork clockwork;
+        public long start;
+        public long tickLength;
 
         public void attachTo(Clockwork clockwork) {
             this.clockwork = clockwork;
         }
 
-        public void start(long start, long tickLength) {}
+        public void start(long start, long tickLength) {
+            this.start = start;
+            this.tickLength = tickLength;
+        }
 
         public void stop() {}
 
@@ -102,37 +120,26 @@ public class ClockTest {
         }
     }
 
-    private static class TestCalculator implements DayIntervalCalculator {
-        public Location location;
+    private static class MockAstrolabe extends Astrolabe {
+        public int updateLocationCalls;
         private DayInterval nextResult;
+
+        public MockAstrolabe() {
+            super(null, null, 0);
+        }
+
+        @Override
+        public void updateLocation() {
+            updateLocationCalls++;
+        }
 
         public void setNextResult(DayInterval nextResult) {
             this.nextResult = nextResult;
         }
 
-        public void setLocation(Location location) {
-            this.location = location;
-        }
-
-        public DayInterval getIntervalFor(long timestamp) {
+        @Override
+        public DayInterval getCurrentInterval() {
             return nextResult;
         }
     }
-
-    private static class TestLocationProvider implements LocationProvider {
-        private Location location;
-        public void setCurrentLocation(Location location) {
-            this.location = location;
-        }
-        public Location getCurrentLocation() {
-            return location;
-        }
-    }
-
-    private static class TestAstrolabe extends Astrolabe {
-        public TestAstrolabe(DayIntervalCalculator calculator, LocationProvider locationProvider, long granularity) {
-            super(calculator, locationProvider, granularity);
-        }
-    }
-
 }

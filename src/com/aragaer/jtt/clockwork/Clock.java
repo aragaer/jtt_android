@@ -15,6 +15,11 @@ public class Clock {
         this.metronome = metronome;
         this.clockwork = new Clockwork();
         this.metronome.attachTo(this.clockwork);
+        this.clockwork.attachBell(new Bell() {
+            public void ring(int ticks) {
+                Clock.this.adjust();
+            }
+        }, JttTime.TICKS_PER_INTERVAL);
     }
 
     public void adjust() {
