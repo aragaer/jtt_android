@@ -46,6 +46,18 @@ public class ClockworkTickCallbackTest {
         assertThat(clockwork.ticks, equalTo(43));
     }
 
+    @Test
+    public void shouldNotTickPastEnd() {
+        long tickLen = 1000;
+        int tickCount = 20;
+        long endOffset = 1200;
+        long startOffset = tickLen * tickCount + endOffset;
+        long now = System.currentTimeMillis();
+        ClockworkTickCallback callback = new ClockworkTickCallback(clockwork, now - startOffset, tickLen, now - endOffset);
+        callback.onTick();
+        assertThat(clockwork.ticks, equalTo(tickCount));
+    }
+
     private static class ProbeClockwork extends Clockwork {
         int ticks;
 

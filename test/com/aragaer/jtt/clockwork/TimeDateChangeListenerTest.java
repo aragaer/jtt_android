@@ -73,5 +73,6 @@ public class TimeDateChangeListenerTest {
         public void attachTo(Clockwork clockwork) {}
         public void start(long start, long tickLength) {}
         public void stop() {}
+        public void setStopTime(long stopAt) {}
     }
 }

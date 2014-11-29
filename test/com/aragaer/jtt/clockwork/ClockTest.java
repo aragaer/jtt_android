@@ -115,6 +115,8 @@ public class ClockTest {
 
         public void stop() {}
 
+        public void setStopTime(long stopAt) {}
+
         public void tick(int times) {
             clockwork.tick(times);
         }
