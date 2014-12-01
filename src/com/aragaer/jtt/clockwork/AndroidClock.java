@@ -11,6 +11,7 @@ import com.aragaer.jtt.location.LocationProvider;
 
 public class AndroidClock {
     public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
+    public static final String EXTRA_JTT = "jtt";
 
     public static Clock createFromContext(Context context) {
         LocationProvider provider = new AndroidLocationProvider(context);

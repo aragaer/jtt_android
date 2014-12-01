@@ -107,6 +107,7 @@ task unitTest(type: Test, dependsOn: assembleDebug) {
     description = "run unit tests"
     testClassesDir = project.sourceSets.unitTest.output.classesDir
     classpath = project.sourceSets.unitTest.runtimeClasspath
+    testLogging.exceptionFormat = 'full'
 }
 
 check.dependsOn unitTest
