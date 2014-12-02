@@ -32,18 +32,16 @@ import com.aragaer.jtt.core.JttTime;
 @Config(emulateSdk=18)
 public class ClockServiceTest {
 
-    private TestLocationProvider locationProvider;
-    private TestCalculator calculator;
+    private TestAstrolabe astrolabe;
     private TestChime chime;
+    private ComponentFactory components;
 
     @Before
     public void setUp() {
-        locationProvider = new TestLocationProvider();
-        calculator = new TestCalculator();
-        chime = new TestChime();
-        ClockService.setLocationProvider(locationProvider);
-        ClockService.setDayIntervalCalculator(calculator);
-        ClockService.setChime(chime);
+        components = new TestComponentFactory();
+        chime = (TestChime) components.getChime();
+        astrolabe = (TestAstrolabe) components.getAstrolabe();
+        ClockService.setComponentFactory(components);
     }
 
     @Test
@@ -56,7 +54,7 @@ public class ClockServiceTest {
         long endOffset = startOffset + intervalLength;
         long now = System.currentTimeMillis();
 
-        calculator.setNextResult(DayInterval.Night(now + startOffset, now + endOffset));
+        astrolabe.setNextResult(DayInterval.Night(now + startOffset, now + endOffset));
 
         ServiceController<ClockService> controller = startService();
         checkTickServiceRunning(controller.get(), now + startOffset, tickLength);
@@ -75,7 +73,7 @@ public class ClockServiceTest {
         long endOffset = startOffset + intervalLength;
         long now = System.currentTimeMillis();
 
-        calculator.setNextResult(DayInterval.Day(now + startOffset, now + endOffset));
+        astrolabe.setNextResult(DayInterval.Day(now + startOffset, now + endOffset));
 
         startService();
         new TickServiceMock().onHandleIntent(null);
@@ -101,13 +99,29 @@ public class ClockServiceTest {
 
     @Test
     public void shouldPassLocationFromProviderToCalculatorWhenStarted() {
-        Location location = new Location(1, 2);
-        locationProvider.setNextResult(location);
-        calculator.setNextResult(DayInterval.Night(0, 1));
+        astrolabe.setNextResult(DayInterval.Night(0, 1));
 
         startService();
 
-        assertThat("location passed to calculator", calculator.location, equalTo(location));
+        assertThat("astrolabe updateLocation called", astrolabe.updateLocationCalls, equalTo(1));
+    }
+
+    private static class TestComponentFactory implements ComponentFactory {
+        private final Astrolabe astrolabe;
+        private final Chime chime;
+
+        public TestComponentFactory() {
+            chime = new TestChime();
+            astrolabe = new TestAstrolabe();
+        }
+
+        public Chime getChime() {
+            return chime;
+        }
+
+        public Astrolabe getAstrolabe() {
+            return astrolabe;
+        }
     }
 
     private ServiceController<ClockService> startService() {
@@ -119,34 +133,27 @@ public class ClockServiceTest {
         return controller;
     }
 
-    static class TestLocationProvider implements LocationProvider {
-
-        private Location nextResult;
-
-        public void setNextResult(Location location) {
-            nextResult = location;
-        }
-
-        public Location getCurrentLocation() {
-            return nextResult;
-        }
-    }
-
-    private static class TestCalculator implements DayIntervalCalculator {
+    public static class TestAstrolabe extends Astrolabe {
 
         private DayInterval nextResult;
-        public Location location;
+        public int updateLocationCalls;
+
+        public TestAstrolabe() {
+            super(null, null, 1);
+        }
+
+        @Override
+        public DayInterval getCurrentInterval() {
+            return nextResult;
+        }
+
+        @Override
+        public void updateLocation() {
+            updateLocationCalls++;
+        }
 
         public void setNextResult(DayInterval interval) {
             nextResult = interval;
-        }
-
-        public DayInterval getIntervalFor(long timestamp) {
-            return nextResult;
-        }
-
-        public void setLocation(Location newLocation) {
-            location = newLocation;
         }
     }
 

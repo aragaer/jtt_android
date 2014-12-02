@@ -92,8 +92,9 @@ public class AndroidMetronomeTest {
     public void shouldNotTickPastIntervalEnd() {
         long tickLen = 100;
         int tickCount = 20;
+        long inTickOffset = 10;
         long intervalLen = tickLen * tickCount;
-        long endOffset = 200;
+        long endOffset = 200 + inTickOffset;
         long startOffset = intervalLen + endOffset;
 
         ProbeClockwork probe = new ProbeClockwork();

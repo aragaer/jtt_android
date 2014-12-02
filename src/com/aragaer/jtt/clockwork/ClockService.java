@@ -13,9 +13,7 @@ import com.aragaer.jtt.core.JttTime;
 
 public class ClockService extends Service {
 
-    private static LocationProvider locationProvider;
-    private static DayIntervalCalculator calculator;
-    private static Chime chime;
+    private static ComponentFactory components;
 
     private Astrolabe astrolabe;
     private Clockwork clockwork;
@@ -26,25 +24,17 @@ public class ClockService extends Service {
         return null;
     }
 
-    /* package private */ static void setChime(Chime newChime) {
-        chime = newChime;
-    }
-
-    /* package private */ static void setDayIntervalCalculator(DayIntervalCalculator newCalculator) {
-        calculator = newCalculator;
-    }
-
-    /* package private */ static void setLocationProvider(LocationProvider newLocationProvider) {
-        locationProvider = newLocationProvider;
+    /* package private */ static void setComponentFactory(ComponentFactory newComponents) {
+        components = newComponents;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        astrolabe = new Astrolabe(calculator, locationProvider, 1);
+        astrolabe = components.getAstrolabe();
         metronome = new AndroidMetronome(this);
         clockwork = new Clockwork();
 
-        clockwork.attachChime(chime);
+        clockwork.attachChime(components.getChime());
         metronome.attachTo(clockwork);
 
         astrolabe.updateLocation();
