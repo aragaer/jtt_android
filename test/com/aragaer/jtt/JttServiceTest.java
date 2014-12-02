@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import android.app.*;
 import android.content.*;
 
-import com.aragaer.jtt.clockwork.AndroidClock;
+import com.aragaer.jtt.clockwork.Chime;
 import com.aragaer.jtt.clockwork.TickService;
 
 
@@ -45,7 +45,7 @@ public class JttServiceTest {
     @Test
     public void shouldCreateBroadcastForTicks() throws PendingIntent.CanceledException {
         TestReceiver receiver = new TestReceiver();
-        Robolectric.application.registerReceiver(receiver, new IntentFilter(AndroidClock.ACTION_JTT_TICK));
+        Robolectric.application.registerReceiver(receiver, new IntentFilter(Chime.ACTION_JTT_TICK));
         ServiceController<JttService> controller = startService();
 
         assertThat(receiver.calls, equalTo(0));
@@ -59,7 +59,7 @@ public class JttServiceTest {
         int wrapped = -1;
         int calls;
         public void onReceive(Context context, Intent intent) {
-            if (!intent.getAction().equals(AndroidClock.ACTION_JTT_TICK))
+            if (!intent.getAction().equals(Chime.ACTION_JTT_TICK))
                 return;
             calls++;
             wrapped = intent.getIntExtra("jtt", 0);

@@ -6,6 +6,8 @@ import android.content.Intent;
 
 
 public class Chime {
+    public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
+    public static final String EXTRA_JTT = "jtt";
 
     private final Context context;
 
@@ -14,8 +16,6 @@ public class Chime {
     }
 
     public void ding(int tick) {
-        context.sendStickyBroadcast(
-                new Intent(AndroidClock.ACTION_JTT_TICK)
-                    .putExtra(AndroidClock.EXTRA_JTT, tick));
+        context.sendStickyBroadcast(new Intent(ACTION_JTT_TICK).putExtra(EXTRA_JTT, tick));
     }
 }
