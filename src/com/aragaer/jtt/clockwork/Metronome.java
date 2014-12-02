@@ -4,6 +4,5 @@ package com.aragaer.jtt.clockwork;
 public interface Metronome {
     public void attachTo(Clock clock);
     public void start(long start, long tickLength);
-    public void setStopTime(long stopAt);
     public void stop();
 }

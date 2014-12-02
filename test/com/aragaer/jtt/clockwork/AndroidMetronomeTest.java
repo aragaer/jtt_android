@@ -88,24 +88,6 @@ public class AndroidMetronomeTest {
         assertThat(clock.ticks, equalTo(42));
     }
 
-    @Test
-    public void shouldNotTickPastIntervalEnd() {
-        long tickLen = 100;
-        int tickCount = 20;
-        long inTickOffset = 10;
-        long intervalLen = tickLen * tickCount;
-        long endOffset = 200 + inTickOffset;
-        long startOffset = intervalLen + endOffset;
-
-        TestClock clock = new TestClock();
-        metronome.attachTo(clock);
-        assertThat(clock.ticks, equalTo(0));
-        metronome.setStopTime(System.currentTimeMillis() - endOffset);
-        metronome.start(System.currentTimeMillis() - startOffset, tickLen);
-        new TickServiceMock().onHandleIntent(null);
-        assertThat(clock.ticks, equalTo(tickCount));
-    }
-
     private List<ScheduledAlarm> getScheduledAlarms() {
         AlarmManager am = (AlarmManager) Robolectric.application
             .getSystemService(Context.ALARM_SERVICE);

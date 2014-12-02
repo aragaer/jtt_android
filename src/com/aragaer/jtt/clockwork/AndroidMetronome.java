@@ -5,9 +5,8 @@ import android.content.Context;
 
 
 public class AndroidMetronome implements Metronome {
-    private Context context;
+    private final Context context;
     private Clock clock;
-    private long stopAt = -1;
 
     public AndroidMetronome(Context context) {
         this.context = context;
@@ -17,16 +16,12 @@ public class AndroidMetronome implements Metronome {
         clock = newClock;
     }
 
-	public void start(long start, long tickLength) {
-		TickService.setCallback(new ClockworkTickCallback(clock, start, tickLength, stopAt));
-		TickService.start(context, start, tickLength);
-	}
-
-    public void setStopTime(long stopAt) {
-        this.stopAt = stopAt;
+    public void start(long start, long tickLength) {
+        TickService.setCallback(new ClockTickCallback(clock, start, tickLength));
+        TickService.start(context, start, tickLength);
     }
 
-	public void stop() {
-		TickService.stop(context);
-	}
+    public void stop() {
+        TickService.stop(context);
+    }
 }
