@@ -16,17 +16,18 @@ import android.content.*;
 
 import com.aragaer.jtt.JttService;
 
+
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class TimeDateChangeListenerTest {
 
-    private TimeDateChangeReceiver listener;
+    private TimeDateChangeListener listener;
     private ClockProbe clock;
 
     @Before
     public void setup() {
         clock = new ClockProbe(null, new NopMetronome());
-        listener = new TimeDateChangeReceiver(clock);
+        listener = new TimeDateChangeListener(clock);
         listener.register(Robolectric.application);
     }
 

@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-public class TimeDateChangeReceiver extends BroadcastReceiver {
+public class TimeDateChangeListener extends BroadcastReceiver {
 	private final Clock clock;
-	public TimeDateChangeReceiver(Clock clock) {
+	public TimeDateChangeListener(Clock clock) {
 		this.clock = clock;
 	}
 

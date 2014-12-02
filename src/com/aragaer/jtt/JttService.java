@@ -5,7 +5,7 @@ import com.aragaer.jtt.clockwork.AndroidClock;
 import com.aragaer.jtt.clockwork.Chime;
 import com.aragaer.jtt.clockwork.BroadcastClockEvent;
 import com.aragaer.jtt.clockwork.Clock;
-import com.aragaer.jtt.clockwork.TimeDateChangeReceiver;
+import com.aragaer.jtt.clockwork.TimeDateChangeListener;
 
 import android.app.Service;
 import android.content.Intent;
@@ -18,7 +18,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     private static final String TAG = "JTT_SERVICE";
     private JttStatus status_notify;
     private final Clock clock;
-    private TimeDateChangeReceiver timeDateChangeReceiver;
+    private TimeDateChangeListener timeDateChangeListener;
 
     public JttService() {
         clock = AndroidClock.createFromContext(this);
@@ -42,8 +42,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
         toggle_notify(pref.getBoolean("jtt_notify", true));
 
-        timeDateChangeReceiver = new TimeDateChangeReceiver(clock);
-        timeDateChangeReceiver.register(this);
+        timeDateChangeListener = new TimeDateChangeListener(clock);
+        timeDateChangeListener.register(this);
     }
 
     private void toggle_notify(final boolean notify) {
