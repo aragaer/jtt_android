@@ -26,8 +26,6 @@ import com.aragaer.jtt.location.LocationProvider;
 import com.aragaer.jtt.core.JttTime;
 
 
-// TODO: Fix this test
-@Ignore
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk=18)
 public class ClockServiceTest {
@@ -40,6 +38,8 @@ public class ClockServiceTest {
     public void setUp() throws Exception {
         chime = new TestChime();
         astrolabe = new TestAstrolabe();
+        ClockService.overrideAstrolabe(astrolabe);
+        ClockService.overrideChime(chime);
     }
 
     @Test

@@ -15,9 +15,29 @@ public class ClockService extends Service {
         return null;
     }
 
+    private static Astrolabe astrolabe;
+    private static Chime chime;
+
+    /* package private */ static void overrideAstrolabe(Astrolabe newAstrolabe) {
+        astrolabe = newAstrolabe;
+    }
+
+    /* package private */ static void overrideChime(Chime newChime) {
+        chime = newChime;
+    }
+
+    private Astrolabe getAstrolabe(ComponentFactory components) {
+        return astrolabe == null ? components.getAstrolabe() : astrolabe;
+    }
+
+    private Chime getChime(ComponentFactory components) {
+        return chime == null ? components.getChime() : chime;
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        clock = new Clock(new AndroidClockFactory(this));
+        ComponentFactory components = new AndroidClockFactory(this);
+        clock = new Clock(getAstrolabe(components), getChime(components), components.getMetronome());
         clock.adjust();
 
         return START_STICKY;
