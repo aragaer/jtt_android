@@ -13,13 +13,15 @@ public class ClockTest {
 
     private Clock clock;
     private TestMetronome metronome;
-    private MockAstrolabe astrolabe;
+    private TestAstrolabe astrolabe;
+    private TestChime chime;
 
     @Before
     public void setUp() {
         metronome = new TestMetronome();
-        astrolabe = new MockAstrolabe();
-        clock = new Clock(astrolabe, metronome);
+        astrolabe = new TestAstrolabe();
+        chime = new TestChime();
+        clock = new Clock(astrolabe, chime, metronome);
     }
 
     @Test
@@ -28,6 +30,7 @@ public class ClockTest {
         clock.addClockEvent(event);
         metronome.tick(42);
         assertThat(event.lastTriggeredAt, equalTo(42));
+        assertThat("chime ding number", chime.getLastTick(), equalTo(42));
     }
 
     @Test
@@ -95,29 +98,6 @@ public class ClockTest {
 
         public int getGranularity() {
             return granularity;
-        }
-    }
-
-    private static class MockAstrolabe extends Astrolabe {
-        public int updateLocationCalls;
-        private DayInterval nextResult;
-
-        public MockAstrolabe() {
-            super(null, null, 0);
-        }
-
-        @Override
-        public void updateLocation() {
-            updateLocationCalls++;
-        }
-
-        public void setNextResult(DayInterval nextResult) {
-            this.nextResult = nextResult;
-        }
-
-        @Override
-        public DayInterval getCurrentInterval() {
-            return nextResult;
         }
     }
 }

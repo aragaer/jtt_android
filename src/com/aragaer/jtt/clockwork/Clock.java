@@ -7,14 +7,17 @@ import com.aragaer.jtt.core.JttTime;
 
 public class Clock {
     private final Astrolabe astrolabe;
+    private final Chime chime;
     private final Clockwork clockwork;
     private final Metronome metronome;
 
-    public Clock(Astrolabe astrolabe, Metronome metronome) {
+    public Clock(Astrolabe astrolabe, Chime chime, Metronome metronome) {
         this.astrolabe = astrolabe;
+        this.chime = chime;
         this.metronome = metronome;
         this.clockwork = new Clockwork();
         this.metronome.attachTo(this.clockwork);
+        this.clockwork.attachChime(chime);
         this.clockwork.attachBell(new Bell() {
             public void ring(int ticks) {
                 Clock.this.adjust();

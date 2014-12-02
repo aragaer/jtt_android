@@ -26,7 +26,7 @@ public class TimeDateChangeListenerTest {
 
     @Before
     public void setup() {
-        clock = new ClockProbe(null, new NopMetronome());
+        clock = new ClockProbe(null, null, new TestMetronome());
         listener = new TimeDateChangeListener(clock);
         listener.register(Robolectric.application);
     }
@@ -60,20 +60,13 @@ public class TimeDateChangeListenerTest {
     private static class ClockProbe extends Clock {
         public int adjustCount;
 
-        public ClockProbe(Astrolabe astrolabe, Metronome metronome) {
-            super(astrolabe, metronome);
+        public ClockProbe(Astrolabe astrolabe, Chime chime, Metronome metronome) {
+            super(astrolabe, chime, metronome);
         }
 
         @Override
         public void adjust() {
             adjustCount++;
         }
-    }
-
-    private static class NopMetronome implements Metronome {
-        public void attachTo(Clockwork clockwork) {}
-        public void start(long start, long tickLength) {}
-        public void stop() {}
-        public void setStopTime(long stopAt) {}
     }
 }
