@@ -9,27 +9,37 @@ import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 public class Clock {
     private final Astrolabe astrolabe;
     private final Chime chime;
-    private final Clockwork clockwork;
     private final Metronome metronome;
 
     public Clock(Astrolabe astrolabe, Chime chime, Metronome metronome) {
         this.astrolabe = astrolabe;
         this.chime = chime;
         this.metronome = metronome;
-        this.clockwork = new Clockwork();
-        this.metronome.attachTo(this.clockwork);
-        this.clockwork.attachChime(chime);
-        this.clockwork.attachTrigger(new Clockwork.Trigger() {
-            public void trigger() {
-                Clock.this.adjust();
-            }
-        }, TICKS_PER_INTERVAL);
+        this.metronome.attachTo(this);
     }
 
     public void adjust() {
         astrolabe.updateLocation();
+        rewind();
+    }
+
+    private int lastTick;
+
+    private void rewind() {
         DayInterval interval = astrolabe.getCurrentInterval();
 		long tickLength = interval.getLength() / TICKS_PER_INTERVAL;
+        if (interval.isDay())
+            lastTick = TICKS_PER_INTERVAL;
+        else
+            lastTick = 0;
         metronome.start(interval.getStart(), tickLength);
+    }
+
+    public void tick(int ticks) {
+        if (TICKS_PER_INTERVAL - ticks < lastTick % TICKS_PER_INTERVAL)
+            rewind();
+        else
+            lastTick += ticks;
+        chime.ding(lastTick);
     }
 }

@@ -10,40 +10,40 @@ import static org.junit.Assert.*;
 
 public class ClockworkTickCallbackTest {
 
-    private ProbeClockwork clockwork;
+    private TestClock clock;
 
     @Before
     public void setUp() {
-        clockwork = new ProbeClockwork();
+        clock = new TestClock();
     }
 
     @Test
     public void shouldTrigger0TicksIfLessThanLength() {
         long now = System.currentTimeMillis();
-        ClockworkTickCallback callback = new ClockworkTickCallback(clockwork, now, 10000);
+        ClockworkTickCallback callback = new ClockworkTickCallback(clock, now, 10000);
         callback.onTick();
-        assertThat(clockwork.ticks, equalTo(0));
+        assertThat(clock.ticks, equalTo(0));
     }
 
     @Test
     public void shouldTriggerRequiredNumberOfTicks() {
         long offset = 1000 * 42 + 250;
         long now = System.currentTimeMillis();
-        ClockworkTickCallback callback = new ClockworkTickCallback(clockwork, now - offset, 1000);
+        ClockworkTickCallback callback = new ClockworkTickCallback(clock, now - offset, 1000);
         callback.onTick();
-        assertThat(clockwork.ticks, equalTo(42));
+        assertThat(clock.ticks, equalTo(42));
     }
 
     @Test
     public void shouldTickOnceAgain() throws InterruptedException {
         long offset = 1000 * 42 + 997;
         long now = System.currentTimeMillis();
-        ClockworkTickCallback callback = new ClockworkTickCallback(clockwork, now - offset, 1000);
+        ClockworkTickCallback callback = new ClockworkTickCallback(clock, now - offset, 1000);
         callback.onTick();
-        assertThat(clockwork.ticks, equalTo(42));
+        assertThat(clock.ticks, equalTo(42));
         Thread.sleep(5);
         callback.onTick();
-        assertThat(clockwork.ticks, equalTo(43));
+        assertThat(clock.ticks, equalTo(43));
     }
 
     @Test
@@ -53,20 +53,8 @@ public class ClockworkTickCallbackTest {
         long endOffset = 1200;
         long startOffset = tickLen * tickCount + endOffset;
         long now = System.currentTimeMillis();
-        ClockworkTickCallback callback = new ClockworkTickCallback(clockwork, now - startOffset, tickLen, now - endOffset);
+        ClockworkTickCallback callback = new ClockworkTickCallback(clock, now - startOffset, tickLen, now - endOffset);
         callback.onTick();
-        assertThat(clockwork.ticks, equalTo(tickCount));
-    }
-
-    private static class ProbeClockwork extends Clockwork {
-        int ticks;
-
-        public void rewind() {
-            ticks = 0;
-        }
-
-        public void tick(int ticks) {
-            this.ticks += ticks;
-        }
+        assertThat(clock.ticks, equalTo(tickCount));
     }
 }

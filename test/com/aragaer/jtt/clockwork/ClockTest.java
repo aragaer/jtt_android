@@ -6,7 +6,8 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import com.aragaer.jtt.astronomy.DayInterval;
-import com.aragaer.jtt.core.JttTime;
+import static com.aragaer.jtt.core.JttTime.TICKS_PER_DAY;
+import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 
 
 public class ClockTest {
@@ -26,7 +27,6 @@ public class ClockTest {
 
     @Test
     public void shouldTriggerEvent() {
-        TestEvent event = new TestEvent();
         metronome.tick(42);
         assertThat("chime ding number", chime.getLastTick(), equalTo(42));
     }
@@ -41,7 +41,7 @@ public class ClockTest {
 
     @Test
     public void shouldStartMetronomeBasedOnAstrolabeResult() {
-        astrolabe.setNextResult(DayInterval.Day(10, 10 + JttTime.TICKS_PER_INTERVAL * 5));
+        astrolabe.setNextResult(DayInterval.Day(10, 10 + TICKS_PER_INTERVAL * 5));
 
         clock.adjust();
 
@@ -50,33 +50,108 @@ public class ClockTest {
     }
 
     @Test
-    public void shouldReAdjustWhenIntervalEnds() {
-        astrolabe.setNextResult(DayInterval.Day(10, 10 + JttTime.TICKS_PER_INTERVAL * 5));
-
-        metronome.tick(JttTime.TICKS_PER_INTERVAL + 5);
-
-        assertThat(metronome.start, equalTo(10L));
-        assertThat(metronome.tickLength, equalTo(5L));
+    public void tick() {
+        clock.tick(42);
+        assertThat("chime ding number", chime.getLastTick(), equalTo(42));
     }
 
-    private static class TestEvent implements ClockEvent {
-        int lastTriggeredAt;
-        final int granularity;
+    @Test
+    public void shouldReAdjustWhenIntervalEnds() {
+        long dayStart = 10;
+        long dayTickLength = 5;
+        long dayEnd = dayStart + dayTickLength * TICKS_PER_INTERVAL;
+        astrolabe.setNextResult(DayInterval.Day(dayStart, dayEnd));
+        clock.adjust();
 
-        public TestEvent() {
-            this(1);
-        }
+        metronome.tick(5);
 
-        public TestEvent(int granularity) {
-            this.granularity = granularity;
-        }
+        assertThat("metronome start at sunrise", metronome.start, equalTo(dayStart));
+        assertThat("metronome tick length", metronome.tickLength, equalTo(dayTickLength));
 
-        public void trigger(int ticks) {
-            lastTriggeredAt = ticks;
-        }
+        long nightStart = dayEnd;
+        long nightTickLength = 2;
+        long nightEnd = nightStart + nightTickLength * TICKS_PER_INTERVAL;
 
-        public int getGranularity() {
-            return granularity;
-        }
+        astrolabe.setNextResult(DayInterval.Night(nightStart, nightEnd));
+
+        metronome.tick(TICKS_PER_INTERVAL);
+
+        assertThat(metronome.start, equalTo(nightStart));
+        assertThat(metronome.tickLength, equalTo(nightTickLength));
+    }
+
+    @Test
+    public void shouldDingChimesWhenMetronomeTicks() {
+        int tickNumber = 42;
+        metronome.tick(tickNumber);
+
+        assertThat("chime number", chime.getLastTick(), equalTo(tickNumber));
+    }
+
+    @Test
+    public void shouldUseDayTime() {
+        int tickNumber = 42;
+
+        astrolabe.setNextResult(DayInterval.Day(0, 1));
+        clock.adjust();
+        metronome.tick(tickNumber);
+
+        assertThat("chime number", chime.getLastTick(), equalTo(tickNumber + TICKS_PER_INTERVAL));
+    }
+
+    @Test
+    public void shouldSwitchIntervals() {
+        long night1TickLength = 2;
+        long day1TickLength = 5;
+        long night2TickLength = 3;
+        long day2TickLength = 6;
+        long sunset1 = 10;
+        long sunrise1 = sunset1 + night1TickLength * TICKS_PER_INTERVAL;
+        long sunset2 = sunrise1 + day1TickLength * TICKS_PER_INTERVAL;
+        long sunrise2 = sunset2 + night2TickLength * TICKS_PER_INTERVAL;
+        int lastTick = 0;
+        int tickCount;
+
+        astrolabe.setNextResult(DayInterval.Night(sunset1, sunrise1));
+        clock.adjust();
+        astrolabe.setNextResult(DayInterval.Day(sunrise1, sunset2));
+
+        tickCount = 2;
+        lastTick += tickCount;
+        metronome.tick(tickCount);
+        assertThat("chime number", chime.getLastTick(), equalTo(lastTick));
+        assertThat(metronome.tickLength, equalTo(night1TickLength));
+
+
+        tickCount = 50;
+        lastTick += tickCount;
+        metronome.tick(tickCount);
+        assertThat("chime number", chime.getLastTick(), equalTo(lastTick));
+
+        tickCount = TICKS_PER_INTERVAL-53;
+        lastTick += tickCount;
+        metronome.tick(tickCount);
+        assertThat("chime number", chime.getLastTick(), equalTo(lastTick));
+        assertThat(metronome.tickLength, equalTo(night1TickLength));
+
+        tickCount = 1;
+        lastTick += tickCount;
+        metronome.tick(tickCount + 2);
+        assertThat("chime number ignores overrun", chime.getLastTick(), equalTo(lastTick));
+        assertThat(metronome.tickLength, equalTo(day1TickLength));
+
+        astrolabe.setNextResult(DayInterval.Night(sunset2, sunrise2));
+
+        tickCount = 20;
+        lastTick += tickCount;
+        metronome.tick(tickCount);
+        assertThat("chime number", chime.getLastTick(), equalTo(lastTick));
+        assertThat(metronome.tickLength, equalTo(day1TickLength));
+
+        tickCount = TICKS_PER_INTERVAL-20;
+        lastTick += tickCount;
+        metronome.tick(tickCount + 10);
+        assertThat("chime number ignores overrun", chime.getLastTick(), equalTo(0));
+        assertThat(metronome.tickLength, equalTo(night2TickLength));
     }
 }

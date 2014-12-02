@@ -4,20 +4,20 @@ package com.aragaer.jtt.clockwork;
 
 public class ClockworkTickCallback implements TickCallback {
 
-    private final Clockwork clockwork;
+    private final Clock clock;
     private long lastTick;
     private final long length;
     private final long intervalEnd;
 
-    public ClockworkTickCallback(Clockwork clockwork, long intervalStart, long tickLength, long intervalEnd) {
-        this.clockwork = clockwork;
+    public ClockworkTickCallback(Clock clock, long intervalStart, long tickLength, long intervalEnd) {
+        this.clock = clock;
         lastTick = intervalStart;
         length = tickLength;
         this.intervalEnd = intervalEnd;
     }
 
-    public ClockworkTickCallback(Clockwork clockwork, long intervalStart, long tickLength) {
-        this(clockwork, intervalStart, tickLength, -1);
+    public ClockworkTickCallback(Clock clock, long intervalStart, long tickLength) {
+        this(clock, intervalStart, tickLength, -1);
     }
 
     public void onTick() {
@@ -27,6 +27,6 @@ public class ClockworkTickCallback implements TickCallback {
         long passed = now - lastTick;
         long ticks = passed / length;
         lastTick += ticks * length;
-        clockwork.tick((int) ticks);
+        clock.tick((int) ticks);
     }
 }

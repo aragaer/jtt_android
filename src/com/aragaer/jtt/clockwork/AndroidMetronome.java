@@ -6,19 +6,19 @@ import android.content.Context;
 
 public class AndroidMetronome implements Metronome {
     private Context context;
-    private Clockwork clockwork;
+    private Clock clock;
     private long stopAt = -1;
 
     public AndroidMetronome(Context context) {
         this.context = context;
     }
 
-    public void attachTo(Clockwork clockwork) {
-        this.clockwork = clockwork;
+    public void attachTo(Clock newClock) {
+        clock = newClock;
     }
 
 	public void start(long start, long tickLength) {
-		TickService.setCallback(new ClockworkTickCallback(clockwork, start, tickLength, stopAt));
+		TickService.setCallback(new ClockworkTickCallback(clock, start, tickLength, stopAt));
 		TickService.start(context, start, tickLength);
 	}
 

@@ -65,13 +65,14 @@ public class AndroidMetronomeTest {
     }
 
     @Test
-    public void shouldTriggerOnTick() {
-        ProbeClockwork probe = new ProbeClockwork();
-        metronome.attachTo(probe);
-        metronome.start(0, 100);
-        assertThat(probe.calls, equalTo(0));
+    public void shouldTriggerOnTick() throws Exception {
+        TestClock clock = new TestClock();
+        metronome.attachTo(clock);
+        metronome.start(System.currentTimeMillis(), 5);
+        Thread.sleep(7);
+        assertThat(clock.ticks, equalTo(0));
         new TickServiceMock().onHandleIntent(null);
-        assertThat(probe.calls, equalTo(1));
+        assertThat(clock.ticks, equalTo(1));
     }
 
     @Test
@@ -79,13 +80,12 @@ public class AndroidMetronomeTest {
         long tickLen = 1000;
         long offset = tickLen * 42 + 750;
 
-        ProbeClockwork probe = new ProbeClockwork();
-        metronome.attachTo(probe);
-        probe.rewind();
-        assertThat(probe.ticks, equalTo(0));
+        TestClock clock = new TestClock();
+        metronome.attachTo(clock);
+        assertThat(clock.ticks, equalTo(0));
         metronome.start(System.currentTimeMillis() - offset, tickLen);
         new TickServiceMock().onHandleIntent(null);
-        assertThat(probe.ticks, equalTo(42));
+        assertThat(clock.ticks, equalTo(42));
     }
 
     @Test
@@ -97,34 +97,19 @@ public class AndroidMetronomeTest {
         long endOffset = 200 + inTickOffset;
         long startOffset = intervalLen + endOffset;
 
-        ProbeClockwork probe = new ProbeClockwork();
-        metronome.attachTo(probe);
-        probe.rewind();
-        assertThat(probe.ticks, equalTo(0));
+        TestClock clock = new TestClock();
+        metronome.attachTo(clock);
+        assertThat(clock.ticks, equalTo(0));
         metronome.setStopTime(System.currentTimeMillis() - endOffset);
         metronome.start(System.currentTimeMillis() - startOffset, tickLen);
         new TickServiceMock().onHandleIntent(null);
-        assertThat(probe.ticks, equalTo(tickCount));
+        assertThat(clock.ticks, equalTo(tickCount));
     }
 
     private List<ScheduledAlarm> getScheduledAlarms() {
         AlarmManager am = (AlarmManager) Robolectric.application
             .getSystemService(Context.ALARM_SERVICE);
         return Robolectric.shadowOf(am).getScheduledAlarms();
-    }
-
-    private static class ProbeClockwork extends Clockwork {
-        int ticks;
-        int calls;
-
-        public void rewind() {
-            ticks = 0;
-        }
-
-        public void tick(int ticks) {
-            this.ticks += ticks;
-            this.calls++;
-        }
     }
 
     class TickServiceMock extends TickService {

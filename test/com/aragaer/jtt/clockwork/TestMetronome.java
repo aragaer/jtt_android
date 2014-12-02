@@ -4,12 +4,12 @@ package com.aragaer.jtt.clockwork;
 
 public class TestMetronome implements Metronome {
 
-    private Clockwork clockwork;
+    private Clock clock;
     public long start;
     public long tickLength;
 
-    public void attachTo(Clockwork clockwork) {
-        this.clockwork = clockwork;
+    public void attachTo(Clock clock) {
+        this.clock = clock;
     }
 
     public void start(long start, long tickLength) {
@@ -22,6 +22,6 @@ public class TestMetronome implements Metronome {
     public void setStopTime(long stopAt) {}
 
     public void tick(int times) {
-        clockwork.tick(times);
+        clock.tick(times);
     }
 }

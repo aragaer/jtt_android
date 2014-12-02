@@ -8,4 +8,5 @@ public class JttTime {
     public static final int TICKS_PER_QUARTER = 10;
     public static final int TICKS_PER_HOUR = TICKS_PER_QUARTER * QUARTERS_PER_HOUR;
     public static final int TICKS_PER_INTERVAL = TICKS_PER_HOUR * HOURS_PER_INTERVAL;
+    public static final int TICKS_PER_DAY = TICKS_PER_INTERVAL * INTERVALS_PER_DAY;
 }
