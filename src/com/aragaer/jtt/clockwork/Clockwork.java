@@ -33,6 +33,7 @@ public class Clockwork {
     private List<AttachedBell> bells = new ArrayList<AttachedBell>();
     private int lastTick;
     private boolean rewound;
+    private Chime chime;
 
     public void rewind() {
         rewound = true;
@@ -58,9 +59,19 @@ public class Clockwork {
         } else
             ringTriggered(lastTick, newTick);
         lastTick = newTick;
+        if (chime != null)
+            chime.ding(lastTick);
     }
 
     public void attachBell(Bell bell, int interval) {
         bells.add(new AttachedBell(bell, interval));
+    }
+
+    public void setTo(int initialState) {
+        lastTick = initialState;
+    }
+
+    public void attachChime(Chime chime) {
+        this.chime = chime;
     }
 }
