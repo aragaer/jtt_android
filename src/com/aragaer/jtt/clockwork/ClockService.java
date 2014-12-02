@@ -8,9 +8,6 @@ import android.os.IBinder;
 
 public class ClockService extends Service {
 
-    private static ComponentFactory components;
-
-    private Metronome metronome;
     private Clock clock;
 
     @Override
@@ -18,15 +15,9 @@ public class ClockService extends Service {
         return null;
     }
 
-    /* package private */ static void setComponentFactory(ComponentFactory newComponents) {
-        components = newComponents;
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        metronome = new AndroidMetronome(this);
-
-        clock = new Clock(components.getAstrolabe(), components.getChime(), metronome);
+        clock = new Clock(new AndroidClockFactory(this));
         clock.adjust();
 
         return START_STICKY;

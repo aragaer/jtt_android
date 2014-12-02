@@ -5,4 +5,5 @@ package com.aragaer.jtt.clockwork;
 public interface ComponentFactory {
     public Chime getChime();
     public Astrolabe getAstrolabe();
+    public Metronome getMetronome();
 }

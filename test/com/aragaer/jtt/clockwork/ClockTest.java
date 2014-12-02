@@ -13,16 +13,18 @@ import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 public class ClockTest {
 
     private Clock clock;
+    private ComponentFactory components;
     private TestMetronome metronome;
     private TestAstrolabe astrolabe;
     private TestChime chime;
 
     @Before
     public void setUp() {
-        metronome = new TestMetronome();
-        astrolabe = new TestAstrolabe();
-        chime = new TestChime();
-        clock = new Clock(astrolabe, chime, metronome);
+        components = new TestClockFactory();
+        metronome = (TestMetronome) components.getMetronome();
+        astrolabe = (TestAstrolabe) components.getAstrolabe();
+        chime = (TestChime) components.getChime();
+        clock = new Clock(components);
     }
 
     @Test

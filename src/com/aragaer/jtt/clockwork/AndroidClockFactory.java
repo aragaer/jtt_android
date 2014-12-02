@@ -13,19 +13,14 @@ public class AndroidClockFactory implements ComponentFactory {
 
     private final Astrolabe astrolabe;
     private final Chime chime;
+    private final Metronome metronome;
 
     public AndroidClockFactory(Context context) {
-        astrolabe = new Astrolabe(null, null, 1);
-        chime = new Chime(null);
-    }
-
-    public static Clock createFromContext(Context context) {
         LocationProvider provider = new AndroidLocationProvider(context);
         DayIntervalCalculator calculator = new SscCalculator();
-        Astrolabe astrolabe = new Astrolabe(calculator, provider, 1);
-        Metronome metronome = new AndroidMetronome(context);
-        Chime chime = new Chime(context);
-        return new Clock(astrolabe, chime, metronome);
+        astrolabe = new Astrolabe(calculator, provider, 1);
+        chime = new Chime(context);
+        metronome = new AndroidMetronome(context);
     }
 
     public Astrolabe getAstrolabe() {
@@ -34,5 +29,9 @@ public class AndroidClockFactory implements ComponentFactory {
 
     public Chime getChime() {
         return chime;
+    }
+
+    public Metronome getMetronome() {
+        return metronome;
     }
 }

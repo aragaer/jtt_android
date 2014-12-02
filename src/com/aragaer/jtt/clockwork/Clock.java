@@ -11,6 +11,10 @@ public class Clock {
     private final Chime chime;
     private final Metronome metronome;
 
+    public Clock(ComponentFactory components) {
+        this(components.getAstrolabe(), components.getChime(), components.getMetronome());
+    }
+
     public Clock(Astrolabe astrolabe, Chime chime, Metronome metronome) {
         this.astrolabe = astrolabe;
         this.chime = chime;
