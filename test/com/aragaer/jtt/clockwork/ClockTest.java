@@ -27,29 +27,8 @@ public class ClockTest {
     @Test
     public void shouldTriggerEvent() {
         TestEvent event = new TestEvent();
-        clock.addClockEvent(event);
         metronome.tick(42);
-        assertThat(event.lastTriggeredAt, equalTo(42));
         assertThat("chime ding number", chime.getLastTick(), equalTo(42));
-    }
-
-    @Test
-    public void shouldTriggerEventWithGranularity() {
-        TestEvent event = new TestEvent(20);
-        clock.addClockEvent(event);
-        metronome.tick(42);
-        assertThat(event.lastTriggeredAt, equalTo(40));
-    }
-
-    @Test
-    public void shouldTriggerMultipleEvents() {
-        TestEvent event1 = new TestEvent(20);
-        TestEvent event2 = new TestEvent(1);
-        clock.addClockEvent(event1);
-        clock.addClockEvent(event2);
-        metronome.tick(42);
-        assertThat(event1.lastTriggeredAt, equalTo(40));
-        assertThat(event2.lastTriggeredAt, equalTo(42));
     }
 
     @Test

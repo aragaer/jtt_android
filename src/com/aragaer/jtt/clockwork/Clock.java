@@ -2,7 +2,8 @@ package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
 import com.aragaer.jtt.astronomy.DayInterval;
-import com.aragaer.jtt.core.JttTime;
+
+import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 
 
 public class Clock {
@@ -18,33 +19,17 @@ public class Clock {
         this.clockwork = new Clockwork();
         this.metronome.attachTo(this.clockwork);
         this.clockwork.attachChime(chime);
-        this.clockwork.attachBell(new Bell() {
-            public void ring(int ticks) {
+        this.clockwork.attachTrigger(new Clockwork.Trigger() {
+            public void trigger() {
                 Clock.this.adjust();
             }
-        }, JttTime.TICKS_PER_INTERVAL);
+        }, TICKS_PER_INTERVAL);
     }
 
     public void adjust() {
         astrolabe.updateLocation();
         DayInterval interval = astrolabe.getCurrentInterval();
-		long tickLength = interval.getLength() / JttTime.TICKS_PER_INTERVAL;
+		long tickLength = interval.getLength() / TICKS_PER_INTERVAL;
         metronome.start(interval.getStart(), tickLength);
-    }
-
-    public void addClockEvent(ClockEvent event) {
-        clockwork.attachBell(new ClockEventBell(event), event.getGranularity());
-    }
-
-    private static class ClockEventBell implements Bell {
-        private final ClockEvent event;
-
-        public ClockEventBell(ClockEvent event) {
-            this.event = event;
-        }
-
-        public void ring(int ticks) {
-            event.trigger(ticks);
-        }
     }
 }
