@@ -133,47 +133,6 @@ public class ClockServiceTest {
         return controller;
     }
 
-    public static class TestAstrolabe extends Astrolabe {
-
-        private DayInterval nextResult;
-        public int updateLocationCalls;
-
-        public TestAstrolabe() {
-            super(null, null, 1);
-        }
-
-        @Override
-        public DayInterval getCurrentInterval() {
-            return nextResult;
-        }
-
-        @Override
-        public void updateLocation() {
-            updateLocationCalls++;
-        }
-
-        public void setNextResult(DayInterval interval) {
-            nextResult = interval;
-        }
-    }
-
-    public static class TestChime extends Chime {
-        private int ticks;
-
-        public TestChime() {
-            super(null);
-        }
-
-        public int getLastTick() {
-            return ticks;
-        }
-
-        @Override
-        public void ding(int ticks) {
-            this.ticks = ticks;
-        }
-    }
-
     private List<ScheduledAlarm> getScheduledAlarms() {
         AlarmManager am = (AlarmManager) Robolectric.application
             .getSystemService(Context.ALARM_SERVICE);
