@@ -15,7 +15,6 @@ import android.util.Log;
 
 public class JttService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "JTT_SERVICE";
-    private JttStatus status_notify;
     private final Clock clock;
     private TimeDateChangeListener timeDateChangeListener;
 
@@ -37,28 +36,12 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
 
-        toggle_notify(pref.getBoolean("jtt_notify", true));
-
         timeDateChangeListener = new TimeDateChangeListener(clock);
         timeDateChangeListener.register(this);
     }
 
-    private void toggle_notify(final boolean notify) {
-        if (status_notify == null) {
-            if (notify)
-                status_notify = new JttStatus(this);
-        } else {
-            if (!notify) {
-                status_notify.release();
-                status_notify = null;
-            }
-        }
-    }
-
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-        if (key.equals(Settings.PREF_NOTIFY))
-            toggle_notify(pref.getBoolean("jtt_notify", true));
-        else if (key.equals(Settings.PREF_LOCATION))
+        if (key.equals(Settings.PREF_LOCATION))
             clock.adjust();
         else if (key.equals(Settings.PREF_WIDGET)
                 || key.equals(Settings.PREF_LOCALE)

@@ -13,7 +13,9 @@ import org.robolectric.shadows.*;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.*;
-import android.widget.RemoteViews;
+import android.content.res.Resources;
+import android.view.*;
+import android.widget.*;
 
 import com.aragaer.jtt.core.JttTime;
 
@@ -44,16 +46,37 @@ public class NotificationServiceTest {
         assertNotNull(getBuiltNotification(0));
     }
 
-    // TODO: Finish this test
     @Test
-    @Ignore
     public void shouldBuildCorrectNotification() {
         Notification notification = getBuiltNotification(0);
 
         RemoteViews content = notification.contentView;
+        assertThat("Is ongoing",
+                   notification.flags & Notification.FLAG_ONGOING_EVENT,
+                   equalTo(Notification.FLAG_ONGOING_EVENT));
         assertThat("Content layout id", content.getLayoutId(), equalTo(R.layout.notification));
 
+        View notificationView = LayoutInflater.from(Robolectric.application).inflate(R.layout.notification, null);
+        content.reapply(Robolectric.application, notificationView);
         JttTime time = JttTime.fromTicks(0);
+
+        assertThat(getTextView(notificationView, R.id.image), equalTo(time.hour.glyph));
+        assertThat(getTextView(notificationView, R.id.title), equalTo(longHourName(time.hour)));
+        assertThat(getTextView(notificationView, R.id.quarter), equalTo(quarterName(time.quarter)));
+
+        // TODO: Finish this!
+    }
+
+    private static String getTextView(View parent, int viewId) {
+        return ((TextView) parent.findViewById(viewId)).getText().toString();
+    }
+
+    private String longHourName(JttTime.Hour hour) {
+        return Robolectric.application.getResources().getStringArray(R.array.hour_of)[hour.ordinal()];
+    }
+
+    private String quarterName(JttTime.Quarter quarter) {
+        return Robolectric.application.getResources().getStringArray(R.array.quarter)[quarter.ordinal()];
     }
 
     private Notification getBuiltNotification(int ticks) {

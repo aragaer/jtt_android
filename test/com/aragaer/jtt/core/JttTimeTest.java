@@ -46,4 +46,20 @@ public class JttTimeTest {
         assertThat(time.hour, equalTo(JttTime.Hour.TIGER));
         assertThat(time.quarter, equalTo(JttTime.Quarter.SECOND));
     }
+
+    @Test
+    public void glyphs() {
+        assertThat(JttTime.Hour.COCK.glyph, equalTo("酉"));
+        assertThat(JttTime.Hour.DOG.glyph, equalTo("戌"));
+        assertThat(JttTime.Hour.BOAR.glyph, equalTo("亥"));
+        assertThat(JttTime.Hour.RAT.glyph, equalTo("子"));
+        assertThat(JttTime.Hour.OX.glyph, equalTo("丑"));
+        assertThat(JttTime.Hour.TIGER.glyph, equalTo("寅"));
+        assertThat(JttTime.Hour.HARE.glyph, equalTo("卯"));
+        assertThat(JttTime.Hour.DRAGON.glyph, equalTo("辰"));
+        assertThat(JttTime.Hour.SERPENT.glyph, equalTo("巳"));
+        assertThat(JttTime.Hour.HORSE.glyph, equalTo("午"));
+        assertThat(JttTime.Hour.RAM.glyph, equalTo("未"));
+        assertThat(JttTime.Hour.MONKEY.glyph, equalTo("申"));
+    }
 }
