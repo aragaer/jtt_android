@@ -51,7 +51,7 @@ public class ChimeListenerTest {
     static class TestListener extends ChimeListener {
         int tick;
         int calls;
-        public void onChime(int tick) {
+        public void onChime(Context context, int tick) {
             calls++;
             this.tick = tick;
         }

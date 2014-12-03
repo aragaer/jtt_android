@@ -15,8 +15,8 @@ public abstract class ChimeListener extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        onChime(intent.getIntExtra(Chime.EXTRA_JTT, 0));
+        onChime(context, intent.getIntExtra(Chime.EXTRA_JTT, 0));
     }
 
-    public abstract void onChime(int ticks);
+    public abstract void onChime(Context context, int ticks);
 }
