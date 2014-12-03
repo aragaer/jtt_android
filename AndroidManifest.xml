@@ -50,6 +50,11 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+	<receiver android:name=".NotificationService">
+            <intent-filter>
+                <action android:name="com.aragaer.jtt.action.TICK" />
+            </intent-filter>
+        </receiver>
         <receiver android:name="WidgetProvider$Widget1"
                 android:icon="@drawable/widget1"
                 android:label="@string/widget1">

@@ -13,7 +13,7 @@ import org.robolectric.shadows.*;
 import android.content.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertThat;
 
 
@@ -37,7 +37,7 @@ public class ChimeListenerTest {
                 .getShadowApplication()
                 .getReceiversForIntent(
                     new Intent(Chime.ACTION_JTT_TICK)),
-            contains((BroadcastReceiver) listener));
+            hasItem((BroadcastReceiver) listener));
     }
 
     @Test
