@@ -9,6 +9,7 @@ import org.robolectric.annotation.Config;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.*;
+import org.robolectric.util.ServiceController;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -22,6 +23,7 @@ import com.aragaer.jtt.core.JttTime;
 import static com.aragaer.jtt.clockwork.Chime.*;
 import static org.robolectric.Robolectric.shadowOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 
@@ -38,22 +40,35 @@ public class NotificationServiceTest {
 
     @Test
     public void testBroadcastReceiverRegistered() {
-        assertNotNull(findInstance());
+        assertNotNull(findListener());
+    }
+
+    @Test
+    public void shouldStartService() {
+        invokeListener(0);
+        Intent intent = Robolectric.getShadowApplication().getNextStartedService();
+        assertThat("started service", intent.getComponent().getClassName(), equalTo(NotificationService.class.getCanonicalName()));
     }
 
     @Test
     public void shouldDisplayNotification() {
-        assertNotNull(getBuiltNotification(0));
+        assertNotNull(simulateNotification(0));
     }
 
     @Test
     public void shouldBuildCorrectNotification() {
-        Notification notification = getBuiltNotification(0);
+        Notification notification = simulateNotification(0);
 
         RemoteViews content = notification.contentView;
         assertThat("Is ongoing",
                    notification.flags & Notification.FLAG_ONGOING_EVENT,
-                   equalTo(Notification.FLAG_ONGOING_EVENT));
+                   is(not(0)));
+        assertThat("Only alert once",
+                   notification.flags & Notification.FLAG_ONLY_ALERT_ONCE,
+                   is(not(0)));
+        assertThat("Is foreground",
+                   notification.flags,
+                   is(0));
         assertThat("Content layout id", content.getLayoutId(), equalTo(R.layout.notification));
 
         View notificationView = LayoutInflater.from(Robolectric.application).inflate(R.layout.notification, null);
@@ -79,24 +94,32 @@ public class NotificationServiceTest {
         return Robolectric.application.getResources().getStringArray(R.array.quarter)[quarter.ordinal()];
     }
 
-    private Notification getBuiltNotification(int ticks) {
-        NotificationService notifier = findInstance();
-        notifier.onReceive(Robolectric.application, new Intent(ACTION_JTT_TICK).putExtra(EXTRA_JTT, ticks));
-        if (shadowOf(notificationManager).size() == 0)
-            return null;
-        return shadowOf(notificationManager).getNotification(null, 0);
+    private Notification simulateNotification(int ticks) {
+        invokeListener(ticks);
+        NotificationService service = startServiceFromIntent(Robolectric.getShadowApplication().getNextStartedService());
+        return shadowOf(service).getLastForegroundNotification();
     }
 
-    private NotificationService findInstance() {
+    private NotificationService startServiceFromIntent(Intent intent) {
+        ServiceController<NotificationService> controller = Robolectric.buildService(NotificationService.class);
+        controller.attach().create().withIntent(intent).startCommand(0, 0);
+        return controller.get();
+    }
+
+    private void invokeListener(int ticks) {
+        findListener().onReceive(Robolectric.application, new Intent(ACTION_JTT_TICK).putExtra(EXTRA_JTT, ticks));
+    }
+
+    private NotificationService.JttTimeListener findListener() {
         List<ShadowApplication.Wrapper> registeredReceivers = Robolectric.getShadowApplication().getRegisteredReceivers();
 
         assertFalse(registeredReceivers.isEmpty());
 
-        String name = NotificationService.class.getSimpleName();
+        String name = NotificationService.JttTimeListener.class.getSimpleName();
 
         for (ShadowApplication.Wrapper wrapper : registeredReceivers)
             if (name.equals(wrapper.broadcastReceiver.getClass().getSimpleName()))
-                return (NotificationService) wrapper.broadcastReceiver;
+                return (NotificationService.JttTimeListener) wrapper.broadcastReceiver;
 
         return null;
     }

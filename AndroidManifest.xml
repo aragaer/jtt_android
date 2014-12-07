@@ -50,7 +50,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-	<receiver android:name=".NotificationService">
+	<receiver android:name=".NotificationService.JttTimeListener">
             <intent-filter>
                 <action android:name="com.aragaer.jtt.action.TICK" />
             </intent-filter>
