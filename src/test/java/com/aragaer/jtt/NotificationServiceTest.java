@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
 
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk=18, shadows={com.aragaer.jtt.test.ShadowNotificationBuilder.class})
+@Config(emulateSdk=18)
 public class NotificationServiceTest {
 
     private NotificationManager notificationManager;
@@ -67,8 +67,8 @@ public class NotificationServiceTest {
                    notification.flags & Notification.FLAG_ONLY_ALERT_ONCE,
                    is(not(0)));
         assertThat("Is foreground",
-                   notification.flags,
-                   is(0));
+                   notification.flags & Notification.FLAG_FOREGROUND_SERVICE,
+                   is(not(0)));
         assertThat("Content layout id", content.getLayoutId(), equalTo(R.layout.notification));
 
         View notificationView = LayoutInflater.from(Robolectric.application).inflate(R.layout.notification, null);

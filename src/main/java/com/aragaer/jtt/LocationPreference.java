@@ -187,12 +187,12 @@ public class LocationPreference extends DialogPreference implements
 
     static private class InputFilterMinMax implements InputFilter {
         private float min, max;
-     
+
         public InputFilterMinMax(float min, float max) {
             this.min = min;
             this.max = max;
         }
-     
+
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             String checkedText = dest.subSequence(0, dstart).toString() +
                     source.subSequence(start, end) +
@@ -206,7 +206,7 @@ public class LocationPreference extends DialogPreference implements
             } catch (NumberFormatException nfe) { }
             return "";
         }
-     
+
         private boolean isInRange(float a, float b, float c) {
             return c >= a && c <= b; // assume b >= a
         }

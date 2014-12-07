@@ -23,7 +23,7 @@ import com.aragaer.jtt.clockwork.TickService;
 
 
 @RunWith(RobolectricTestRunner.class)
-@Config(emulateSdk=18, shadows={com.aragaer.jtt.test.ShadowNotificationBuilder.class})
+@Config(emulateSdk=18)
 public class JttServiceTest {
 
     @Test

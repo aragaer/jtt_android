@@ -13,4 +13,4 @@ android:
 
 before_script: gradle wrapper -b wrapper.gradle
 
-script: ./gradlew check
+script: ./gradlew test
