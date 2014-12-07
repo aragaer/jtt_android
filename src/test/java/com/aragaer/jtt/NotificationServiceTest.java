@@ -68,17 +68,18 @@ public class NotificationServiceTest {
         assertThat("Is foreground",
                    notification.flags & Notification.FLAG_FOREGROUND_SERVICE,
                    is(not(0)));
-        assertThat("Content layout id", content.getLayoutId(), equalTo(R.layout.notification));
+        assertThat("Content layout id",
+                   notification.contentView.getLayoutId(),
+                   equalTo(R.layout.notification));
 
-        View notificationView = LayoutInflater.from(Robolectric.application).inflate(R.layout.notification, null);
-        content.reapply(Robolectric.application, notificationView);
+        View notificationView = getNotificationContent(notification);
         JttTime time = JttTime.fromTicks(0);
 
-        assertThat(getTextView(notificationView, R.id.image), equalTo(time.hour.glyph));
-        assertThat(getTextView(notificationView, R.id.title), equalTo(longHourName(time.hour)));
-        assertThat(getTextView(notificationView, R.id.quarter), equalTo(quarterName(time.quarter)));
+        assertThat("glyph", getTextView(notificationView, R.id.image), equalTo(time.hour.glyph));
+        assertThat("hour", getTextView(notificationView, R.id.title), equalTo(longHourName(time.hour)));
+        assertThat("quarter", getTextView(notificationView, R.id.quarter), equalTo(quarterName(time.quarter)));
         assertThat(notification.icon, equalTo(R.drawable.notification_icon));
-        assertThat(notification.iconLevel, equalTo(time.hour.ordinal()));
+        assertThat("notification icon level", notification.iconLevel, equalTo(time.hour.ordinal()));
 
         // TODO: Robolectric doesn't set this correctly
         /*
@@ -88,6 +89,10 @@ public class NotificationServiceTest {
         */
 
         // TODO: Hour start and end times
+        /*
+        assertThat(getTextView(notificationView, R.id.start), equalTo("HOUR START TIME HERE"));
+        assertThat(getTextView(notificationView, R.id.end), equalTo("HOUR END TIME HERE));
+        */
 
         PendingIntent pending = notification.contentIntent;
         assertNotNull(pending);
@@ -100,16 +105,19 @@ public class NotificationServiceTest {
     @Test
     public void shouldShowCorrectHour() {
         Notification notification = simulateNotification(128);
-        RemoteViews content = notification.contentView;
-
-        View notificationView = LayoutInflater.from(Robolectric.application).inflate(R.layout.notification, null);
-        content.reapply(Robolectric.application, notificationView);
+        View notificationView = getNotificationContent(notification);
         JttTime time = JttTime.fromTicks(128);
 
-        assertThat(getTextView(notificationView, R.id.image), equalTo(time.hour.glyph));
-        assertThat(getTextView(notificationView, R.id.title), equalTo(longHourName(time.hour)));
-        assertThat(getTextView(notificationView, R.id.quarter), equalTo(quarterName(time.quarter)));
-        assertThat(notification.iconLevel, equalTo(time.hour.ordinal()));
+        assertThat("glyph", getTextView(notificationView, R.id.image), equalTo(time.hour.glyph));
+        assertThat("hour", getTextView(notificationView, R.id.title), equalTo(longHourName(time.hour)));
+        assertThat("quarter", getTextView(notificationView, R.id.quarter), equalTo(quarterName(time.quarter)));
+        assertThat("notification icon level", notification.iconLevel, equalTo(time.hour.ordinal()));
+    }
+
+    private static View getNotificationContent(Notification notification) {
+        View view = LayoutInflater.from(Robolectric.application).inflate(R.layout.notification, null);
+        notification.contentView.reapply(Robolectric.application, view);
+        return view;
     }
 
     private static String getTextView(View parent, int viewId) {

@@ -12,17 +12,19 @@ import android.widget.RemoteViews;
 
 import com.aragaer.jtt.clockwork.ChimeListener;
 import com.aragaer.jtt.core.JttTime;
+import com.aragaer.jtt.resources.RuntimeResources;
+import com.aragaer.jtt.resources.StringResources;
 
 
 public class NotificationService extends Service {
-	private static final int APP_ID = 1;
+    private static final int APP_ID = 1;
     private static final String EXTRA_NOTIFICATION_TICKS = "jtt_ticks";
 
     public static class JttTimeListener extends ChimeListener {
 
         public void onChime(Context context, int ticks) {
             context.startService(new Intent(context, NotificationService.class)
-                                     .putExtra(EXTRA_NOTIFICATION_TICKS, ticks));
+                    .putExtra(EXTRA_NOTIFICATION_TICKS, ticks));
         }
 
     }
@@ -32,25 +34,31 @@ public class NotificationService extends Service {
         return null;
     }
 
+    private void fillNotificationView(RemoteViews view, JttTime time) {
+        StringResources sr = RuntimeResources.get(this).getInstance(StringResources.class);
+        view.setTextViewText(R.id.image, time.hour.glyph);
+        view.setTextViewText(R.id.title, sr.getHrOf(time.hour.ordinal()));
+        view.setTextViewText(R.id.quarter, sr.getQuarter(time.quarter.ordinal()));
+        int hour_ticks = time.quarter.ordinal()*JttTime.TICKS_PER_QUARTER + time.ticks;
+        view.setProgressBar(R.id.fraction, JttTime.TICKS_PER_HOUR, hour_ticks, false);
+    }
+
+    private Notification constructNotification(JttTime time) {
+        RemoteViews view = new RemoteViews(getPackageName(), R.layout.notification);
+        fillNotificationView(view, time);
+        return new Notification.Builder(this)
+            .setContent(view).setOngoing(true).setOnlyAlertOnce(true)
+            .setSmallIcon(R.drawable.notification_icon, time.hour.ordinal())
+            .setContentIntent(PendingIntent.getActivity(
+                        this, 0, new Intent(this, MainActivity.class), 0))
+            .getNotification();
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         int ticks = intent.getIntExtra(EXTRA_NOTIFICATION_TICKS, 0);
-        RemoteViews view = new RemoteViews(getPackageName(), R.layout.notification);
-        JttTime time = JttTime.fromTicks(ticks);
 
-        view.setTextViewText(R.id.image, time.hour.glyph);
-        view.setTextViewText(R.id.title, getResources().getStringArray(R.array.hour_of)[time.hour.ordinal()]);
-        view.setTextViewText(R.id.quarter, getResources().getStringArray(R.array.quarter)[time.quarter.ordinal()]);
-		view.setProgressBar(R.id.fraction, JttTime.TICKS_PER_HOUR, time.ticks, false);
-
-        Notification notification = new Notification.Builder(this)
-            .setContent(view).setOngoing(true).setOnlyAlertOnce(true)
-            .setSmallIcon(R.drawable.notification_icon, time.hour.ordinal())
-			.setContentIntent(PendingIntent.getActivity(
-					this, 0, new Intent(this, MainActivity.class), 0))
-            .getNotification();
-
-        startForeground(APP_ID, notification);
+        startForeground(APP_ID, constructNotification(JttTime.fromTicks(ticks)));
 
         return START_STICKY;
     }
