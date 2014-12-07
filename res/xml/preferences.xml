@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/status" >
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="jtt_bootup"
-            android:summary="@string/bootup_ex"
-            android:title="@string/bootup" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="jtt_notify"
-            android:summary="@string/notify_ex"
-            android:title="@string/notify" />
-
-    </PreferenceCategory>
+     <CheckBoxPreference
+         android:defaultValue="true"
+         android:key="jtt_notify"
+         android:summary="@string/notify_ex"
+         android:title="@string/notify" />
 
     <PreferenceCategory android:title="@string/location" >
 
@@ -23,6 +13,7 @@
             android:defaultValue="0.0:0.0"
             android:key="jtt_loc"
             android:title="@string/location_ex" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/language" >
@@ -59,6 +50,6 @@
             android:key="jtt_widget_theme"
             android:title="@string/pref_widget" />
 
-	</PreferenceCategory>
+     </PreferenceCategory>
 
 </PreferenceScreen>

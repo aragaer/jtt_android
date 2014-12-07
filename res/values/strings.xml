@@ -9,11 +9,9 @@
     <string name="longitude">Longitude</string>
     <string name="clock">Clock</string>
     <string name="settings">Settings</string>
-    <string name="bootup">Start on bootup</string>
-    <string name="bootup_ex">Start the service automatically when the device is turned on.</string>
     <string name="notify">Display notifications</string>
     <string name="notify_ex">Display current hour glyph in status bar.</string>
-    <string name="status">Startup and notifications</string>
+    <string name="status">Notifications</string>
     <string name="today">Today</string>
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
