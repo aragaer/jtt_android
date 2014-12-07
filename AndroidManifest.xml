@@ -45,12 +45,15 @@
         <service
             android:name=".clockwork.TickService"
             android:exported="false" />
+        <service
+            android:name=".NotificationService"
+            android:exported="false" />
         <receiver android:name=".BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-	<receiver android:name=".NotificationService.JttTimeListener">
+	<receiver android:name=".NotificationService$JttTimeListener">
             <intent-filter>
                 <action android:name="com.aragaer.jtt.action.TICK" />
             </intent-filter>

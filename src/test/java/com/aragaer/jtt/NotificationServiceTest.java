@@ -11,8 +11,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.shadows.*;
 import org.robolectric.util.ServiceController;
 
-import android.app.Notification;
-import android.app.NotificationManager;
+import android.app.*;
 import android.content.*;
 import android.content.res.Resources;
 import android.view.*;
@@ -78,8 +77,39 @@ public class NotificationServiceTest {
         assertThat(getTextView(notificationView, R.id.image), equalTo(time.hour.glyph));
         assertThat(getTextView(notificationView, R.id.title), equalTo(longHourName(time.hour)));
         assertThat(getTextView(notificationView, R.id.quarter), equalTo(quarterName(time.quarter)));
+        assertThat(notification.icon, equalTo(R.drawable.notification_icon));
+        assertThat(notification.iconLevel, equalTo(time.hour.ordinal()));
 
-        // TODO: Finish this!
+        // TODO: Robolectric doesn't set this correctly
+        /*
+        ProgressBar progress = (ProgressBar) notificationView.findViewById(R.id.fraction);
+        assertThat(progress.getMax(), equalTo(JttTime.TICKS_PER_HOUR));
+        assertThat(progress.getProgress(), equalTo(time.ticks));
+        */
+
+        // TODO: Hour start and end times
+
+        PendingIntent pending = notification.contentIntent;
+        assertNotNull(pending);
+		assertTrue(shadowOf(pending).isActivityIntent());
+
+        ShadowIntent intent = shadowOf(shadowOf(pending).getSavedIntent());
+        assertEquals(intent.getIntentClass(), MainActivity.class);
+    }
+
+    @Test
+    public void shouldShowCorrectHour() {
+        Notification notification = simulateNotification(128);
+        RemoteViews content = notification.contentView;
+
+        View notificationView = LayoutInflater.from(Robolectric.application).inflate(R.layout.notification, null);
+        content.reapply(Robolectric.application, notificationView);
+        JttTime time = JttTime.fromTicks(128);
+
+        assertThat(getTextView(notificationView, R.id.image), equalTo(time.hour.glyph));
+        assertThat(getTextView(notificationView, R.id.title), equalTo(longHourName(time.hour)));
+        assertThat(getTextView(notificationView, R.id.quarter), equalTo(quarterName(time.quarter)));
+        assertThat(notification.iconLevel, equalTo(time.hour.ordinal()));
     }
 
     private static String getTextView(View parent, int viewId) {

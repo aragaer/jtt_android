@@ -72,7 +72,6 @@ android {
 
     buildTypes {
         debug {
-            testCoverageEnabled = true
         }
         release {
             runProguard true

@@ -28,16 +28,18 @@ public class JttTimeTest {
 
     @Test
     public void firstQUarterOfCock() {
-        JttTime time = JttTime.fromTicks(TICKS_PER_DAY-2*TICKS_PER_QUARTER);
+        JttTime time = JttTime.fromTicks(TICKS_PER_DAY - 2*TICKS_PER_QUARTER + 5);
         assertThat(time.hour, equalTo(JttTime.Hour.COCK));
         assertThat(time.quarter, equalTo(JttTime.Quarter.FIRST));
+        assertThat(time.ticks, equalTo(5));
     }
 
     @Test
     public void thirdQuarterOfCock() {
-        JttTime time = JttTime.fromTicks(TICKS_PER_QUARTER);
+        JttTime time = JttTime.fromTicks(TICKS_PER_QUARTER + 1);
         assertThat(time.hour, equalTo(JttTime.Hour.COCK));
         assertThat(time.quarter, equalTo(JttTime.Quarter.FOURTH));
+        assertThat(time.ticks, equalTo(1));
     }
 
     @Test
@@ -45,6 +47,7 @@ public class JttTimeTest {
         JttTime time = JttTime.fromTicks(5*TICKS_PER_HOUR - TICKS_PER_QUARTER);
         assertThat(time.hour, equalTo(JttTime.Hour.TIGER));
         assertThat(time.quarter, equalTo(JttTime.Quarter.SECOND));
+        assertThat(time.ticks, equalTo(0));
     }
 
     @Test

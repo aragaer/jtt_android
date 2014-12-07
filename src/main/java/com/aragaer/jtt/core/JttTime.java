@@ -38,6 +38,7 @@ public class JttTime {
 
     public final Hour hour;
     public final Quarter quarter;
+    public final int ticks;
 
     private JttTime(int ticks) {
         int modifiedTicks = ticks + TICKS_PER_QUARTER * 2;
@@ -50,6 +51,8 @@ public class JttTime {
         int hourTicks = modifiedTicks - hourNumber * TICKS_PER_HOUR;
         int quarterNumber = hourTicks / TICKS_PER_QUARTER;
         quarter = Quarter.values()[quarterNumber];
+
+        this.ticks = hourTicks - quarterNumber * TICKS_PER_QUARTER;
     }
 
     public static JttTime fromTicks(int ticks) {
