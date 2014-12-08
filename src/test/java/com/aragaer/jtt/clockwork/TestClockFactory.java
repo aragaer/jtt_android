@@ -2,29 +2,27 @@ package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
 import dagger.*;
+import javax.inject.Singleton;
 
-@Module(injects=Clock.class)
-public class TestClockFactory implements ComponentFactory {
 
-    private Astrolabe astrolabe;
-    private Chime chime;
-    private Metronome metronome;
+@Module(injects={Clock.class, Chime.class, Metronome.class, TestClock.class})
+public class TestClockFactory {
+
+    private final Metronome metronome;
 
     public TestClockFactory() {
-        astrolabe = new TestAstrolabe();
-        chime = new TestChime();
         metronome = new TestMetronome();
     }
 
-    @Provides public Chime getChime() {
-        return chime;
+    public TestClockFactory(Metronome metronome) {
+        this.metronome = metronome;
     }
 
-    public Astrolabe getAstrolabe() {
-        return astrolabe;
+    @Provides @Singleton public Chime getChime() {
+        return new TestChime();
     }
 
-    @Provides public Metronome getMetronome() {
+    @Provides @Singleton public Metronome getMetronome() {
         return metronome;
     }
 }

@@ -1,19 +1,14 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
-import java.util.Calendar;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
-
+import dagger.ObjectGraph;
 import org.junit.*;
-
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import com.aragaer.jtt.astronomy.DayInterval;
 import com.aragaer.jtt.astronomy.TestCalculator;
 import com.aragaer.jtt.location.Location;
-import com.aragaer.jtt.location.LocationProvider;
 import com.aragaer.jtt.test.*;
 
 
@@ -21,17 +16,14 @@ public class AstrolabeTest {
 
     private Astrolabe astrolabe;
     private TestCalculator calculator;
-    private TestLocationProvider locationProvider;
     private TestClock clock;
 
     @Before
     public void setup() {
-        locationProvider = new TestLocationProvider(new Location(1, 2));
+        ObjectGraph graph = ObjectGraph.create(new TestClockFactory());
         calculator = new TestCalculator();
-        astrolabe = new Astrolabe(calculator, locationProvider);
-        astrolabe.updateLocation();
-        clock = new TestClock();
-        astrolabe.setClock(clock);
+        clock = graph.get(TestClock.class);
+        astrolabe = new Astrolabe(calculator, clock);
     }
 
     @Test
@@ -40,16 +32,6 @@ public class AstrolabeTest {
         calculator.setNextResult(interval);
 
         assertThat(astrolabe.getCurrentInterval(), equalTo(interval));
-    }
-
-    @Test
-    public void shouldFeedLocationFromProviderToCalculator() {
-        Location location = new Location(3, 4);
-        locationProvider.setLocation(location);
-
-        astrolabe.updateLocation();
-
-        assertThat(calculator.location, equalTo(location));
     }
 
     @Test public void shouldNotifyClockOnDateTimeChange() {
@@ -78,21 +60,5 @@ public class AstrolabeTest {
         assertThat(clock.currentInterval, equalTo(interval));
         assertThat(calculator.timestamp, greaterThanOrEqualTo(before));
         assertThat(calculator.timestamp, lessThanOrEqualTo(after));
-    }
-
-    private static class TestLocationProvider extends LocationProvider {
-        private Location location;
-
-        public TestLocationProvider(Location location) {
-            this.location = location;
-        }
-
-        public void setLocation(Location location) {
-            this.location = location;
-        }
-
-        public Location getCurrentLocation() {
-            return location;
-        }
     }
 }

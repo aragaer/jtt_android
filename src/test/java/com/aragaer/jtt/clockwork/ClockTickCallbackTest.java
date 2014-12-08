@@ -2,6 +2,7 @@ package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
 import java.lang.Thread;
+import dagger.ObjectGraph;
 
 import org.junit.*;
 import static org.hamcrest.Matchers.*;
@@ -11,10 +12,13 @@ import static org.junit.Assert.*;
 public class ClockTickCallbackTest {
 
     private TestClock clock;
+    private TestChime chime;
 
     @Before
     public void setUp() {
-        clock = new TestClock();
+        ObjectGraph graph = ObjectGraph.create(new TestClockFactory());
+        clock = graph.get(TestClock.class);
+        chime = (TestChime) graph.get(Chime.class);
     }
 
     @Test
@@ -22,7 +26,7 @@ public class ClockTickCallbackTest {
         long now = System.currentTimeMillis();
         ClockTickCallback callback = new ClockTickCallback(clock, now, 10000);
         callback.onTick();
-        assertThat(clock.ticks, equalTo(0));
+        assertThat(chime.getLastTick(), equalTo(0));
     }
 
     @Test
@@ -31,7 +35,7 @@ public class ClockTickCallbackTest {
         long now = System.currentTimeMillis();
         ClockTickCallback callback = new ClockTickCallback(clock, now - offset, 1000);
         callback.onTick();
-        assertThat(clock.ticks, equalTo(42));
+        assertThat(chime.getLastTick(), equalTo(42));
     }
 
     @Test
@@ -40,9 +44,9 @@ public class ClockTickCallbackTest {
         long now = System.currentTimeMillis();
         ClockTickCallback callback = new ClockTickCallback(clock, now - offset, 1000);
         callback.onTick();
-        assertThat(clock.ticks, equalTo(42));
+        assertThat(chime.getLastTick(), equalTo(42));
         Thread.sleep(5);
         callback.onTick();
-        assertThat(clock.ticks, equalTo(43));
+        assertThat(chime.getLastTick(), equalTo(43));
     }
 }

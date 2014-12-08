@@ -13,8 +13,8 @@ public class TestAstrolabe extends Astrolabe {
     public int dateTimeChangeCalls;
     public Location currentLocation;
 
-    public TestAstrolabe() {
-        super(null, new TestClock());
+    public TestAstrolabe(Clock clock) {
+        this(null, clock);
     }
 
     public TestAstrolabe(DayIntervalCalculator calculator, Clock clock) {

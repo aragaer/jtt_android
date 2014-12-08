@@ -2,7 +2,9 @@ package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
 import java.util.List;
+import javax.inject.Singleton;
 
+import dagger.ObjectGraph;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -22,10 +24,14 @@ import android.content.*;
 public class AndroidMetronomeTest {
 
     private AndroidMetronome metronome;
+    private TestChime chime;
 
     @Before
     public void setup() {
         metronome = new AndroidMetronome(Robolectric.application);
+        ObjectGraph graph = ObjectGraph.create(new TestClockFactory(metronome));
+        metronome.attachTo(graph.get(TestClock.class));
+        chime = (TestChime) graph.get(Chime.class);
     }
 
     @Test
@@ -66,13 +72,11 @@ public class AndroidMetronomeTest {
 
     @Test
     public void shouldTriggerOnTick() throws Exception {
-        TestClock clock = new TestClock();
-        metronome.attachTo(clock);
         metronome.start(System.currentTimeMillis()-3, 10);
         Thread.sleep(7);
-        assertThat(clock.ticks, equalTo(0));
+        assertThat(chime.getLastTick(), equalTo(0));
         new TickServiceMock().onHandleIntent(null);
-        assertThat(clock.ticks, equalTo(1));
+        assertThat(chime.getLastTick(), equalTo(1));
     }
 
     @Test
@@ -80,12 +84,10 @@ public class AndroidMetronomeTest {
         long tickLen = 1000;
         long offset = tickLen * 42 + 750;
 
-        TestClock clock = new TestClock();
-        metronome.attachTo(clock);
-        assertThat(clock.ticks, equalTo(0));
+        assertThat(chime.getLastTick(), equalTo(0));
         metronome.start(System.currentTimeMillis() - offset, tickLen);
         new TickServiceMock().onHandleIntent(null);
-        assertThat(clock.ticks, equalTo(42));
+        assertThat(chime.getLastTick(), equalTo(42));
     }
 
     private List<ScheduledAlarm> getScheduledAlarms() {
