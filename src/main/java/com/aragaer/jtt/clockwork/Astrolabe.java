@@ -9,25 +9,21 @@ import com.aragaer.jtt.location.LocationProvider;
 public class Astrolabe {
     private final DayIntervalCalculator calculator;
     private final LocationProvider locationProvider;
-    private final long granularity;
 
-    public Astrolabe(DayIntervalCalculator calculator, LocationProvider locationProvider, long granularity) {
+    public Astrolabe(DayIntervalCalculator calculator, LocationProvider locationProvider) {
         this.calculator = calculator;
         this.locationProvider = locationProvider;
-        this.granularity = granularity;
     }
 
     public DayInterval getCurrentInterval() {
-        DayInterval interim = calculator.getIntervalFor(System.currentTimeMillis());
-        return interim.modified(round(interim.getStart()), round(interim.getEnd()));
-    }
-
-    private long round(long value) {
-        value += granularity / 2;
-        return value - value % granularity;
+        return calculator.getIntervalFor(System.currentTimeMillis());
     }
 
     public void updateLocation() {
         calculator.setLocation(locationProvider.getCurrentLocation());
+    }
+
+    public void onDateTimeChanged() {
+        calculator.getIntervalFor(0);
     }
 }

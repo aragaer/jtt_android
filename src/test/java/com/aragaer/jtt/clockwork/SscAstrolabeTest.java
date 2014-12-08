@@ -3,7 +3,6 @@ package com.aragaer.jtt.clockwork;
 
 import java.util.Calendar;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.*;
 
@@ -36,7 +35,7 @@ public class SscAstrolabeTest {
         TimeZone.setDefault(tz);
         LocationProvider locationProvider = new FixedLocationProvider(locationAnnotation.getLocation());
         DayIntervalCalculator calculator = new FixedMomentCalculator(timeAnnotation.getTimestamp());
-        astrolabe = new Astrolabe(calculator, locationProvider, TimeUnit.SECONDS.toMillis(1));
+        astrolabe = new Astrolabe(calculator, locationProvider);
         astrolabe.updateLocation();
     }
 

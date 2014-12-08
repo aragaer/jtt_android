@@ -19,8 +19,6 @@ public class TestMetronome implements Metronome {
 
     public void stop() {}
 
-    public void setStopTime(long stopAt) {}
-
     public void tick(int times) {
         clock.tick(times);
     }

@@ -30,13 +30,7 @@ public class Clock {
     private int lastTick;
 
     private void rewind() {
-        DayInterval interval = astrolabe.getCurrentInterval();
-		long tickLength = interval.getLength() / TICKS_PER_INTERVAL;
-        if (interval.isDay())
-            lastTick = TICKS_PER_INTERVAL;
-        else
-            lastTick = 0;
-        metronome.start(interval.getStart(), tickLength);
+        setInterval(astrolabe.getCurrentInterval());
     }
 
     public void tick(int ticks) {
@@ -45,5 +39,14 @@ public class Clock {
         else
             lastTick += ticks;
         chime.ding(lastTick);
+    }
+
+    public void setInterval(DayInterval interval) {
+		long tickLength = interval.getLength() / TICKS_PER_INTERVAL;
+        if (interval.isDay())
+            lastTick = TICKS_PER_INTERVAL;
+        else
+            lastTick = 0;
+        metronome.start(interval.getStart(), tickLength);
     }
 }

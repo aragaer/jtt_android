@@ -2,9 +2,8 @@ package com.aragaer.jtt;
 // vim: et ts=4 sts=4 sw=4
 
 import com.aragaer.jtt.clockwork.AndroidClockFactory;
-import com.aragaer.jtt.clockwork.Chime;
 import com.aragaer.jtt.clockwork.Clock;
-import com.aragaer.jtt.clockwork.TimeDateChangeListener;
+import com.aragaer.jtt.clockwork.DateTimeChangeListener;
 
 import android.app.Service;
 import android.content.Intent;
@@ -16,7 +15,7 @@ import android.util.Log;
 public class JttService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "JTT_SERVICE";
     private final Clock clock;
-    private TimeDateChangeListener timeDateChangeListener;
+    private DateTimeChangeListener dateTimeChangeListener;
 
     public JttService() {
         clock = new Clock(new AndroidClockFactory(this));
@@ -36,8 +35,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
 
-        timeDateChangeListener = new TimeDateChangeListener(clock);
-        timeDateChangeListener.register(this);
+        dateTimeChangeListener = new DateTimeChangeListener(clock);
+        dateTimeChangeListener.register(this);
     }
 
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {

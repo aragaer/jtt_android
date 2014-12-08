@@ -156,4 +156,20 @@ public class ClockTest {
         assertThat("chime number ignores overrun", chime.getLastTick(), equalTo(0));
         assertThat(metronome.tickLength, equalTo(night2TickLength));
     }
+
+    @Test public void shouldStartMetronomeWhenIntervalChanged() {
+        long dayTickLength = 300;
+        int dayTicksPassed = 42;
+        long dayStartOffset = -dayTickLength * dayTicksPassed;
+        long dayEndOffset = dayStartOffset + dayTickLength * TICKS_PER_INTERVAL;
+        long now = System.currentTimeMillis();
+        DayInterval day = DayInterval.Day(now + dayStartOffset, now + dayEndOffset);
+
+        clock.setInterval(day);
+
+        assertThat(metronome.tickLength, equalTo(dayTickLength));
+        assertThat(metronome.start, equalTo(now + dayStartOffset));
+        metronome.tick(dayTicksPassed);
+        assertThat(chime.getLastTick(), equalTo(dayTicksPassed+TICKS_PER_INTERVAL));
+    }
 }

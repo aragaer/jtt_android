@@ -19,15 +19,15 @@ import com.aragaer.jtt.JttService;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
-public class TimeDateChangeListenerTest {
+public class DateTimeChangeListenerTest {
 
-    private TimeDateChangeListener listener;
+    private DateTimeChangeListener listener;
     private ClockProbe clock;
 
     @Before
     public void setup() {
         clock = new ClockProbe(null, null, new TestMetronome());
-        listener = new TimeDateChangeListener(clock);
+        listener = new DateTimeChangeListener(clock);
         listener.register(Robolectric.application);
     }
 

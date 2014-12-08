@@ -10,7 +10,7 @@ public class TestAstrolabe extends Astrolabe {
     public int updateLocationCalls;
 
     public TestAstrolabe() {
-        super(null, null, 1);
+        super(null, null);
     }
 
     @Override

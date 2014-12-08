@@ -18,7 +18,7 @@ public class AndroidClockFactory implements ComponentFactory {
     public AndroidClockFactory(Context context) {
         LocationProvider provider = new AndroidLocationProvider(context);
         DayIntervalCalculator calculator = new SscCalculator();
-        astrolabe = new Astrolabe(calculator, provider, 1);
+        astrolabe = new Astrolabe(calculator, provider);
         chime = new Chime(context);
         metronome = new AndroidMetronome(context);
     }
