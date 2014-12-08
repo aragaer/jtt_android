@@ -20,6 +20,7 @@ public class Clock {
         this.chime = chime;
         this.metronome = metronome;
         this.metronome.attachTo(this);
+        this.astrolabe.setClock(this);
     }
 
     public void adjust() {

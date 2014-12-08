@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 public class DateTimeChangeListener extends BroadcastReceiver {
-	private final Clock clock;
-	public DateTimeChangeListener(Clock clock) {
-		this.clock = clock;
+	private final Astrolabe astrolabe;
+	public DateTimeChangeListener(Astrolabe astrolabe) {
+		this.astrolabe = astrolabe;
 	}
 
 	public void register(Context context) {
@@ -22,6 +22,6 @@ public class DateTimeChangeListener extends BroadcastReceiver {
 		String action = intent.getAction();
 		if (action.equals(Intent.ACTION_TIME_CHANGED)
 				|| action.equals(Intent.ACTION_DATE_CHANGED))
-			clock.adjust();
+			astrolabe.onDateTimeChanged();
 	}
 }

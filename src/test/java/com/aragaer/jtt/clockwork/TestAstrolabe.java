@@ -8,6 +8,7 @@ public class TestAstrolabe extends Astrolabe {
 
     private DayInterval nextResult;
     public int updateLocationCalls;
+    public int dateTimeChangeCalls;
 
     public TestAstrolabe() {
         super(null, null);
@@ -25,5 +26,11 @@ public class TestAstrolabe extends Astrolabe {
 
     public void setNextResult(DayInterval interval) {
         nextResult = interval;
+    }
+
+    @Override
+    public void onDateTimeChanged() {
+        dateTimeChangeCalls++;
+        super.onDateTimeChanged();
     }
 }

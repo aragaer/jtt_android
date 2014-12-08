@@ -18,7 +18,9 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     private DateTimeChangeListener dateTimeChangeListener;
 
     public JttService() {
-        clock = new Clock(new AndroidClockFactory(this));
+        AndroidClockFactory components = new AndroidClockFactory(this);
+        clock = new Clock(components);
+        dateTimeChangeListener = new DateTimeChangeListener(components.getAstrolabe());
     }
 
     @Override
@@ -35,7 +37,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
 
-        dateTimeChangeListener = new DateTimeChangeListener(clock);
         dateTimeChangeListener.register(this);
     }
 

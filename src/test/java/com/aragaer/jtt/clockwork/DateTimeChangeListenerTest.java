@@ -14,6 +14,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import android.content.*;
 
+import com.aragaer.jtt.astronomy.DayInterval;
 import com.aragaer.jtt.JttService;
 
 
@@ -22,12 +23,15 @@ import com.aragaer.jtt.JttService;
 public class DateTimeChangeListenerTest {
 
     private DateTimeChangeListener listener;
-    private ClockProbe clock;
+    private TestAstrolabe astrolabe;
 
     @Before
     public void setup() {
-        clock = new ClockProbe(null, null, new TestMetronome());
-        listener = new DateTimeChangeListener(clock);
+        TestClockFactory components = new TestClockFactory();
+        Clock clock = new Clock(components);
+        astrolabe = (TestAstrolabe) components.getAstrolabe();
+        astrolabe.setNextResult(DayInterval.Day(0, 0));
+        listener = new DateTimeChangeListener(astrolabe);
         listener.register(Robolectric.application);
     }
 
@@ -48,25 +52,11 @@ public class DateTimeChangeListenerTest {
         testListensFor(Intent.ACTION_DATE_CHANGED);
     }
 
-    @Test
-    public void testShouldAdjustClock() {
-        int oldCount = this.clock.adjustCount;
+    @Test public void testShouldReportToAstrolabe() {
+        int oldCount = this.astrolabe.dateTimeChangeCalls;
         listener.onReceive(Robolectric.application, new Intent(Intent.ACTION_DATE_CHANGED));
-        int newCount = this.clock.adjustCount;
+        int newCount = this.astrolabe.dateTimeChangeCalls;
 
         assertThat(newCount, equalTo(oldCount+1));
-    }
-
-    private static class ClockProbe extends Clock {
-        public int adjustCount;
-
-        public ClockProbe(Astrolabe astrolabe, Chime chime, Metronome metronome) {
-            super(astrolabe, chime, metronome);
-        }
-
-        @Override
-        public void adjust() {
-            adjustCount++;
-        }
     }
 }

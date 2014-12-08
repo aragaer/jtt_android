@@ -3,6 +3,7 @@ package com.aragaer.jtt.clockwork;
 
 import com.aragaer.jtt.astronomy.DayInterval;
 import com.aragaer.jtt.astronomy.DayIntervalCalculator;
+import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.location.LocationProvider;
 
 
@@ -24,8 +25,17 @@ public class Astrolabe {
         calculator.setLocation(locationProvider.getCurrentLocation());
     }
 
-    public void onDateTimeChanged() {
+    private void onIntervalChanged() {
         clock.setInterval(getCurrentInterval());
+    }
+
+    public void onDateTimeChanged() {
+        onIntervalChanged();
+    }
+
+    public void onLocationChanged(Location newLocation) {
+        calculator.setLocation(newLocation);
+        onIntervalChanged();
     }
 
     public void setClock(Clock newClock) {
