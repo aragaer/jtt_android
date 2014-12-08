@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import com.aragaer.jtt.astronomy.DayInterval;
-import com.aragaer.jtt.astronomy.DayIntervalCalculator;
+import com.aragaer.jtt.astronomy.TestCalculator;
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.location.LocationProvider;
 import com.aragaer.jtt.test.*;
@@ -80,7 +80,7 @@ public class AstrolabeTest {
         assertThat(calculator.timestamp, lessThanOrEqualTo(after));
     }
 
-    private static class TestLocationProvider implements LocationProvider {
+    private static class TestLocationProvider extends LocationProvider {
         private Location location;
 
         public TestLocationProvider(Location location) {
@@ -93,27 +93,6 @@ public class AstrolabeTest {
 
         public Location getCurrentLocation() {
             return location;
-        }
-    }
-
-    private static class TestCalculator implements DayIntervalCalculator {
-        public Location location;
-        public int intervalCalls;
-        public long timestamp;
-        private DayInterval nextResult;
-
-        public void setNextResult(DayInterval nextResult) {
-            this.nextResult = nextResult;
-        }
-
-        public void setLocation(Location location) {
-            this.location = location;
-        }
-
-        public DayInterval getIntervalFor(long timestamp) {
-            intervalCalls++;
-            this.timestamp = timestamp;
-            return nextResult;
         }
     }
 }

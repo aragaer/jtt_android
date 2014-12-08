@@ -9,12 +9,17 @@ import com.aragaer.jtt.location.LocationProvider;
 
 public class Astrolabe {
     private final DayIntervalCalculator calculator;
-    private final LocationProvider locationProvider;
+    private LocationProvider locationProvider;
     private Clock clock;
 
     public Astrolabe(DayIntervalCalculator calculator, LocationProvider locationProvider) {
         this.calculator = calculator;
         this.locationProvider = locationProvider;
+    }
+
+    public Astrolabe(DayIntervalCalculator calculator, Clock clock) {
+        this.calculator = calculator;
+        this.clock = clock;
     }
 
     public DayInterval getCurrentInterval() {

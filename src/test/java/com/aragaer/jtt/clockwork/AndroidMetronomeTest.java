@@ -68,7 +68,7 @@ public class AndroidMetronomeTest {
     public void shouldTriggerOnTick() throws Exception {
         TestClock clock = new TestClock();
         metronome.attachTo(clock);
-        metronome.start(System.currentTimeMillis(), 5);
+        metronome.start(System.currentTimeMillis()-3, 10);
         Thread.sleep(7);
         assertThat(clock.ticks, equalTo(0));
         new TickServiceMock().onHandleIntent(null);

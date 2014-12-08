@@ -1,7 +1,9 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
+import dagger.*;
 
+@Module(injects=Clock.class)
 public class TestClockFactory implements ComponentFactory {
 
     private Astrolabe astrolabe;
@@ -14,7 +16,7 @@ public class TestClockFactory implements ComponentFactory {
         metronome = new TestMetronome();
     }
 
-    public Chime getChime() {
+    @Provides public Chime getChime() {
         return chime;
     }
 
@@ -22,7 +24,7 @@ public class TestClockFactory implements ComponentFactory {
         return astrolabe;
     }
 
-    public Metronome getMetronome() {
+    @Provides public Metronome getMetronome() {
         return metronome;
     }
 }

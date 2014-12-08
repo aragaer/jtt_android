@@ -15,7 +15,7 @@ public class TestClock extends Clock {
     }
 
     private TestClock(TestChime chime) {
-        super(new TestAstrolabe(), chime, new TestMetronome());
+        super(chime, new TestMetronome());
         this.chime = chime;
     }
 

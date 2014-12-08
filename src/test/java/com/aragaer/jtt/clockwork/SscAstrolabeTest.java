@@ -123,7 +123,7 @@ public class SscAstrolabeTest {
                 calendar.get(Calendar.MINUTE));
     }
 
-    private static class FixedLocationProvider implements LocationProvider {
+    private static class FixedLocationProvider extends LocationProvider {
         private final Location location;
 
         public FixedLocationProvider(Location location) {

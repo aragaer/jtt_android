@@ -1,13 +1,15 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
+import javax.inject.Inject;
+
 import com.aragaer.jtt.astronomy.DayInterval;
 
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 
 
 public class Clock {
-    private final Astrolabe astrolabe;
+    private Astrolabe astrolabe;
     private final Chime chime;
     private final Metronome metronome;
 
@@ -16,11 +18,16 @@ public class Clock {
     }
 
     public Clock(Astrolabe astrolabe, Chime chime, Metronome metronome) {
+        this(chime, metronome);
         this.astrolabe = astrolabe;
+        this.astrolabe.setClock(this);
+    }
+
+    @Inject
+    public Clock(Chime chime, Metronome metronome) {
         this.chime = chime;
         this.metronome = metronome;
         this.metronome.attachTo(this);
-        this.astrolabe.setClock(this);
     }
 
     public void adjust() {
@@ -49,5 +56,8 @@ public class Clock {
         else
             lastTick = 0;
         metronome.start(interval.getStart(), tickLength);
+    }
+
+    public void setAstrolabe(Astrolabe newAstrolabe) {
     }
 }

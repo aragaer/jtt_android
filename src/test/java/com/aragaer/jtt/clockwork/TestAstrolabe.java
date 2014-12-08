@@ -2,6 +2,8 @@ package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
 import com.aragaer.jtt.astronomy.DayInterval;
+import com.aragaer.jtt.astronomy.DayIntervalCalculator;
+import com.aragaer.jtt.location.Location;
 
 
 public class TestAstrolabe extends Astrolabe {
@@ -9,9 +11,14 @@ public class TestAstrolabe extends Astrolabe {
     private DayInterval nextResult;
     public int updateLocationCalls;
     public int dateTimeChangeCalls;
+    public Location currentLocation;
 
     public TestAstrolabe() {
-        super(null, null);
+        super(null, new TestClock());
+    }
+
+    public TestAstrolabe(DayIntervalCalculator calculator, Clock clock) {
+        super(calculator, clock);
     }
 
     @Override
@@ -32,5 +39,11 @@ public class TestAstrolabe extends Astrolabe {
     public void onDateTimeChanged() {
         dateTimeChangeCalls++;
         super.onDateTimeChanged();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        currentLocation = location;
+        super.onLocationChanged(location);
     }
 }

@@ -6,7 +6,7 @@ import android.content.Context;
 import com.aragaer.jtt.Settings;
 
 
-public class AndroidLocationProvider implements LocationProvider {
+public class AndroidLocationProvider extends LocationProvider {
     private final Context context;
 
     public AndroidLocationProvider(Context context) {
