@@ -50,13 +50,19 @@ public class AstrolabeTest {
     }
 
     @Test public void shouldNotifyClockOnDateTimeChange() {
+        TestClock clock = new TestClock();
+        astrolabe.setClock(clock);
+
         DayInterval interval = DayInterval.Day(10000, 20000);
         calculator.setNextResult(interval);
-        int calls = calculator.intervalCalls;
 
+        long before = System.currentTimeMillis();
         astrolabe.onDateTimeChanged();
+        long after = System.currentTimeMillis();
 
-        assertThat(calculator.intervalCalls, equalTo(calls+1));
+        assertThat(clock.currentInterval, equalTo(interval));
+        assertThat(calculator.timestamp, greaterThanOrEqualTo(before));
+        assertThat(calculator.timestamp, lessThanOrEqualTo(after));
     }
 
     private static class TestLocationProvider implements LocationProvider {
@@ -78,6 +84,7 @@ public class AstrolabeTest {
     private static class TestCalculator implements DayIntervalCalculator {
         public Location location;
         public int intervalCalls;
+        public long timestamp;
         private DayInterval nextResult;
 
         public void setNextResult(DayInterval nextResult) {
@@ -90,6 +97,7 @@ public class AstrolabeTest {
 
         public DayInterval getIntervalFor(long timestamp) {
             intervalCalls++;
+            this.timestamp = timestamp;
             return nextResult;
         }
     }
