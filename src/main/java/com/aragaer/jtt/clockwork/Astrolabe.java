@@ -1,6 +1,8 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
+import javax.inject.Inject;
+
 import com.aragaer.jtt.astronomy.DayInterval;
 import com.aragaer.jtt.astronomy.DayIntervalCalculator;
 import com.aragaer.jtt.location.Location;
@@ -17,6 +19,7 @@ public class Astrolabe {
         this.locationProvider = locationProvider;
     }
 
+    @Inject
     public Astrolabe(DayIntervalCalculator calculator, Clock clock) {
         this.calculator = calculator;
         this.clock = clock;
@@ -35,6 +38,10 @@ public class Astrolabe {
     }
 
     public void onDateTimeChanged() {
+        onIntervalChanged();
+    }
+
+    public void onIntervalEnded() {
         onIntervalChanged();
     }
 

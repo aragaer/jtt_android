@@ -4,6 +4,9 @@ package com.aragaer.jtt.clockwork;
 import dagger.*;
 import javax.inject.Singleton;
 
+import com.aragaer.jtt.astronomy.DayIntervalCalculator;
+import com.aragaer.jtt.astronomy.TestCalculator;
+
 
 @Module(injects={Clock.class, Chime.class, Metronome.class, TestClock.class})
 public class TestClockFactory {
@@ -24,5 +27,23 @@ public class TestClockFactory {
 
     @Provides @Singleton public Metronome getMetronome() {
         return metronome;
+    }
+
+    @Module(injects={Astrolabe.class, DayIntervalCalculator.class}, overrides=true)
+    static class TestAstrolabeModule {
+
+        private TestClock clock;
+
+        public TestAstrolabeModule(TestClock clock) {
+            this.clock = clock;
+        }
+
+        @Provides @Singleton public Clock getClock() {
+            return clock;
+        }
+
+        @Provides @Singleton public DayIntervalCalculator getCalculator() {
+            return new TestCalculator();
+        }
     }
 }
