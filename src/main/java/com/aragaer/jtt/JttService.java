@@ -35,9 +35,9 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         Log.i(TAG, "Service starting");
         ObjectGraph graph = ObjectGraph.create(new AndroidClockFactory(this));
         clock = graph.get(Clock.class);
-        locationProvider = new AndroidLocationProvider(this);
         dateTimeChangeListener = graph.get(DateTimeChangeListener.class);
         astrolabe = graph.get(Astrolabe.class);
+        locationProvider = new AndroidLocationProvider(this, astrolabe);
         astrolabe.onLocationChanged(locationProvider.getCurrentLocation());
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);

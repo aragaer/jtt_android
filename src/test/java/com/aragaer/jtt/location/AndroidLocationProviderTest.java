@@ -1,6 +1,8 @@
 package com.aragaer.jtt.location;
 // vim: et ts=4 sts=4 sw=4
 
+import dagger.ObjectGraph;
+
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -12,6 +14,9 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import com.aragaer.jtt.Settings;
+import com.aragaer.jtt.clockwork.TestAstrolabe;
+import com.aragaer.jtt.clockwork.TestClockFactory;
+import com.aragaer.jtt.clockwork.TestClock;
 
 import android.content.SharedPreferences;
 
@@ -21,10 +26,15 @@ import android.content.SharedPreferences;
 public class AndroidLocationProviderTest {
 
     private LocationProvider provider;
+    private TestAstrolabe astrolabe;
 
     @Before
     public void setUp() {
-        provider = new AndroidLocationProvider(Robolectric.application);
+        ObjectGraph graph = ObjectGraph.create(new TestClockFactory());
+        TestClock clock = graph.get(TestClock.class);
+        graph = graph.plus(new TestClockFactory.TestAstrolabeModule(clock));
+        astrolabe = graph.get(TestAstrolabe.class);
+        provider = new AndroidLocationProvider(Robolectric.application, astrolabe);
     }
 
     @Test

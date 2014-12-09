@@ -9,6 +9,7 @@ public class TestLocationProvider extends LocationProvider {
     private static Location nextResult;
 
     public TestLocationProvider(Astrolabe astrolabe) {
+        super(astrolabe);
     }
 
     public static void setNextResult(Location location) {

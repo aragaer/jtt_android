@@ -22,10 +22,11 @@ public class ClockService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        LocationProvider locationProvider = new AndroidLocationProvider(this);
         ObjectGraph graph = ObjectGraph.create(new AndroidClockFactory(this));
         clock = graph.get(Clock.class);
-        graph.get(Astrolabe.class).onLocationChanged(locationProvider.getCurrentLocation());
+        Astrolabe astrolabe = graph.get(Astrolabe.class);
+        LocationProvider locationProvider = new AndroidLocationProvider(this, astrolabe);
+        astrolabe.onLocationChanged(locationProvider.getCurrentLocation());
 
         return START_STICKY;
     }

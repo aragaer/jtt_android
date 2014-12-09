@@ -3,6 +3,7 @@ package com.aragaer.jtt.astronomy;
 
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.*;
 import static org.hamcrest.Matchers.*;
@@ -13,7 +14,9 @@ import com.aragaer.jtt.test.*;
 
 public class SscCalculatorTest {
 
-    private DayIntervalCalculator calculator;
+    private SscCalculator calculator;
+    private long timestamp;
+    private TimeZone tz;
 
     @Rule
     public TestWithTz tzAnnotation = new TestWithTz();
@@ -21,9 +24,14 @@ public class SscCalculatorTest {
     @Rule
     public TestWithLocation locationAnnotation = new TestWithLocation();
 
+    @Rule
+    public TestWithTime timeAnnotation = new TestWithTime();
+
     @Before
     public void setUp() {
-        TimeZone.setDefault(tzAnnotation.getTimeZone());
+        tz = tzAnnotation.getTimeZone();
+        TimeZone.setDefault(tz);
+        timestamp = timeAnnotation.getTimestamp();
         calculator = new SscCalculator();
         calculator.setLocation(locationAnnotation.getLocation());
     }
@@ -31,87 +39,152 @@ public class SscCalculatorTest {
     @Test
     @TestTimezone(offsetMinutes = 180)
     @TestLocation(latitude=55.93, longitude=37.79)
+    @TestTime(year=2014, month=5, day=23, hour=12)
     public void testMoscowNoon() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2014, 5, 23, 12, 0, 0);
-        long noon23Jun2014 = calendar.getTimeInMillis();
-
-        DayInterval interval = calculator.getIntervalFor(noon23Jun2014);
+        DayInterval interval = calculator.getIntervalFor(timestamp);
 
         assertNotNull(interval);
         assertTrue(interval.isDay());
-        assertThat(interval.getStart(), lessThan(noon23Jun2014));
-        assertThat(interval.getEnd(), greaterThan(noon23Jun2014));
+        assertThat(interval.getStart(), lessThan(timestamp));
+        assertThat(interval.getEnd(), greaterThan(timestamp));
     }
 
     @Test
     @TestTimezone(offsetMinutes = 180)
     @TestLocation(latitude=55.93, longitude=37.79)
+    @TestTime(year=2014, month=5, day=23, hour=0)
     public void testMoscowMidnight() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2014, 5, 23, 0, 0, 0);
-        long midnight23Jun2014 = calendar.getTimeInMillis();
-
-        DayInterval interval = calculator.getIntervalFor(midnight23Jun2014);
+        DayInterval interval = calculator.getIntervalFor(timestamp);
 
         assertFalse(interval.isDay());
-        assertThat(interval.getStart(), lessThan(midnight23Jun2014));
-        assertThat(interval.getEnd(), greaterThan(midnight23Jun2014));
+        assertThat(interval.getStart(), lessThan(timestamp));
+        assertThat(interval.getEnd(), greaterThan(timestamp));
     }
 
     @Test
     @TestTimezone(offsetMinutes = 180)
     @TestLocation(latitude = 55.93, longitude = 37.79)
+    @TestTime(year=2014, month=5, day=23, hour=0)
     public void testMoscowSunrise() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2014, 5, 23, 12, 0, 0);
-        long noon23Jun2014 = calendar.getTimeInMillis();
-        calendar.set(2014, 5, 23, 0, 0, 0);
-        long midnight23Jun2014 = calendar.getTimeInMillis();
-        DayInterval day = calculator.getIntervalFor(noon23Jun2014);
-        DayInterval night = calculator.getIntervalFor(midnight23Jun2014);
+        DayInterval night = calculator.getIntervalFor(timestamp);
+        DayInterval day = calculator.getIntervalFor(timestamp + TimeUnit.HOURS.toMillis(12));
         assertThat(day.getStart(), equalTo(night.getEnd()));
     }
 
     @Test
     @TestTimezone(offsetMinutes = 180)
     @TestLocation(latitude = 55.93, longitude = 37.79)
+    @TestTime(year=2014, month=5, day=23, hour=12)
     public void testMoscowSunset() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2014, 5, 23, 12, 0, 0);
-        long noon23Jun2014 = calendar.getTimeInMillis();
-        calendar.set(2014, 5, 24, 0, 0, 0);
-        long midnight24Jun2014 = calendar.getTimeInMillis();
-        DayInterval day = calculator.getIntervalFor(noon23Jun2014);
-        DayInterval night = calculator.getIntervalFor(midnight24Jun2014);
+        DayInterval day = calculator.getIntervalFor(timestamp);
+        DayInterval night = calculator.getIntervalFor(timestamp + TimeUnit.HOURS.toMillis(12));
         assertThat(day.getEnd(), equalTo(night.getStart()));
     }
 
     @Test
     @TestTimezone(offsetMinutes = 180)
     @TestLocation(latitude = 55.93, longitude = 37.79)
+    @TestTime(year=2014, month=5, day=23, hour=12)
     public void testMoscowBeforeSunrise() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2014, 5, 23, 12, 0, 0);
-        long noon23Jun2014 = calendar.getTimeInMillis();
-        DayInterval day = calculator.getIntervalFor(noon23Jun2014);
-        long sunrise23Jun2014 = day.getStart();
-        DayInterval night = calculator.getIntervalFor(sunrise23Jun2014 - 1);
+        DayInterval day = calculator.getIntervalFor(timestamp);
+        DayInterval night = calculator.getIntervalFor(day.getStart() - 1);
         assertFalse(night.isDay());
-        assertThat(night.getEnd(), equalTo(sunrise23Jun2014));
+        assertThat(night.getEnd(), equalTo(day.getStart()));
     }
 
     @Test
     @TestTimezone(offsetMinutes = 180)
     @TestLocation(latitude = 55.93, longitude = 37.79)
+    @TestTime(year=2014, month=5, day=23, hour=12)
     public void testMoscowAfterSunset() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(2014, 5, 23, 12, 0, 0);
-        long noon23Jun2014 = calendar.getTimeInMillis();
-        DayInterval day = calculator.getIntervalFor(noon23Jun2014);
-        long sunset23Jun2014 = day.getEnd();
-        DayInterval night = calculator.getIntervalFor(sunset23Jun2014 + 1);
+        DayInterval day = calculator.getIntervalFor(timestamp);
+        DayInterval night = calculator.getIntervalFor(day.getEnd() + 1);
         assertFalse(night.isDay());
-        assertThat(night.getStart(), equalTo(sunset23Jun2014));
+        assertThat(night.getStart(), equalTo(day.getEnd()));
     }
+
+    @Test
+    @TestTimezone(offsetMinutes=0)
+    @TestLocation(latitude=51.5, longitude=0.0)
+    @TestTime(year=2000, month=0, day=1, hour=12)
+    public void testLondonDay01Jan2000() {
+        DayInterval day = calculator.getIntervalFor(timestamp);
+        assertTrue(day.isDay());
+        checkValues(day, "08:06", "16:02");
+        checkValues(day, dateToTimestamp(2000, 0, 1, 8, 6), dateToTimestamp(2000, 0, 1, 16, 2));
+    }
+
+    @Test
+    @TestTimezone(offsetMinutes=0)
+    @TestLocation(latitude=51.5, longitude=0.0)
+    @TestTime(year=2000, month=0, day=1)
+    public void testLondonNight01Jan2000() {
+        DayInterval night = calculator.getIntervalFor(timestamp);
+        assertFalse(night.isDay());
+        checkValues(night, "16:00", "08:06");
+        checkValues(night, dateToTimestamp(1999, 11, 31, 16, 0), dateToTimestamp(2000, 0, 1, 8, 6));
+    }
+
+    @Test
+    @TestTimezone(offsetMinutes = -60)
+    @TestLocation(latitude=15.11, longitude=-23.6)
+    @TestTime(year=2000, month=0, day=1, hour=12)
+    public void testCapeVerdeDay01Jan2000() {
+        DayInterval day = calculator.getIntervalFor(timestamp);
+        assertTrue(day.isDay());
+        checkValues(day, "07:00", "18:16");
+        checkValues(day, dateToTimestamp(2000, 0, 1, 7, 0), dateToTimestamp(2000, 0, 1, 18, 16));
+    }
+
+    @Test
+    @TestTimezone(offsetMinutes = 180)
+    @TestLocation(latitude=55.93, longitude=37.79)
+    @TestTime(year=2000, month=0, day=1, hour=12)
+    public void testMoscowDay01Jan2000() {
+        DayInterval day = calculator.getIntervalFor(timestamp);
+        assertTrue(day.isDay());
+        checkValues(day, "09:00", "16:05");
+        checkValues(day, dateToTimestamp(2000, 0, 1, 9, 00), dateToTimestamp(2000, 0, 1, 16, 05));
+    }
+
+    @Test
+    @TestTimezone(offsetMinutes = 180)
+    @TestLocation(latitude=55.93, longitude=37.79)
+    @TestTime(year=2014, month=5, day=22, hour=12)
+    public void testMoscowDay22Jun2014() {
+        DayInterval day = calculator.getIntervalFor(timestamp);
+        assertTrue(day.isDay());
+        checkValues(day, "03:43", "21:19");
+        checkValues(day, dateToTimestamp(2014, 5, 22, 3, 43), dateToTimestamp(2014, 5, 22, 21, 19));
+    }
+
+    private void checkValues(DayInterval interval, long start, long end) {
+        assertThat(interval.getStart(), equalTo(start));
+        assertThat(interval.getEnd(), equalTo(end));
+    }
+
+    private void checkValues(DayInterval interval, String start, String end) {
+        assertThat(timestampToLocaltime(interval.getStart()), equalTo(start));
+        assertThat(timestampToLocaltime(interval.getEnd()), equalTo(end));
+    }
+
+    private long dateToTimestamp(int year, int month, int day) {
+        return dateToTimestamp(year, month, day, 0, 0);
+    }
+
+    private long dateToTimestamp(int year, int month, int day, int hour,
+            int minute) {
+        Calendar calendar = Calendar.getInstance(tz);
+        calendar.set(year, month, day, hour, minute, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    private String timestampToLocaltime(long timestamp) {
+        Calendar calendar = Calendar.getInstance(tz);
+        calendar.setTimeInMillis(timestamp);
+        return String.format("%02d:%02d", calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE));
+    }
+
 }

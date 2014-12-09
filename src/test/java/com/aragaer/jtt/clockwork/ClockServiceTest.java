@@ -44,7 +44,8 @@ public class ClockServiceTest {
         */
     }
 
-    @Ignore @Test public void shouldConstructAllObjects() {
+    @Ignore
+    @Test public void shouldConstructAllObjects() {
         Location location = new Location(2, 3);
         TestLocationProvider.setNextResult(location);
 

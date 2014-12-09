@@ -29,8 +29,8 @@ public class TestClockFactory {
         return metronome;
     }
 
-    @Module(injects={Astrolabe.class, DayIntervalCalculator.class}, overrides=true)
-    static class TestAstrolabeModule {
+    @Module(injects={Astrolabe.class, DayIntervalCalculator.class, TestAstrolabe.class}, overrides=true)
+    public static class TestAstrolabeModule {
 
         private TestClock clock;
 

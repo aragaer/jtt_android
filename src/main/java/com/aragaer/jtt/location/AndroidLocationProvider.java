@@ -4,12 +4,14 @@ package com.aragaer.jtt.location;
 import android.content.Context;
 
 import com.aragaer.jtt.Settings;
+import com.aragaer.jtt.clockwork.Astrolabe;
 
 
 public class AndroidLocationProvider extends LocationProvider {
     private final Context context;
 
-    public AndroidLocationProvider(Context context) {
+    public AndroidLocationProvider(Context context, Astrolabe astrolabe) {
+        super(astrolabe);
         this.context = context;
     }
 
