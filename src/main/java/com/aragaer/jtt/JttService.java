@@ -1,9 +1,14 @@
 package com.aragaer.jtt;
 // vim: et ts=4 sts=4 sw=4
 
+import dagger.ObjectGraph;
+
 import com.aragaer.jtt.clockwork.AndroidClockFactory;
+import com.aragaer.jtt.clockwork.Astrolabe;
 import com.aragaer.jtt.clockwork.Clock;
 import com.aragaer.jtt.clockwork.DateTimeChangeListener;
+import com.aragaer.jtt.location.LocationProvider;
+import com.aragaer.jtt.location.AndroidLocationProvider;
 
 import android.app.Service;
 import android.content.Intent;
@@ -14,14 +19,9 @@ import android.util.Log;
 
 public class JttService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "JTT_SERVICE";
-    private final Clock clock;
+    private Clock clock;
     private DateTimeChangeListener dateTimeChangeListener;
-
-    public JttService() {
-        AndroidClockFactory components = new AndroidClockFactory(this);
-        clock = new Clock(components);
-        dateTimeChangeListener = new DateTimeChangeListener(components.getAstrolabe());
-    }
+    private LocationProvider locationProvider;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -32,7 +32,11 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     public void onCreate() {
         super.onCreate();
         Log.i(TAG, "Service starting");
-        clock.adjust();
+        ObjectGraph graph = ObjectGraph.create(new AndroidClockFactory(this));
+        clock = graph.get(Clock.class);
+        locationProvider = new AndroidLocationProvider(this);
+        dateTimeChangeListener = graph.get(DateTimeChangeListener.class);
+        graph.get(Astrolabe.class).onLocationChanged(locationProvider.getCurrentLocation());
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);

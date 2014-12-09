@@ -14,13 +14,7 @@ public class Clock {
     private final Metronome metronome;
 
     public Clock(ComponentFactory components) {
-        this(components.getAstrolabe(), components.getChime(), components.getMetronome());
-    }
-
-    public Clock(Astrolabe astrolabe, Chime chime, Metronome metronome) {
-        this(chime, metronome);
-        this.astrolabe = astrolabe;
-        this.astrolabe.setClock(this);
+        this(components.getChime(), components.getMetronome());
     }
 
     @Inject

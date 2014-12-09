@@ -1,6 +1,8 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
+import dagger.ObjectGraph;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -36,8 +38,7 @@ public class ClockService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        ComponentFactory components = new AndroidClockFactory(this);
-        clock = new Clock(getAstrolabe(components), getChime(components), components.getMetronome());
+        clock = ObjectGraph.create(new AndroidClockFactory(this)).get(Clock.class);
         clock.adjust();
 
         return START_STICKY;

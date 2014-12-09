@@ -1,37 +1,34 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
-import android.content.Context;
+import dagger.Module;
+import dagger.Provides;
+import javax.inject.Singleton;
 
 import com.aragaer.jtt.astronomy.DayIntervalCalculator;
 import com.aragaer.jtt.astronomy.SscCalculator;
-import com.aragaer.jtt.location.AndroidLocationProvider;
-import com.aragaer.jtt.location.LocationProvider;
+
+import android.content.Context;
 
 
-public class AndroidClockFactory implements ComponentFactory {
+@Module(injects={Clock.class, DateTimeChangeListener.class, Astrolabe.class})
+public class AndroidClockFactory {
 
-    private final Astrolabe astrolabe;
-    private final Chime chime;
-    private final Metronome metronome;
+    private final Context context;
 
     public AndroidClockFactory(Context context) {
-        LocationProvider provider = new AndroidLocationProvider(context);
-        DayIntervalCalculator calculator = new SscCalculator();
-        astrolabe = new Astrolabe(calculator, provider);
-        chime = new Chime(context);
-        metronome = new AndroidMetronome(context);
+        this.context = context;
     }
 
-    public Astrolabe getAstrolabe() {
-        return astrolabe;
+    @Provides @Singleton Chime getChime() {
+        return new Chime(context);
     }
 
-    public Chime getChime() {
-        return chime;
+    @Provides @Singleton Metronome getMetronome() {
+        return new AndroidMetronome(context);
     }
 
-    public Metronome getMetronome() {
-        return metronome;
+    @Provides @Singleton DayIntervalCalculator getCalculator() {
+        return new SscCalculator();
     }
 }
