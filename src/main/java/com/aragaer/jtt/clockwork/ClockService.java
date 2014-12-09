@@ -3,6 +3,9 @@ package com.aragaer.jtt.clockwork;
 
 import dagger.ObjectGraph;
 
+import com.aragaer.jtt.location.AndroidLocationProvider;
+import com.aragaer.jtt.location.LocationProvider;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -17,29 +20,12 @@ public class ClockService extends Service {
         return null;
     }
 
-    private static Astrolabe astrolabe;
-    private static Chime chime;
-
-    /* package private */ static void overrideAstrolabe(Astrolabe newAstrolabe) {
-        astrolabe = newAstrolabe;
-    }
-
-    /* package private */ static void overrideChime(Chime newChime) {
-        chime = newChime;
-    }
-
-    private Astrolabe getAstrolabe(ComponentFactory components) {
-        return astrolabe == null ? components.getAstrolabe() : astrolabe;
-    }
-
-    private Chime getChime(ComponentFactory components) {
-        return chime == null ? components.getChime() : chime;
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        clock = ObjectGraph.create(new AndroidClockFactory(this)).get(Clock.class);
-        clock.adjust();
+        LocationProvider locationProvider = new AndroidLocationProvider(this);
+        ObjectGraph graph = ObjectGraph.create(new AndroidClockFactory(this));
+        clock = graph.get(Clock.class);
+        graph.get(Astrolabe.class).onLocationChanged(locationProvider.getCurrentLocation());
 
         return START_STICKY;
     }

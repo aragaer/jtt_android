@@ -1,7 +1,7 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
-import dagger.*;
+import dagger.ObjectGraph;
 import org.junit.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -18,8 +18,7 @@ public class ClockTest {
     private TestAstrolabe astrolabe;
     private TestChime chime;
 
-    @Before
-    public void setUp() {
+    @Before public void setUp() {
         ObjectGraph graph = ObjectGraph.create(new TestClockFactory());
         clock = graph.get(Clock.class);
         metronome = (TestMetronome) graph.get(Metronome.class);
@@ -27,24 +26,12 @@ public class ClockTest {
         astrolabe = new TestAstrolabe(clock);
     }
 
-    @Test
-    public void shouldTriggerEvent() {
+    @Test public void shouldTriggerEvent() {
         metronome.tick(42);
         assertThat("chime ding number", chime.getLastTick(), equalTo(42));
     }
 
-    // TODO: delete
-    @Test
-    @Ignore
-    public void shouldUpdateLocationWhenAdjusted() {
-        astrolabe.setNextResult(DayInterval.Day(0, 1));
-        assertThat(astrolabe.updateLocationCalls, equalTo(0));
-        clock.adjust();
-        assertThat(astrolabe.updateLocationCalls, equalTo(1));
-    }
-
-    @Test
-    public void shouldStartMetronomeBasedOnCurrentInterval() {
+    @Test public void shouldStartMetronomeBasedOnCurrentInterval() {
         DayInterval interval = DayInterval.Day(10, 10 + TICKS_PER_INTERVAL * 5);
 
         clock.setInterval(interval);
@@ -53,21 +40,16 @@ public class ClockTest {
         assertThat(metronome.tickLength, equalTo(5L));
     }
 
-    @Test
-    public void tick() {
+    @Test public void tick() {
         clock.tick(42);
         assertThat("chime ding number", chime.getLastTick(), equalTo(42));
     }
 
-    // TODO: push interval change event to astrolabe
-    @Test
-    @Ignore
-    public void shouldReAdjustWhenIntervalEnds() {
+    @Test public void shouldNotifyAstrolabeOnIntervalEnd() {
         long dayStart = 10;
         long dayTickLength = 5;
         long dayEnd = dayStart + dayTickLength * TICKS_PER_INTERVAL;
-        astrolabe.setNextResult(DayInterval.Day(dayStart, dayEnd));
-        clock.adjust();
+        clock.setInterval(DayInterval.Day(dayStart, dayEnd));
 
         metronome.tick(5);
 
@@ -86,16 +68,14 @@ public class ClockTest {
         assertThat(metronome.tickLength, equalTo(nightTickLength));
     }
 
-    @Test
-    public void shouldDingChimesWhenMetronomeTicks() {
+    @Test public void shouldDingChimesWhenMetronomeTicks() {
         int tickNumber = 42;
         metronome.tick(tickNumber);
 
         assertThat("chime number", chime.getLastTick(), equalTo(tickNumber));
     }
 
-    @Test
-    public void shouldUseDayTime() {
+    @Test public void shouldUseDayTime() {
         int tickNumber = 42;
 
         DayInterval interval = DayInterval.Day(0, 1);
@@ -105,10 +85,7 @@ public class ClockTest {
         assertThat("chime number", chime.getLastTick(), equalTo(tickNumber + TICKS_PER_INTERVAL));
     }
 
-    // TODO: push interval change event to astrolabe
-    @Test
-    @Ignore
-    public void shouldSwitchIntervals() {
+    @Test public void shouldSwitchIntervals() {
         long night1TickLength = 2;
         long day1TickLength = 5;
         long night2TickLength = 3;
@@ -120,8 +97,7 @@ public class ClockTest {
         int lastTick = 0;
         int tickCount;
 
-        astrolabe.setNextResult(DayInterval.Night(sunset1, sunrise1));
-        clock.adjust();
+        clock.setInterval(DayInterval.Night(sunset1, sunrise1));
         astrolabe.setNextResult(DayInterval.Day(sunrise1, sunset2));
 
         tickCount = 2;
@@ -129,7 +105,6 @@ public class ClockTest {
         metronome.tick(tickCount);
         assertThat("chime number", chime.getLastTick(), equalTo(lastTick));
         assertThat(metronome.tickLength, equalTo(night1TickLength));
-
 
         tickCount = 50;
         lastTick += tickCount;

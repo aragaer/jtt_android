@@ -13,31 +13,17 @@ public class Clock {
     private final Chime chime;
     private final Metronome metronome;
 
-    public Clock(ComponentFactory components) {
-        this(components.getChime(), components.getMetronome());
-    }
-
-    @Inject
-    public Clock(Chime chime, Metronome metronome) {
+    @Inject public Clock(Chime chime, Metronome metronome) {
         this.chime = chime;
         this.metronome = metronome;
         this.metronome.attachTo(this);
     }
 
-    public void adjust() {
-        astrolabe.updateLocation();
-        rewind();
-    }
-
     private int lastTick;
-
-    private void rewind() {
-        setInterval(astrolabe.getCurrentInterval());
-    }
 
     public void tick(int ticks) {
         if (TICKS_PER_INTERVAL - ticks < lastTick % TICKS_PER_INTERVAL)
-            rewind();
+            astrolabe.onIntervalEnded();
         else
             lastTick += ticks;
         chime.ding(lastTick);
@@ -53,5 +39,6 @@ public class Clock {
     }
 
     public void setAstrolabe(Astrolabe newAstrolabe) {
+        astrolabe = newAstrolabe;
     }
 }

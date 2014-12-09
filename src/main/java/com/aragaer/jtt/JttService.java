@@ -22,6 +22,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     private Clock clock;
     private DateTimeChangeListener dateTimeChangeListener;
     private LocationProvider locationProvider;
+    private Astrolabe astrolabe;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -36,7 +37,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         clock = graph.get(Clock.class);
         locationProvider = new AndroidLocationProvider(this);
         dateTimeChangeListener = graph.get(DateTimeChangeListener.class);
-        graph.get(Astrolabe.class).onLocationChanged(locationProvider.getCurrentLocation());
+        astrolabe = graph.get(Astrolabe.class);
+        astrolabe.onLocationChanged(locationProvider.getCurrentLocation());
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
@@ -46,7 +48,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
         if (key.equals(Settings.PREF_LOCATION))
-            clock.adjust();
+            astrolabe.onLocationChanged(locationProvider.getCurrentLocation());
         else if (key.equals(Settings.PREF_WIDGET)
                 || key.equals(Settings.PREF_LOCALE)
                 || key.equals(Settings.PREF_HNAME))

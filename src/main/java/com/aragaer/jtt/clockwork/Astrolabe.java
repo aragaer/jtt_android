@@ -23,6 +23,7 @@ public class Astrolabe {
     public Astrolabe(DayIntervalCalculator calculator, Clock clock) {
         this.calculator = calculator;
         this.clock = clock;
+        clock.setAstrolabe(this);
     }
 
     public DayInterval getCurrentInterval() {
