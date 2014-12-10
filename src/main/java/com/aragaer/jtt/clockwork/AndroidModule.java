@@ -12,11 +12,11 @@ import android.content.Context;
 
 
 @Module(injects={Clock.class, DateTimeChangeListener.class, Astrolabe.class})
-public class AndroidClockFactory {
+public class AndroidModule {
 
     private final Context context;
 
-    public AndroidClockFactory(Context context) {
+    public AndroidModule(Context context) {
         this.context = context;
     }
 

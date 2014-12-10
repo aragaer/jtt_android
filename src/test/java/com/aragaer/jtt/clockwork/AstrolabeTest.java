@@ -21,7 +21,7 @@ public class AstrolabeTest {
 
     @Before
     public void setup() {
-        ObjectGraph graph = ObjectGraph.create(new TestClockFactory());
+        ObjectGraph graph = ObjectGraph.create(new TestModule());
         clock = graph.get(TestClock.class);
         astrolabe = graph.get(Astrolabe.class);
         clock.bindToAstrolabe(astrolabe);

@@ -16,7 +16,7 @@ public class ClockTickCallbackTest {
 
     @Before
     public void setUp() {
-        ObjectGraph graph = ObjectGraph.create(new TestClockFactory());
+        ObjectGraph graph = ObjectGraph.create(new TestModule());
         clock = graph.get(TestClock.class);
         chime = (TestChime) graph.get(Chime.class);
     }

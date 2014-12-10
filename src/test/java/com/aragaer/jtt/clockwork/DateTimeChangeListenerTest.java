@@ -29,7 +29,7 @@ public class DateTimeChangeListenerTest {
 
     @Before
     public void setup() {
-        ObjectGraph graph = ObjectGraph.create(new TestClockFactory());
+        ObjectGraph graph = ObjectGraph.create(new TestModule());
         Clock clock = graph.get(Clock.class);
         astrolabe = new TestAstrolabe();
         clock.bindToAstrolabe(astrolabe);

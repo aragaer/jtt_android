@@ -19,7 +19,7 @@ public class ClockTest {
     private TestChime chime;
 
     @Before public void setUp() {
-        ObjectGraph graph = ObjectGraph.create(new TestClockFactory());
+        ObjectGraph graph = ObjectGraph.create(new TestModule());
         clock = graph.get(Clock.class);
         metronome = (TestMetronome) graph.get(Metronome.class);
         chime = (TestChime) graph.get(Chime.class);

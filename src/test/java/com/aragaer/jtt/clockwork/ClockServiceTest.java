@@ -40,7 +40,7 @@ public class ClockServiceTest {
     private ObjectGraph graph;
 
     @Before public void setUp() {
-        TestClockFactory module = new TestClockFactory(new AndroidMetronome(Robolectric.application));
+        TestModule module = new TestModule(new AndroidMetronome(Robolectric.application));
         graph = ObjectGraph.create(module);
         calculator = (TestCalculator) graph.get(DayIntervalCalculator.class);
         chime = (TestChime) graph.get(Chime.class);

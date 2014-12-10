@@ -3,7 +3,7 @@ package com.aragaer.jtt;
 
 import dagger.ObjectGraph;
 
-import com.aragaer.jtt.clockwork.AndroidClockFactory;
+import com.aragaer.jtt.clockwork.AndroidModule;
 import com.aragaer.jtt.clockwork.Astrolabe;
 import com.aragaer.jtt.clockwork.Clock;
 import com.aragaer.jtt.clockwork.DateTimeChangeListener;
@@ -33,7 +33,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     public void onCreate() {
         super.onCreate();
         Log.i(TAG, "Service starting");
-        ObjectGraph graph = ObjectGraph.create(new AndroidClockFactory(this));
+        ObjectGraph graph = ObjectGraph.create(new AndroidModule(this));
         clock = graph.get(Clock.class);
         dateTimeChangeListener = graph.get(DateTimeChangeListener.class);
         astrolabe = graph.get(Astrolabe.class);

@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 
 import com.aragaer.jtt.Settings;
 import com.aragaer.jtt.clockwork.TestAstrolabe;
-import com.aragaer.jtt.clockwork.TestClockFactory;
+import com.aragaer.jtt.clockwork.TestModule;
 import com.aragaer.jtt.clockwork.TestClock;
 
 import android.content.SharedPreferences;
@@ -30,7 +30,7 @@ public class AndroidLocationProviderTest {
 
     @Before
     public void setUp() {
-        ObjectGraph graph = ObjectGraph.create(new TestClockFactory());
+        ObjectGraph graph = ObjectGraph.create(new TestModule());
         TestClock clock = graph.get(TestClock.class);
         astrolabe = graph.get(TestAstrolabe.class);
         clock.bindToAstrolabe(astrolabe);

@@ -18,7 +18,7 @@ public class ClockService extends Service {
     @Inject Astrolabe astrolabe;
 
     public ClockService() {
-        ObjectGraph graph = ObjectGraph.create(new AndroidClockFactory(this));
+        ObjectGraph graph = ObjectGraph.create(new AndroidModule(this));
         clock = graph.get(Clock.class);
         astrolabe = graph.get(Astrolabe.class);
     }
