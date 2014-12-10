@@ -3,6 +3,7 @@ package com.aragaer.jtt.clockwork;
 
 import java.util.List;
 
+import dagger.ObjectGraph;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
@@ -20,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.aragaer.jtt.astronomy.DayInterval;
+import com.aragaer.jtt.astronomy.DayIntervalCalculator;
 import com.aragaer.jtt.astronomy.TestCalculator;
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.location.TestLocationProvider;
@@ -32,16 +34,15 @@ public class ClockServiceTest {
 
     private TestAstrolabe astrolabe;
     private TestChime chime;
-    private ComponentFactory components;
+    private TestCalculator calculator;
+    private ObjectGraph graph;
 
     @Before
     public void setUp() throws Exception {
-        /*
-        chime = new TestChime();
-        astrolabe = new TestAstrolabe();
-        ClockService.overrideAstrolabe(astrolabe);
-        ClockService.overrideChime(chime);
-        */
+        TestClockFactory module = new TestClockFactory(new AndroidMetronome(Robolectric.application));
+        graph = ObjectGraph.create(module);
+        calculator = (TestCalculator) graph.get(DayIntervalCalculator.class);
+        chime = (TestChime) graph.get(Chime.class);
     }
 
     @Test public void shouldConstructAllObjects() {
@@ -63,7 +64,6 @@ public class ClockServiceTest {
     }
 
     @Test
-    @Ignore
     public void shouldDingChimesWhenStarted() {
         long tickLength = 1000;
         int tickNumber = 42;
@@ -73,10 +73,13 @@ public class ClockServiceTest {
         long endOffset = startOffset + intervalLength;
         long now = System.currentTimeMillis();
 
-        astrolabe.setNextResult(DayInterval.Night(now + startOffset, now + endOffset));
+        DayInterval interval = DayInterval.Night(now + startOffset, now + endOffset);
+        calculator.setNextResult(interval);
 
-        ServiceController<ClockService> controller = startService();
-        checkTickServiceRunning(controller.get(), now + startOffset, tickLength);
+        ServiceController<ClockService> controller = prepareService();
+        graph.inject(controller.get());
+        controller.startCommand(0, 0);
+        checkTickServiceRunning(now + startOffset, tickLength);
         new TickServiceMock().onHandleIntent(null);
 
         assertThat("chime number", chime.getLastTick(), equalTo(tickNumber));
@@ -101,7 +104,7 @@ public class ClockServiceTest {
         assertThat("chime number", chime.getLastTick(), equalTo(tickNumber + JttTime.TICKS_PER_INTERVAL));
     }
 
-    private void checkTickServiceRunning(Context context, long start, long period) {
+    private void checkTickServiceRunning(long start, long period) {
         List<ScheduledAlarm> alarms = getScheduledAlarms();
         assertThat(alarms.size(), equalTo(1));
 
@@ -113,7 +116,6 @@ public class ClockServiceTest {
         ShadowIntent intent = Robolectric.shadowOf(pending.getSavedIntent());
 
         assertTrue(pending.isServiceIntent());
-        assertEquals(pending.getSavedContext(), context);
         assertEquals(intent.getIntentClass(), TickService.class);
     }
 
@@ -127,13 +129,16 @@ public class ClockServiceTest {
         assertThat("astrolabe updateLocation called", astrolabe.updateLocationCalls, equalTo(1));
     }
 
-    private ServiceController<ClockService> startService() {
+    private ServiceController<ClockService> prepareService() {
         ServiceController<ClockService> controller = Robolectric.buildService(ClockService.class);
         controller.attach()
                   .create()
-                  .withIntent(new Intent(Robolectric.application, ClockService.class))
-                  .startCommand(0, 0);
+                  .withIntent(new Intent(Robolectric.application, ClockService.class));
         return controller;
+    }
+
+    private ServiceController<ClockService> startService() {
+        return prepareService().startCommand(0, 0);
     }
 
     private List<ScheduledAlarm> getScheduledAlarms() {
