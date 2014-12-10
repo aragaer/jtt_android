@@ -26,7 +26,7 @@ public class TestAstrolabe extends Astrolabe {
 
     @Override
     public DayInterval getCurrentInterval() {
-        return nextResult;
+        return nextResult == null ? super.getCurrentInterval() : nextResult;
     }
 
     @Override

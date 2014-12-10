@@ -6,7 +6,14 @@ import com.aragaer.jtt.clockwork.Astrolabe;
 
 public abstract class LocationProvider {
 
+    protected Astrolabe astrolabe;
+
     public LocationProvider(Astrolabe astrolabe) {
+        this.astrolabe = astrolabe;
+    }
+
+    public void postInit() {
+        astrolabe.onLocationChanged(getCurrentLocation());
     }
 
     public abstract Location getCurrentLocation();

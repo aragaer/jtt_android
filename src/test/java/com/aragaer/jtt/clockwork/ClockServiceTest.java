@@ -44,7 +44,6 @@ public class ClockServiceTest {
         */
     }
 
-    @Ignore
     @Test public void shouldConstructAllObjects() {
         Location location = new Location(2, 3);
         TestLocationProvider.setNextResult(location);
@@ -57,6 +56,7 @@ public class ClockServiceTest {
         clock.setAstrolabe(astrolabe);
 
         TestLocationProvider locationProvider = new TestLocationProvider(astrolabe);
+        locationProvider.postInit();
 
         assertThat(astrolabe.currentLocation, equalTo(location));
     }

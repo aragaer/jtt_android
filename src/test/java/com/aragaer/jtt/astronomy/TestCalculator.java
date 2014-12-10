@@ -8,7 +8,7 @@ public class TestCalculator implements DayIntervalCalculator {
     public Location location;
     public int intervalCalls;
     public long timestamp;
-    private DayInterval nextResult;
+    private DayInterval nextResult = DayInterval.Day(0, 0);
 
     public void setNextResult(DayInterval nextResult) {
         this.nextResult = nextResult;
