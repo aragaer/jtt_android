@@ -23,7 +23,8 @@ public class ClockTest {
         clock = graph.get(Clock.class);
         metronome = (TestMetronome) graph.get(Metronome.class);
         chime = (TestChime) graph.get(Chime.class);
-        astrolabe = new TestAstrolabe(clock);
+        astrolabe = new TestAstrolabe();
+        clock.bindToAstrolabe(astrolabe);
     }
 
     @Test public void shouldTriggerEvent() {

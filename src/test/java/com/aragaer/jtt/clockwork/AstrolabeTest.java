@@ -23,8 +23,8 @@ public class AstrolabeTest {
     public void setup() {
         ObjectGraph graph = ObjectGraph.create(new TestClockFactory());
         clock = graph.get(TestClock.class);
-        graph = graph.plus(new TestClockFactory.TestAstrolabeModule(clock));
         astrolabe = graph.get(Astrolabe.class);
+        clock.bindToAstrolabe(astrolabe);
         calculator = (TestCalculator) graph.get(DayIntervalCalculator.class);
     }
 

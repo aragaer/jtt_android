@@ -38,7 +38,8 @@ public class Clock {
         metronome.start(interval.getStart(), tickLength);
     }
 
-    public void setAstrolabe(Astrolabe newAstrolabe) {
+    public void bindToAstrolabe(Astrolabe newAstrolabe) {
         astrolabe = newAstrolabe;
+        astrolabe.bindToClock(this);
     }
 }

@@ -15,13 +15,13 @@ public class TestAstrolabe extends Astrolabe {
     public int dateTimeChangeCalls;
     public Location currentLocation;
 
-    public TestAstrolabe(Clock clock) {
-        this(null, clock);
+    public TestAstrolabe() {
+        this(null);
     }
 
     @Inject
-    public TestAstrolabe(DayIntervalCalculator calculator, Clock clock) {
-        super(calculator, clock);
+    public TestAstrolabe(DayIntervalCalculator calculator) {
+        super(calculator);
     }
 
     @Override

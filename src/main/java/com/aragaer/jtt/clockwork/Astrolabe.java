@@ -14,16 +14,9 @@ public class Astrolabe {
     private LocationProvider locationProvider;
     private Clock clock;
 
-    public Astrolabe(DayIntervalCalculator calculator, LocationProvider locationProvider) {
-        this.calculator = calculator;
-        this.locationProvider = locationProvider;
-    }
-
     @Inject
-    public Astrolabe(DayIntervalCalculator calculator, Clock clock) {
+    public Astrolabe(DayIntervalCalculator calculator) {
         this.calculator = calculator;
-        this.clock = clock;
-        clock.setAstrolabe(this);
     }
 
     public DayInterval getCurrentInterval() {
@@ -51,7 +44,7 @@ public class Astrolabe {
         onIntervalChanged();
     }
 
-    public void setClock(Clock newClock) {
+    public void bindToClock(Clock newClock) {
         clock = newClock;
     }
 }

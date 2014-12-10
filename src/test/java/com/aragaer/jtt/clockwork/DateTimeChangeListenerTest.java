@@ -31,7 +31,8 @@ public class DateTimeChangeListenerTest {
     public void setup() {
         ObjectGraph graph = ObjectGraph.create(new TestClockFactory());
         Clock clock = graph.get(Clock.class);
-        astrolabe = new TestAstrolabe(clock);
+        astrolabe = new TestAstrolabe();
+        clock.bindToAstrolabe(astrolabe);
         astrolabe.setNextResult(DayInterval.Day(0, 0));
         listener = new DateTimeChangeListener(astrolabe);
         listener.register(Robolectric.application);

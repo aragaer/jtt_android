@@ -52,8 +52,9 @@ public class ClockServiceTest {
         TestMetronome metronome = new TestMetronome();
         Clock clock = new Clock(chime, metronome);
         TestCalculator calculator = new TestCalculator();
-        TestAstrolabe astrolabe = new TestAstrolabe(calculator, clock);
-        clock.setAstrolabe(astrolabe);
+        TestAstrolabe astrolabe = new TestAstrolabe(calculator);
+
+        clock.bindToAstrolabe(astrolabe);
 
         TestLocationProvider locationProvider = new TestLocationProvider(astrolabe);
         locationProvider.postInit();
