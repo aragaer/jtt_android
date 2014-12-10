@@ -2,6 +2,7 @@ package com.aragaer.jtt;
 // vim: et ts=4 sts=4 sw=4
 
 import dagger.ObjectGraph;
+import javax.inject.Inject;
 
 import com.aragaer.jtt.clockwork.AndroidModule;
 import com.aragaer.jtt.clockwork.Astrolabe;
@@ -19,24 +20,27 @@ import android.util.Log;
 
 public class JttService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "JTT_SERVICE";
-    private Clock clock;
-    private DateTimeChangeListener dateTimeChangeListener;
+    @Inject Clock clock;
+    @Inject DateTimeChangeListener dateTimeChangeListener;
     private LocationProvider locationProvider;
-    private Astrolabe astrolabe;
+    @Inject Astrolabe astrolabe;
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
+    public JttService() {
+        ObjectGraph graph = ObjectGraph.create(new AndroidModule(this));
+        clock = graph.get(Clock.class);
+        astrolabe = graph.get(Astrolabe.class);
+        dateTimeChangeListener = graph.get(DateTimeChangeListener.class);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         Log.i(TAG, "Service starting");
-        ObjectGraph graph = ObjectGraph.create(new AndroidModule(this));
-        clock = graph.get(Clock.class);
-        dateTimeChangeListener = graph.get(DateTimeChangeListener.class);
-        astrolabe = graph.get(Astrolabe.class);
         clock.bindToAstrolabe(astrolabe);
         locationProvider = new AndroidLocationProvider(this, astrolabe);
         locationProvider.postInit();
