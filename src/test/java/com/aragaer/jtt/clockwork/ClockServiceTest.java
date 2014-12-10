@@ -13,19 +13,21 @@ import org.robolectric.shadows.*;
 import org.robolectric.shadows.ShadowAlarmManager.ScheduledAlarm;
 import org.robolectric.util.ServiceController;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import android.app.AlarmManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 
-import com.aragaer.jtt.astronomy.DayInterval;
-import com.aragaer.jtt.astronomy.DayIntervalCalculator;
-import com.aragaer.jtt.astronomy.TestCalculator;
+import com.aragaer.jtt.Settings;
+import com.aragaer.jtt.astronomy.*;
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.location.TestLocationProvider;
-import com.aragaer.jtt.core.JttTime;
+import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 
 
 @RunWith(RobolectricTestRunner.class)
@@ -37,8 +39,7 @@ public class ClockServiceTest {
     private TestCalculator calculator;
     private ObjectGraph graph;
 
-    @Before
-    public void setUp() throws Exception {
+    @Before public void setUp() {
         TestClockFactory module = new TestClockFactory(new AndroidMetronome(Robolectric.application));
         graph = ObjectGraph.create(module);
         calculator = (TestCalculator) graph.get(DayIntervalCalculator.class);
@@ -63,12 +64,11 @@ public class ClockServiceTest {
         assertThat(astrolabe.currentLocation, equalTo(location));
     }
 
-    @Test
-    public void shouldDingChimesWhenStarted() {
+    @Test public void shouldDingChimesWhenStarted() {
         long tickLength = 1000;
         int tickNumber = 42;
         long inTickOffset = 250;
-        long intervalLength = tickLength * JttTime.TICKS_PER_INTERVAL;
+        long intervalLength = tickLength * TICKS_PER_INTERVAL;
         long startOffset = -(tickNumber * tickLength + inTickOffset);
         long endOffset = startOffset + intervalLength;
         long now = System.currentTimeMillis();
@@ -85,23 +85,48 @@ public class ClockServiceTest {
         assertThat("chime number", chime.getLastTick(), equalTo(tickNumber));
     }
 
-    @Test
-    @Ignore
-    public void shouldUseDayTime() {
+    @Test public void shouldUseDayTime() {
         long tickLength = 1000;
         int tickNumber = 42;
         long inTickOffset = 250;
-        long intervalLength = tickLength * JttTime.TICKS_PER_INTERVAL;
+        long intervalLength = tickLength * TICKS_PER_INTERVAL;
         long startOffset = -(tickNumber * tickLength + inTickOffset);
         long endOffset = startOffset + intervalLength;
         long now = System.currentTimeMillis();
 
-        astrolabe.setNextResult(DayInterval.Day(now + startOffset, now + endOffset));
+        calculator.setNextResult(DayInterval.Day(now + startOffset, now + endOffset));
 
-        startService();
+        ServiceController<ClockService> controller = prepareService();
+        graph.inject(controller.get());
+        controller.startCommand(0, 0);
         new TickServiceMock().onHandleIntent(null);
 
-        assertThat("chime number", chime.getLastTick(), equalTo(tickNumber + JttTime.TICKS_PER_INTERVAL));
+        assertThat("chime number", chime.getLastTick(), equalTo(tickNumber + TICKS_PER_INTERVAL));
+    }
+
+    @Test public void shouldWorkWithoutTestModule() {
+        TestReceiver receiver = new TestReceiver();
+        Robolectric.application.registerReceiver(receiver, new IntentFilter(Chime.ACTION_JTT_TICK));
+        SharedPreferences sharedPreferences = ShadowPreferenceManager.getDefaultSharedPreferences(Robolectric.application.getApplicationContext());
+        sharedPreferences.edit().putString(Settings.PREF_LOCATION, "1.2:3.4").commit();
+        Location location = new Location(1.2, 3.4);
+        DayIntervalCalculator realCalculator = new SscCalculator();
+        realCalculator.setLocation(location);
+        long now = System.currentTimeMillis();
+        DayInterval interval = realCalculator.getIntervalFor(now);
+
+        long tickLength = interval.getLength() / TICKS_PER_INTERVAL;
+        assertThat(interval.getStart(), lessThan(now));
+        assertThat(interval.getEnd(), greaterThan(now));
+
+        prepareService().startCommand(0, 0);
+        checkTickServiceRunning(interval.getStart(), tickLength);
+        new TickServiceMock().onHandleIntent(null);
+
+        int tickNumber = (int) ((now - interval.getStart()) / tickLength);
+        if (interval.isDay())
+            tickNumber += TICKS_PER_INTERVAL;
+        assertThat("chime number", receiver.wrapped, equalTo(tickNumber));
     }
 
     private void checkTickServiceRunning(long start, long period) {
@@ -117,16 +142,6 @@ public class ClockServiceTest {
 
         assertTrue(pending.isServiceIntent());
         assertEquals(intent.getIntentClass(), TickService.class);
-    }
-
-    @Test
-    @Ignore
-    public void shouldPassLocationFromProviderToCalculatorWhenStarted() {
-        astrolabe.setNextResult(DayInterval.Night(0, 1));
-
-        startService();
-
-        assertThat("astrolabe updateLocation called", astrolabe.updateLocationCalls, equalTo(1));
     }
 
     private ServiceController<ClockService> prepareService() {
@@ -151,6 +166,17 @@ public class ClockServiceTest {
         @Override
         public void onHandleIntent(Intent intent) {
             super.onHandleIntent(intent);
+        }
+    }
+
+    static class TestReceiver extends BroadcastReceiver {
+        int wrapped = -1;
+        int calls;
+        public void onReceive(Context context, Intent intent) {
+            if (!intent.getAction().equals(Chime.ACTION_JTT_TICK))
+                return;
+            calls++;
+            wrapped = intent.getIntExtra("jtt", 0);
         }
     }
 }
