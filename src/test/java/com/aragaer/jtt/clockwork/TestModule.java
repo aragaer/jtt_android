@@ -13,14 +13,10 @@ import com.aragaer.jtt.astronomy.TestCalculator;
     ClockService.class})
 public class TestModule {
 
-    private final Metronome metronome;
+    private Metronome metronome = new TestMetronome();
 
-    public TestModule() {
-        metronome = new TestMetronome();
-    }
-
-    public TestModule(Metronome metronome) {
-        this.metronome = metronome;
+    public void setMetronome(Metronome newMetronome) {
+        metronome = newMetronome;
     }
 
     @Provides @Singleton public Chime getChime() {

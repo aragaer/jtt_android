@@ -29,7 +29,9 @@ public class AndroidMetronomeTest {
     @Before
     public void setup() {
         metronome = new AndroidMetronome(Robolectric.application);
-        ObjectGraph graph = ObjectGraph.create(new TestModule(metronome));
+        TestModule module = new TestModule();
+        module.setMetronome(metronome);
+        ObjectGraph graph = ObjectGraph.create(module);
         metronome.attachTo(graph.get(TestClock.class));
         chime = (TestChime) graph.get(Chime.class);
     }
