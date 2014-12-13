@@ -21,7 +21,7 @@ public class AndroidModule {
     }
 
     @Provides @Singleton Chime getChime() {
-        return new Chime(context);
+        return new com.aragaer.jtt.clockwork.android.Chime(context);
     }
 
     @Provides @Singleton Metronome getMetronome() {

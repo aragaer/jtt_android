@@ -28,6 +28,7 @@ import com.aragaer.jtt.astronomy.*;
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.location.TestLocationProvider;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
+import static com.aragaer.jtt.clockwork.android.Chime.ACTION_JTT_TICK;
 
 
 @RunWith(RobolectricTestRunner.class)
@@ -107,7 +108,7 @@ public class ClockServiceTest {
 
     @Test public void shouldWorkWithoutTestModule() {
         TestReceiver receiver = new TestReceiver();
-        Robolectric.application.registerReceiver(receiver, new IntentFilter(Chime.ACTION_JTT_TICK));
+        Robolectric.application.registerReceiver(receiver, new IntentFilter(ACTION_JTT_TICK));
         SharedPreferences sharedPreferences = ShadowPreferenceManager.getDefaultSharedPreferences(Robolectric.application.getApplicationContext());
         sharedPreferences.edit().putString(Settings.PREF_LOCATION, "1.2:3.4").commit();
         Location location = new Location(1.2, 3.4);
@@ -174,7 +175,7 @@ public class ClockServiceTest {
         int wrapped = -1;
         int calls;
         public void onReceive(Context context, Intent intent) {
-            if (!intent.getAction().equals(Chime.ACTION_JTT_TICK))
+            if (!intent.getAction().equals(ACTION_JTT_TICK))
                 return;
             calls++;
             wrapped = intent.getIntExtra("jtt", 0);

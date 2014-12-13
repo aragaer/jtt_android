@@ -1,6 +1,6 @@
 package com.aragaer.jtt;
 
-import com.aragaer.jtt.clockwork.Chime;
+import static com.aragaer.jtt.clockwork.android.Chime.ACTION_JTT_TICK;
 import com.aragaer.jtt.core.*;
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.resources.RuntimeResources;
@@ -30,7 +30,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		sr.registerStringResourceChangeListener(this,
 			StringResources.TYPE_HOUR_NAME | StringResources.TYPE_TIME_FORMAT);
 
-		context.registerReceiver(this, new IntentFilter(Chime.ACTION_JTT_TICK));
+		context.registerReceiver(this, new IntentFilter(ACTION_JTT_TICK));
 	}
 
 	public void release() {
@@ -50,7 +50,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 	@Override
 	public void onReceive(Context ctx, Intent intent) {
 		final String action = intent.getAction();
-		if (!action.equals(Chime.ACTION_JTT_TICK))
+		if (!action.equals(ACTION_JTT_TICK))
 			return;
 
 		updateLocation(ctx);

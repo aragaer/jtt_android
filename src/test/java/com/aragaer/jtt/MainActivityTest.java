@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import android.app.Activity;
 import android.content.*;
 
-import com.aragaer.jtt.clockwork.Chime;
+import static com.aragaer.jtt.clockwork.android.Chime.ACTION_JTT_TICK;
 
 
 @RunWith(RobolectricTestRunner.class)
@@ -47,7 +47,7 @@ public class MainActivityTest {
 
     public void shouldRegisterTickListener() {
         ShadowApplication shadowApplication = Robolectric.getShadowApplication();
-        Intent intent = new Intent(Chime.ACTION_JTT_TICK);
+        Intent intent = new Intent(ACTION_JTT_TICK);
         List<BroadcastReceiver> receiversForIntent = shadowApplication.getReceiversForIntent(intent);
         assertThat(receiversForIntent.size(), equalTo(1));
     }

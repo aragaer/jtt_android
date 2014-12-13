@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.widget.RemoteViews;
 
-import com.aragaer.jtt.clockwork.ChimeListener;
+import com.aragaer.jtt.clockwork.android.ChimeListener;
 import com.aragaer.jtt.core.JttTime;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
