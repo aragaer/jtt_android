@@ -10,8 +10,7 @@ import com.aragaer.jtt.clockwork.Astrolabe;
 public class AndroidLocationProvider extends LocationProvider {
     private final Context context;
 
-    public AndroidLocationProvider(Context context, Astrolabe astrolabe) {
-        super(astrolabe);
+    public AndroidLocationProvider(Context context) {
         this.context = context;
     }
 

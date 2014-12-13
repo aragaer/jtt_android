@@ -42,7 +42,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         super.onCreate();
         Log.i(TAG, "Service starting");
         clock.bindToAstrolabe(astrolabe);
-        locationProvider = new AndroidLocationProvider(this, astrolabe);
+        locationProvider = new AndroidLocationProvider(this);
+        locationProvider.setAstrolabe(astrolabe);
         locationProvider.postInit();
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);

@@ -34,7 +34,8 @@ public class AndroidLocationProviderTest {
         TestClock clock = graph.get(TestClock.class);
         astrolabe = graph.get(TestAstrolabe.class);
         clock.bindToAstrolabe(astrolabe);
-        provider = new AndroidLocationProvider(Robolectric.application, astrolabe);
+        provider = new AndroidLocationProvider(Robolectric.application);
+        provider.setAstrolabe(astrolabe);
     }
 
     @Test

@@ -31,7 +31,8 @@ public class ClockService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         clock.bindToAstrolabe(astrolabe);
-        LocationProvider locationProvider = new AndroidLocationProvider(this, astrolabe);
+        LocationProvider locationProvider = new AndroidLocationProvider(this);
+        locationProvider.setAstrolabe(astrolabe);
         locationProvider.postInit();
 
         return START_STICKY;

@@ -58,7 +58,8 @@ public class ClockServiceTest {
 
         clock.bindToAstrolabe(astrolabe);
 
-        TestLocationProvider locationProvider = new TestLocationProvider(astrolabe);
+        TestLocationProvider locationProvider = new TestLocationProvider();
+        locationProvider.setAstrolabe(astrolabe);
         locationProvider.postInit();
 
         assertThat(astrolabe.currentLocation, equalTo(location));
