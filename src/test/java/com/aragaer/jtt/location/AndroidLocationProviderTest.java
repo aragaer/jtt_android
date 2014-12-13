@@ -28,8 +28,7 @@ public class AndroidLocationProviderTest {
     private LocationProvider provider;
     private TestAstrolabe astrolabe;
 
-    @Before
-    public void setUp() {
+    @Before public void setUp() {
         ObjectGraph graph = ObjectGraph.create(new TestModule());
         TestClock clock = graph.get(TestClock.class);
         astrolabe = graph.get(TestAstrolabe.class);
@@ -38,14 +37,23 @@ public class AndroidLocationProviderTest {
         provider.setAstrolabe(astrolabe);
     }
 
-    @Test
-    public void shouldRetrieveLocation() {
-        SharedPreferences sharedPreferences = ShadowPreferenceManager.getDefaultSharedPreferences(Robolectric.application.getApplicationContext());
+    @Test public void shouldRetrieveLocation() {
+        SharedPreferences sharedPreferences = ShadowPreferenceManager
+            .getDefaultSharedPreferences(Robolectric.application.getApplicationContext());
         sharedPreferences.edit().putString(Settings.PREF_LOCATION, "1.2:3.4").commit();
 
         Location location = provider.getCurrentLocation();
 
         assertEquals(location.getLatitude(), 1.2, 0.0001);
         assertEquals(location.getLongitude(), 3.4, 0.0001);
+    }
+
+    @Test public void shouldReactToLocationChange() {
+        SharedPreferences sharedPreferences = ShadowPreferenceManager
+            .getDefaultSharedPreferences(Robolectric.application.getApplicationContext());
+        sharedPreferences.edit().putString(Settings.PREF_LOCATION, "1.2:3.4").commit();
+
+        assertEquals(astrolabe.currentLocation.getLatitude(), 1.2, 0.0001);
+        assertEquals(astrolabe.currentLocation.getLongitude(), 3.4, 0.0001);
     }
 }

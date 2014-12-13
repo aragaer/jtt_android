@@ -35,6 +35,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         clock = graph.get(Clock.class);
         astrolabe = graph.get(Astrolabe.class);
         dateTimeChangeListener = graph.get(DateTimeChangeListener.class);
+        locationProvider = new AndroidLocationProvider(this);
     }
 
     @Override
@@ -42,7 +43,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         super.onCreate();
         Log.i(TAG, "Service starting");
         clock.bindToAstrolabe(astrolabe);
-        locationProvider = new AndroidLocationProvider(this);
         locationProvider.setAstrolabe(astrolabe);
         locationProvider.postInit();
 
@@ -53,9 +53,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     }
 
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-        if (key.equals(Settings.PREF_LOCATION))
-            astrolabe.onLocationChanged(locationProvider.getCurrentLocation());
-        else if (key.equals(Settings.PREF_WIDGET)
+        if (key.equals(Settings.PREF_WIDGET)
                 || key.equals(Settings.PREF_LOCALE)
                 || key.equals(Settings.PREF_HNAME))
             WidgetProvider.draw_all(this);

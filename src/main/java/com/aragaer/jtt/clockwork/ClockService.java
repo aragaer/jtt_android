@@ -16,11 +16,13 @@ public class ClockService extends Service {
 
     @Inject Clock clock;
     @Inject Astrolabe astrolabe;
+    LocationProvider locationProvider;
 
     public ClockService() {
         ObjectGraph graph = ObjectGraph.create(new AndroidModule(this));
         clock = graph.get(Clock.class);
         astrolabe = graph.get(Astrolabe.class);
+        locationProvider = new AndroidLocationProvider(this);
     }
 
     @Override
@@ -31,7 +33,6 @@ public class ClockService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         clock.bindToAstrolabe(astrolabe);
-        LocationProvider locationProvider = new AndroidLocationProvider(this);
         locationProvider.setAstrolabe(astrolabe);
         locationProvider.postInit();
 
