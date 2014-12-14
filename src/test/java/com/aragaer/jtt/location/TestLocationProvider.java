@@ -1,15 +1,12 @@
 package com.aragaer.jtt.location;
 // vim: et ts=4 sts=4 sw=4
 
-import com.aragaer.jtt.clockwork.Astrolabe;
 
+public class TestLocationProvider implements LocationProvider {
+    private Location nextResult;
 
-public class TestLocationProvider extends LocationProvider {
-
-    private static Location nextResult;
-
-    public static void setNextResult(Location location) {
-        nextResult = location;
+    public void setNextResult(Location newNextResult) {
+        nextResult = newNextResult;
     }
 
     public Location getCurrentLocation() {

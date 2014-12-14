@@ -26,7 +26,6 @@ import android.content.SharedPreferences;
 import com.aragaer.jtt.Settings;
 import com.aragaer.jtt.astronomy.*;
 import com.aragaer.jtt.location.Location;
-import com.aragaer.jtt.location.TestLocationProvider;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 import static com.aragaer.jtt.clockwork.android.Chime.ACTION_JTT_TICK;
 

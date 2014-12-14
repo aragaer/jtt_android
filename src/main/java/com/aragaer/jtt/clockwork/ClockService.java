@@ -5,7 +5,8 @@ import dagger.ObjectGraph;
 import javax.inject.Inject;
 
 import com.aragaer.jtt.location.AndroidLocationProvider;
-import com.aragaer.jtt.location.LocationProvider;
+import com.aragaer.jtt.location.AndroidLocationChangeNotifier;
+import com.aragaer.jtt.location.LocationService;
 
 import android.app.Service;
 import android.content.Intent;
@@ -16,13 +17,15 @@ public class ClockService extends Service {
 
     @Inject Clock clock;
     @Inject Astrolabe astrolabe;
-    LocationProvider locationProvider;
+    LocationService locationService;
 
     public ClockService() {
         ObjectGraph graph = ObjectGraph.create(new AndroidModule(this));
         clock = graph.get(Clock.class);
         astrolabe = graph.get(Astrolabe.class);
-        locationProvider = new AndroidLocationProvider(this);
+        AndroidLocationProvider provider = new AndroidLocationProvider(this);
+        AndroidLocationChangeNotifier changeNotifier = new AndroidLocationChangeNotifier(this);
+        locationService = new LocationService(provider, changeNotifier);
     }
 
     @Override
@@ -33,8 +36,7 @@ public class ClockService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         clock.bindToAstrolabe(astrolabe);
-        locationProvider.setAstrolabe(astrolabe);
-        locationProvider.postInit();
+        locationService.registerConsumer(astrolabe);
 
         return START_STICKY;
     }

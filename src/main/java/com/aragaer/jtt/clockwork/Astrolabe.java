@@ -6,12 +6,13 @@ import javax.inject.Inject;
 import com.aragaer.jtt.astronomy.DayInterval;
 import com.aragaer.jtt.astronomy.DayIntervalCalculator;
 import com.aragaer.jtt.location.Location;
-import com.aragaer.jtt.location.LocationProvider;
+import com.aragaer.jtt.location.LocationConsumer;
+import com.aragaer.jtt.location.LocationService;
 
 
-public class Astrolabe {
+public class Astrolabe implements LocationConsumer {
     private final DayIntervalCalculator calculator;
-    private LocationProvider locationProvider;
+    private LocationService locationProvider;
     private Clock clock;
 
     @Inject

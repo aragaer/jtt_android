@@ -1,8 +1,6 @@
 package com.aragaer.jtt.location;
 // vim: et ts=4 sts=4 sw=4
 
-import dagger.ObjectGraph;
-
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -14,9 +12,6 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import com.aragaer.jtt.Settings;
-import com.aragaer.jtt.clockwork.TestAstrolabe;
-import com.aragaer.jtt.clockwork.TestModule;
-import com.aragaer.jtt.clockwork.TestClock;
 
 import android.content.SharedPreferences;
 
@@ -25,16 +20,15 @@ import android.content.SharedPreferences;
 @Config(emulateSdk = 18)
 public class AndroidLocationProviderTest {
 
-    private LocationProvider provider;
-    private TestAstrolabe astrolabe;
+    private LocationService service;
+    private TestLocationConsumer consumer;
 
     @Before public void setUp() {
-        ObjectGraph graph = ObjectGraph.create(new TestModule());
-        TestClock clock = graph.get(TestClock.class);
-        astrolabe = graph.get(TestAstrolabe.class);
-        clock.bindToAstrolabe(astrolabe);
-        provider = new AndroidLocationProvider(Robolectric.application);
-        provider.setAstrolabe(astrolabe);
+        consumer = new TestLocationConsumer();
+        LocationProvider provider = new AndroidLocationProvider(Robolectric.application);
+        LocationChangeNotifier changeNotifier = new AndroidLocationChangeNotifier(Robolectric.application);
+        service = new LocationService(provider, changeNotifier);
+        service.registerConsumer(consumer);
     }
 
     @Test public void shouldRetrieveLocation() {
@@ -42,7 +36,7 @@ public class AndroidLocationProviderTest {
             .getDefaultSharedPreferences(Robolectric.application.getApplicationContext());
         sharedPreferences.edit().putString(Settings.PREF_LOCATION, "1.2:3.4").commit();
 
-        Location location = provider.getCurrentLocation();
+        Location location = service.getCurrentLocation();
 
         assertEquals(location.getLatitude(), 1.2, 0.0001);
         assertEquals(location.getLongitude(), 3.4, 0.0001);
@@ -53,7 +47,19 @@ public class AndroidLocationProviderTest {
             .getDefaultSharedPreferences(Robolectric.application.getApplicationContext());
         sharedPreferences.edit().putString(Settings.PREF_LOCATION, "1.2:3.4").commit();
 
-        assertEquals(astrolabe.currentLocation.getLatitude(), 1.2, 0.0001);
-        assertEquals(astrolabe.currentLocation.getLongitude(), 3.4, 0.0001);
+        assertEquals(consumer.getLocation().getLatitude(), 1.2, 0.0001);
+        assertEquals(consumer.getLocation().getLongitude(), 3.4, 0.0001);
+    }
+
+    static class TestLocationConsumer implements LocationConsumer {
+        private Location location;
+
+        public void onLocationChanged(Location newLocation) {
+            location = newLocation;
+        }
+
+        public Location getLocation() {
+            return location;
+        }
     }
 }

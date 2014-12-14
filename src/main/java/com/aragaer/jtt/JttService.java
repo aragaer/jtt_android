@@ -8,8 +8,10 @@ import com.aragaer.jtt.clockwork.AndroidModule;
 import com.aragaer.jtt.clockwork.Astrolabe;
 import com.aragaer.jtt.clockwork.Clock;
 import com.aragaer.jtt.clockwork.DateTimeChangeListener;
-import com.aragaer.jtt.location.LocationProvider;
+import com.aragaer.jtt.location.LocationService;
+import com.aragaer.jtt.location.LocationService;
 import com.aragaer.jtt.location.AndroidLocationProvider;
+import com.aragaer.jtt.location.AndroidLocationChangeNotifier;
 
 import android.app.Service;
 import android.content.Intent;
@@ -22,7 +24,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     private static final String TAG = "JTT_SERVICE";
     @Inject Clock clock;
     @Inject DateTimeChangeListener dateTimeChangeListener;
-    private LocationProvider locationProvider;
+    LocationService locationProvider;
     @Inject Astrolabe astrolabe;
 
     @Override
@@ -35,7 +37,9 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         clock = graph.get(Clock.class);
         astrolabe = graph.get(Astrolabe.class);
         dateTimeChangeListener = graph.get(DateTimeChangeListener.class);
-        locationProvider = new AndroidLocationProvider(this);
+        AndroidLocationProvider provider = new AndroidLocationProvider(this);
+        AndroidLocationChangeNotifier changeNotifier = new AndroidLocationChangeNotifier(this);
+        locationProvider = new LocationService(provider, changeNotifier);
     }
 
     @Override
@@ -43,8 +47,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         super.onCreate();
         Log.i(TAG, "Service starting");
         clock.bindToAstrolabe(astrolabe);
-        locationProvider.setAstrolabe(astrolabe);
-        locationProvider.postInit();
+        locationProvider.registerConsumer(astrolabe);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
