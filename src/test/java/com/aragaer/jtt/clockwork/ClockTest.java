@@ -41,11 +41,6 @@ public class ClockTest {
         assertThat(metronome.tickLength, equalTo(5L));
     }
 
-    @Test public void tick() {
-        clock.tick(42);
-        assertThat("chime ding number", chime.getLastTick(), equalTo(42));
-    }
-
     @Test public void shouldNotifyAstrolabeOnIntervalEnd() {
         long dayStart = 10;
         long dayTickLength = 5;

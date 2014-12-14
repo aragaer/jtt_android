@@ -10,8 +10,7 @@ public class TestClock extends Clock {
 
     public DayInterval currentInterval;
 
-    @Inject
-    TestClock(Chime chime, Metronome metronome) {
+    @Inject TestClock(Chime chime, Metronome metronome) {
         super(chime, metronome);
     }
 

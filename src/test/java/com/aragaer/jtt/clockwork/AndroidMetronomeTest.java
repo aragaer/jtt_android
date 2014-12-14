@@ -32,7 +32,7 @@ public class AndroidMetronomeTest {
         TestModule module = new TestModule();
         module.setMetronome(metronome);
         ObjectGraph graph = ObjectGraph.create(module);
-        metronome.attachTo(graph.get(TestClock.class));
+        metronome.attachTo(graph.get(Cogs.class));
         chime = (TestChime) graph.get(Chime.class);
     }
 

@@ -4,12 +4,12 @@ package com.aragaer.jtt.clockwork;
 
 public class ClockTickCallback implements TickCallback {
 
-    private final Clock clock;
+    private final Cogs cogs;
     private long lastTick;
     private final long length;
 
-    public ClockTickCallback(Clock clock, long intervalStart, long tickLength) {
-        this.clock = clock;
+    public ClockTickCallback(Cogs cogs, long intervalStart, long tickLength) {
+        this.cogs = cogs;
         lastTick = intervalStart;
         length = tickLength;
     }
@@ -19,6 +19,6 @@ public class ClockTickCallback implements TickCallback {
         long passed = now - lastTick;
         long ticks = passed / length;
         lastTick += ticks * length;
-        clock.tick((int) ticks);
+        cogs.rotate((int) ticks);
     }
 }

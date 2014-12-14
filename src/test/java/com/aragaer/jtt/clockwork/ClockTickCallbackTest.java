@@ -24,7 +24,7 @@ public class ClockTickCallbackTest {
     @Test
     public void shouldTrigger0TicksIfLessThanLength() {
         long now = System.currentTimeMillis();
-        ClockTickCallback callback = new ClockTickCallback(clock, now, 10000);
+        ClockTickCallback callback = new ClockTickCallback(clock.getCogs(), now, 10000);
         callback.onTick();
         assertThat(chime.getLastTick(), equalTo(0));
     }
@@ -33,7 +33,7 @@ public class ClockTickCallbackTest {
     public void shouldTriggerRequiredNumberOfTicks() {
         long offset = 1000 * 42 + 250;
         long now = System.currentTimeMillis();
-        ClockTickCallback callback = new ClockTickCallback(clock, now - offset, 1000);
+        ClockTickCallback callback = new ClockTickCallback(clock.getCogs(), now - offset, 1000);
         callback.onTick();
         assertThat(chime.getLastTick(), equalTo(42));
     }
@@ -42,7 +42,7 @@ public class ClockTickCallbackTest {
     public void shouldTickOnceAgain() throws InterruptedException {
         long offset = 1000 * 42 + 997;
         long now = System.currentTimeMillis();
-        ClockTickCallback callback = new ClockTickCallback(clock, now - offset, 1000);
+        ClockTickCallback callback = new ClockTickCallback(clock.getCogs(), now - offset, 1000);
         callback.onTick();
         assertThat(chime.getLastTick(), equalTo(42));
         Thread.sleep(5);
