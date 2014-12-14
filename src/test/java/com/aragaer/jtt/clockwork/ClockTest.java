@@ -17,6 +17,7 @@ public class ClockTest {
     private TestMetronome metronome;
     private TestAstrolabe astrolabe;
     private TestChime chime;
+    private Cogs cogs;
 
     @Before public void setUp() {
         ObjectGraph graph = ObjectGraph.create(new TestModule());
@@ -25,11 +26,7 @@ public class ClockTest {
         chime = (TestChime) graph.get(Chime.class);
         astrolabe = new TestAstrolabe();
         clock.bindToAstrolabe(astrolabe);
-    }
-
-    @Test public void shouldTriggerEvent() {
-        metronome.tick(42);
-        assertThat("chime ding number", chime.getLastTick(), equalTo(42));
+        cogs = clock.getCogs();
     }
 
     @Test public void shouldStartMetronomeBasedOnCurrentInterval() {
@@ -47,10 +44,10 @@ public class ClockTest {
         long dayEnd = dayStart + dayTickLength * TICKS_PER_INTERVAL;
         clock.setInterval(DayInterval.Day(dayStart, dayEnd));
 
-        metronome.tick(5);
+        cogs.rotate(5);
 
         assertThat("metronome start at sunrise", metronome.start, equalTo(dayStart));
-        assertThat("metronome tick length", metronome.tickLength, equalTo(dayTickLength));
+        assertThat("cogs.rotate length", metronome.tickLength, equalTo(dayTickLength));
 
         long nightStart = dayEnd;
         long nightTickLength = 2;
@@ -58,17 +55,10 @@ public class ClockTest {
 
         astrolabe.setNextResult(DayInterval.Night(nightStart, nightEnd));
 
-        metronome.tick(TICKS_PER_INTERVAL);
+        cogs.rotate(TICKS_PER_INTERVAL);
 
         assertThat(metronome.start, equalTo(nightStart));
         assertThat(metronome.tickLength, equalTo(nightTickLength));
-    }
-
-    @Test public void shouldDingChimesWhenMetronomeTicks() {
-        int tickNumber = 42;
-        metronome.tick(tickNumber);
-
-        assertThat("chime number", chime.getLastTick(), equalTo(tickNumber));
     }
 
     @Test public void shouldUseDayTime() {
@@ -76,7 +66,7 @@ public class ClockTest {
 
         DayInterval interval = DayInterval.Day(0, 1);
         clock.setInterval(interval);
-        metronome.tick(tickNumber);
+        cogs.rotate(tickNumber);
 
         assertThat("chime number", chime.getLastTick(), equalTo(tickNumber + TICKS_PER_INTERVAL));
     }
@@ -98,24 +88,24 @@ public class ClockTest {
 
         tickCount = 2;
         lastTick += tickCount;
-        metronome.tick(tickCount);
+        cogs.rotate(tickCount);
         assertThat("chime number", chime.getLastTick(), equalTo(lastTick));
         assertThat(metronome.tickLength, equalTo(night1TickLength));
 
         tickCount = 50;
         lastTick += tickCount;
-        metronome.tick(tickCount);
+        cogs.rotate(tickCount);
         assertThat("chime number", chime.getLastTick(), equalTo(lastTick));
 
         tickCount = TICKS_PER_INTERVAL-53;
         lastTick += tickCount;
-        metronome.tick(tickCount);
+        cogs.rotate(tickCount);
         assertThat("chime number", chime.getLastTick(), equalTo(lastTick));
         assertThat(metronome.tickLength, equalTo(night1TickLength));
 
         tickCount = 1;
         lastTick += tickCount;
-        metronome.tick(tickCount + 2);
+        cogs.rotate(tickCount + 2);
         assertThat("chime number ignores overrun", chime.getLastTick(), equalTo(lastTick));
         assertThat(metronome.tickLength, equalTo(day1TickLength));
 
@@ -123,13 +113,13 @@ public class ClockTest {
 
         tickCount = 20;
         lastTick += tickCount;
-        metronome.tick(tickCount);
+        cogs.rotate(tickCount);
         assertThat("chime number", chime.getLastTick(), equalTo(lastTick));
         assertThat(metronome.tickLength, equalTo(day1TickLength));
 
         tickCount = TICKS_PER_INTERVAL-20;
         lastTick += tickCount;
-        metronome.tick(tickCount + 10);
+        cogs.rotate(tickCount + 10);
         assertThat("chime number ignores overrun", chime.getLastTick(), equalTo(0));
         assertThat(metronome.tickLength, equalTo(night2TickLength));
     }
@@ -146,7 +136,7 @@ public class ClockTest {
 
         assertThat(metronome.tickLength, equalTo(dayTickLength));
         assertThat(metronome.start, equalTo(now + dayStartOffset));
-        metronome.tick(dayTicksPassed);
+        cogs.rotate(dayTicksPassed);
         assertThat(chime.getLastTick(), equalTo(dayTicksPassed+TICKS_PER_INTERVAL));
     }
 }

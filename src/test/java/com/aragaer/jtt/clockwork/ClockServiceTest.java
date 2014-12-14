@@ -48,25 +48,6 @@ public class ClockServiceTest {
         chime = (TestChime) graph.get(Chime.class);
     }
 
-    @Test public void shouldConstructAllObjects() {
-        Location location = new Location(2, 3);
-        TestLocationProvider.setNextResult(location);
-
-        TestChime chime = new TestChime();
-        TestMetronome metronome = new TestMetronome();
-        Clock clock = new Clock(chime, metronome);
-        TestCalculator calculator = new TestCalculator();
-        TestAstrolabe astrolabe = new TestAstrolabe(calculator);
-
-        clock.bindToAstrolabe(astrolabe);
-
-        TestLocationProvider locationProvider = new TestLocationProvider();
-        locationProvider.setAstrolabe(astrolabe);
-        locationProvider.postInit();
-
-        assertThat(astrolabe.currentLocation, equalTo(location));
-    }
-
     @Test public void shouldDingChimesWhenStarted() {
         long tickLength = 1000;
         int tickNumber = 42;
