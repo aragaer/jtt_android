@@ -9,7 +9,6 @@ import com.aragaer.jtt.clockwork.Astrolabe;
 import com.aragaer.jtt.clockwork.Clock;
 import com.aragaer.jtt.clockwork.DateTimeChangeListener;
 import com.aragaer.jtt.location.LocationService;
-import com.aragaer.jtt.location.LocationService;
 import com.aragaer.jtt.location.AndroidLocationProvider;
 import com.aragaer.jtt.location.AndroidLocationChangeNotifier;
 
@@ -19,6 +18,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
 
 public class JttService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "JTT_SERVICE";

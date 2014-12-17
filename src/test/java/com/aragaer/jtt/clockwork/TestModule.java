@@ -10,8 +10,7 @@ import com.aragaer.jtt.astronomy.TestCalculator;
 
 @Module(includes=BaseModule.class, overrides=true,
     injects={Clock.class, Chime.class, Metronome.class, TestClock.class,
-        Astrolabe.class, TestAstrolabe.class, DayIntervalCalculator.class,
-        ClockService.class})
+        Astrolabe.class, TestAstrolabe.class, DayIntervalCalculator.class})
 public class TestModule {
 
     private Metronome metronome = new TestMetronome();
