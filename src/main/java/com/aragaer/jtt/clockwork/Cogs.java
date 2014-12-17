@@ -3,12 +3,13 @@ package com.aragaer.jtt.clockwork;
 
 import javax.inject.Inject;
 
+import com.aragaer.jtt.astronomy.DayIntervalService;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 
 
 public class Cogs {
 
-    private Astrolabe astrolabe;
+    private DayIntervalService astrolabe;
     @Inject Chime chime;
     private int teethPassed;
 
@@ -28,7 +29,7 @@ public class Cogs {
         teethPassed = tick;
     }
 
-    public void bindToAstrolabe(Astrolabe astrolabe) {
+    public void bindToDayIntervalService(DayIntervalService astrolabe) {
         this.astrolabe = astrolabe;
     }
 

@@ -4,8 +4,8 @@ package com.aragaer.jtt;
 import dagger.ObjectGraph;
 import javax.inject.Inject;
 
+import com.aragaer.jtt.astronomy.DayIntervalService;
 import com.aragaer.jtt.clockwork.AndroidModule;
-import com.aragaer.jtt.clockwork.Astrolabe;
 import com.aragaer.jtt.clockwork.Clock;
 import com.aragaer.jtt.clockwork.DateTimeChangeListener;
 import com.aragaer.jtt.location.LocationService;
@@ -25,7 +25,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     @Inject Clock clock;
     @Inject DateTimeChangeListener dateTimeChangeListener;
     LocationService locationProvider;
-    @Inject Astrolabe astrolabe;
+    @Inject DayIntervalService astrolabe;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -35,7 +35,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     public JttService() {
         ObjectGraph graph = ObjectGraph.create(new AndroidModule(this));
         clock = graph.get(Clock.class);
-        astrolabe = graph.get(Astrolabe.class);
+        astrolabe = graph.get(DayIntervalService.class);
         dateTimeChangeListener = graph.get(DateTimeChangeListener.class);
         AndroidLocationProvider provider = new AndroidLocationProvider(this);
         AndroidLocationChangeNotifier changeNotifier = new AndroidLocationChangeNotifier(this);
@@ -46,7 +46,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     public void onCreate() {
         super.onCreate();
         Log.i(TAG, "Service starting");
-        clock.bindToAstrolabe(astrolabe);
+        clock.bindToDayIntervalService(astrolabe);
         locationProvider.registerConsumer(astrolabe);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);

@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import com.aragaer.jtt.astronomy.DayInterval;
+import com.aragaer.jtt.astronomy.TestDayIntervalService;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_DAY;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 
@@ -15,7 +16,7 @@ public class ClockTest {
 
     private Clock clock;
     private TestMetronome metronome;
-    private TestAstrolabe astrolabe;
+    private TestDayIntervalService astrolabe;
     private TestChime chime;
     private Cogs cogs;
 
@@ -24,8 +25,8 @@ public class ClockTest {
         clock = graph.get(Clock.class);
         metronome = (TestMetronome) graph.get(Metronome.class);
         chime = (TestChime) graph.get(Chime.class);
-        astrolabe = new TestAstrolabe();
-        clock.bindToAstrolabe(astrolabe);
+        astrolabe = new TestDayIntervalService();
+        clock.bindToDayIntervalService(astrolabe);
         cogs = clock.getCogs();
     }
 
@@ -38,7 +39,7 @@ public class ClockTest {
         assertThat(metronome.tickLength, equalTo(5L));
     }
 
-    @Test public void shouldNotifyAstrolabeOnIntervalEnd() {
+    @Test public void shouldNotifyDayIntervalServiceOnIntervalEnd() {
         long dayStart = 10;
         long dayTickLength = 5;
         long dayEnd = dayStart + dayTickLength * TICKS_PER_INTERVAL;

@@ -5,12 +5,14 @@ import dagger.*;
 import javax.inject.Singleton;
 
 import com.aragaer.jtt.astronomy.DayIntervalCalculator;
+import com.aragaer.jtt.astronomy.DayIntervalService;
+import com.aragaer.jtt.astronomy.TestDayIntervalService;
 import com.aragaer.jtt.astronomy.TestCalculator;
 
 
 @Module(includes=BaseModule.class, overrides=true,
     injects={Clock.class, Chime.class, Metronome.class, TestClock.class,
-        Astrolabe.class, TestAstrolabe.class, DayIntervalCalculator.class})
+        DayIntervalService.class, TestDayIntervalService.class, DayIntervalCalculator.class})
 public class TestModule {
 
     private Metronome metronome = new TestMetronome();

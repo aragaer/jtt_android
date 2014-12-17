@@ -4,11 +4,13 @@ package com.aragaer.jtt.clockwork;
 import javax.inject.Inject;
 
 import com.aragaer.jtt.astronomy.DayInterval;
+import com.aragaer.jtt.astronomy.DayIntervalConsumer;
+import com.aragaer.jtt.astronomy.DayIntervalService;
 
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 
 
-public class Clock {
+public class Clock implements DayIntervalConsumer {
     private final Chime chime;
     private final Metronome metronome;
     private final Cogs cogs;
@@ -34,8 +36,8 @@ public class Clock {
         metronome.start(interval.getStart(), tickLength);
     }
 
-    public void bindToAstrolabe(Astrolabe astrolabe) {
-        cogs.bindToAstrolabe(astrolabe);
+    public void bindToDayIntervalService(DayIntervalService astrolabe) {
+        cogs.bindToDayIntervalService(astrolabe);
         astrolabe.bindToClock(this);
     }
 }

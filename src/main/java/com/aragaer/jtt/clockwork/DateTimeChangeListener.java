@@ -8,10 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-public class DateTimeChangeListener extends BroadcastReceiver {
-    private final Astrolabe astrolabe;
+import com.aragaer.jtt.astronomy.DayIntervalService;
 
-    @Inject public DateTimeChangeListener(Astrolabe astrolabe) {
+
+public class DateTimeChangeListener extends BroadcastReceiver {
+    private final DayIntervalService astrolabe;
+
+    @Inject public DateTimeChangeListener(DayIntervalService astrolabe) {
         this.astrolabe = astrolabe;
     }
 

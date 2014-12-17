@@ -1,22 +1,20 @@
-package com.aragaer.jtt.clockwork;
+package com.aragaer.jtt.astronomy;
 // vim: et ts=4 sts=4 sw=4
 
 import javax.inject.Inject;
 
-import com.aragaer.jtt.astronomy.DayInterval;
-import com.aragaer.jtt.astronomy.DayIntervalCalculator;
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.location.LocationConsumer;
 import com.aragaer.jtt.location.LocationService;
 
 
-public class Astrolabe implements LocationConsumer {
+public class DayIntervalService implements LocationConsumer {
     private final DayIntervalCalculator calculator;
     private LocationService locationProvider;
-    private Clock clock;
+    private DayIntervalConsumer consumer;
 
     @Inject
-    public Astrolabe(DayIntervalCalculator calculator) {
+    public DayIntervalService(DayIntervalCalculator calculator) {
         this.calculator = calculator;
     }
 
@@ -29,7 +27,7 @@ public class Astrolabe implements LocationConsumer {
     }
 
     private void onIntervalChanged() {
-        clock.setInterval(getCurrentInterval());
+        consumer.setInterval(getCurrentInterval());
     }
 
     public void onDateTimeChanged() {
@@ -45,7 +43,7 @@ public class Astrolabe implements LocationConsumer {
         onIntervalChanged();
     }
 
-    public void bindToClock(Clock newClock) {
-        clock = newClock;
+    public void bindToClock(DayIntervalConsumer newClock) {
+        consumer = newClock;
     }
 }

@@ -1,4 +1,4 @@
-package com.aragaer.jtt.clockwork;
+package com.aragaer.jtt.astronomy;
 // vim: et ts=4 sts=4 sw=4
 
 import dagger.ObjectGraph;
@@ -6,16 +6,15 @@ import org.junit.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import com.aragaer.jtt.astronomy.DayInterval;
-import com.aragaer.jtt.astronomy.DayIntervalCalculator;
-import com.aragaer.jtt.astronomy.TestCalculator;
+import com.aragaer.jtt.clockwork.TestClock;
+import com.aragaer.jtt.clockwork.TestModule;
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.test.*;
 
 
-public class AstrolabeTest {
+public class DayIntervalServiceTest {
 
-    private Astrolabe astrolabe;
+    private DayIntervalService astrolabe;
     private TestCalculator calculator;
     private TestClock clock;
 
@@ -23,8 +22,8 @@ public class AstrolabeTest {
     public void setup() {
         ObjectGraph graph = ObjectGraph.create(new TestModule());
         clock = graph.get(TestClock.class);
-        astrolabe = graph.get(Astrolabe.class);
-        clock.bindToAstrolabe(astrolabe);
+        astrolabe = graph.get(DayIntervalService.class);
+        clock.bindToDayIntervalService(astrolabe);
         calculator = (TestCalculator) graph.get(DayIntervalCalculator.class);
     }
 

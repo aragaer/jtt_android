@@ -17,6 +17,7 @@ import static org.junit.Assert.*;
 import android.content.*;
 
 import com.aragaer.jtt.astronomy.DayInterval;
+import com.aragaer.jtt.astronomy.TestDayIntervalService;
 import com.aragaer.jtt.JttService;
 
 
@@ -25,14 +26,14 @@ import com.aragaer.jtt.JttService;
 public class DateTimeChangeListenerTest {
 
     private DateTimeChangeListener listener;
-    private TestAstrolabe astrolabe;
+    private TestDayIntervalService astrolabe;
 
     @Before
     public void setup() {
         ObjectGraph graph = ObjectGraph.create(new TestModule());
         Clock clock = graph.get(Clock.class);
-        astrolabe = new TestAstrolabe();
-        clock.bindToAstrolabe(astrolabe);
+        astrolabe = new TestDayIntervalService();
+        clock.bindToDayIntervalService(astrolabe);
         astrolabe.setNextResult(DayInterval.Day(0, 0));
         listener = new DateTimeChangeListener(astrolabe);
         listener.register(Robolectric.application);
@@ -55,7 +56,7 @@ public class DateTimeChangeListenerTest {
         testListensFor(Intent.ACTION_DATE_CHANGED);
     }
 
-    @Test public void testShouldReportToAstrolabe() {
+    @Test public void testShouldReportToDayIntervalService() {
         int oldCount = this.astrolabe.dateTimeChangeCalls;
         listener.onReceive(Robolectric.application, new Intent(Intent.ACTION_DATE_CHANGED));
         int newCount = this.astrolabe.dateTimeChangeCalls;

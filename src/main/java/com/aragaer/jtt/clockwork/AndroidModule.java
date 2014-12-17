@@ -5,12 +5,13 @@ import dagger.*;
 import javax.inject.Singleton;
 
 import com.aragaer.jtt.astronomy.DayIntervalCalculator;
+import com.aragaer.jtt.astronomy.DayIntervalService;
 import com.aragaer.jtt.astronomy.SscCalculator;
 
 import android.content.Context;
 
 
-@Module(injects={Astrolabe.class, Chime.class, Clock.class,
+@Module(injects={DayIntervalService.class, Chime.class, Clock.class,
     DateTimeChangeListener.class, com.aragaer.jtt.clockwork.android.Chime.class})
 public class AndroidModule {
 
