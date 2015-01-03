@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.aragaer.jtt.Settings;
+
 
 public class AndroidLocationChangeNotifier implements LocationChangeNotifier,
        SharedPreferences.OnSharedPreferenceChangeListener {
@@ -21,7 +23,8 @@ public class AndroidLocationChangeNotifier implements LocationChangeNotifier,
     }
 
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-        service.locationChanged();
+        if (key.equals(Settings.PREF_LOCATION))
+            service.locationChanged();
     }
 
     void register() {

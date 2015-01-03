@@ -51,11 +51,21 @@ public class AndroidLocationProviderTest {
         assertEquals(consumer.getLocation().getLongitude(), 3.4, 0.0001);
     }
 
+    @Test public void shouldNotReactOnOtherSettings() {
+        SharedPreferences sharedPreferences = ShadowPreferenceManager
+            .getDefaultSharedPreferences(Robolectric.application.getApplicationContext());
+        sharedPreferences.edit().putString("other string", "1.2:3.4").commit();
+
+        assertThat(consumer.locationChangeCalls, equalTo(1));
+    }
+
     static class TestLocationConsumer implements LocationConsumer {
         private Location location;
+        public int locationChangeCalls;
 
         public void onLocationChanged(Location newLocation) {
             location = newLocation;
+            locationChangeCalls++;
         }
 
         public Location getLocation() {

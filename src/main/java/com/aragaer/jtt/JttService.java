@@ -21,7 +21,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     private static final String TAG = "JTT_SERVICE";
     private final Clock clock;
     private final DateTimeChangeListener dateTimeChangeListener;
-    private final LocationService locationService;
+    private LocationService locationService;
     private final DayIntervalService astrolabe;
 
     @Override
@@ -34,8 +34,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         clock = new Clock(module.getChime(), module.getMetronome());
         astrolabe = new DayIntervalService(module.getCalculator());
         dateTimeChangeListener = new DateTimeChangeListener(astrolabe);
-        locationService = new LocationService(new AndroidLocationProvider(this),
-                new AndroidLocationChangeNotifier(this));
     }
 
     @Override
@@ -43,6 +41,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         super.onCreate();
         Log.i(TAG, "Service starting");
         clock.bindToDayIntervalService(astrolabe);
+        locationService = new LocationService(new AndroidLocationProvider(this),
+                new AndroidLocationChangeNotifier(this));
         locationService.registerConsumer(astrolabe);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
