@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import android.app.*;
 import android.content.*;
 
-import static com.aragaer.jtt.clockwork.android.Chime.ACTION_JTT_TICK;
+import static com.aragaer.jtt.clockwork.android.AndroidChime.ACTION_JTT_TICK;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 import com.aragaer.jtt.location.*;
 import com.aragaer.jtt.astronomy.*;

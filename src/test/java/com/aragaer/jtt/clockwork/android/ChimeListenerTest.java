@@ -36,13 +36,13 @@ public class ChimeListenerTest {
             Robolectric
                 .getShadowApplication()
                 .getReceiversForIntent(
-                    new Intent(Chime.ACTION_JTT_TICK)),
+                    new Intent(AndroidChime.ACTION_JTT_TICK)),
             hasItem((BroadcastReceiver) listener));
     }
 
     @Test
     public void shouldCallOnChime() {
-        listener.onReceive(null, new Intent().putExtra(Chime.EXTRA_JTT, 123));
+        listener.onReceive(null, new Intent().putExtra(AndroidChime.EXTRA_JTT, 123));
 
         assertThat("chime event count", listener.calls, equalTo(1));
         assertThat("chime tick number", listener.tick, equalTo(123));

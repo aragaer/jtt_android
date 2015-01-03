@@ -1,8 +1,6 @@
 package com.aragaer.jtt.clockwork.android;
 // vim: et ts=4 sts=4 sw=4
 
-import dagger.ObjectGraph;
-
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
@@ -21,11 +19,10 @@ import com.aragaer.jtt.clockwork.AndroidModule;
 @Config(emulateSdk=18)
 public class ChimeTest {
 
-    private Chime chime;
+    private AndroidChime chime;
 
     @Before public void setUp() {
-        chime = ObjectGraph.create(new AndroidModule(Robolectric.application))
-            .get(Chime.class);
+        chime = new AndroidChime(Robolectric.application);
     }
 
     @Test public void shouldBroadcastNewInformation() {

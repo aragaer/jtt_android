@@ -1,12 +1,12 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
-import dagger.ObjectGraph;
 import org.junit.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 import com.aragaer.jtt.astronomy.DayInterval;
+import com.aragaer.jtt.astronomy.DayIntervalEndObserver;
 import com.aragaer.jtt.astronomy.TestDayIntervalService;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_DAY;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
@@ -21,12 +21,13 @@ public class ClockTest {
     private Cogs cogs;
 
     @Before public void setUp() {
-        ObjectGraph graph = ObjectGraph.create(new TestModule());
-        clock = graph.get(Clock.class);
-        metronome = (TestMetronome) graph.get(Metronome.class);
-        chime = (TestChime) graph.get(Chime.class);
+        TestModule module = new TestModule();
+        metronome = (TestMetronome) module.getMetronome();
+        chime = (TestChime) module.getChime();
+        clock = new Clock(chime, metronome);
         astrolabe = new TestDayIntervalService();
         clock.bindToDayIntervalService(astrolabe);
+        clock.registerIntervalEndObserver(astrolabe);
         cogs = clock.getCogs();
     }
 
@@ -139,5 +140,21 @@ public class ClockTest {
         assertThat(metronome.start, equalTo(now + dayStartOffset));
         cogs.rotate(dayTicksPassed);
         assertThat(chime.getLastTick(), equalTo(dayTicksPassed+TICKS_PER_INTERVAL));
+    }
+
+    @Test public void shouldBindIntervalEndObserverToCogs() {
+        TestIntervalEndObserver observer = new TestIntervalEndObserver();
+        cogs.rotate(42);
+        clock.registerIntervalEndObserver(observer);
+        assertThat(observer.intervalEndCount, equalTo(0));
+        cogs.rotate(TICKS_PER_INTERVAL-42);
+        assertThat(observer.intervalEndCount, equalTo(1));
+    }
+
+    private static class TestIntervalEndObserver implements DayIntervalEndObserver {
+        public int intervalEndCount;
+        public void onIntervalEnded() {
+            intervalEndCount++;
+        }
     }
 }

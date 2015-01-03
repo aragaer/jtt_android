@@ -1,10 +1,9 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
-import javax.inject.Inject;
-
 import com.aragaer.jtt.astronomy.DayInterval;
 import com.aragaer.jtt.astronomy.DayIntervalConsumer;
+import com.aragaer.jtt.astronomy.DayIntervalEndObserver;
 import com.aragaer.jtt.astronomy.DayIntervalService;
 
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
@@ -15,7 +14,7 @@ public class Clock implements DayIntervalConsumer {
     private final Metronome metronome;
     private final Cogs cogs;
 
-    @Inject public Clock(Chime chime, Metronome metronome) {
+    public Clock(Chime chime, Metronome metronome) {
         this.chime = chime;
         this.cogs = new Cogs();
         this.cogs.attachChime(chime);
@@ -37,7 +36,10 @@ public class Clock implements DayIntervalConsumer {
     }
 
     public void bindToDayIntervalService(DayIntervalService astrolabe) {
-        cogs.bindToDayIntervalService(astrolabe);
         astrolabe.bindToClock(this);
+    }
+
+    public void registerIntervalEndObserver(DayIntervalEndObserver observer) {
+        cogs.registerIntervalEndObserver(observer);
     }
 }

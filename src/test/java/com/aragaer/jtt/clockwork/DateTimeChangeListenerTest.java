@@ -3,8 +3,6 @@ package com.aragaer.jtt.clockwork;
 
 import java.util.List;
 
-import dagger.ObjectGraph;
-
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -30,8 +28,8 @@ public class DateTimeChangeListenerTest {
 
     @Before
     public void setup() {
-        ObjectGraph graph = ObjectGraph.create(new TestModule());
-        Clock clock = graph.get(Clock.class);
+        TestModule module = new TestModule();
+        Clock clock = new Clock(module.getChime(), module.getMetronome());
         astrolabe = new TestDayIntervalService();
         clock.bindToDayIntervalService(astrolabe);
         astrolabe.setNextResult(DayInterval.Day(0, 0));

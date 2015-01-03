@@ -1,19 +1,16 @@
 package com.aragaer.jtt.astronomy;
 // vim: et ts=4 sts=4 sw=4
 
-import javax.inject.Inject;
-
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.location.LocationConsumer;
 import com.aragaer.jtt.location.LocationService;
 
 
-public class DayIntervalService implements LocationConsumer {
+public class DayIntervalService implements LocationConsumer, DayIntervalEndObserver {
     private final DayIntervalCalculator calculator;
     private LocationService locationProvider;
     private DayIntervalConsumer consumer;
 
-    @Inject
     public DayIntervalService(DayIntervalCalculator calculator) {
         this.calculator = calculator;
     }

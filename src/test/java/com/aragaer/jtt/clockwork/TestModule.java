@@ -1,18 +1,12 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
-import dagger.*;
-import javax.inject.Singleton;
-
 import com.aragaer.jtt.astronomy.DayIntervalCalculator;
 import com.aragaer.jtt.astronomy.DayIntervalService;
 import com.aragaer.jtt.astronomy.TestDayIntervalService;
 import com.aragaer.jtt.astronomy.TestCalculator;
 
 
-@Module(includes=BaseModule.class, overrides=true,
-    injects={Clock.class, Chime.class, Metronome.class, TestClock.class,
-        DayIntervalService.class, TestDayIntervalService.class, DayIntervalCalculator.class})
 public class TestModule {
 
     private Metronome metronome = new TestMetronome();
@@ -21,15 +15,15 @@ public class TestModule {
         metronome = newMetronome;
     }
 
-    @Provides @Singleton public Chime getChime() {
+    public Chime getChime() {
         return new TestChime();
     }
 
-    @Provides @Singleton public Metronome getMetronome() {
+    public Metronome getMetronome() {
         return metronome;
     }
 
-    @Provides @Singleton public DayIntervalCalculator getCalculator() {
+    public DayIntervalCalculator getCalculator() {
         return new TestCalculator();
     }
 }

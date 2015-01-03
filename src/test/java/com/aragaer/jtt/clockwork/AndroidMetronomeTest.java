@@ -2,9 +2,7 @@ package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
 import java.util.List;
-import javax.inject.Singleton;
 
-import dagger.ObjectGraph;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -29,11 +27,10 @@ public class AndroidMetronomeTest {
     @Before
     public void setup() {
         metronome = new AndroidMetronome(Robolectric.application);
-        TestModule module = new TestModule();
-        module.setMetronome(metronome);
-        ObjectGraph graph = ObjectGraph.create(module);
-        metronome.attachTo(graph.get(Cogs.class));
-        chime = (TestChime) graph.get(Chime.class);
+        chime = new TestChime();
+        Cogs cogs = new Cogs();
+        metronome.attachTo(cogs);
+        cogs.attachChime(chime);
     }
 
     @Test

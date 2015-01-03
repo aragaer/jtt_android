@@ -1,6 +1,6 @@
 package com.aragaer.jtt;
 
-import static com.aragaer.jtt.clockwork.android.Chime.ACTION_JTT_TICK;
+import static com.aragaer.jtt.clockwork.android.AndroidChime.ACTION_JTT_TICK;
 import com.aragaer.jtt.core.*;
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.resources.RuntimeResources;

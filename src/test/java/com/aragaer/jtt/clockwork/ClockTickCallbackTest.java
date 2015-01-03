@@ -2,7 +2,6 @@ package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
 import java.lang.Thread;
-import dagger.ObjectGraph;
 
 import org.junit.*;
 import static org.hamcrest.Matchers.*;
@@ -16,9 +15,8 @@ public class ClockTickCallbackTest {
 
     @Before
     public void setUp() {
-        ObjectGraph graph = ObjectGraph.create(new TestModule());
-        clock = graph.get(TestClock.class);
-        chime = (TestChime) graph.get(Chime.class);
+        chime = new TestChime();
+        clock = new TestClock(chime, new TestMetronome());
     }
 
     @Test

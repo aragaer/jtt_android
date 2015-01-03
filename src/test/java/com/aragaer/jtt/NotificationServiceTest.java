@@ -19,7 +19,7 @@ import android.widget.*;
 
 import com.aragaer.jtt.core.JttTime;
 
-import static com.aragaer.jtt.clockwork.android.Chime.*;
+import static com.aragaer.jtt.clockwork.android.AndroidChime.*;
 import static org.robolectric.Robolectric.shadowOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.*;

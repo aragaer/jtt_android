@@ -1,8 +1,6 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
-import javax.inject.Inject;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +12,7 @@ import com.aragaer.jtt.astronomy.DayIntervalService;
 public class DateTimeChangeListener extends BroadcastReceiver {
     private final DayIntervalService astrolabe;
 
-    @Inject public DateTimeChangeListener(DayIntervalService astrolabe) {
+    public DateTimeChangeListener(DayIntervalService astrolabe) {
         this.astrolabe = astrolabe;
     }
 

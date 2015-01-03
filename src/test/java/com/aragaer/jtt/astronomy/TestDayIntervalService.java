@@ -1,8 +1,6 @@
 package com.aragaer.jtt.astronomy;
 // vim: et ts=4 sts=4 sw=4
 
-import javax.inject.Inject;
-
 import com.aragaer.jtt.location.Location;
 
 
@@ -17,7 +15,6 @@ public class TestDayIntervalService extends DayIntervalService {
         this(null);
     }
 
-    @Inject
     public TestDayIntervalService(DayIntervalCalculator calculator) {
         super(calculator);
     }

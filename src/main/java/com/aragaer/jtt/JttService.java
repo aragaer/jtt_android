@@ -1,9 +1,6 @@
 package com.aragaer.jtt;
 // vim: et ts=4 sts=4 sw=4
 
-import dagger.ObjectGraph;
-import javax.inject.Inject;
-
 import com.aragaer.jtt.astronomy.DayIntervalService;
 import com.aragaer.jtt.clockwork.AndroidModule;
 import com.aragaer.jtt.clockwork.Clock;
@@ -22,10 +19,10 @@ import android.util.Log;
 
 public class JttService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "JTT_SERVICE";
-    @Inject Clock clock;
-    @Inject DateTimeChangeListener dateTimeChangeListener;
-    LocationService locationProvider;
-    @Inject DayIntervalService astrolabe;
+    private final Clock clock;
+    private final DateTimeChangeListener dateTimeChangeListener;
+    private final LocationService locationService;
+    private final DayIntervalService astrolabe;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -33,13 +30,12 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     }
 
     public JttService() {
-        ObjectGraph graph = ObjectGraph.create(new AndroidModule(this));
-        clock = graph.get(Clock.class);
-        astrolabe = graph.get(DayIntervalService.class);
-        dateTimeChangeListener = graph.get(DateTimeChangeListener.class);
-        AndroidLocationProvider provider = new AndroidLocationProvider(this);
-        AndroidLocationChangeNotifier changeNotifier = new AndroidLocationChangeNotifier(this);
-        locationProvider = new LocationService(provider, changeNotifier);
+        AndroidModule module = new AndroidModule(this);
+        clock = new Clock(module.getChime(), module.getMetronome());
+        astrolabe = new DayIntervalService(module.getCalculator());
+        dateTimeChangeListener = new DateTimeChangeListener(astrolabe);
+        locationService = new LocationService(new AndroidLocationProvider(this),
+                new AndroidLocationChangeNotifier(this));
     }
 
     @Override
@@ -47,7 +43,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         super.onCreate();
         Log.i(TAG, "Service starting");
         clock.bindToDayIntervalService(astrolabe);
-        locationProvider.registerConsumer(astrolabe);
+        locationService.registerConsumer(astrolabe);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);

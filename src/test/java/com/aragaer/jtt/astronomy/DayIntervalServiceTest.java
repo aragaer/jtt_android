@@ -1,7 +1,6 @@
 package com.aragaer.jtt.astronomy;
 // vim: et ts=4 sts=4 sw=4
 
-import dagger.ObjectGraph;
 import org.junit.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -20,11 +19,11 @@ public class DayIntervalServiceTest {
 
     @Before
     public void setup() {
-        ObjectGraph graph = ObjectGraph.create(new TestModule());
-        clock = graph.get(TestClock.class);
-        astrolabe = graph.get(DayIntervalService.class);
+        TestModule module = new TestModule();
+        clock = new TestClock(module.getChime(), module.getMetronome());
+        calculator = (TestCalculator) module.getCalculator();
+        astrolabe = new DayIntervalService(calculator);
         clock.bindToDayIntervalService(astrolabe);
-        calculator = (TestCalculator) graph.get(DayIntervalCalculator.class);
     }
 
     // TODO: Remove

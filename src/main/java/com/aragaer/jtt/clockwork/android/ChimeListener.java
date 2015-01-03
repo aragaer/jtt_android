@@ -10,12 +10,12 @@ import android.content.IntentFilter;
 public abstract class ChimeListener extends BroadcastReceiver {
 
     public void register(Context context) {
-        context.registerReceiver(this, new IntentFilter(Chime.ACTION_JTT_TICK));
+        context.registerReceiver(this, new IntentFilter(AndroidChime.ACTION_JTT_TICK));
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        onChime(context, intent.getIntExtra(Chime.EXTRA_JTT, 0));
+        onChime(context, intent.getIntExtra(AndroidChime.EXTRA_JTT, 0));
     }
 
     public abstract void onChime(Context context, int ticks);
