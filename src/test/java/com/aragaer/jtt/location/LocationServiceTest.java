@@ -25,28 +25,28 @@ public class LocationServiceTest {
         assertThat(service.getCurrentLocation(), equalTo(location));
     }
 
-    @Test public void shouldNotifyCustomer() {
+    @Test public void shouldNotifyClient() {
         Location location = new Location(1, 1);
-        TestLocationConsumer consumer = new TestLocationConsumer();
-        service.registerConsumer(consumer);
+        TestLocationClient client = new TestLocationClient();
+        service.registerClient(client);
         provider.setNextResult(location);
 
         changeNotifier.notifyChange();
 
-        assertThat(consumer.getLocation(), equalTo(location));
+        assertThat(client.getLocation(), equalTo(location));
     }
 
     @Test public void shouldProvideCurrentLocationToRegisteredCustomer() {
         Location location = new Location(1, 1);
-        TestLocationConsumer consumer = new TestLocationConsumer();
+        TestLocationClient client = new TestLocationClient();
         provider.setNextResult(location);
 
-        service.registerConsumer(consumer);
+        service.registerClient(client);
 
-        assertThat(consumer.getLocation(), equalTo(location));
+        assertThat(client.getLocation(), equalTo(location));
     }
 
-    static class TestLocationConsumer implements LocationConsumer {
+    static class TestLocationClient implements LocationClient {
         private Location location;
 
         public void onLocationChanged(Location newLocation) {

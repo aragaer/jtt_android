@@ -2,11 +2,11 @@ package com.aragaer.jtt.astronomy;
 // vim: et ts=4 sts=4 sw=4
 
 import com.aragaer.jtt.location.Location;
-import com.aragaer.jtt.location.LocationConsumer;
+import com.aragaer.jtt.location.LocationClient;
 import com.aragaer.jtt.location.LocationService;
 
 
-public class DayIntervalService implements LocationConsumer, DayIntervalEndObserver {
+public class DayIntervalService implements LocationClient, DayIntervalEndObserver {
     private final DayIntervalCalculator calculator;
     private LocationService locationProvider;
     private DayIntervalConsumer consumer;

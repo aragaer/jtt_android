@@ -43,7 +43,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         clock.bindToDayIntervalService(astrolabe);
         locationService = new LocationService(new AndroidLocationProvider(this),
                 new AndroidLocationChangeNotifier(this));
-        locationService.registerConsumer(astrolabe);
+        locationService.registerClient(astrolabe);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);

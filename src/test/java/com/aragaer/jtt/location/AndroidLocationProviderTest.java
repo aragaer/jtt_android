@@ -21,14 +21,14 @@ import android.content.SharedPreferences;
 public class AndroidLocationProviderTest {
 
     private LocationService service;
-    private TestLocationConsumer consumer;
+    private TestLocationClient client;
 
     @Before public void setUp() {
-        consumer = new TestLocationConsumer();
+        client = new TestLocationClient();
         LocationProvider provider = new AndroidLocationProvider(Robolectric.application);
         LocationChangeNotifier changeNotifier = new AndroidLocationChangeNotifier(Robolectric.application);
         service = new LocationService(provider, changeNotifier);
-        service.registerConsumer(consumer);
+        service.registerClient(client);
     }
 
     @Test public void shouldRetrieveLocation() {
@@ -47,8 +47,8 @@ public class AndroidLocationProviderTest {
             .getDefaultSharedPreferences(Robolectric.application.getApplicationContext());
         sharedPreferences.edit().putString(Settings.PREF_LOCATION, "1.2:3.4").commit();
 
-        assertEquals(consumer.getLocation().getLatitude(), 1.2, 0.0001);
-        assertEquals(consumer.getLocation().getLongitude(), 3.4, 0.0001);
+        assertEquals(client.getLocation().getLatitude(), 1.2, 0.0001);
+        assertEquals(client.getLocation().getLongitude(), 3.4, 0.0001);
     }
 
     @Test public void shouldNotReactOnOtherSettings() {
@@ -56,10 +56,10 @@ public class AndroidLocationProviderTest {
             .getDefaultSharedPreferences(Robolectric.application.getApplicationContext());
         sharedPreferences.edit().putString("other string", "1.2:3.4").commit();
 
-        assertThat(consumer.locationChangeCalls, equalTo(1));
+        assertThat(client.locationChangeCalls, equalTo(1));
     }
 
-    static class TestLocationConsumer implements LocationConsumer {
+    static class TestLocationClient implements LocationClient {
         private Location location;
         public int locationChangeCalls;
 

@@ -5,7 +5,7 @@ package com.aragaer.jtt.location;
 public class LocationService {
     private final LocationProvider provider;
     private final LocationChangeNotifier changeNotifier;
-    private LocationConsumer consumer;
+    private LocationClient client;
 
     public LocationService(LocationProvider provider, LocationChangeNotifier changeNotifier) {
         this.provider = provider;
@@ -17,13 +17,13 @@ public class LocationService {
         return provider.getCurrentLocation();
     }
 
-    public void registerConsumer(LocationConsumer newConsumer) {
-        consumer = newConsumer;
-        consumer.onLocationChanged(getCurrentLocation());
+    public void registerClient(LocationClient newClient) {
+        client = newClient;
+        client.onLocationChanged(getCurrentLocation());
     }
 
     public void locationChanged() {
-        if (consumer != null)
-            consumer.onLocationChanged(getCurrentLocation());
+        if (client != null)
+            client.onLocationChanged(getCurrentLocation());
     }
 }
