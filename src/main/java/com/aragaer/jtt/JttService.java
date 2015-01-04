@@ -1,10 +1,11 @@
 package com.aragaer.jtt;
 // vim: et ts=4 sts=4 sw=4
 
+import com.aragaer.jtt.astronomy.android.AndroidDateTimeChangeListener;
 import com.aragaer.jtt.astronomy.DayIntervalService;
+import com.aragaer.jtt.astronomy.SscCalculator;
 import com.aragaer.jtt.clockwork.AndroidModule;
 import com.aragaer.jtt.clockwork.Clock;
-import com.aragaer.jtt.clockwork.DateTimeChangeListener;
 import com.aragaer.jtt.location.LocationService;
 import com.aragaer.jtt.location.AndroidLocationProvider;
 import com.aragaer.jtt.location.AndroidLocationChangeNotifier;
@@ -20,7 +21,7 @@ import android.util.Log;
 public class JttService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "JTT_SERVICE";
     private final Clock clock;
-    private final DateTimeChangeListener dateTimeChangeListener;
+    private final AndroidDateTimeChangeListener dateTimeChangeListener;
     private LocationService locationService;
     private final DayIntervalService astrolabe;
 
@@ -32,15 +33,15 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     public JttService() {
         AndroidModule module = new AndroidModule(this);
         clock = new Clock(module.getChime(), module.getMetronome());
-        astrolabe = new DayIntervalService(module.getCalculator());
-        dateTimeChangeListener = new DateTimeChangeListener(astrolabe);
+        dateTimeChangeListener = new AndroidDateTimeChangeListener();
+        astrolabe = new DayIntervalService(new SscCalculator(), dateTimeChangeListener);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.i(TAG, "Service starting");
-        clock.bindToDayIntervalService(astrolabe);
+        astrolabe.registerClient(clock);
         locationService = new LocationService(new AndroidLocationProvider(this),
                 new AndroidLocationChangeNotifier(this));
         locationService.registerClient(astrolabe);

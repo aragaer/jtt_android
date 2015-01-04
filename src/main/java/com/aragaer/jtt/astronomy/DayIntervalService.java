@@ -8,23 +8,22 @@ import com.aragaer.jtt.location.LocationService;
 
 public class DayIntervalService implements LocationClient, DayIntervalEndObserver {
     private final DayIntervalCalculator calculator;
-    private LocationService locationProvider;
-    private DayIntervalConsumer consumer;
+    private final DateTimeChangeListener changeNotifier;
+    private DayIntervalClient client;
 
-    public DayIntervalService(DayIntervalCalculator calculator) {
+    public DayIntervalService(DayIntervalCalculator calculator, DateTimeChangeListener listener) {
         this.calculator = calculator;
+        this.changeNotifier = listener;
+        listener.setService(this);
     }
 
     public DayInterval getCurrentInterval() {
         return calculator.getIntervalFor(System.currentTimeMillis());
     }
 
-    public void updateLocation() {
-        calculator.setLocation(locationProvider.getCurrentLocation());
-    }
-
     private void onIntervalChanged() {
-        consumer.setInterval(getCurrentInterval());
+        if (client != null)
+            client.intervalChanged(getCurrentInterval());
     }
 
     public void onDateTimeChanged() {
@@ -40,7 +39,7 @@ public class DayIntervalService implements LocationClient, DayIntervalEndObserve
         onIntervalChanged();
     }
 
-    public void bindToClock(DayIntervalConsumer newClock) {
-        consumer = newClock;
+    public void registerClient(DayIntervalClient newClient) {
+        client = newClient;
     }
 }

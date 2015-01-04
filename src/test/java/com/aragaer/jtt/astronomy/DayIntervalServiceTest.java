@@ -5,8 +5,9 @@ import org.junit.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import com.aragaer.jtt.clockwork.TestChime;
 import com.aragaer.jtt.clockwork.TestClock;
-import com.aragaer.jtt.clockwork.TestModule;
+import com.aragaer.jtt.clockwork.TestMetronome;
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.test.*;
 
@@ -19,11 +20,11 @@ public class DayIntervalServiceTest {
 
     @Before
     public void setup() {
-        TestModule module = new TestModule();
-        clock = new TestClock(module.getChime(), module.getMetronome());
-        calculator = (TestCalculator) module.getCalculator();
-        astrolabe = new DayIntervalService(calculator);
-        clock.bindToDayIntervalService(astrolabe);
+        // FIXME: Don't use real clock here
+        clock = new TestClock(new TestChime(), new TestMetronome());
+        calculator = new TestCalculator();
+        astrolabe = new DayIntervalService(calculator, new TestChangeNotifier());
+        astrolabe.registerClient(clock);
     }
 
     // TODO: Remove
@@ -74,5 +75,9 @@ public class DayIntervalServiceTest {
         assertThat(clock.currentInterval, equalTo(interval));
         assertThat(calculator.timestamp, greaterThanOrEqualTo(before));
         assertThat(calculator.timestamp, lessThanOrEqualTo(after));
+    }
+
+    private static class TestChangeNotifier implements DateTimeChangeListener {
+        public void setService(DayIntervalService service) {}
     }
 }

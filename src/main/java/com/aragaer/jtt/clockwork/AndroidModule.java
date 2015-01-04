@@ -1,8 +1,6 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
-import com.aragaer.jtt.astronomy.DayIntervalCalculator;
-import com.aragaer.jtt.astronomy.SscCalculator;
 import com.aragaer.jtt.clockwork.android.AndroidChime;
 import android.content.Context;
 
@@ -21,9 +19,5 @@ public class AndroidModule {
 
     public Metronome getMetronome() {
         return new AndroidMetronome(context);
-    }
-
-    public DayIntervalCalculator getCalculator() {
-        return new SscCalculator();
     }
 }

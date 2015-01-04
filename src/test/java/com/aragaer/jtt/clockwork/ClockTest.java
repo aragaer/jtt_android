@@ -5,8 +5,10 @@ import org.junit.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
+import com.aragaer.jtt.astronomy.DateTimeChangeListener;
 import com.aragaer.jtt.astronomy.DayInterval;
 import com.aragaer.jtt.astronomy.DayIntervalEndObserver;
+import com.aragaer.jtt.astronomy.DayIntervalService;
 import com.aragaer.jtt.astronomy.TestDayIntervalService;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_DAY;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
@@ -21,12 +23,14 @@ public class ClockTest {
     private Cogs cogs;
 
     @Before public void setUp() {
-        TestModule module = new TestModule();
-        metronome = (TestMetronome) module.getMetronome();
-        chime = (TestChime) module.getChime();
+        metronome = new TestMetronome();
+        chime = new TestChime();
         clock = new Clock(chime, metronome);
-        astrolabe = new TestDayIntervalService();
-        clock.bindToDayIntervalService(astrolabe);
+        // FIXME: Don't use actual service here
+        astrolabe = new TestDayIntervalService(null, new DateTimeChangeListener() {
+            public void setService(DayIntervalService service) {}
+        });
+        astrolabe.registerClient(clock);
         clock.registerIntervalEndObserver(astrolabe);
         cogs = clock.getCogs();
     }
@@ -34,7 +38,7 @@ public class ClockTest {
     @Test public void shouldStartMetronomeBasedOnCurrentInterval() {
         DayInterval interval = DayInterval.Day(10, 10 + TICKS_PER_INTERVAL * 5);
 
-        clock.setInterval(interval);
+        clock.intervalChanged(interval);
 
         assertThat(metronome.start, equalTo(10L));
         assertThat(metronome.tickLength, equalTo(5L));
@@ -44,7 +48,7 @@ public class ClockTest {
         long dayStart = 10;
         long dayTickLength = 5;
         long dayEnd = dayStart + dayTickLength * TICKS_PER_INTERVAL;
-        clock.setInterval(DayInterval.Day(dayStart, dayEnd));
+        clock.intervalChanged(DayInterval.Day(dayStart, dayEnd));
 
         cogs.rotate(5);
 
@@ -67,7 +71,7 @@ public class ClockTest {
         int tickNumber = 42;
 
         DayInterval interval = DayInterval.Day(0, 1);
-        clock.setInterval(interval);
+        clock.intervalChanged(interval);
         cogs.rotate(tickNumber);
 
         assertThat("chime number", chime.getLastTick(), equalTo(tickNumber + TICKS_PER_INTERVAL));
@@ -85,7 +89,7 @@ public class ClockTest {
         int lastTick = 0;
         int tickCount;
 
-        clock.setInterval(DayInterval.Night(sunset1, sunrise1));
+        clock.intervalChanged(DayInterval.Night(sunset1, sunrise1));
         astrolabe.setNextResult(DayInterval.Day(sunrise1, sunset2));
 
         tickCount = 2;
@@ -134,7 +138,7 @@ public class ClockTest {
         long now = System.currentTimeMillis();
         DayInterval day = DayInterval.Day(now + dayStartOffset, now + dayEndOffset);
 
-        clock.setInterval(day);
+        clock.intervalChanged(day);
 
         assertThat(metronome.tickLength, equalTo(dayTickLength));
         assertThat(metronome.start, equalTo(now + dayStartOffset));

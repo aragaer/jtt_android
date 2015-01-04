@@ -11,22 +11,13 @@ public class TestDayIntervalService extends DayIntervalService {
     public int dateTimeChangeCalls;
     public Location currentLocation;
 
-    public TestDayIntervalService() {
-        this(null);
-    }
-
-    public TestDayIntervalService(DayIntervalCalculator calculator) {
-        super(calculator);
+    public TestDayIntervalService(DayIntervalCalculator calculator, DateTimeChangeListener listener) {
+        super(calculator, listener);
     }
 
     @Override
     public DayInterval getCurrentInterval() {
         return nextResult == null ? super.getCurrentInterval() : nextResult;
-    }
-
-    @Override
-    public void updateLocation() {
-        updateLocationCalls++;
     }
 
     public void setNextResult(DayInterval interval) {

@@ -13,8 +13,8 @@ public class TestClock extends Clock {
     }
 
     @Override
-    public void setInterval(DayInterval interval) {
+    public void intervalChanged(DayInterval interval) {
         currentInterval = interval;
-        super.setInterval(interval);
+        super.intervalChanged(interval);
     }
 }

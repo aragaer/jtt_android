@@ -2,14 +2,14 @@ package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
 import com.aragaer.jtt.astronomy.DayInterval;
-import com.aragaer.jtt.astronomy.DayIntervalConsumer;
+import com.aragaer.jtt.astronomy.DayIntervalClient;
 import com.aragaer.jtt.astronomy.DayIntervalEndObserver;
 import com.aragaer.jtt.astronomy.DayIntervalService;
 
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 
 
-public class Clock implements DayIntervalConsumer {
+public class Clock implements DayIntervalClient {
     private final Chime chime;
     private final Metronome metronome;
     private final Cogs cogs;
@@ -26,17 +26,13 @@ public class Clock implements DayIntervalConsumer {
         return cogs;
     }
 
-    public void setInterval(DayInterval interval) {
+    public void intervalChanged(DayInterval interval) {
 		long tickLength = interval.getLength() / TICKS_PER_INTERVAL;
         if (interval.isDay())
             cogs.switchToDayGear();
         else
             cogs.switchToNightGear();
         metronome.start(interval.getStart(), tickLength);
-    }
-
-    public void bindToDayIntervalService(DayIntervalService astrolabe) {
-        astrolabe.bindToClock(this);
     }
 
     public void registerIntervalEndObserver(DayIntervalEndObserver observer) {

@@ -1,4 +1,4 @@
-package com.aragaer.jtt.clockwork;
+package com.aragaer.jtt.astronomy.android;
 // vim: et ts=4 sts=4 sw=4
 
 import java.util.List;
@@ -14,26 +14,22 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import android.content.*;
 
-import com.aragaer.jtt.astronomy.DayInterval;
+import com.aragaer.jtt.astronomy.DayIntervalService;
 import com.aragaer.jtt.astronomy.TestDayIntervalService;
 import com.aragaer.jtt.JttService;
 
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
-public class DateTimeChangeListenerTest {
+public class AndroidDateTimeChangeListenerTest {
 
-    private DateTimeChangeListener listener;
+    private AndroidDateTimeChangeListener listener;
     private TestDayIntervalService astrolabe;
 
     @Before
     public void setup() {
-        TestModule module = new TestModule();
-        Clock clock = new Clock(module.getChime(), module.getMetronome());
-        astrolabe = new TestDayIntervalService();
-        clock.bindToDayIntervalService(astrolabe);
-        astrolabe.setNextResult(DayInterval.Day(0, 0));
-        listener = new DateTimeChangeListener(astrolabe);
+        listener = new AndroidDateTimeChangeListener();
+        astrolabe = new TestDayIntervalService(null, listener);
         listener.register(Robolectric.application);
     }
 
