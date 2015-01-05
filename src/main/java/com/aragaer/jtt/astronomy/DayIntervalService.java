@@ -6,44 +6,40 @@ import com.aragaer.jtt.location.LocationClient;
 import com.aragaer.jtt.location.LocationService;
 
 
-public class DayIntervalService implements LocationClient, DayIntervalEndObserver {
+public class DayIntervalService implements LocationClient {
     private final DayIntervalCalculator calculator;
-    private final DateTimeChangeListener changeNotifier;
     private DayIntervalClient client;
+    private DayInterval currentInterval;
+    private long currentTime;
 
     public DayIntervalService(DayIntervalCalculator calculator) {
         this.calculator = calculator;
-        this.changeNotifier = null;
-    }
-
-    private DayIntervalService(DayIntervalCalculator calculator, DateTimeChangeListener listener) {
-        this.calculator = calculator;
-        this.changeNotifier = listener;
-        listener.setService(this);
-    }
-
-    private void onIntervalChanged() {
-        if (client != null) {
-            long now = System.currentTimeMillis();
-            DayInterval currentInterval = calculator.getIntervalFor(now);
-            client.intervalChanged(currentInterval);
-        }
-    }
-
-    public void onDateTimeChanged() {
-        onIntervalChanged();
-    }
-
-    public void onIntervalEnded() {
-        onIntervalChanged();
+        currentTime = System.currentTimeMillis();
+        currentInterval = DayInterval.Night(0, 0);
     }
 
     public void onLocationChanged(Location newLocation) {
         calculator.setLocation(newLocation);
-        onIntervalChanged();
+        changeInterval();
     }
 
     public void registerClient(DayIntervalClient newClient) {
         client = newClient;
+    }
+
+    public void timeChanged(long timestamp) {
+        currentTime = timestamp;
+        if (!currentInterval.contains(timestamp))
+            changeInterval();
+    }
+
+    private void onIntervalChanged() {
+        timeChanged(System.currentTimeMillis());
+    }
+
+    private void changeInterval() {
+        currentInterval = calculator.getIntervalFor(currentTime);
+        if (client != null)
+            client.intervalChanged(currentInterval);
     }
 }

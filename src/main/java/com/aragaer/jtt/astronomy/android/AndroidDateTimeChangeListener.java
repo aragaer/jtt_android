@@ -6,14 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.aragaer.jtt.astronomy.DateTimeChangeListener;
 import com.aragaer.jtt.astronomy.DayIntervalService;
 
 
-public class AndroidDateTimeChangeListener extends BroadcastReceiver
-        implements DateTimeChangeListener {
+public class AndroidDateTimeChangeListener extends BroadcastReceiver {
     private DayIntervalService service;
-
 
     public void setService(DayIntervalService service) {
         this.service = service;
@@ -22,13 +19,11 @@ public class AndroidDateTimeChangeListener extends BroadcastReceiver
     public void register(Context context) {
         IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_CHANGED);
         filter.addAction(Intent.ACTION_DATE_CHANGED);
+        filter.addAction(Intent.ACTION_TIME_TICK);
         context.registerReceiver(this, filter);
     }
 
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        if (action.equals(Intent.ACTION_TIME_CHANGED)
-                || action.equals(Intent.ACTION_DATE_CHANGED))
-            service.onDateTimeChanged();
+        service.timeChanged(System.currentTimeMillis());
     }
 }

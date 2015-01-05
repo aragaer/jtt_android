@@ -1,14 +1,11 @@
 package com.aragaer.jtt.clockwork;
 // vim: et ts=4 sts=4 sw=4
 
-import com.aragaer.jtt.astronomy.DayIntervalEndObserver;
-import com.aragaer.jtt.astronomy.DayIntervalService;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 
 
 public class Cogs {
 
-    private DayIntervalEndObserver observer;
     private Chime chime;
     private int teethPassed;
 
@@ -17,20 +14,13 @@ public class Cogs {
     }
 
     public void rotate(int teeth) {
-        if (TICKS_PER_INTERVAL - teeth <= teethPassed % TICKS_PER_INTERVAL) {
-            if (observer != null)
-                observer.onIntervalEnded();
-        } else
+        if (TICKS_PER_INTERVAL - teeth > teethPassed % TICKS_PER_INTERVAL)
             teethPassed += teeth;
         chime.ding(teethPassed);
     }
 
     public void setLastTick(int tick) {
         teethPassed = tick;
-    }
-
-    public void registerIntervalEndObserver(DayIntervalEndObserver observer) {
-        this.observer = observer;
     }
 
     public void switchToNightGear() {

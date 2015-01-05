@@ -5,7 +5,6 @@ import org.junit.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import com.aragaer.jtt.astronomy.DayIntervalEndObserver;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 
 
@@ -37,21 +36,5 @@ public class CogsTest {
         cogs.rotate(1);
 
         assertThat(chime.getLastTick(), equalTo(2));
-    }
-
-    @Test public void shouldNotifyOnIntervalEnd() {
-        TestIntervalEndObserver observer = new TestIntervalEndObserver();
-        cogs.rotate(42);
-        cogs.registerIntervalEndObserver(observer);
-        assertThat(observer.intervalEndCount, equalTo(0));
-        cogs.rotate(TICKS_PER_INTERVAL-42);
-        assertThat(observer.intervalEndCount, equalTo(1));
-    }
-
-    private static class TestIntervalEndObserver implements DayIntervalEndObserver {
-        public int intervalEndCount;
-        public void onIntervalEnded() {
-            intervalEndCount++;
-        }
     }
 }

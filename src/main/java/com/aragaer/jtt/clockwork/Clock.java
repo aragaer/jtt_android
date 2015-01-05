@@ -3,7 +3,6 @@ package com.aragaer.jtt.clockwork;
 
 import com.aragaer.jtt.astronomy.DayInterval;
 import com.aragaer.jtt.astronomy.DayIntervalClient;
-import com.aragaer.jtt.astronomy.DayIntervalEndObserver;
 import com.aragaer.jtt.astronomy.DayIntervalService;
 
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
@@ -33,9 +32,5 @@ public class Clock implements DayIntervalClient {
         else
             cogs.switchToNightGear();
         metronome.start(interval.getStart(), tickLength);
-    }
-
-    public void registerIntervalEndObserver(DayIntervalEndObserver observer) {
-        cogs.registerIntervalEndObserver(observer);
     }
 }

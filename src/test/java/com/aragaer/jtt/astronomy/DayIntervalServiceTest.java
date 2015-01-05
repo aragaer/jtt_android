@@ -22,19 +22,6 @@ public class DayIntervalServiceTest {
         service.registerClient(client);
     }
 
-    @Test public void shouldNotifyClientOnDateTimeChange() {
-        DayInterval interval = DayInterval.Day(10000, 20000);
-        calculator.setNextResult(interval);
-        long before = System.currentTimeMillis();
-
-        service.onDateTimeChanged();
-
-        long after = System.currentTimeMillis();
-        assertThat(client.currentInterval, equalTo(interval));
-        assertThat(calculator.timestamp, greaterThanOrEqualTo(before));
-        assertThat(calculator.timestamp, lessThanOrEqualTo(after));
-    }
-
     @Test public void shouldNotifyClientOnLocationChange() {
         DayInterval interval = DayInterval.Day(10000, 20000);
         calculator.setNextResult(interval);
@@ -50,28 +37,35 @@ public class DayIntervalServiceTest {
         assertThat(calculator.timestamp, lessThanOrEqualTo(after));
     }
 
-    @Test public void shouldCalculateNewIntervalOnIntervalEnd() {
+    @Test public void shouldCalculateNewIntervalForCurrentTime() {
         DayInterval interval = DayInterval.Day(10000, 20000);
         calculator.setNextResult(interval);
-        long before = System.currentTimeMillis();
 
-        service.onIntervalEnded();
+        service.timeChanged(15000);
 
-        long after = System.currentTimeMillis();
+        assertThat(calculator.timestamp, equalTo(15000L));
         assertThat(client.currentInterval, equalTo(interval));
-        assertThat(calculator.timestamp, greaterThanOrEqualTo(before));
-        assertThat(calculator.timestamp, lessThanOrEqualTo(after));
+    }
+
+    @Test public void shouldCompareIfNewDateInSameInterval() {
+        DayInterval interval = DayInterval.Day(10000, 20000);
+        calculator.setNextResult(interval);
+
+        int changes = client.intervalChanges;
+        service.timeChanged(15000);
+        service.timeChanged(17000);
+
+        assertThat(calculator.timestamp, equalTo(15000L));
+        assertThat(client.intervalChanges, equalTo(changes+1));
     }
 
     private static class TestIntervalClient implements DayIntervalClient {
         public DayInterval currentInterval;
+        public int intervalChanges;
 
         public void intervalChanged(DayInterval interval) {
             currentInterval = interval;
+            intervalChanges++;
         }
-    }
-
-    private static class TestChangeNotifier implements DateTimeChangeListener {
-        public void setService(DayIntervalService service) {}
     }
 }

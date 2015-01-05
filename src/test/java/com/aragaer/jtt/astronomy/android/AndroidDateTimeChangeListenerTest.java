@@ -47,29 +47,28 @@ public class AndroidDateTimeChangeListenerTest {
         testListensFor(Intent.ACTION_DATE_CHANGED);
     }
 
-    @Test public void testShouldReportToDayIntervalService() {
-        int oldCount = this.astrolabe.dateTimeChangeCalls;
-        listener.onReceive(Robolectric.application, new Intent(Intent.ACTION_DATE_CHANGED));
-        int newCount = this.astrolabe.dateTimeChangeCalls;
+    @Test public void shouldListenForTimeTick() {
+        testListensFor(Intent.ACTION_TIME_TICK);
+    }
 
-        assertThat(newCount, equalTo(oldCount+1));
+    @Test public void shouldReportCurrentTime() {
+        long begin = System.currentTimeMillis();
+        listener.onReceive(Robolectric.application, new Intent(Intent.ACTION_DATE_CHANGED));
+        long end = System.currentTimeMillis();
+
+        assertThat(astrolabe.currentTime, greaterThanOrEqualTo(begin));
+        assertThat(astrolabe.currentTime, lessThanOrEqualTo(end));
     }
 
     private static class TestDayIntervalService extends DayIntervalService {
-        public int updateLocationCalls;
-        public int dateTimeChangeCalls;
-        public Location currentLocation;
+        public long currentTime;
 
         public TestDayIntervalService() {
             super(null);
         }
 
-        @Override public void onDateTimeChanged() {
-            dateTimeChangeCalls++;
-        }
-
-        @Override public void onLocationChanged(Location location) {
-            currentLocation = location;
+        @Override public void timeChanged(long timestamp) {
+            currentTime = timestamp;
         }
     }
 }
