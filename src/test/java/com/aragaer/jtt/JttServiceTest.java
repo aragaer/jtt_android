@@ -22,7 +22,7 @@ import static com.aragaer.jtt.clockwork.android.AndroidChime.ACTION_JTT_TICK;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 import com.aragaer.jtt.location.*;
 import com.aragaer.jtt.astronomy.*;
-import com.aragaer.jtt.clockwork.TickService;
+import com.aragaer.jtt.clockwork.android.TickService;
 
 
 @RunWith(RobolectricTestRunner.class)

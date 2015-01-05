@@ -8,7 +8,7 @@ import com.aragaer.jtt.astronomy.DayIntervalCalculator;
 import com.aragaer.jtt.astronomy.DayIntervalService;
 import com.aragaer.jtt.clockwork.Cogs;
 import com.aragaer.jtt.clockwork.Metronome;
-import com.aragaer.jtt.clockwork.TickService;
+//import com.aragaer.jtt.clockwork.TickService;
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.location.LocationProvider;
 import com.aragaer.jtt.location.LocationService;
@@ -25,6 +25,7 @@ public class InfrastructureTest {
         DayIntervalService intervalService = new DayIntervalService(calculator);
 
         TestMetronome metronome = new TestMetronome();
+        // TickService tickService = new TickService(metronome);
     }
 
     private static class TestLocationProvider implements LocationProvider {

@@ -4,7 +4,8 @@ package com.aragaer.jtt;
 import com.aragaer.jtt.astronomy.android.AndroidDateTimeChangeListener;
 import com.aragaer.jtt.astronomy.DayIntervalService;
 import com.aragaer.jtt.astronomy.SscCalculator;
-import com.aragaer.jtt.clockwork.AndroidModule;
+import com.aragaer.jtt.clockwork.android.AndroidChime;
+import com.aragaer.jtt.clockwork.android.AndroidMetronome;
 import com.aragaer.jtt.clockwork.Clock;
 import com.aragaer.jtt.location.AndroidLocationChangeNotifier;
 import com.aragaer.jtt.location.AndroidLocationProvider;
@@ -32,8 +33,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     }
 
     public JttService() {
-        AndroidModule module = new AndroidModule(this);
-        clock = new Clock(module.getChime(), module.getMetronome());
+        clock = new Clock(new AndroidChime(this), new AndroidMetronome(this));
         dateTimeChangeListener = new AndroidDateTimeChangeListener();
         astrolabe = new DayIntervalService(new SscCalculator());
         dateTimeChangeListener.setService(astrolabe);

@@ -1,4 +1,4 @@
-package com.aragaer.jtt.clockwork;
+package com.aragaer.jtt.clockwork.android;
 // vim: et ts=4 sts=4 sw=4
 
 import java.util.List;
@@ -15,6 +15,9 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 import android.app.AlarmManager;
 import android.content.*;
+
+import com.aragaer.jtt.clockwork.Cogs;
+import com.aragaer.jtt.clockwork.TestChime;
 
 
 @RunWith(RobolectricTestRunner.class)

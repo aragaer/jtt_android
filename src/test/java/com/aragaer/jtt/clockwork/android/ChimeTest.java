@@ -12,8 +12,6 @@ import android.content.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import com.aragaer.jtt.clockwork.AndroidModule;
-
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk=18)

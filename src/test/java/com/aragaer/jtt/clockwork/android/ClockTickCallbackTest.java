@@ -1,4 +1,4 @@
-package com.aragaer.jtt.clockwork;
+package com.aragaer.jtt.clockwork.android;
 // vim: et ts=4 sts=4 sw=4
 
 import java.lang.Thread;
@@ -6,6 +6,10 @@ import java.lang.Thread;
 import org.junit.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
+
+import com.aragaer.jtt.clockwork.TestChime;
+import com.aragaer.jtt.clockwork.TestClock;
+import com.aragaer.jtt.clockwork.TestMetronome;
 
 
 public class ClockTickCallbackTest {
