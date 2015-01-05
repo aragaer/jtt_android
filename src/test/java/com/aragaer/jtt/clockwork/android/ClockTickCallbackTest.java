@@ -7,48 +7,51 @@ import org.junit.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import com.aragaer.jtt.clockwork.TestChime;
-import com.aragaer.jtt.clockwork.TestClock;
-import com.aragaer.jtt.clockwork.TestMetronome;
+import com.aragaer.jtt.clockwork.TickClient;
+import com.aragaer.jtt.clockwork.TickCounter;
 
 
 public class ClockTickCallbackTest {
 
-    private TestClock clock;
-    private TestChime chime;
+    private TickCounter counter;
+    private TestTickClient client;
 
-    @Before
-    public void setUp() {
-        chime = new TestChime();
-        clock = new TestClock(chime, new TestMetronome());
+    @Before public void setUp() {
+        client = new TestTickClient();
+        counter = new TickCounter();
+        counter.addClient(client);
     }
 
-    @Test
-    public void shouldTrigger0TicksIfLessThanLength() {
+    @Test public void shouldTrigger0TicksIfLessThanLength() {
         long now = System.currentTimeMillis();
-        ClockTickCallback callback = new ClockTickCallback(clock.getCogs(), now, 10000);
+        ClockTickCallback callback = new ClockTickCallback(counter, now, 10000);
         callback.onTick();
-        assertThat(chime.getLastTick(), equalTo(0));
+        assertThat(client.ticks, equalTo(0));
     }
 
-    @Test
-    public void shouldTriggerRequiredNumberOfTicks() {
+    @Test public void shouldTriggerRequiredNumberOfTicks() {
         long offset = 1000 * 42 + 250;
         long now = System.currentTimeMillis();
-        ClockTickCallback callback = new ClockTickCallback(clock.getCogs(), now - offset, 1000);
+        ClockTickCallback callback = new ClockTickCallback(counter, now - offset, 1000);
         callback.onTick();
-        assertThat(chime.getLastTick(), equalTo(42));
+        assertThat(client.ticks, equalTo(42));
     }
 
-    @Test
-    public void shouldTickOnceAgain() throws InterruptedException {
+    @Test public void shouldTickOnceAgain() throws InterruptedException {
         long offset = 1000 * 42 + 997;
         long now = System.currentTimeMillis();
-        ClockTickCallback callback = new ClockTickCallback(clock.getCogs(), now - offset, 1000);
+        ClockTickCallback callback = new ClockTickCallback(counter, now - offset, 1000);
         callback.onTick();
-        assertThat(chime.getLastTick(), equalTo(42));
+        assertThat(client.ticks, equalTo(42));
         Thread.sleep(5);
         callback.onTick();
-        assertThat(chime.getLastTick(), equalTo(43));
+        assertThat(client.ticks, equalTo(43));
+    }
+
+    private static class TestTickClient implements TickClient {
+        public int ticks;
+        public void tickChanged(int ticks) {
+            this.ticks = ticks;
+        }
     }
 }

@@ -16,31 +16,33 @@ import static org.junit.Assert.*;
 import android.app.AlarmManager;
 import android.content.*;
 
+import com.aragaer.jtt.clockwork.TickCounter;
+
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
 public class TickServiceTest {
 
-    @After
-    public void tearDown() {
-        TickService.setCallback(null);
+    private ClockTickCallback callback;
+    private TestTickCounter counter;
+
+    @Before public void setUp() {
+        counter = new TestTickCounter();
+        callback = new ClockTickCallback(counter, 0, 1);
+        TickService.setCallback(callback);
     }
 
-    @Test
-    public void shouldSetCallback() {
-        TickCallback callback = new TestCallback();
-        TickService.setCallback(callback);
+    @After public void tearDown() {
+        TickService.setCallback(null);
     }
 
     @Test(expected=IllegalStateException.class)
     public void shouldRequireCallback() {
+        TickService.setCallback(null);
         TickService.start(Robolectric.application, 0, 20);
     }
 
-	@Test
-	public void shouldScheduleAlarmForSelf() {
-        TickService.setCallback(new TestCallback());
-
+	@Test public void shouldScheduleAlarmForSelf() {
         TickService.start(Robolectric.application, 0, 20);
 
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
@@ -55,9 +57,7 @@ public class TickServiceTest {
         assertEquals(intent.getIntentClass(), TickService.class);
 	}
 
-	@Test
-	public void shouldScheduleAlarmWithCorrectStartTime() {
-        TickService.setCallback(new TestCallback());
+	@Test public void shouldScheduleAlarmWithCorrectStartTime() {
         TickService.start(Robolectric.application, 30, 20);
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
@@ -65,9 +65,7 @@ public class TickServiceTest {
 		assertThat(alarm.triggerAtTime, equalTo(30L));
 	}
 
-	@Test
-	public void shouldScheduleAlarmWithCorrectInterval() {
-        TickService.setCallback(new TestCallback());
+	@Test public void shouldScheduleAlarmWithCorrectInterval() {
         TickService.start(Robolectric.application, 0, 20);
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
@@ -75,21 +73,16 @@ public class TickServiceTest {
 		assertThat(alarm.interval, equalTo(20L));
 	}
 
-    @Test
-	public void shouldUnscheduleAlarm() {
-        TickService.setCallback(new TestCallback());
+    @Test public void shouldUnscheduleAlarm() {
         TickService.start(Robolectric.application, 0, 20);
 		TickService.stop(Robolectric.application);
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(0));
 	}
 
-    @Test
-    public void shouldTriggerCallback() {
-        TestCallback callback = new TestCallback();
-        TickService.setCallback(callback);
+    @Test public void shouldTriggerCallback() {
         new TickServiceMock().onHandleIntent(null);
-        assertThat(callback.calls, equalTo(1));
+        assertThat(counter.calls, equalTo(1));
     }
 
     class TickServiceMock extends TickService {
@@ -105,10 +98,10 @@ public class TickServiceTest {
 		return Robolectric.shadowOf(am).getScheduledAlarms();
     }
 
-    static private class TestCallback implements TickCallback {
+    static private class TestTickCounter extends TickCounter {
         int calls;
-
-        public void onTick() {
+        @Override
+        public void rotate(int ticks) {
             calls++;
         }
     }

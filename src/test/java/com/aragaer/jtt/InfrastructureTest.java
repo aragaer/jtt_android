@@ -6,9 +6,10 @@ import org.junit.*;
 import com.aragaer.jtt.astronomy.DayInterval;
 import com.aragaer.jtt.astronomy.DayIntervalCalculator;
 import com.aragaer.jtt.astronomy.DayIntervalService;
-import com.aragaer.jtt.clockwork.Cogs;
-import com.aragaer.jtt.clockwork.Metronome;
-//import com.aragaer.jtt.clockwork.TickService;
+import com.aragaer.jtt.clockwork.TickCounter;
+import com.aragaer.jtt.clockwork.TickProvider;
+import com.aragaer.jtt.clockwork.TickService;
+import com.aragaer.jtt.clockwork.TickClient;
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.location.LocationProvider;
 import com.aragaer.jtt.location.LocationService;
@@ -25,7 +26,13 @@ public class InfrastructureTest {
         DayIntervalService intervalService = new DayIntervalService(calculator);
 
         TestMetronome metronome = new TestMetronome();
-        // TickService tickService = new TickService(metronome);
+        TickService tickService = new TickService(metronome);
+
+        TestTickClient client = new TestTickClient();
+
+        locationService.registerClient(intervalService);
+        intervalService.registerClient(tickService);
+        tickService.registerClient(client);
     }
 
     private static class TestLocationProvider implements LocationProvider {
@@ -43,14 +50,19 @@ public class InfrastructureTest {
         }
     }
 
-    private static class TestMetronome implements Metronome {
-        public void attachTo(Cogs cogs) {
+    private static class TestMetronome implements TickProvider {
+        public void attachTo(TickCounter cogs) {
         }
 
         public void start(long start, long tickLength) {
         }
 
         public void stop() {
+        }
+    }
+
+    private static class TestTickClient implements TickClient {
+        public void tickChanged(int ticks) {
         }
     }
 }

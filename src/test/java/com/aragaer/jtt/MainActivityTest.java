@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import android.app.Activity;
 import android.content.*;
 
-import static com.aragaer.jtt.clockwork.android.AndroidChime.ACTION_JTT_TICK;
+import static com.aragaer.jtt.TickBroadcast.ACTION_JTT_TICK;
 
 
 @RunWith(RobolectricTestRunner.class)

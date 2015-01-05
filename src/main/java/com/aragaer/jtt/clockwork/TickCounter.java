@@ -4,31 +4,26 @@ package com.aragaer.jtt.clockwork;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 
 
-public class Cogs {
-
-    private Chime chime;
+public class TickCounter {
     private int teethPassed;
-
-    public void attachChime(Chime newChime) {
-        chime = newChime;
-    }
+    private TickClient client;
 
     public void rotate(int teeth) {
         if (TICKS_PER_INTERVAL - teeth > teethPassed % TICKS_PER_INTERVAL)
             teethPassed += teeth;
-        chime.ding(teethPassed);
+        if (client != null)
+            client.tickChanged(teethPassed);
     }
 
-    public void setLastTick(int tick) {
-        teethPassed = tick;
-    }
-
-    public void switchToNightGear() {
+    /* package private */ void switchToNightGear() {
         teethPassed = 0;
     }
 
-    public void switchToDayGear() {
+    /* package private */ void switchToDayGear() {
         teethPassed = TICKS_PER_INTERVAL;
     }
 
+    public void addClient(TickClient client) {
+        this.client = client;
+    }
 }

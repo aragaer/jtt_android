@@ -3,7 +3,7 @@ package com.aragaer.jtt;
 import java.util.Map;
 import java.util.HashMap;
 
-import static com.aragaer.jtt.clockwork.android.AndroidChime.ACTION_JTT_TICK;
+import static com.aragaer.jtt.TickBroadcast.ACTION_JTT_TICK;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.core.JttTime;
 import com.aragaer.jtt.graphics.Paints;

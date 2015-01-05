@@ -1,16 +1,16 @@
 package com.aragaer.jtt.clockwork.android;
 // vim: et ts=4 sts=4 sw=4
 
-import com.aragaer.jtt.clockwork.Cogs;
+import com.aragaer.jtt.clockwork.TickCounter;
 
 
-public class ClockTickCallback implements TickCallback {
+public class ClockTickCallback {
 
-    private final Cogs cogs;
+    private final TickCounter cogs;
     private long lastTick;
     private final long length;
 
-    public ClockTickCallback(Cogs cogs, long intervalStart, long tickLength) {
+    public ClockTickCallback(TickCounter cogs, long intervalStart, long tickLength) {
         this.cogs = cogs;
         lastTick = intervalStart;
         length = tickLength;

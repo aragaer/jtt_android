@@ -16,8 +16,8 @@ import static org.junit.Assert.*;
 import android.app.AlarmManager;
 import android.content.*;
 
-import com.aragaer.jtt.clockwork.Cogs;
-import com.aragaer.jtt.clockwork.TestChime;
+import com.aragaer.jtt.clockwork.TickCounter;
+import com.aragaer.jtt.clockwork.TickClient;
 
 
 @RunWith(RobolectricTestRunner.class)
@@ -25,15 +25,15 @@ import com.aragaer.jtt.clockwork.TestChime;
 public class AndroidMetronomeTest {
 
     private AndroidMetronome metronome;
-    private TestChime chime;
+    private TestTickClient client;
 
     @Before
     public void setup() {
         metronome = new AndroidMetronome(Robolectric.application);
-        chime = new TestChime();
-        Cogs cogs = new Cogs();
-        metronome.attachTo(cogs);
-        cogs.attachChime(chime);
+        client = new TestTickClient();
+        TickCounter counter = new TickCounter();
+        metronome.attachTo(counter);
+        counter.addClient(client);
     }
 
     @Test
@@ -76,9 +76,9 @@ public class AndroidMetronomeTest {
     public void shouldTriggerOnTick() throws Exception {
         metronome.start(System.currentTimeMillis()-3, 10);
         Thread.sleep(7);
-        assertThat(chime.getLastTick(), equalTo(0));
+        assertThat(client.ticks, equalTo(0));
         new TickServiceMock().onHandleIntent(null);
-        assertThat(chime.getLastTick(), equalTo(1));
+        assertThat(client.ticks, equalTo(1));
     }
 
     @Test
@@ -86,10 +86,10 @@ public class AndroidMetronomeTest {
         long tickLen = 1000;
         long offset = tickLen * 42 + 750;
 
-        assertThat(chime.getLastTick(), equalTo(0));
+        assertThat(client.ticks, equalTo(0));
         metronome.start(System.currentTimeMillis() - offset, tickLen);
         new TickServiceMock().onHandleIntent(null);
-        assertThat(chime.getLastTick(), equalTo(42));
+        assertThat(client.ticks, equalTo(42));
     }
 
     private List<ScheduledAlarm> getScheduledAlarms() {
@@ -102,6 +102,13 @@ public class AndroidMetronomeTest {
         @Override
         public void onHandleIntent(Intent intent) {
             super.onHandleIntent(intent);
+        }
+    }
+
+    private static class TestTickClient implements TickClient {
+        public int ticks;
+        public void tickChanged(int ticks) {
+            this.ticks = ticks;
         }
     }
 }

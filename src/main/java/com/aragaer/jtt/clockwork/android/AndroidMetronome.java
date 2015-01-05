@@ -3,20 +3,20 @@ package com.aragaer.jtt.clockwork.android;
 
 import android.content.Context;
 
-import com.aragaer.jtt.clockwork.Cogs;
-import com.aragaer.jtt.clockwork.Metronome;
+import com.aragaer.jtt.clockwork.TickCounter;
+import com.aragaer.jtt.clockwork.TickProvider;
 
 
-public class AndroidMetronome implements Metronome {
+public class AndroidMetronome implements TickProvider {
     private final Context context;
-    private Cogs cogs;
+    private TickCounter cogs;
 
     public AndroidMetronome(Context context) {
         this.context = context;
     }
 
-    public void attachTo(Cogs newCogs) {
-        cogs = newCogs;
+    public void attachTo(TickCounter newTickCounter) {
+        cogs = newTickCounter;
     }
 
     public void start(long start, long tickLength) {

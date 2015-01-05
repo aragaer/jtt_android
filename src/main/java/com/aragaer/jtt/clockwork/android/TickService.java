@@ -14,9 +14,9 @@ public class TickService extends IntentService {
 		super("TICK");
 	}
 
-    private static TickCallback callback;
+    private static ClockTickCallback callback;
 
-    public static void setCallback(TickCallback callback) {
+    public static void setCallback(ClockTickCallback callback) {
         TickService.callback = callback;
     }
 

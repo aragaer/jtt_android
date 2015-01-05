@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import android.app.*;
 import android.content.*;
 
-import static com.aragaer.jtt.clockwork.android.AndroidChime.ACTION_JTT_TICK;
+import static com.aragaer.jtt.TickBroadcast.ACTION_JTT_TICK;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 import com.aragaer.jtt.location.*;
 import com.aragaer.jtt.astronomy.*;
@@ -44,7 +44,7 @@ public class JttServiceTest {
         assertEquals(intent.getIntentClass(), TickService.class);
     }
 
-    @Test public void shouldUseAndroidChime() {
+    @Test public void shouldUseTickBroadcast() {
         TestReceiver receiver = new TestReceiver();
         Robolectric.application.registerReceiver(receiver, new IntentFilter(ACTION_JTT_TICK));
         ServiceController<JttService> controller = startService();

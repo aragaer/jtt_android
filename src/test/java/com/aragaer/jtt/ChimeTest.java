@@ -1,4 +1,4 @@
-package com.aragaer.jtt.clockwork.android;
+package com.aragaer.jtt;
 // vim: et ts=4 sts=4 sw=4
 
 import org.junit.*;
@@ -17,24 +17,24 @@ import static org.junit.Assert.assertThat;
 @Config(emulateSdk=18)
 public class ChimeTest {
 
-    private AndroidChime chime;
+    private TickBroadcast chime;
 
     @Before public void setUp() {
-        chime = new AndroidChime(Robolectric.application);
+        chime = new TickBroadcast(Robolectric.application);
     }
 
     @Test public void shouldBroadcastNewInformation() {
         TestListener listener = new TestListener();
         listener.register(Robolectric.application);
 
-        chime.ding(123);
+        chime.tickChanged(123);
 
         assertThat("listener calls", listener.calls, equalTo(1));
         assertThat("broadcasted tick number", listener.tick, equalTo(123));
     }
 
     @Test public void shouldSendStickyBroadcast() {
-        chime.ding(123);
+        chime.tickChanged(123);
 
         TestListener listener = new TestListener();
         listener.register(Robolectric.application);
