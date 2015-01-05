@@ -11,19 +11,23 @@ public class DayIntervalService implements LocationClient, DayIntervalEndObserve
     private final DateTimeChangeListener changeNotifier;
     private DayIntervalClient client;
 
-    public DayIntervalService(DayIntervalCalculator calculator, DateTimeChangeListener listener) {
+    public DayIntervalService(DayIntervalCalculator calculator) {
+        this.calculator = calculator;
+        this.changeNotifier = null;
+    }
+
+    private DayIntervalService(DayIntervalCalculator calculator, DateTimeChangeListener listener) {
         this.calculator = calculator;
         this.changeNotifier = listener;
         listener.setService(this);
     }
 
-    public DayInterval getCurrentInterval() {
-        return calculator.getIntervalFor(System.currentTimeMillis());
-    }
-
     private void onIntervalChanged() {
-        if (client != null)
-            client.intervalChanged(getCurrentInterval());
+        if (client != null) {
+            long now = System.currentTimeMillis();
+            DayInterval currentInterval = calculator.getIntervalFor(now);
+            client.intervalChanged(currentInterval);
+        }
     }
 
     public void onDateTimeChanged() {

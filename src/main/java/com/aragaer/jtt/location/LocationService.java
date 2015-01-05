@@ -7,10 +7,9 @@ public class LocationService {
     private final LocationChangeNotifier changeNotifier;
     private LocationClient client;
 
-    public LocationService(LocationProvider provider, LocationChangeNotifier changeNotifier) {
+    public LocationService(LocationProvider provider) {
         this.provider = provider;
-        this.changeNotifier = changeNotifier;
-        changeNotifier.setService(this);
+        this.changeNotifier = null;
     }
 
     public Location getCurrentLocation() {

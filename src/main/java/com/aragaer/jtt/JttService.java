@@ -6,9 +6,9 @@ import com.aragaer.jtt.astronomy.DayIntervalService;
 import com.aragaer.jtt.astronomy.SscCalculator;
 import com.aragaer.jtt.clockwork.AndroidModule;
 import com.aragaer.jtt.clockwork.Clock;
-import com.aragaer.jtt.location.LocationService;
-import com.aragaer.jtt.location.AndroidLocationProvider;
 import com.aragaer.jtt.location.AndroidLocationChangeNotifier;
+import com.aragaer.jtt.location.AndroidLocationProvider;
+import com.aragaer.jtt.location.LocationService;
 
 import android.app.Service;
 import android.content.Intent;
@@ -22,7 +22,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     private static final String TAG = "JTT_SERVICE";
     private final Clock clock;
     private final AndroidDateTimeChangeListener dateTimeChangeListener;
-    private LocationService locationService;
+    private final LocationService locationService;
+    private AndroidLocationChangeNotifier locationChangeNotifier;
     private final DayIntervalService astrolabe;
 
     @Override
@@ -34,7 +35,9 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         AndroidModule module = new AndroidModule(this);
         clock = new Clock(module.getChime(), module.getMetronome());
         dateTimeChangeListener = new AndroidDateTimeChangeListener();
-        astrolabe = new DayIntervalService(new SscCalculator(), dateTimeChangeListener);
+        astrolabe = new DayIntervalService(new SscCalculator());
+        dateTimeChangeListener.setService(astrolabe);
+        locationService = new LocationService(new AndroidLocationProvider(this));
     }
 
     @Override
@@ -42,8 +45,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         super.onCreate();
         Log.i(TAG, "Service starting");
         astrolabe.registerClient(clock);
-        locationService = new LocationService(new AndroidLocationProvider(this),
-                new AndroidLocationChangeNotifier(this));
+        locationChangeNotifier =  new AndroidLocationChangeNotifier(this);
+        locationChangeNotifier.setService(locationService);
         locationService.registerClient(astrolabe);
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);

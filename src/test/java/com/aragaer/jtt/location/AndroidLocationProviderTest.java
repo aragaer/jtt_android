@@ -11,7 +11,7 @@ import org.robolectric.shadows.ShadowPreferenceManager;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import com.aragaer.jtt.Settings;
+import static com.aragaer.jtt.Settings.PREF_LOCATION;
 
 import android.content.SharedPreferences;
 
@@ -27,14 +27,15 @@ public class AndroidLocationProviderTest {
         client = new TestLocationClient();
         LocationProvider provider = new AndroidLocationProvider(Robolectric.application);
         LocationChangeNotifier changeNotifier = new AndroidLocationChangeNotifier(Robolectric.application);
-        service = new LocationService(provider, changeNotifier);
+        service = new LocationService(provider);
+        changeNotifier.setService(service);
         service.registerClient(client);
     }
 
     @Test public void shouldRetrieveLocation() {
         SharedPreferences sharedPreferences = ShadowPreferenceManager
             .getDefaultSharedPreferences(Robolectric.application.getApplicationContext());
-        sharedPreferences.edit().putString(Settings.PREF_LOCATION, "1.2:3.4").commit();
+        sharedPreferences.edit().putString(PREF_LOCATION, "1.2:3.4").commit();
 
         Location location = service.getCurrentLocation();
 
@@ -45,7 +46,7 @@ public class AndroidLocationProviderTest {
     @Test public void shouldReactToLocationChange() {
         SharedPreferences sharedPreferences = ShadowPreferenceManager
             .getDefaultSharedPreferences(Robolectric.application.getApplicationContext());
-        sharedPreferences.edit().putString(Settings.PREF_LOCATION, "1.2:3.4").commit();
+        sharedPreferences.edit().putString(PREF_LOCATION, "1.2:3.4").commit();
 
         assertEquals(client.getLocation().getLatitude(), 1.2, 0.0001);
         assertEquals(client.getLocation().getLongitude(), 3.4, 0.0001);

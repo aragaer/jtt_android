@@ -15,8 +15,7 @@ import static org.junit.Assert.*;
 import android.content.*;
 
 import com.aragaer.jtt.astronomy.DayIntervalService;
-import com.aragaer.jtt.astronomy.TestDayIntervalService;
-import com.aragaer.jtt.JttService;
+import com.aragaer.jtt.location.Location;
 
 
 @RunWith(RobolectricTestRunner.class)
@@ -26,10 +25,10 @@ public class AndroidDateTimeChangeListenerTest {
     private AndroidDateTimeChangeListener listener;
     private TestDayIntervalService astrolabe;
 
-    @Before
-    public void setup() {
+    @Before public void setup() {
         listener = new AndroidDateTimeChangeListener();
-        astrolabe = new TestDayIntervalService(null, listener);
+        astrolabe = new TestDayIntervalService();
+        listener.setService(astrolabe);
         listener.register(Robolectric.application);
     }
 
@@ -40,13 +39,11 @@ public class AndroidDateTimeChangeListenerTest {
         assertThat(receiversForIntent.size(), equalTo(1));
     }
 
-    @Test
-    public void shouldListenForTimeChange() {
+    @Test public void shouldListenForTimeChange() {
         testListensFor(Intent.ACTION_TIME_CHANGED);
     }
 
-    @Test
-    public void shouldListenForDateChange() {
+    @Test public void shouldListenForDateChange() {
         testListensFor(Intent.ACTION_DATE_CHANGED);
     }
 
@@ -56,5 +53,23 @@ public class AndroidDateTimeChangeListenerTest {
         int newCount = this.astrolabe.dateTimeChangeCalls;
 
         assertThat(newCount, equalTo(oldCount+1));
+    }
+
+    private static class TestDayIntervalService extends DayIntervalService {
+        public int updateLocationCalls;
+        public int dateTimeChangeCalls;
+        public Location currentLocation;
+
+        public TestDayIntervalService() {
+            super(null);
+        }
+
+        @Override public void onDateTimeChanged() {
+            dateTimeChangeCalls++;
+        }
+
+        @Override public void onLocationChanged(Location location) {
+            currentLocation = location;
+        }
     }
 }

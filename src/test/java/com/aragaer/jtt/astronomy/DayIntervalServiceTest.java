@@ -5,61 +5,47 @@ import org.junit.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-import com.aragaer.jtt.clockwork.TestChime;
-import com.aragaer.jtt.clockwork.TestClock;
-import com.aragaer.jtt.clockwork.TestMetronome;
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.test.*;
 
 
 public class DayIntervalServiceTest {
 
-    private DayIntervalService astrolabe;
+    private DayIntervalService service;
     private TestCalculator calculator;
-    private TestClock clock;
+    private TestIntervalClient client;
 
-    @Before
-    public void setup() {
-        // FIXME: Don't use real clock here
-        clock = new TestClock(new TestChime(), new TestMetronome());
+    @Before public void setup() {
+        client = new TestIntervalClient();
         calculator = new TestCalculator();
-        astrolabe = new DayIntervalService(calculator, new TestChangeNotifier());
-        astrolabe.registerClient(clock);
+        service = new DayIntervalService(calculator);
+        service.registerClient(client);
     }
 
-    // TODO: Remove
-    @Test
-    public void shouldReturnCalculatorResult() {
-        DayInterval interval = DayInterval.Day(10000, 20000);
-        calculator.setNextResult(interval);
-
-        assertThat(astrolabe.getCurrentInterval(), equalTo(interval));
-    }
-
-    @Test public void shouldNotifyClockOnDateTimeChange() {
+    @Test public void shouldNotifyClientOnDateTimeChange() {
         DayInterval interval = DayInterval.Day(10000, 20000);
         calculator.setNextResult(interval);
         long before = System.currentTimeMillis();
 
-        astrolabe.onDateTimeChanged();
+        service.onDateTimeChanged();
 
         long after = System.currentTimeMillis();
-        assertThat(clock.currentInterval, equalTo(interval));
+        assertThat(client.currentInterval, equalTo(interval));
         assertThat(calculator.timestamp, greaterThanOrEqualTo(before));
         assertThat(calculator.timestamp, lessThanOrEqualTo(after));
     }
 
-    @Test public void shouldNotifyClockOnLocationChange() {
+    @Test public void shouldNotifyClientOnLocationChange() {
         DayInterval interval = DayInterval.Day(10000, 20000);
         calculator.setNextResult(interval);
         Location location = new Location(4, 5);
         long before = System.currentTimeMillis();
 
-        astrolabe.onLocationChanged(location);
+        service.onLocationChanged(location);
 
         long after = System.currentTimeMillis();
         assertThat(calculator.location, equalTo(location));
-        assertThat(clock.currentInterval, equalTo(interval));
+        assertThat(client.currentInterval, equalTo(interval));
         assertThat(calculator.timestamp, greaterThanOrEqualTo(before));
         assertThat(calculator.timestamp, lessThanOrEqualTo(after));
     }
@@ -69,12 +55,20 @@ public class DayIntervalServiceTest {
         calculator.setNextResult(interval);
         long before = System.currentTimeMillis();
 
-        astrolabe.onIntervalEnded();
+        service.onIntervalEnded();
 
         long after = System.currentTimeMillis();
-        assertThat(clock.currentInterval, equalTo(interval));
+        assertThat(client.currentInterval, equalTo(interval));
         assertThat(calculator.timestamp, greaterThanOrEqualTo(before));
         assertThat(calculator.timestamp, lessThanOrEqualTo(after));
+    }
+
+    private static class TestIntervalClient implements DayIntervalClient {
+        public DayInterval currentInterval;
+
+        public void intervalChanged(DayInterval interval) {
+            currentInterval = interval;
+        }
     }
 
     private static class TestChangeNotifier implements DateTimeChangeListener {

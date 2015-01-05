@@ -15,7 +15,8 @@ public class LocationServiceTest {
     @Before public void setUp() {
         changeNotifier = new TestLocationChangeNotifier();
         provider = new TestLocationProvider();
-        service = new LocationService(provider, changeNotifier);
+        service = new LocationService(provider);
+        changeNotifier.setService(service);
     }
 
     @Test public void shouldProvideCurrentLocation() {
