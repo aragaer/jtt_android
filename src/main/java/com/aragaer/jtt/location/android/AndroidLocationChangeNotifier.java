@@ -10,12 +10,10 @@ import com.aragaer.jtt.Settings;
 
 public class AndroidLocationChangeNotifier implements LocationChangeNotifier,
        SharedPreferences.OnSharedPreferenceChangeListener {
-    private Context context;
     private LocationService service;
 
     public AndroidLocationChangeNotifier(Context context) {
-        this.context = context;
-        register();
+        register(context);
     }
 
     public void setService(LocationService service) {
@@ -27,7 +25,7 @@ public class AndroidLocationChangeNotifier implements LocationChangeNotifier,
             service.locationChanged();
     }
 
-    void register() {
+    private void register(Context context) {
         PreferenceManager.getDefaultSharedPreferences(context)
             .registerOnSharedPreferenceChangeListener(this);
     }
