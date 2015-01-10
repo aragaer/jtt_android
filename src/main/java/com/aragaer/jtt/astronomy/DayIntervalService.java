@@ -1,6 +1,10 @@
 package com.aragaer.jtt.astronomy;
 // vim: et ts=4 sts=4 sw=4
 
+import static java.util.concurrent.TimeUnit.MINUTES;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.location.LocationClient;
 import com.aragaer.jtt.location.LocationService;
@@ -8,12 +12,13 @@ import com.aragaer.jtt.location.LocationService;
 
 public class DayIntervalService implements LocationClient {
     private final DayIntervalCalculator calculator;
-    private DayIntervalClient client;
-    private DayInterval currentInterval;
+    private Set<DayIntervalClient> clients;
+    private DayInterval previousInterval, currentInterval, nextInterval;
     private long currentTime;
 
     public DayIntervalService(DayIntervalCalculator calculator) {
         this.calculator = calculator;
+        clients = new HashSet<DayIntervalClient>();
         currentTime = System.currentTimeMillis();
         currentInterval = DayInterval.Night(0, 0);
     }
@@ -24,7 +29,7 @@ public class DayIntervalService implements LocationClient {
     }
 
     public void registerClient(DayIntervalClient newClient) {
-        client = newClient;
+        clients.add(newClient);
     }
 
     public void timeChanged(long timestamp) {
@@ -33,13 +38,27 @@ public class DayIntervalService implements LocationClient {
             changeInterval();
     }
 
+    public DayInterval getCurrentInterval() {
+        return currentInterval;
+    }
+
+    public DayInterval getPreviousInterval() {
+        return previousInterval;
+    }
+
+    public DayInterval getNextInterval() {
+        return nextInterval;
+    }
+
     private void onIntervalChanged() {
         timeChanged(System.currentTimeMillis());
     }
 
     private void changeInterval() {
         currentInterval = calculator.getIntervalFor(currentTime);
-        if (client != null)
+        previousInterval = calculator.getIntervalFor(currentInterval.getStart() - MINUTES.toMillis(1));
+        nextInterval = calculator.getIntervalFor(currentInterval.getEnd() + MINUTES.toMillis(1));
+        for (DayIntervalClient client : clients)
             client.intervalChanged(currentInterval);
     }
 }

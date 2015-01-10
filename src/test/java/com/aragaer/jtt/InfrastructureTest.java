@@ -4,8 +4,8 @@ package com.aragaer.jtt;
 import org.junit.*;
 
 import com.aragaer.jtt.astronomy.DayInterval;
-import com.aragaer.jtt.astronomy.DayIntervalCalculator;
 import com.aragaer.jtt.astronomy.DayIntervalService;
+import com.aragaer.jtt.astronomy.TestCalculator;
 import com.aragaer.jtt.clockwork.TickCounter;
 import com.aragaer.jtt.clockwork.TickProvider;
 import com.aragaer.jtt.clockwork.TickService;
@@ -37,15 +37,6 @@ public class InfrastructureTest {
 
     private static class TestLocationProvider implements LocationProvider {
         public Location getCurrentLocation() {
-            return null;
-        }
-    }
-
-    private static class TestCalculator implements DayIntervalCalculator {
-        public void setLocation(Location location) {
-        }
-
-        public DayInterval getIntervalFor(long timestamp) {
             return null;
         }
     }
