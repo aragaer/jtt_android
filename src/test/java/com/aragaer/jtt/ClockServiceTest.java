@@ -22,15 +22,15 @@ import static com.aragaer.jtt.TickBroadcast.ACTION_JTT_TICK;
 import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 import com.aragaer.jtt.location.*;
 import com.aragaer.jtt.astronomy.*;
-import com.aragaer.jtt.clockwork.android.TickService;
+import com.aragaer.jtt.clockwork.android.Ticker;
 
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk=18)
-public class JttServiceTest {
+public class ClockServiceTest {
 
     @Test public void shouldUseAndroidMetronome() {
-        ServiceController<JttService> controller = startService();
+        ServiceController<ClockService> controller = startService();
 
         List<ScheduledAlarm> alarms = getScheduledAlarms();
         assertThat(alarms.size(), equalTo(1));
@@ -41,17 +41,17 @@ public class JttServiceTest {
 
 		assertTrue(pending.isServiceIntent());
         assertEquals(pending.getSavedContext(), controller.get());
-        assertEquals(intent.getIntentClass(), TickService.class);
+        assertEquals(intent.getIntentClass(), Ticker.class);
     }
 
     @Test public void shouldUseTickBroadcast() {
         TestReceiver receiver = new TestReceiver();
         Robolectric.application.registerReceiver(receiver, new IntentFilter(ACTION_JTT_TICK));
-        ServiceController<JttService> controller = startService();
+        ServiceController<ClockService> controller = startService();
 
         assertThat(receiver.calls, equalTo(0));
 
-        new TickServiceMock().onHandleIntent(null);
+        new MockTicker().onHandleIntent(null);
 
         assertThat(receiver.calls, equalTo(1));
     }
@@ -73,7 +73,7 @@ public class JttServiceTest {
 
         startService();
 
-        checkTickServiceRunning(interval.getStart(), tickLength);
+        checkTickerRunning(interval.getStart(), tickLength);
     }
 
     @Test public void shouldUseAndroidLocationChangeNotifier() {
@@ -94,10 +94,10 @@ public class JttServiceTest {
 
         sharedPreferences.edit().putString(Settings.PREF_LOCATION, "5.6:7.8").commit();
 
-        checkTickServiceRunning(interval.getStart(), tickLength);
+        checkTickerRunning(interval.getStart(), tickLength);
     }
 
-    private void checkTickServiceRunning(long start, long period) {
+    private void checkTickerRunning(long start, long period) {
         List<ScheduledAlarm> alarms = getScheduledAlarms();
         assertThat(alarms.size(), equalTo(1));
 
@@ -109,7 +109,7 @@ public class JttServiceTest {
         ShadowIntent intent = Robolectric.shadowOf(pending.getSavedIntent());
 
         assertTrue(pending.isServiceIntent());
-        assertEquals(intent.getIntentClass(), TickService.class);
+        assertEquals(intent.getIntentClass(), Ticker.class);
     }
 
     static class TestReceiver extends BroadcastReceiver {
@@ -123,11 +123,11 @@ public class JttServiceTest {
         }
     }
 
-    private ServiceController<JttService> startService() {
-        ServiceController<JttService> controller = Robolectric.buildService(JttService.class);
+    private ServiceController<ClockService> startService() {
+        ServiceController<ClockService> controller = Robolectric.buildService(ClockService.class);
         controller.attach()
                   .create()
-                  .withIntent(new Intent(Robolectric.application, JttService.class))
+                  .withIntent(new Intent(Robolectric.application, ClockService.class))
                   .startCommand(0, 0);
         return controller;
     }
@@ -138,7 +138,7 @@ public class JttServiceTest {
         return Robolectric.shadowOf(am).getScheduledAlarms();
     }
 
-    class TickServiceMock extends TickService {
+    class MockTicker extends Ticker {
         @Override
         public void onHandleIntent(Intent intent) {
             super.onHandleIntent(intent);

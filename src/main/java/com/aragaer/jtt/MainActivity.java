@@ -35,7 +35,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 	public void onCreate(Bundle savedInstanceState) {
 		setTheme(Settings.getAppTheme(this));
 		super.onCreate(savedInstanceState);
-		startService(new Intent(this, JttService.class));
+		startService(new Intent(this, ClockService.class));
 		StringResources.setLocaleToContext(this);
 		final ViewPager pager = new ViewPager(this);
 		final ViewPagerAdapter pager_adapter = new ViewPagerAdapter(this, pager);

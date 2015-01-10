@@ -19,8 +19,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 
-public class JttService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TAG = "JTT_SERVICE";
+public class ClockService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String TAG = "JTT_CLOCK_SERVICE";
     private final AndroidDateTimeChangeListener dateTimeChangeListener;
     private final LocationService locationService;
     private AndroidLocationChangeNotifier locationChangeNotifier;
@@ -33,7 +33,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         return null;
     }
 
-    public JttService() {
+    public ClockService() {
         chime = new TickBroadcast(this);
         tickService = new TickService(new AndroidMetronome(this));
         dateTimeChangeListener = new AndroidDateTimeChangeListener();

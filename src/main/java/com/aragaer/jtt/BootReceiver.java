@@ -8,6 +8,6 @@ import android.preference.PreferenceManager;
 
 public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
-        context.startService(new Intent(context, JttService.class));
+        context.startService(new Intent(context, ClockService.class));
     }
 }

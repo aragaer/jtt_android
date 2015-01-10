@@ -6,12 +6,12 @@ import com.aragaer.jtt.clockwork.TickCounter;
 
 public class ClockTickCallback {
 
-    private final TickCounter cogs;
+    private final TickCounter counter;
     private long lastTick;
     private final long length;
 
-    public ClockTickCallback(TickCounter cogs, long intervalStart, long tickLength) {
-        this.cogs = cogs;
+    public ClockTickCallback(TickCounter counter, long intervalStart, long tickLength) {
+        this.counter = counter;
         lastTick = intervalStart;
         length = tickLength;
     }
@@ -20,7 +20,6 @@ public class ClockTickCallback {
         long now = System.currentTimeMillis();
         long passed = now - lastTick;
         long ticks = passed / length;
-        lastTick += ticks * length;
-        cogs.rotate((int) ticks);
+        counter.set((int) ticks);
     }
 }

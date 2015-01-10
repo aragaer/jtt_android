@@ -12,9 +12,19 @@ import static com.aragaer.jtt.core.JttTime.TICKS_PER_INTERVAL;
 
 
 public class TickServiceTest {
+    private TestTickProvider metronome;
+    private TickService service;
+    private TestTickClient client;
+
+    @Before public void setUp() {
+        metronome = new TestTickProvider();
+        service = new TickService(metronome);
+        client = new TestTickClient();
+        service.registerClient(client);
+    }
+
     @Test public void shouldStartMetronomeWithNewInterval() {
-        TestTickProvider metronome = new TestTickProvider();
-        TickService service = new TickService(metronome);
+        service.registerClient(null);
 
         service.intervalChanged(DayInterval.Day(10, 10 + 5*TICKS_PER_INTERVAL));
 
@@ -23,26 +33,28 @@ public class TickServiceTest {
     }
 
     @Test public void shouldInformClientsOnMetronomeTicks() {
-        TestTickProvider metronome = new TestTickProvider();
-        TickService service = new TickService(metronome);
-        TestTickClient client = new TestTickClient();
-
-        service.registerClient(client);
-
         metronome.tick(10);
 
         assertThat(client.ticks, equalTo(10));
     }
 
     @Test public void shouldUseDayTime() {
-        TestTickProvider metronome = new TestTickProvider();
-        TickService service = new TickService(metronome);
-        TestTickClient client = new TestTickClient();
-
-        service.registerClient(client);
         service.intervalChanged(DayInterval.Day(10, 20));
 
         metronome.tick(10);
+
+        assertThat(client.ticks, equalTo(TICKS_PER_INTERVAL+10));
+    }
+
+    @Test public void shouldNotifyClientAboutNewTickCount() {
+        service.set(1);
+
+        assertThat(client.ticks, equalTo(1));
+    }
+
+    @Test public void shouldNotifyClientAboutNewTickCountDuringDay() {
+        service.intervalChanged(DayInterval.Day(10, 20));
+        service.set(10);
 
         assertThat(client.ticks, equalTo(TICKS_PER_INTERVAL+10));
     }
@@ -64,7 +76,7 @@ public class TickServiceTest {
         }
 
         public void tick(int ticks) {
-            counter.rotate(ticks);
+            counter.set(ticks);
         }
     }
 

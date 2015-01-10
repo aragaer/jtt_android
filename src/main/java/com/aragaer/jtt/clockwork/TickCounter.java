@@ -8,19 +8,17 @@ public class TickCounter {
     private int teethPassed;
     private TickClient client;
 
-    public void rotate(int teeth) {
-        if (TICKS_PER_INTERVAL - teeth > teethPassed % TICKS_PER_INTERVAL)
-            teethPassed += teeth;
-        if (client != null)
-            client.tickChanged(teethPassed);
-    }
-
     /* package private */ void switchToNightGear() {
         teethPassed = 0;
     }
 
     /* package private */ void switchToDayGear() {
         teethPassed = TICKS_PER_INTERVAL;
+    }
+
+    public void set(int count) {
+        if (client != null)
+            client.tickChanged(teethPassed+count);
     }
 
     public void addClient(TickClient client) {

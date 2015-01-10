@@ -29,4 +29,28 @@ public class TickService implements DayIntervalClient {
     public void registerClient(TickClient client) {
         counter.addClient(client);
     }
+
+    /* package private */ void switchToNightGear() {
+        counter.switchToNightGear();
+    }
+
+    /* package private */ void switchToDayGear() {
+        counter.switchToDayGear();
+    }
+
+    public void set(int count) {
+        counter.set(count);
+    }
+
+    public void addClient(TickClient client) {
+        counter.addClient(client);
+    }
+
+    private TickClient client;
+    public TickClient getClient() {
+        return client;
+    }
+    public void setClient(TickClient client) {
+        this.client = client;
+    }
 }

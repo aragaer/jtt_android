@@ -20,11 +20,11 @@ public class AndroidMetronome implements TickProvider {
     }
 
     public void start(long start, long tickLength) {
-        TickService.setCallback(new ClockTickCallback(cogs, start, tickLength));
-        TickService.start(context, start, tickLength);
+        Ticker.setCallback(new ClockTickCallback(cogs, start, tickLength));
+        Ticker.start(context, start, tickLength);
     }
 
     public void stop() {
-        TickService.stop(context);
+        Ticker.stop(context);
     }
 }

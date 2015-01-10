@@ -40,10 +40,10 @@
         </activity>
 
         <service
-            android:name=".JttService"
+            android:name=".ClockService"
             android:exported="false" />
         <service
-            android:name=".clockwork.TickService"
+            android:name=".clockwork.android.Ticker"
             android:exported="false" />
         <service
             android:name=".NotificationService"

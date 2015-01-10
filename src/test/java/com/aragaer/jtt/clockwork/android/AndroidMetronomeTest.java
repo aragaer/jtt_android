@@ -16,8 +16,8 @@ import static org.junit.Assert.*;
 import android.app.AlarmManager;
 import android.content.*;
 
-import com.aragaer.jtt.clockwork.TickCounter;
 import com.aragaer.jtt.clockwork.TickClient;
+import com.aragaer.jtt.clockwork.TickService;
 
 
 @RunWith(RobolectricTestRunner.class)
@@ -31,8 +31,7 @@ public class AndroidMetronomeTest {
     public void setup() {
         metronome = new AndroidMetronome(Robolectric.application);
         client = new TestTickClient();
-        TickCounter counter = new TickCounter();
-        metronome.attachTo(counter);
+        TickService counter = new TickService(metronome);
         counter.addClient(client);
     }
 
@@ -77,7 +76,7 @@ public class AndroidMetronomeTest {
         metronome.start(System.currentTimeMillis()-3, 10);
         Thread.sleep(7);
         assertThat(client.ticks, equalTo(0));
-        new TickServiceMock().onHandleIntent(null);
+        new MockTicker().onHandleIntent(null);
         assertThat(client.ticks, equalTo(1));
     }
 
@@ -88,7 +87,7 @@ public class AndroidMetronomeTest {
 
         assertThat(client.ticks, equalTo(0));
         metronome.start(System.currentTimeMillis() - offset, tickLen);
-        new TickServiceMock().onHandleIntent(null);
+        new MockTicker().onHandleIntent(null);
         assertThat(client.ticks, equalTo(42));
     }
 
@@ -98,7 +97,7 @@ public class AndroidMetronomeTest {
         return Robolectric.shadowOf(am).getScheduledAlarms();
     }
 
-    class TickServiceMock extends TickService {
+    class MockTicker extends Ticker {
         @Override
         public void onHandleIntent(Intent intent) {
             super.onHandleIntent(intent);

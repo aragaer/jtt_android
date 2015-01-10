@@ -8,37 +8,37 @@ import android.content.Context;
 import android.content.Intent;
 
 
-public class TickService extends IntentService {
+public class Ticker extends IntentService {
 
-	public TickService() {
+	public Ticker() {
 		super("TICK");
 	}
 
     private static ClockTickCallback callback;
 
     public static void setCallback(ClockTickCallback callback) {
-        TickService.callback = callback;
+        Ticker.callback = callback;
     }
 
     protected void onHandleIntent(Intent intent) {
-        callback.onTick();
+        Ticker.callback.onTick();
         stopSelf();
     }
 
 	private static final int INTENT_FLAGS = PendingIntent.FLAG_UPDATE_CURRENT;
 
     public static void start(Context context, long start, long tickLength) {
-        if (TickService.callback == null)
+        if (Ticker.callback == null)
             throw new IllegalStateException("Must set callback first");
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		Intent TickActionInternal = new Intent(context, TickService.class);
+		Intent TickActionInternal = new Intent(context, Ticker.class);
 		am.setRepeating(AlarmManager.RTC, start, tickLength,
                         PendingIntent.getService(context, 0, TickActionInternal, INTENT_FLAGS));
     }
 
     public static void stop(Context context) {
 		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		Intent TickActionInternal = new Intent(context, TickService.class);
+		Intent TickActionInternal = new Intent(context, Ticker.class);
 		am.cancel(PendingIntent.getService(context, 0, TickActionInternal, 0));
     }
 }

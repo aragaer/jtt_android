@@ -21,7 +21,7 @@ import com.aragaer.jtt.clockwork.TickCounter;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(emulateSdk = 18)
-public class TickServiceTest {
+public class TickerTest {
 
     private ClockTickCallback callback;
     private TestTickCounter counter;
@@ -29,21 +29,21 @@ public class TickServiceTest {
     @Before public void setUp() {
         counter = new TestTickCounter();
         callback = new ClockTickCallback(counter, 0, 1);
-        TickService.setCallback(callback);
+        Ticker.setCallback(callback);
     }
 
     @After public void tearDown() {
-        TickService.setCallback(null);
+        Ticker.setCallback(null);
     }
 
     @Test(expected=IllegalStateException.class)
     public void shouldRequireCallback() {
-        TickService.setCallback(null);
-        TickService.start(Robolectric.application, 0, 20);
+        Ticker.setCallback(null);
+        Ticker.start(Robolectric.application, 0, 20);
     }
 
 	@Test public void shouldScheduleAlarmForSelf() {
-        TickService.start(Robolectric.application, 0, 20);
+        Ticker.start(Robolectric.application, 0, 20);
 
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
@@ -54,11 +54,11 @@ public class TickServiceTest {
 
 		assertTrue(pending.isServiceIntent());
         assertEquals(pending.getSavedContext(), Robolectric.application);
-        assertEquals(intent.getIntentClass(), TickService.class);
+        assertEquals(intent.getIntentClass(), Ticker.class);
 	}
 
 	@Test public void shouldScheduleAlarmWithCorrectStartTime() {
-        TickService.start(Robolectric.application, 30, 20);
+        Ticker.start(Robolectric.application, 30, 20);
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
 		ScheduledAlarm alarm = alarms.get(0);
@@ -66,7 +66,7 @@ public class TickServiceTest {
 	}
 
 	@Test public void shouldScheduleAlarmWithCorrectInterval() {
-        TickService.start(Robolectric.application, 0, 20);
+        Ticker.start(Robolectric.application, 0, 20);
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(1));
 		ScheduledAlarm alarm = alarms.get(0);
@@ -74,18 +74,18 @@ public class TickServiceTest {
 	}
 
     @Test public void shouldUnscheduleAlarm() {
-        TickService.start(Robolectric.application, 0, 20);
-		TickService.stop(Robolectric.application);
+        Ticker.start(Robolectric.application, 0, 20);
+		Ticker.stop(Robolectric.application);
 		List<ScheduledAlarm> alarms = getScheduledAlarms();
 		assertThat(alarms.size(), equalTo(0));
 	}
 
     @Test public void shouldTriggerCallback() {
-        new TickServiceMock().onHandleIntent(null);
+        new MockTicker().onHandleIntent(null);
         assertThat(counter.calls, equalTo(1));
     }
 
-    class TickServiceMock extends TickService {
+    class MockTicker extends Ticker {
         @Override
         public void onHandleIntent(Intent intent) {
             super.onHandleIntent(intent);
@@ -101,7 +101,7 @@ public class TickServiceTest {
     static private class TestTickCounter extends TickCounter {
         int calls;
         @Override
-        public void rotate(int ticks) {
+        public void set(int ticks) {
             calls++;
         }
     }
