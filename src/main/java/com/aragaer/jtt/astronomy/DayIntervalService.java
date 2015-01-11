@@ -4,19 +4,22 @@ package com.aragaer.jtt.astronomy;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import java.util.HashSet;
 import java.util.Set;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.location.LocationClient;
 import com.aragaer.jtt.location.LocationService;
 
 
+@Singleton
 public class DayIntervalService implements LocationClient {
     private final DayIntervalCalculator calculator;
     private Set<DayIntervalClient> clients;
     private DayInterval previousInterval, currentInterval, nextInterval;
     private long currentTime;
 
-    public DayIntervalService(DayIntervalCalculator calculator) {
+    @Inject public DayIntervalService(DayIntervalCalculator calculator) {
         this.calculator = calculator;
         clients = new HashSet<DayIntervalClient>();
         currentTime = System.currentTimeMillis();

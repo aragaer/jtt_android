@@ -1,7 +1,6 @@
 package com.aragaer.jtt;
 
 import static com.aragaer.jtt.TickBroadcast.ACTION_JTT_TICK;
-import com.aragaer.jtt.core.TransitionProvider;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.today.TodayAdapter;
 

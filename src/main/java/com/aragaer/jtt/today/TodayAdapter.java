@@ -1,11 +1,11 @@
 package com.aragaer.jtt.today;
 
+import com.aragaer.jtt.ClockService;
 import com.aragaer.jtt.R;
-import com.aragaer.jtt.Settings;
+import com.aragaer.jtt.astronomy.DayInterval;
+import com.aragaer.jtt.astronomy.DayIntervalService;
 import com.aragaer.jtt.core.JttTime;
 import com.aragaer.jtt.core.ThreeIntervals;
-import com.aragaer.jtt.core.TransitionProvider;
-import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
@@ -80,13 +80,10 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 	}
 
 	public void update() {
-		Context context = getContext();
-		Location location = Settings.getLocation(context);
-		ContentValues locationCV = new ContentValues(2);
-		locationCV.put("lat", location.getLatitude());
-		locationCV.put("lon", location.getLongitude());
-		context.getContentResolver().update(TransitionProvider.LOCATION, locationCV, null, null);
-		setTransitions(TransitionProvider.getSurroundingTransitions(context));
+		DayIntervalService intervalService = ClockService.getClock().getDayIntervalService();
+		DayInterval previous = intervalService.getPreviousInterval();
+		DayInterval next = intervalService.getNextInterval();
+		setTransitions(new ThreeIntervals(previous.getStart(), previous.getEnd(), next.getStart(), next.getEnd(), !previous.isDay()));
 	}
 
 	public synchronized void setTransitions(ThreeIntervals newTransitions) {

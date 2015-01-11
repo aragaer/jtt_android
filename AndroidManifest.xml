@@ -17,7 +17,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-permission android:name="com.aragaer.jtt.permission.ALARM" />
-    <uses-permission android:name="com.aragaer.jtt.permission.CLOCK" />
 
     <application
         android:allowBackup="true"
@@ -80,9 +79,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget12" />
         </receiver>
-        <provider android:name=".core.TransitionProvider"
-            android:authorities="com.aragaer.jtt.provider.calculator"
-            android:permission="com.aragaer.jtt.permission.CLOCK" />
         <provider android:name=".alarm.AlarmProvider"
             android:authorities="com.aragaer.jtt.provider.alarm"
             android:permission="com.aragaer.jtt.permission.ALARM" />

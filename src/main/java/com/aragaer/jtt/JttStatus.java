@@ -2,7 +2,8 @@ package com.aragaer.jtt;
 
 import static com.aragaer.jtt.TickBroadcast.ACTION_JTT_TICK;
 import com.aragaer.jtt.core.*;
-import com.aragaer.jtt.location.Location;
+import com.aragaer.jtt.astronomy.DayInterval;
+import com.aragaer.jtt.astronomy.DayIntervalService;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
@@ -39,35 +40,28 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 		context.unregisterReceiver(this);
 	}
 
-	private void updateLocation(Context context) {
-		Location location = Settings.getLocation(context);
-		ContentValues locationCV = new ContentValues(2);
-		locationCV.put("lat", location.getLatitude());
-		locationCV.put("lon", location.getLongitude());
-		context.getContentResolver().update(TransitionProvider.LOCATION, locationCV, null, null);
-	}
-
 	@Override
 	public void onReceive(Context ctx, Intent intent) {
 		final String action = intent.getAction();
 		if (!action.equals(ACTION_JTT_TICK))
 			return;
 
-		updateLocation(ctx);
-
 		final int wrapped = intent.getIntExtra("jtt", 0);
 		Hour.fromWrapped(wrapped, h);
 
-		ThreeIntervals transitions = TransitionProvider.getSurroundingTransitions(ctx, System.currentTimeMillis());
+		DayIntervalService intervalService = ClockService.getClock().getDayIntervalService();
+		DayInterval previous = intervalService.getPreviousInterval();
+		DayInterval next = intervalService.getNextInterval();
+
 		final int lower = Hour.lowerBoundary(h.num),
 			upper = Hour.upperBoundary(h.num);
-		start = Hour.getHourBoundary(transitions.getCurrentStart(), transitions.getCurrentEnd(), lower);
-		end = Hour.getHourBoundary(transitions.getCurrentStart(), transitions.getCurrentEnd(), upper);
+		start = Hour.getHourBoundary(previous.getEnd(), next.getStart(), lower);
+		end = Hour.getHourBoundary(previous.getEnd(), next.getStart(), upper);
 		if (end < start) {// Cock or Hare
 			if (h.quarter >= 2) // we've passed the transition
-				start = Hour.getHourBoundary(transitions.getPreviousStart(), transitions.getCurrentStart(), lower);
+				start = Hour.getHourBoundary(previous.getStart(), previous.getEnd(), lower);
 			else
-				end = Hour.getHourBoundary(transitions.getCurrentEnd(), transitions.getNextEnd(), upper);
+				end = Hour.getHourBoundary(next.getStart(), next.getEnd(), upper);
 		}
 
 		show();

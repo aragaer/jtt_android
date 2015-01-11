@@ -3,7 +3,6 @@ package com.aragaer.jtt;
 
 import com.aragaer.jtt.astronomy.android.AndroidDateTimeChangeListener;
 import com.aragaer.jtt.astronomy.DayIntervalService;
-import com.aragaer.jtt.astronomy.SscCalculator;
 import com.aragaer.jtt.TickBroadcast;
 import com.aragaer.jtt.clockwork.android.AndroidMetronome;
 import com.aragaer.jtt.clockwork.TickService;
@@ -27,17 +26,24 @@ public class ClockService extends Service implements SharedPreferences.OnSharedP
     private final DayIntervalService astrolabe;
     private final TickBroadcast chime;
     private final TickService tickService;
+    private static Clock clock;
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
+    public static Clock getClock() {
+        if (clock == null)
+            clock = Dagger_Clock.create();
+        return clock;
+    }
+
     public ClockService() {
         chime = new TickBroadcast(this);
         tickService = new TickService(new AndroidMetronome(this));
         dateTimeChangeListener = new AndroidDateTimeChangeListener();
-        astrolabe = new DayIntervalService(new SscCalculator());
+        astrolabe = getClock().getDayIntervalService();
         dateTimeChangeListener.setService(astrolabe);
         locationService = new LocationService(new AndroidLocationProvider(this));
     }

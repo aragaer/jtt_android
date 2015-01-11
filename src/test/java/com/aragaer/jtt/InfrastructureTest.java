@@ -14,6 +14,9 @@ import com.aragaer.jtt.location.Location;
 import com.aragaer.jtt.location.LocationProvider;
 import com.aragaer.jtt.location.LocationService;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
 
 public class InfrastructureTest {
 
@@ -33,6 +36,12 @@ public class InfrastructureTest {
         locationService.registerClient(intervalService);
         intervalService.registerClient(tickService);
         tickService.registerClient(client);
+    }
+
+    @Test public void testRealClock() {
+        Clock clock = Dagger_Clock.create();
+
+        DayIntervalService service = clock.getDayIntervalService();
     }
 
     private static class TestLocationProvider implements LocationProvider {
