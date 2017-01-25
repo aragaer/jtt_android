@@ -113,9 +113,7 @@ public class Calculator extends ContentProvider {
 		      String[] selectionArgs) {
 	if (matcher.match(uri) != LOC)
 	    throw new IllegalArgumentException("Unsupported uri for update: " + uri);
-	calculator = new SunriseSunsetCalculator(
-						 new Location(
-							      values.getAsFloat("lat"),
+	calculator = new SunriseSunsetCalculator(new Location(values.getAsFloat("lat"),
 							      values.getAsFloat("lon")),
 						 TimeZone.getDefault());
 	cache.clear();
