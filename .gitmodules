@@ -1,4 +1,0 @@
-[submodule "sunrisesunsetlib-java"]
-	path = sunrisesunsetlib-java
-	url = git@github.com:aragaer/sunrisesunsetlib-java.git
-	ignore = dirty
