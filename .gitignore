@@ -12,3 +12,8 @@ build/
 gradle/
 gradlew*
 local.properties
+
+*~
+\#*\#
+\.\#*
+scratchpad
