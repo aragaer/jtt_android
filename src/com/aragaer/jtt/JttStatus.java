@@ -43,12 +43,13 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 	    return;
 
 	final ThreeIntervals intervals = (ThreeIntervals) intent.getSerializableExtra("intervals");
-	Hour.fromIntervals(intervals, System.currentTimeMillis(), h);
+	Interval currentInterval = intervals.getMiddleInterval();
+	Hour.fromInterval(currentInterval, System.currentTimeMillis(), h);
 	final long tr[] = intervals.getTransitions();
 	final int lower = Hour.lowerBoundary(h.num),
 	    upper = Hour.upperBoundary(h.num);
-	start = Hour.getHourBoundary(tr[1], tr[2], lower);
-	end = Hour.getHourBoundary(tr[1], tr[2], upper);
+	start = Hour.getHourBoundary(currentInterval.start, currentInterval.end, lower);
+	end = Hour.getHourBoundary(currentInterval.start, currentInterval.end, upper);
 	if (end < start) {// Cock or Hare
 	    if (h.quarter >= 2) // we've passed the transition
 		start = Hour.getHourBoundary(tr[0], tr[1], lower);

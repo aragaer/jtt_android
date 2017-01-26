@@ -7,8 +7,8 @@ public class Hour {
         QUARTERS = 4,
         QUARTER_PARTS = 10,
         HOUR_PARTS = QUARTERS * QUARTER_PARTS,
-        INTERVAL_PARTS = HOURS * HOUR_PARTS,
-        TOTAL_PARTS = INTERVAL_PARTS * 2;
+        TICKS_PER_INTERVAL = HOURS * HOUR_PARTS,
+        TOTAL_PARTS = TICKS_PER_INTERVAL * 2;
     public static final String Glyphs[] = "酉戌亥子丑寅卯辰巳午未申".split("(?!^)");
 
     public int num, // 0 to 11, where 0 is hour of Cock and 11 is hour of Monkey
@@ -35,17 +35,15 @@ public class Hour {
         wrapped = (wrapped + TOTAL_PARTS) % TOTAL_PARTS;
     }
 
-    public static Hour fromIntervals(final ThreeIntervals intervals, final long now, Hour reuse) {
-        long[] tr = intervals.getTransitions();
-        long currentIntervalStart = tr[1];
-        long currentIntervalEnd = tr[2];
-        long currentIntervalLength = currentIntervalEnd - currentIntervalStart;
-        boolean is_day = intervals.isDay();
-        double fractionOfIntervalPassed = (1. * now - currentIntervalStart) / currentIntervalLength;
-        return fromWrapped((int) (INTERVAL_PARTS * (fractionOfIntervalPassed + (is_day ? 1 : 0))), reuse);
+    public static Hour fromInterval(Interval interval, final long now, Hour reuse) {
+        double fractionOfIntervalPassed = (1. * now - interval.start) / interval.getLength();
+        int tickNumber = (int) (TICKS_PER_INTERVAL * fractionOfIntervalPassed);
+        if (interval.is_day)
+            tickNumber += TICKS_PER_INTERVAL;
+        return fromTickNumber(tickNumber, reuse);
     }
 
-    public static Hour fromWrapped(final int f, Hour reuse) {
+    public static Hour fromTickNumber(final int f, Hour reuse) {
         final int q = f / QUARTER_PARTS + 2;
         final int n = q / QUARTERS;
         if (reuse == null)
@@ -61,7 +59,7 @@ public class Hour {
         new_wrapped -= new_wrapped % granularity;
         if (wrapped == new_wrapped)
             return false;
-        fromWrapped(new_wrapped, this);
+        fromTickNumber(new_wrapped, this);
         return true;
     }
 

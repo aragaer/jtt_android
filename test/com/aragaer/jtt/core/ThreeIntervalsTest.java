@@ -2,10 +2,7 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.core;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-
-import java.util.*;
 
 import org.junit.Test;
 
@@ -26,6 +23,9 @@ public class ThreeIntervalsTest {
         assertEquals(ti1, ti2);
         assertNotEquals(ti1, ti3);
         assertNotEquals(ti1, ti4);
+        assertEquals(ti1.hashCode(), ti2.hashCode());
+        assertNotEquals(ti1.hashCode(), ti3.hashCode());
+        assertNotEquals(ti1.hashCode(), ti4.hashCode());
     }
 
     @Test public void testCheckInMiddleInterval() {
@@ -36,5 +36,11 @@ public class ThreeIntervalsTest {
         assertTrue(ti.surrounds(7));
         assertFalse(ti.surrounds(10));
         assertFalse(ti.surrounds(12));
+    }
+
+    @Test public void testMiddleInterval() {
+        ThreeIntervals ti = new ThreeIntervals(new long[] {0, 5, 10, 15}, true);
+        Interval interval = ti.getMiddleInterval();
+        assertEquals(interval, new Interval(5, 10, true));
     }
 }

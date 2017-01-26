@@ -1,3 +1,5 @@
+// -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; -*-
+// vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
 import java.util.Map;
@@ -91,7 +93,7 @@ public class JTTWidgetProvider {
 		Hour prev = holder.last_update;
 		if (prev == null) {
 			wrapped -= wrapped % holder.granularity;
-			holder.last_update = prev = Hour.fromWrapped(wrapped, null);
+			holder.last_update = prev = Hour.fromTickNumber(wrapped, null);
 		} else if (!prev.compareAndUpdate(wrapped, holder.granularity))
 			return; // do nothing
 		draw(c, null, holder);
@@ -154,7 +156,7 @@ public class JTTWidgetProvider {
 
 class WidgetPainter1 implements WidgetPainter {
 	private static final float QUARTER_ANGLE = 355f / Hour.QUARTERS,
-			PART_ANGLE = QUARTER_ANGLE / Hour.QUARTER_PARTS;
+        PART_ANGLE = QUARTER_ANGLE / Hour.QUARTER_PARTS;
 
 	@Override
 	public Bitmap get_bmp(Context context, Hour h) {

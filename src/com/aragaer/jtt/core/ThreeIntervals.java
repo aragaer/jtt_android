@@ -12,37 +12,41 @@ public class ThreeIntervals implements Serializable {
     private final boolean _is_day;
 
     public ThreeIntervals(long[] transitions, boolean is_day) {
-	_transitions = new long[4];
-	System.arraycopy(transitions, 0, _transitions, 0, 4);
-	_is_day = is_day;
+        _transitions = new long[4];
+        System.arraycopy(transitions, 0, _transitions, 0, 4);
+        _is_day = is_day;
     }
 
     public long[] getTransitions() {
-	return _transitions;
+        return _transitions;
     }
 
     public boolean isDay() {
-	return _is_day;
+        return _is_day;
     }
 
     public boolean surrounds(long timestamp) {
-	return timestamp >= _transitions[1] && timestamp < _transitions[2];
+        return timestamp >= _transitions[1] && timestamp < _transitions[2];
+    }
+
+    public Interval getMiddleInterval() {
+        return new Interval(_transitions[1], _transitions[2], _is_day);
     }
 
     @Override public boolean equals(Object o) {
         if (this == o)
-	    return true;
+            return true;
         if (o == null || getClass() != o.getClass())
-	    return false;
+            return false;
 
         ThreeIntervals other = (ThreeIntervals) o;
-	return _is_day == other._is_day && Arrays.equals(_transitions, other._transitions);
+        return _is_day == other._is_day && Arrays.equals(_transitions, other._transitions);
     }
 
     @Override public int hashCode() {
-	int result = 0;
-	for (long transition : _transitions)
-	    result = 31*result + (int) (transition ^ (transition >>> 32));
-	return _is_day ? result : result ^ 0xffffffff;
+        int result = 0;
+        for (long transition : _transitions)
+            result = 31*result + (int) (transition ^ (transition >>> 32));
+        return _is_day ? result : result ^ 0xffffffff;
     }
 }

@@ -69,7 +69,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget12" />
         </receiver>
-        <receiver android:name=".core.Clockwork$TimeChangeReceiver">
+        <receiver android:name=".android.TimeChangeReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.DATE_CHANGED" />
                 <action android:name="android.intent.action.TIME_SET" />
