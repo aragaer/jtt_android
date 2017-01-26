@@ -38,11 +38,12 @@ public class Clockwork extends IntentService {
 	final AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 	final long tr[] = new long[4];
 	final boolean is_day = Calculator.getSurroundingTransitions(context, System.currentTimeMillis(), tr);
+	ThreeIntervals intervals = new ThreeIntervals(tr);
 
 	final long freq = Math.round((tr[2] - tr[1])/total);
 
 	final Intent TickActionInternal = new Intent(context, Clockwork.class)
-	    .putExtra("tr", tr)
+	    .putExtra("intervals", intervals)
 	    .putExtra("day", is_day);
 
 	/* Tell alarm manager to start ticking at tr[1], it will automatically calculate the next tick time */
@@ -56,13 +57,14 @@ public class Clockwork extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-	final long tr[] = intent.getLongArrayExtra("tr");
+	final ThreeIntervals intervals = (ThreeIntervals) intent.getSerializableExtra("intervals");
+	final long tr[] = intervals.getTransitions();
 	final boolean is_day = intent.getBooleanExtra("day", false);
 	final long now = System.currentTimeMillis();
 	Hour.fromTimestamps(tr, is_day, now, hour);
 
-	if (now >= tr[1] && now < tr[2]) {
-	    TickAction.putExtra("tr", tr)
+	if (intervals.surrounds(now)) {
+	    TickAction.putExtra("intervals", intervals)
 		.putExtra("day", is_day)
 		.putExtra("hour", hour.num)
 		.putExtra("jtt", hour.wrapped);
