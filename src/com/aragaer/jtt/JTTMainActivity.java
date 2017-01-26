@@ -33,7 +33,7 @@ public class JTTMainActivity extends Activity implements SharedPreferences.OnSha
 		    Log.w("JTT", "Got null intervals object");
 		    return;
 		}
-		today.tick(intervals, intent.getBooleanExtra("day", false));
+		today.tick(intervals);
 	    }
 	};
 

@@ -1,11 +1,7 @@
 package com.aragaer.jtt.core;
 
-import android.app.AlarmManager;
-import android.app.IntentService;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
+import android.app.*;
+import android.content.*;
 import android.util.Log;
 
 public class Clockwork extends IntentService {
@@ -32,40 +28,35 @@ public class Clockwork extends IntentService {
 	}
     };
 
-    private final static double total = Hour.HOURS * Hour.HOUR_PARTS;
+    private final static double ticksPerInterval = Hour.HOURS * Hour.HOUR_PARTS;
 
     public static void schedule(final Context context) {
-	final AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-	final long tr[] = new long[4];
-	final boolean is_day = Calculator.getSurroundingTransitions(context, System.currentTimeMillis(), tr);
-	ThreeIntervals intervals = new ThreeIntervals(tr);
+	ThreeIntervals intervals = Calculator.getSurroundingTransitions(context, System.currentTimeMillis());
+	long currentIntervalStart = intervals.getTransitions()[1];
+	long currentIntervalEnd = intervals.getTransitions()[2];
+	long tickLength = Math.round((currentIntervalEnd - currentIntervalStart)/ticksPerInterval);
 
-	final long freq = Math.round((tr[2] - tr[1])/total);
+	Intent TickActionInternal = new Intent(context, Clockwork.class)
+	    .putExtra("intervals", intervals);
 
-	final Intent TickActionInternal = new Intent(context, Clockwork.class)
-	    .putExtra("intervals", intervals)
-	    .putExtra("day", is_day);
-
-	/* Tell alarm manager to start ticking at tr[1], it will automatically calculate the next tick time */
-	am.setRepeating(AlarmManager.RTC, tr[1], freq, PendingIntent.getService(context, 0, TickActionInternal, INTENT_FLAGS));
+	AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+	am.setRepeating(AlarmManager.RTC, currentIntervalStart, tickLength,
+			PendingIntent.getService(context, 0, TickActionInternal, INTENT_FLAGS));
     }
 
     public static void unschedule(final Context context) {
-	final AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+	AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 	am.cancel(PendingIntent.getService(context, 0, new Intent(context, Clockwork.class), 0));
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
 	final ThreeIntervals intervals = (ThreeIntervals) intent.getSerializableExtra("intervals");
-	final long tr[] = intervals.getTransitions();
-	final boolean is_day = intent.getBooleanExtra("day", false);
 	final long now = System.currentTimeMillis();
-	Hour.fromTimestamps(tr, is_day, now, hour);
+	Hour.fromIntervals(intervals, now, hour);
 
 	if (intervals.surrounds(now)) {
 	    TickAction.putExtra("intervals", intervals)
-		.putExtra("day", is_day)
 		.putExtra("hour", hour.num)
 		.putExtra("jtt", hour.wrapped);
 	    sendStickyBroadcast(TickAction);

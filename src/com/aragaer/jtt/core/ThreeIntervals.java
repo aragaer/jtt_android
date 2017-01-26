@@ -9,14 +9,20 @@ import java.util.Arrays;
 public class ThreeIntervals implements Serializable {
     private static final long serialVersionUID = 1;
     private final long[] _transitions;
+    private final boolean _is_day;
 
-    public ThreeIntervals(long[] transitions) {
+    public ThreeIntervals(long[] transitions, boolean is_day) {
 	_transitions = new long[4];
 	System.arraycopy(transitions, 0, _transitions, 0, 4);
+	_is_day = is_day;
     }
 
     public long[] getTransitions() {
 	return _transitions;
+    }
+
+    public boolean isDay() {
+	return _is_day;
     }
 
     public boolean surrounds(long timestamp) {
@@ -30,13 +36,13 @@ public class ThreeIntervals implements Serializable {
 	    return false;
 
         ThreeIntervals other = (ThreeIntervals) o;
-	return Arrays.equals(_transitions, other._transitions);
+	return _is_day == other._is_day && Arrays.equals(_transitions, other._transitions);
     }
 
     @Override public int hashCode() {
 	int result = 0;
 	for (long transition : _transitions)
 	    result = 31*result + (int) (transition ^ (transition >>> 32));
-	return result;
+	return _is_day ? result : result ^ 0xffffffff;
     }
 }

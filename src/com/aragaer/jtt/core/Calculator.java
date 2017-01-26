@@ -121,16 +121,16 @@ public class Calculator extends ContentProvider {
 	return 0;
     }
 
-    /* Calculate a total of 4 transitions, tr[1] <= now < tr[2]. Return true if it is day now */
-    public static boolean getSurroundingTransitions(final Context context, final long now, final long tr[]) {
+    public static ThreeIntervals getSurroundingTransitions(final Context context, final long now) {
 	final Cursor c = context.getContentResolver()
 	    .query(ContentUris.withAppendedId(TRANSITIONS, now), null, null, null, null);
 	c.moveToFirst();
+	final long[] tr = new long[4];
 	for (int i = 0; i < 4; i++)
 	    tr[i] = c.getLong(i);
 	final boolean is_day = c.getInt(4) == 1;
 	c.close();
-	return is_day;
+	return new ThreeIntervals(tr, is_day);
     }
 
     public static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);

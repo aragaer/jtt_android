@@ -42,10 +42,8 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 	if (!action.equals(Clockwork.ACTION_JTT_TICK))
 	    return;
 
-	final int wrapped = intent.getIntExtra("jtt", 0);
-	Hour.fromWrapped(wrapped, h);
-
 	final ThreeIntervals intervals = (ThreeIntervals) intent.getSerializableExtra("intervals");
+	Hour.fromIntervals(intervals, System.currentTimeMillis(), h);
 	final long tr[] = intervals.getTransitions();
 	final int lower = Hour.lowerBoundary(h.num),
 	    upper = Hour.upperBoundary(h.num);

@@ -13,20 +13,23 @@ import org.junit.Test;
 public class ThreeIntervalsTest {
 
     @Test public void testCreate() {
-        ThreeIntervals ti = new ThreeIntervals(new long[] {0, 1, 2, 3});
+        ThreeIntervals ti = new ThreeIntervals(new long[] {0, 1, 2, 3}, true);
         assertArrayEquals(ti.getTransitions(), new long[] {0, 1, 2, 3});
+        assertEquals(ti.isDay(), true);
     }
 
     @Test public void testCanBeCompared() {
-        ThreeIntervals ti1 = new ThreeIntervals(new long[] {0, 1, 2, 3});
-        ThreeIntervals ti2 = new ThreeIntervals(new long[] {0, 1, 2, 3});
-        ThreeIntervals ti3 = new ThreeIntervals(new long[] {0, 1, 2, 4});
+        ThreeIntervals ti1 = new ThreeIntervals(new long[] {0, 1, 2, 3}, true);
+        ThreeIntervals ti2 = new ThreeIntervals(new long[] {0, 1, 2, 3}, true);
+        ThreeIntervals ti3 = new ThreeIntervals(new long[] {0, 1, 2, 4}, true);
+        ThreeIntervals ti4 = new ThreeIntervals(new long[] {0, 1, 2, 3}, false);
         assertEquals(ti1, ti2);
         assertNotEquals(ti1, ti3);
+        assertNotEquals(ti1, ti4);
     }
 
     @Test public void testCheckInMiddleInterval() {
-        ThreeIntervals ti = new ThreeIntervals(new long[] {0, 5, 10, 15});
+        ThreeIntervals ti = new ThreeIntervals(new long[] {0, 5, 10, 15}, true);
         assertFalse(ti.surrounds(0));
         assertFalse(ti.surrounds(3));
         assertTrue(ti.surrounds(5));

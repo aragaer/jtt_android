@@ -1,12 +1,12 @@
+// -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; -*-
+// vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.core.Calculator;
 import com.aragaer.jtt.core.Clockwork;
 
 import android.app.Service;
-import android.content.ContentValues;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -17,51 +17,51 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
     @Override
     public IBinder onBind(Intent intent) {
-	return null;
+        return null;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startid) {
-	Log.i(TAG, "Service starting");
-	move();
+        Log.i(TAG, "Service starting");
+        move();
 
-	SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-	pref.registerOnSharedPreferenceChangeListener(this);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        pref.registerOnSharedPreferenceChangeListener(this);
 
-	toggle_notify(pref.getBoolean("jtt_notify", true));
+        toggle_notify(pref.getBoolean("jtt_notify", true));
 
-	return START_STICKY;
+        return START_STICKY;
     }
 
     private void toggle_notify(final boolean notify) {
-	if (status_notify == null) {
-	    if (notify)
-		status_notify = new JttStatus(this);
-	} else {
-	    if (!notify) {
-		status_notify.release();
-		status_notify = null;
-	    }
-	}
+        if (status_notify == null) {
+            if (notify)
+                status_notify = new JttStatus(this);
+        } else {
+            if (!notify) {
+                status_notify.release();
+                status_notify = null;
+            }
+        }
     }
 
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-	if (key.equals(Settings.PREF_NOTIFY))
-	    toggle_notify(pref.getBoolean("jtt_notify", true));
-	else if (key.equals(Settings.PREF_LOCATION))
-	    move();
-	else if (key.equals(Settings.PREF_WIDGET)
-		 || key.equals(Settings.PREF_LOCALE)
-		 || key.equals(Settings.PREF_HNAME))
-	    JTTWidgetProvider.draw_all(this);
+        if (key.equals(Settings.PREF_NOTIFY))
+            toggle_notify(pref.getBoolean("jtt_notify", true));
+        else if (key.equals(Settings.PREF_LOCATION))
+            move();
+        else if (key.equals(Settings.PREF_WIDGET)
+                 || key.equals(Settings.PREF_LOCALE)
+                 || key.equals(Settings.PREF_HNAME))
+            JTTWidgetProvider.draw_all(this);
     }
 
     private void move() {
-	final float l[] = Settings.getLocation(this);
-	final ContentValues location = new ContentValues(2);
-	location.put("lat", l[0]);
-	location.put("lon", l[1]);
-	getContentResolver().update(Calculator.LOCATION, location, null, null);
-	Clockwork.schedule(this);
+        final float l[] = Settings.getLocation(this);
+        final ContentValues location = new ContentValues(2);
+        location.put("lat", l[0]);
+        location.put("lon", l[1]);
+        getContentResolver().update(Calculator.LOCATION, location, null, null);
+        Clockwork.schedule(this);
     }
 }
