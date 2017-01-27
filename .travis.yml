@@ -1,25 +1,24 @@
 # vim: et ts=2 sts=2 sw=2
 
 language: android
-jdk: oraclejdk7
+jdk: oraclejdk8
 env:
   matrix:
-    - ANDROID_TARGET=android-24  ANDROID_ABI=armeabi-v7a
-    - ANDROID_TARGET=android-23  ANDROID_ABI=armeabi-v7a
-    - ANDROID_TARGET=android-22  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-25  ANDROID_ABI=armeabi-v7a
 
 android:
   components:
     - platform-tools
     - tools
-    - build-tools-23.0.3
-    - android-24
-    - android-23
-    - android-22
+    - tools
+    - build-tools-25.0.2
+    - android-25
     - extra-android-m2repository
 
 before_script:
   - gradle wrapper -b wrapper.gradle
   - cp travis.gradle.properties gradle.properties
 
-script: ./gradlew check
+script: ./gradlew check jacocoTestReport
+
+after_success: bash <(curl -s https://codecov.io/bash)
