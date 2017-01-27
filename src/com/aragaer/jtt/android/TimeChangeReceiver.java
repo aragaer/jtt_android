@@ -2,8 +2,6 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.android;
 
-import com.aragaer.jtt.core.Clockwork;
-
 import android.content.*;
 import android.util.Log;
 
@@ -16,7 +14,7 @@ public class TimeChangeReceiver extends BroadcastReceiver {
         if (action.equals(Intent.ACTION_TIME_CHANGED)
             || action.equals(Intent.ACTION_DATE_CHANGED))
             try {
-                Clockwork.schedule(context);
+                AndroidTicker.schedule(context);
             } catch (IllegalStateException e) {
                 Log.i("JTT CLOCKWORK", "Time change while service is not running, ignore");
             }

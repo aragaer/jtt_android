@@ -1,36 +1,38 @@
 // -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; -*-
 // vim: et ts=4 sts=4 sw=4 syntax=java
-package com.aragaer.jtt.core;
+package com.aragaer.jtt.android;
+
+import com.aragaer.jtt.core.*;
 
 import android.app.*;
 import android.content.*;
 import android.util.Log;
+import java.io.Serializable;
 
-public class Clockwork extends IntentService {
+
+public class AndroidTicker extends IntentService {
     public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
     private static final Intent TickAction = new Intent(ACTION_JTT_TICK);
 
-    public Clockwork() {
+    public AndroidTicker() {
         super("CLOCKWORK");
     }
 
     public static void schedule(final Context context) {
         long now = System.currentTimeMillis();
-        ThreeIntervals intervals = Calculator.getSurroundingTransitions(context, now);
-        Interval currentInterval = intervals.getMiddleInterval();
-        long tickLength = Math.round(currentInterval.getLength()/Hour.TICKS_PER_INTERVAL);
+        ClockworkStarter starter = new ClockworkStarter(context, now);
 
-        Intent TickActionInternal = new Intent(context, Clockwork.class)
-            .putExtra("intervals", intervals);
+        Intent TickActionInternal = new Intent(context, AndroidTicker.class)
+            .putExtra("intervals", starter.data);
 
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        am.setRepeating(AlarmManager.RTC, currentInterval.start, tickLength,
+        am.setRepeating(AlarmManager.RTC, starter.start, starter.repeat,
                         PendingIntent.getService(context, 0, TickActionInternal, PendingIntent.FLAG_UPDATE_CURRENT));
     }
 
     public static void unschedule(final Context context) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        am.cancel(PendingIntent.getService(context, 0, new Intent(context, Clockwork.class), 0));
+        am.cancel(PendingIntent.getService(context, 0, new Intent(context, AndroidTicker.class), 0));
     }
 
     @Override
@@ -40,7 +42,8 @@ public class Clockwork extends IntentService {
         Hour hour = Hour.fromInterval(intervals.getMiddleInterval(), now, null);
 
         if (intervals.surrounds(now)) {
-            TickAction.putExtra("intervals", intervals)
+            Intent TickAction = new Intent(ACTION_JTT_TICK)
+                .putExtra("intervals", intervals)
                 .putExtra("hour", hour.num)
                 .putExtra("jtt", hour.wrapped);
             sendStickyBroadcast(TickAction);
@@ -52,5 +55,18 @@ public class Clockwork extends IntentService {
             }
 
         stopSelf();
+    }
+
+    private static class ClockworkStarter {
+        public final long start, repeat;
+        public Serializable data;
+
+        public ClockworkStarter(Context context, long now) {
+            ThreeIntervals intervals = Calculator.getSurroundingTransitions(context, now);
+            Interval currentInterval = intervals.getMiddleInterval();
+            start = currentInterval.start;
+            repeat = Math.round(currentInterval.getLength()/Hour.TICKS_PER_INTERVAL);
+            data = intervals;
+        }
     }
 }

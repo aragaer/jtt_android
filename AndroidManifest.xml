@@ -40,7 +40,7 @@
             android:name=".JttService"
             android:exported="false" />
         <service
-            android:name=".core.Clockwork"
+            android:name=".android.AndroidTicker"
             android:exported="false" />
         <receiver android:name=".android.BootReceiver" >
             <intent-filter>

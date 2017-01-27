@@ -5,7 +5,7 @@ package com.aragaer.jtt;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.android.AndroidTicker;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.graphics.Paints;
 import com.aragaer.jtt.graphics.WadokeiDraw;
@@ -15,16 +15,10 @@ import com.aragaer.jtt.resources.StringResources;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
+import android.content.*;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RectF;
+import android.graphics.*;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -75,7 +69,7 @@ public class JTTWidgetProvider {
 			final String action = i.getAction();
 			if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
 				update(c, i);
-			else if (action.equals(Clockwork.ACTION_JTT_TICK))
+			else if (action.equals(AndroidTicker.ACTION_JTT_TICK))
 				tick(c, i, getClass());
 			else
 				Log.d("Widgets", "Got action "+action);

@@ -1,5 +1,8 @@
+// -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; -*-
+// vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
+import com.aragaer.jtt.android.AndroidTicker;
 import com.aragaer.jtt.core.*;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
@@ -20,70 +23,70 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
     private final NotificationManager nm;
 
     public JttStatus(final Context ctx) {
-	context = ctx;
-	nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        context = ctx;
+        nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-	sr = RuntimeResources.get(context).getInstance(StringResources.class);
-	sr.registerStringResourceChangeListener(this,
-						StringResources.TYPE_HOUR_NAME | StringResources.TYPE_TIME_FORMAT);
+        sr = RuntimeResources.get(context).getInstance(StringResources.class);
+        sr.registerStringResourceChangeListener(this,
+                                                StringResources.TYPE_HOUR_NAME | StringResources.TYPE_TIME_FORMAT);
 
-	context.registerReceiver(this, new IntentFilter(Clockwork.ACTION_JTT_TICK));
+        context.registerReceiver(this, new IntentFilter(AndroidTicker.ACTION_JTT_TICK));
     }
 
     public void release() {
-	nm.cancel(APP_ID);
-	sr.unregisterStringResourceChangeListener(this);
-	context.unregisterReceiver(this);
+        nm.cancel(APP_ID);
+        sr.unregisterStringResourceChangeListener(this);
+        context.unregisterReceiver(this);
     }
 
     @Override
     public void onReceive(Context ctx, Intent intent) {
-	final String action = intent.getAction();
-	if (!action.equals(Clockwork.ACTION_JTT_TICK))
-	    return;
+        final String action = intent.getAction();
+        if (!action.equals(AndroidTicker.ACTION_JTT_TICK))
+            return;
 
-	final ThreeIntervals intervals = (ThreeIntervals) intent.getSerializableExtra("intervals");
-	Interval currentInterval = intervals.getMiddleInterval();
-	Hour.fromInterval(currentInterval, System.currentTimeMillis(), h);
-	final long tr[] = intervals.getTransitions();
-	final int lower = Hour.lowerBoundary(h.num),
-	    upper = Hour.upperBoundary(h.num);
-	start = Hour.getHourBoundary(currentInterval.start, currentInterval.end, lower);
-	end = Hour.getHourBoundary(currentInterval.start, currentInterval.end, upper);
-	if (end < start) {// Cock or Hare
-	    if (h.quarter >= 2) // we've passed the transition
-		start = Hour.getHourBoundary(tr[0], tr[1], lower);
-	    else
-		end = Hour.getHourBoundary(tr[2], tr[3], upper);
-	}
+        final ThreeIntervals intervals = (ThreeIntervals) intent.getSerializableExtra("intervals");
+        Interval currentInterval = intervals.getMiddleInterval();
+        Hour.fromInterval(currentInterval, System.currentTimeMillis(), h);
+        final long tr[] = intervals.getTransitions();
+        final int lower = Hour.lowerBoundary(h.num),
+            upper = Hour.upperBoundary(h.num);
+        start = Hour.getHourBoundary(currentInterval.start, currentInterval.end, lower);
+        end = Hour.getHourBoundary(currentInterval.start, currentInterval.end, upper);
+        if (end < start) {// Cock or Hare
+            if (h.quarter >= 2) // we've passed the transition
+                start = Hour.getHourBoundary(tr[0], tr[1], lower);
+            else
+                end = Hour.getHourBoundary(tr[2], tr[3], upper);
+        }
 
-	show();
+        show();
     }
 
     private void show() {
-	final int hf = h.quarter * Hour.QUARTER_PARTS + h.quarter_parts;
-	final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notification);
+        final int hf = h.quarter * Hour.QUARTER_PARTS + h.quarter_parts;
+        final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notification);
 
-	rv.setTextViewText(R.id.image, Hour.Glyphs[h.num]);
-	rv.setTextViewText(R.id.title, sr.getHrOf(h.num));
-	rv.setTextViewText(R.id.quarter, sr.getQuarter(h.quarter));
-	rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
-	rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
-	rv.setTextViewText(R.id.start, sr.format_time(start));
-	rv.setTextViewText(R.id.end, sr.format_time(end));
+        rv.setTextViewText(R.id.image, Hour.Glyphs[h.num]);
+        rv.setTextViewText(R.id.title, sr.getHrOf(h.num));
+        rv.setTextViewText(R.id.quarter, sr.getQuarter(h.quarter));
+        rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
+        rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
+        rv.setTextViewText(R.id.start, sr.format_time(start));
+        rv.setTextViewText(R.id.end, sr.format_time(end));
 
-	final Notification n = new NotificationCompat.Builder(context)
-	    .setContent(rv)
-	    .setOngoing(true)
-	    .setSmallIcon(R.drawable.notification_icon, h.num)
-	    .setContentIntent(PendingIntent.getActivity(context, 0,
-							new Intent(context, JTTMainActivity.class), 0))
-	    .build();
+        final Notification n = new NotificationCompat.Builder(context)
+            .setContent(rv)
+            .setOngoing(true)
+            .setSmallIcon(R.drawable.notification_icon, h.num)
+            .setContentIntent(PendingIntent.getActivity(context, 0,
+                                                        new Intent(context, JTTMainActivity.class), 0))
+            .build();
 
-	nm.notify(APP_ID, n);
+        nm.notify(APP_ID, n);
     }
 
     public void onStringResourcesChanged(final int changes) {
-	show();
+        show();
     }
 }
