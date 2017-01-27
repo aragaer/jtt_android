@@ -42,7 +42,7 @@
         <service
             android:name=".core.Clockwork"
             android:exported="false" />
-        <receiver android:name=".BootReceiver" >
+        <receiver android:name=".android.BootReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
