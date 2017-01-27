@@ -12,6 +12,7 @@ build/
 gradle/
 gradlew*
 local.properties
+gradle.properties
 
 *~
 \#*\#

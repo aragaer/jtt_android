@@ -11,6 +11,8 @@ android:
     - build-tools-20.0.0
     - android-21
 
-before_script: gradle wrapper -b wrapper.gradle
+before_script:
+  - gradle wrapper -b wrapper.gradle
+  - cp travis.gradle.properties gradle.properties
 
 script: ./gradlew check
