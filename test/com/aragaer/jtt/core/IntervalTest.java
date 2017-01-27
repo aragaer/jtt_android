@@ -13,10 +13,10 @@ import org.junit.Test;
 public class IntervalTest {
 
     @Test public void testCreate() {
-	Interval interval = new Interval(0, 1, true);
-	assertEquals(interval.start, 0);
-	assertEquals(interval.end, 1);
-	assertEquals(interval.is_day, true);
+        Interval interval = new Interval(0, 1, true);
+        assertEquals(interval.start, 0);
+        assertEquals(interval.end, 1);
+        assertEquals(interval.is_day, true);
     }
 
     @Test public void testCanBeCompared() {
@@ -24,16 +24,21 @@ public class IntervalTest {
         Interval i2 = new Interval(0, 1, true);
         Interval i3 = new Interval(0, 2, true);
         Interval i4 = new Interval(0, 1, false);
+        Interval i5 = new Interval(-1, 1, true);
+        assertEquals(i1, i1);
         assertEquals(i1, i2);
+        assertNotEquals(i1, null);
+        assertNotEquals(i1, this);
         assertNotEquals(i1, i3);
         assertNotEquals(i1, i4);
+        assertNotEquals(i1, i5);
         assertEquals(i1.hashCode(), i2.hashCode());
         assertNotEquals(i1.hashCode(), i3.hashCode());
         assertNotEquals(i1.hashCode(), i4.hashCode());
     }
 
     @Test public void testLength() {
-	Interval i = new Interval(0, 1, true);
-	assertEquals(i.getLength(), 1);
+        Interval i = new Interval(0, 1, true);
+        assertEquals(i.getLength(), 1);
     }
 }

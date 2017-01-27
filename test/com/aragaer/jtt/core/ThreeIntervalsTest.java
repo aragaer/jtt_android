@@ -20,6 +20,9 @@ public class ThreeIntervalsTest {
         ThreeIntervals ti2 = new ThreeIntervals(new long[] {0, 1, 2, 3}, true);
         ThreeIntervals ti3 = new ThreeIntervals(new long[] {0, 1, 2, 4}, true);
         ThreeIntervals ti4 = new ThreeIntervals(new long[] {0, 1, 2, 3}, false);
+        assertEquals(ti1, ti1);
+        assertNotEquals(ti1, null);
+        assertNotEquals(ti1, this);
         assertEquals(ti1, ti2);
         assertNotEquals(ti1, ti3);
         assertNotEquals(ti1, ti4);
