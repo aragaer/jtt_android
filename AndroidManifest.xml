@@ -40,7 +40,7 @@
             android:name=".JttService"
             android:exported="false" />
         <service
-            android:name=".android.AndroidTicker"
+            android:name=".android.Ticker"
             android:exported="false" />
         <receiver android:name=".android.BootReceiver" >
             <intent-filter>
