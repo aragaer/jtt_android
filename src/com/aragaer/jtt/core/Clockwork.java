@@ -8,11 +8,17 @@ import java.io.Serializable;
 
 
 public class Clockwork {
-    public final long start, repeat;
+    public long start, repeat;
     public Serializable data;
 
-    public Clockwork(Context context, long now) {
-	ThreeIntervals intervals = SunriseSunsetDataProvider.getSurroundingTransitions(context, now);
+    private final Context _context;
+
+    public Clockwork(Context context) {
+	_context = context;
+    }
+
+    public void setTime(long time) {
+	ThreeIntervals intervals = SunriseSunsetDataProvider.getSurroundingTransitions(_context, time);
 	Interval currentInterval = intervals.getMiddleInterval();
 	start = currentInterval.start;
 	repeat = Math.round(currentInterval.getLength()/Hour.TICKS_PER_INTERVAL);

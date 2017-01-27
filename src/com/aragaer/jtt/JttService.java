@@ -59,6 +59,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     private void move() {
         float l[] = Settings.getLocation(this);
         SunriseSunsetDataProvider.move(this, l[0], l[1]);
-        AndroidTicker.schedule(this);
+        new AndroidTicker(this).start();
     }
 }

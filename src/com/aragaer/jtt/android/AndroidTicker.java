@@ -13,20 +13,28 @@ import android.content.Intent;
 public class AndroidTicker {
     public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
 
-    public static void schedule(final Context context) {
-        long now = System.currentTimeMillis();
-        Clockwork starter = new Clockwork(context, now);
+    private final Context _context;
+    private final Clockwork _clockwork;
 
-        Intent TickActionInternal = new Intent(context, Ticker.class)
-            .putExtra("intervals", starter.data);
-
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        am.setRepeating(AlarmManager.RTC, starter.start, starter.repeat,
-                        PendingIntent.getService(context, 0, TickActionInternal, PendingIntent.FLAG_UPDATE_CURRENT));
+    public AndroidTicker(Context context) {
+        _context = context;
+        _clockwork = new Clockwork(_context);
     }
 
-    public static void unschedule(final Context context) {
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        am.cancel(PendingIntent.getService(context, 0, new Intent(context, Ticker.class), 0));
+    public void start() {
+        long now = System.currentTimeMillis();
+        _clockwork.setTime(now);
+
+        Intent TickActionInternal = new Intent(_context, Ticker.class)
+            .putExtra("intervals", _clockwork.data);
+
+        AlarmManager am = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC, _clockwork.start, _clockwork.repeat,
+                        PendingIntent.getService(_context, 0, TickActionInternal, PendingIntent.FLAG_UPDATE_CURRENT));
+    }
+
+    public void stop() {
+        AlarmManager am = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
+        am.cancel(PendingIntent.getService(_context, 0, new Intent(_context, Ticker.class), 0));
     }
 }

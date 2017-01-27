@@ -29,7 +29,7 @@ public class Ticker extends IntentService {
 	    sendStickyBroadcast(TickAction);
 	} else
 	    try {
-		AndroidTicker.schedule(this);
+		new AndroidTicker(this).start();
 	    } catch (IllegalStateException e) {
 		Log.i("JTT CLOCKWORK", "Transition passed while service is not running, ignore");
 	    }

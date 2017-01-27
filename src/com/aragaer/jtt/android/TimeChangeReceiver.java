@@ -14,7 +14,7 @@ public class TimeChangeReceiver extends BroadcastReceiver {
         if (action.equals(Intent.ACTION_TIME_CHANGED)
             || action.equals(Intent.ACTION_DATE_CHANGED))
             try {
-                AndroidTicker.schedule(context);
+                new AndroidTicker(context).start();
             } catch (IllegalStateException e) {
                 Log.i("JTT CLOCKWORK", "Time change while service is not running, ignore");
             }
