@@ -1,16 +1,8 @@
 // vim: et ts=4 sts=4 sw=4 syntax=groovy
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-    }
-}
-
 repositories {
     mavenCentral()
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.2'
+    gradleVersion = '2.10'
 }
