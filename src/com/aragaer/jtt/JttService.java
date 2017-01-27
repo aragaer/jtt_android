@@ -2,7 +2,7 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
-import com.aragaer.jtt.core.Calculator;
+import com.aragaer.jtt.android.SunriseSunsetDataProvider;
 import com.aragaer.jtt.android.AndroidTicker;
 
 import android.app.Service;
@@ -57,11 +57,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     }
 
     private void move() {
-        final float l[] = Settings.getLocation(this);
-        final ContentValues location = new ContentValues(2);
-        location.put("lat", l[0]);
-        location.put("lon", l[1]);
-        getContentResolver().update(Calculator.LOCATION, location, null, null);
+        float l[] = Settings.getLocation(this);
+        SunriseSunsetDataProvider.move(this, l[0], l[1]);
         AndroidTicker.schedule(this);
     }
 }

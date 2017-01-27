@@ -1,25 +1,23 @@
-package com.aragaer.jtt.core;
+// -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; -*-
+// vim: et ts=4 sts=4 sw=4 syntax=java
+package com.aragaer.jtt.android;
 
-import java.util.Calendar;
+import com.aragaer.jtt.core.*;
+
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.TimeZone;
 
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 
-import android.content.ContentProvider;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.UriMatcher;
+import android.content.*;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.util.Log;
 
-public class Calculator extends ContentProvider {
+public class SunriseSunsetDataProvider extends ContentProvider {
     public static final String AUTHORITY = "com.aragaer.jtt.provider.calculator";
     public static final Uri TRANSITIONS = Uri.parse("content://" + AUTHORITY + "/transitions"),
 	LOCATION = Uri.parse("content://" + AUTHORITY + "/location");
@@ -119,6 +117,13 @@ public class Calculator extends ContentProvider {
 	cache.clear();
 	Log.d("PROVIDER", "Location updated");
 	return 0;
+    }
+
+    public static void move(Context context, float latitude, float longitude) {
+        final ContentValues location = new ContentValues(2);
+        location.put("lat", latitude);
+        location.put("lon", longitude);
+        context.getContentResolver().update(SunriseSunsetDataProvider.LOCATION, location, null, null);
     }
 
     public static ThreeIntervals getSurroundingTransitions(final Context context, final long now) {
