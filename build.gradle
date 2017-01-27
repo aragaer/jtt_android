@@ -22,7 +22,7 @@ configurations {
 
 dependencies {
     compile 'com.luckycatlabs:SunriseSunsetCalculator:1.1'
-    compile 'com.android.support:support-v4:18.0.+'
+    compile 'com.android.support:support-v4:24.0.0'
 
     unitTestCompile files("$project.buildDir/intermediates/classes/debug")
     unitTestCompile 'junit:junit:4.11'
@@ -57,8 +57,8 @@ android {
            res.srcDirs = ['JttAndroidTest/res']
         }
     }
-    compileSdkVersion 'android-21'
-    buildToolsVersion '20'
+    compileSdkVersion 'android-24'
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
         testApplicationId "com.aragaer.jtt.test"

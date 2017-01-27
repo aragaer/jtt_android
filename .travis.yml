@@ -4,12 +4,19 @@ language: android
 jdk: oraclejdk7
 env:
   matrix:
-    - ANDROID_TARGET=android-21  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-24  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-23  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-22  ANDROID_ABI=armeabi-v7a
 
 android:
   components:
-    - build-tools-20.0.0
-    - android-21
+    - platform-tools
+    - tools
+    - build-tools-23.0.3
+    - android-24
+    - android-23
+    - android-22
+    - extra-android-m2repository
 
 before_script:
   - gradle wrapper -b wrapper.gradle
