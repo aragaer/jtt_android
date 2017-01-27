@@ -76,6 +76,7 @@ android {
 
     buildTypes {
         debug {
+            testCoverageEnabled true
         }
         release {
             minifyEnabled true
@@ -84,25 +85,6 @@ android {
         }
     }
 }
-
-/*
-gradle.taskGraph.whenReady { taskGraph ->
-    if (taskGraph.hasTask(':assembleRelease')) {
-        Properties properties = new Properties()
-        properties.load(project.rootProject.file('local.properties').newDataInputStream())
-
-        def store_file = file(properties.getProperty('key.file'))
-        def store_pass = System.console().readPassword("\nPlease enter store passphrase: ")
-        def key_alias = properties.getProperty('key.alias')
-        def key_pass = System.console().readPassword("\nPlease enter key passphrase: ")
-
-        android.signingConfigs.release.storeFile = store_file
-        android.signingConfigs.release.storePassword = new String(store_pass)
-        android.signingConfigs.release.keyAlias = new String(key_alias)
-        android.signingConfigs.release.keyPassword = new String(key_pass)
-    }
-}
-*/
 
 task unitTest(type: Test, dependsOn: assembleDebug) {
     description = "run unit tests"
