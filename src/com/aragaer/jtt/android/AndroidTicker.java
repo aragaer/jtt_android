@@ -7,7 +7,6 @@ import com.aragaer.jtt.core.*;
 import android.app.*;
 import android.content.*;
 import android.util.Log;
-import java.io.Serializable;
 
 
 public class AndroidTicker extends IntentService {
@@ -20,7 +19,7 @@ public class AndroidTicker extends IntentService {
 
     public static void schedule(final Context context) {
         long now = System.currentTimeMillis();
-        ClockworkStarter starter = new ClockworkStarter(context, now);
+        Clockwork starter = new Clockwork(context, now);
 
         Intent TickActionInternal = new Intent(context, AndroidTicker.class)
             .putExtra("intervals", starter.data);
@@ -55,18 +54,5 @@ public class AndroidTicker extends IntentService {
             }
 
         stopSelf();
-    }
-
-    private static class ClockworkStarter {
-        public final long start, repeat;
-        public Serializable data;
-
-        public ClockworkStarter(Context context, long now) {
-            ThreeIntervals intervals = Calculator.getSurroundingTransitions(context, now);
-            Interval currentInterval = intervals.getMiddleInterval();
-            start = currentInterval.start;
-            repeat = Math.round(currentInterval.getLength()/Hour.TICKS_PER_INTERVAL);
-            data = intervals;
-        }
     }
 }
