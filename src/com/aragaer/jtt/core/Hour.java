@@ -11,7 +11,7 @@ public class Hour {
         TICKS_PER_DAY = TICKS_PER_INTERVAL * 2;
     public static final String Glyphs[] = "酉戌亥子丑寅卯辰巳午未申".split("(?!^)");
 
-    public int num, // 0 to 11, where 0 is hour of Cock and 11 is hour of Monkey
+    public final int num, // 0 to 11, where 0 is hour of Cock and 11 is hour of Monkey
         quarter, // 0 to 3
         tick, // 0 of PARTS
         wrapped; // wrapped into single integer
@@ -24,8 +24,8 @@ public class Hour {
         num = n;
         quarter = q;
         tick = f;
-        wrapped = (n * QUARTERS + quarter - 2) * TICKS_PER_QUARTER + tick;
-        wrapped = (wrapped + TICKS_PER_DAY) % TICKS_PER_DAY;
+        int ticks = (n * QUARTERS + quarter - 2) * TICKS_PER_QUARTER + tick;
+        wrapped = (ticks + TICKS_PER_DAY) % TICKS_PER_DAY;
     }
 
     public static Hour fromInterval(Interval interval, final long now) {
@@ -37,9 +37,13 @@ public class Hour {
     }
 
     public static Hour fromTickNumber(int f) {
-        final int q = f / TICKS_PER_QUARTER + 2;
-        final int n = q / QUARTERS;
+        int q = f / TICKS_PER_QUARTER + 2;
+        int n = q / QUARTERS;
         return new Hour(n % Glyphs.length, q % QUARTERS, f % TICKS_PER_QUARTER);
+    }
+
+    public static Hour fromTickNumber(int f, int granularity) {
+        return fromTickNumber(f - f % granularity);
     }
 
     /* 0, 6 -> 5; 1-5, 7-11 -> 0-4 */
@@ -57,11 +61,6 @@ public class Hour {
     public static long getHourBoundary(final long start, final long end, final int pos) {
         final long half_hlen = (end - start) / HOURS_PER_INTERVAL / 2;
         return start + half_hlen * pos * 2 + half_hlen;
-    }
-
-    public Hour truncate(int granularity) {
-        int new_wrapped = wrapped - wrapped % granularity;
-        return Hour.fromTickNumber(new_wrapped);
     }
 
     @Override public boolean equals(Object o) {

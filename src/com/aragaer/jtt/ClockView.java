@@ -45,7 +45,7 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 
     private static final int granularity = 4;
     public void setHour(final int wrapped) {
-        Hour hour = Hour.fromTickNumber(wrapped).truncate(granularity);
+        Hour hour = Hour.fromTickNumber(wrapped, granularity);
         if (hour.equals(this.hour))
             return;
         this.hour = hour;

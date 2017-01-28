@@ -10,8 +10,10 @@ import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
 
 import android.app.*;
 import android.content.*;
+import android.graphics.Color;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
+
 
 public class JttStatus extends BroadcastReceiver implements StringResourceChangeListener {
     private static final int APP_ID = 0;
@@ -81,6 +83,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
             .setSmallIcon(R.drawable.notification_icon, h.num)
             .setContentIntent(PendingIntent.getActivity(context, 0,
                                                         new Intent(context, JTTMainActivity.class), 0))
+            .setColor(Color.DKGRAY)
             .build();
 
         nm.notify(APP_ID, n);

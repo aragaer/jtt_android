@@ -85,7 +85,7 @@ public class JTTWidgetProvider {
 		int wrapped = i.getIntExtra("jtt", 0);
 		final WidgetHolder holder = classes.get(cls);
 		Hour prev = holder.last_update;
-        Hour hour = Hour.fromTickNumber(wrapped).truncate(holder.granularity);
+        Hour hour = Hour.fromTickNumber(wrapped, holder.granularity);
         if (hour.equals(prev))
             return;
         prev = hour;

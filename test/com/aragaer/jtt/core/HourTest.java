@@ -57,13 +57,13 @@ public class HourTest {
                      new Hour(11, 3, Hour.TICKS_PER_QUARTER-3));
     }
 
-    @Test public void testTruncate() {
+    @Test public void testCreateFromTickNumberRounded() {
         Hour h1 = new Hour(1, 2, 3);
         Hour h2 = new Hour(1, 2, 7);
-        assertEquals(h1.truncate(Hour.TICKS_PER_QUARTER/2), new Hour(1, 2, 0));
-        assertEquals(h2.truncate(Hour.TICKS_PER_QUARTER/2), new Hour(1, 2, 5));
-        assertEquals(h1.truncate(Hour.TICKS_PER_QUARTER), new Hour(1, 2, 0));
-        assertEquals(h2.truncate(Hour.TICKS_PER_QUARTER), new Hour(1, 2, 0));
+        assertEquals(Hour.fromTickNumber(h1.wrapped, Hour.TICKS_PER_QUARTER/2), new Hour(1, 2, 0));
+        assertEquals(Hour.fromTickNumber(h2.wrapped, Hour.TICKS_PER_QUARTER/2), new Hour(1, 2, 5));
+        assertEquals(Hour.fromTickNumber(h1.wrapped, Hour.TICKS_PER_QUARTER), new Hour(1, 2, 0));
+        assertEquals(Hour.fromTickNumber(h2.wrapped, Hour.TICKS_PER_QUARTER), new Hour(1, 2, 0));
     }
 
     @Test public void testCreateFromInterval() {
