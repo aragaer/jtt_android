@@ -91,12 +91,4 @@ public class ThreeIntervalsTest {
         Interval interval = ti.getMiddleInterval();
         assertEquals(interval, new Interval(5, 10, true));
     }
-
-    @Test public void testSlide() {
-        ThreeIntervals ti1 = new ThreeIntervals(new long[] {0, 5, 10, 15}, true);
-        ThreeIntervals ti2 = ti1.slideToNext(20);
-        ThreeIntervals ti3 = ti1.slideToPrevious(-5);
-        assertEquals(ti2, new ThreeIntervals(new long[] {5, 10, 15, 20}, false));
-        assertEquals(ti3, new ThreeIntervals(new long[] {-5, 0, 5, 10}, false));
-    }
 }

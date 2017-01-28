@@ -43,20 +43,6 @@ public class ThreeIntervals implements Serializable {
         return new Interval(_transitions[1], _transitions[2], _is_day);
     }
 
-    public ThreeIntervals slideToNext(long timestamp) {
-        long[] tr = new long[4];
-        System.arraycopy(_transitions, 1, tr, 0, 3);
-        tr[3] = timestamp;
-        return new ThreeIntervals(tr, !_is_day);
-    }
-
-    public ThreeIntervals slideToPrevious(long timestamp) {
-        long[] tr = new long[4];
-        System.arraycopy(_transitions, 0, tr, 1, 3);
-        tr[0] = timestamp;
-        return new ThreeIntervals(tr, !_is_day);
-    }
-
     @Override public boolean equals(Object o) {
         if (this == o)
             return true;

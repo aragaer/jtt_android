@@ -9,70 +9,47 @@ import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 
 
-public class SscCalculator {
-	private SunriseSunsetCalculator _calculator;
-	private final Map<Long, Interval> cache = new HashMap<Long, Interval>();
+public class SscCalculator implements IntervalCalculator {
+    private SunriseSunsetCalculator _calculator;
+    private final Map<Long, Interval> cache = new HashMap<Long, Interval>();
 
-	public SscCalculator() {
-	    setLocation(0, 0);
-	}
+    public SscCalculator() {
+        setLocation(0, 0);
+    }
 
-	public void setLocation(float latitude, float longitude) {
-	    _calculator = new SunriseSunsetCalculator(new Location(latitude, longitude),
+    public void setLocation(float latitude, float longitude) {
+        _calculator = new SunriseSunsetCalculator(new Location(latitude, longitude),
                                                   TimeZone.getDefault());
-	    cache.clear();
-	}
+        cache.clear();
+    }
 
-	private Interval getDayIntervalForJDN(long jdn) {
-	    Interval result = cache.get(jdn);
-	    if (result == null) {
+    @Override public Interval getDayIntervalForJDN(long jdn) {
+        Interval result = cache.get(jdn);
+        if (result == null) {
             final Calendar date = Calendar.getInstance();
             date.setTimeInMillis(JDToLong(jdn));
             result = new Interval(_calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis(),
                                   _calculator.getOfficialSunsetCalendarForDate(date).getTimeInMillis(),
                                   true);
             cache.put(jdn, result);
-	    }
-	    return result;
-	}
-
-	public ThreeIntervals getSurroundingIntervalsForTimestamp(long now) {
-        long jdn = longToJDN(now);
-	    /* fill 4 transitions at once */
-	    final long tr[] = new long[] {
-            getDayIntervalForJDN(jdn - 1).end,
-            getDayIntervalForJDN(jdn).start,
-            getDayIntervalForJDN(jdn).end,
-            getDayIntervalForJDN(jdn + 1).start
-	    };
-        ThreeIntervals result = new ThreeIntervals(tr, true);
-
-	    // if it is past sunset
-	    while (now >= result.getMiddleInterval().end) {
-            long timestamp;
-            if (result.isDay())
-                timestamp = getDayIntervalForJDN(jdn + 1).end;
-            else {
-                jdn++;
-                timestamp = getDayIntervalForJDN(jdn + 1).start;
-            }
-            result = result.slideToNext(timestamp);
-	    }
-
-	    // (else) if it is before sunrise
-	    while (now < result.getMiddleInterval().start) {
-            long timestamp;
-            if (result.isDay())
-                timestamp = getDayIntervalForJDN(jdn - 1).start;
-            else {
-                jdn--;
-                timestamp = getDayIntervalForJDN(jdn - 1).end;
-            }
-            result = result.slideToPrevious(timestamp);
-	    }
-
+        }
         return result;
-	}
+    }
+
+    public ThreeIntervals getSurroundingIntervalsForTimestamp(long now) {
+        IntervalBuilder builder = new IntervalBuilder(longToJDN(now), this);
+        long timestamp;
+
+        // if it is past sunset
+        while (now >= builder.getMiddleInterval().end)
+            builder.slideToNext();
+
+        // (else) if it is before sunrise
+        while (now < builder.getMiddleInterval().start)
+            builder.slideToPrevious();
+
+        return builder.getThreeIntervals();
+    }
 
     private static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
 

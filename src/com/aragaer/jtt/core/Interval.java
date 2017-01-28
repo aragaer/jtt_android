@@ -11,6 +11,8 @@ public class Interval implements Serializable {
     public final boolean is_day;
 
     public Interval(long start, long end, boolean is_day) {
+        if (start > end)
+            throw new IllegalArgumentException();
         this.start = start;
         this.end = end;
         this.is_day = is_day;

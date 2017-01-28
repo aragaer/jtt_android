@@ -19,6 +19,11 @@ public class IntervalTest {
         assertEquals(interval.is_day, true);
     }
 
+    @Test(expected=IllegalArgumentException.class)
+    public void test_thatStartMustBeBeforeEnd() {
+        new Interval(5, 0, true);
+    }
+
     @Test public void testCanBeCompared() {
         Interval i1 = new Interval(0, 1, true);
         Interval i2 = new Interval(0, 1, true);
