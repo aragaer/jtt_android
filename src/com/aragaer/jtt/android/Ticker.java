@@ -17,8 +17,8 @@ public class Ticker extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-	ThreeIntervals intervals = (ThreeIntervals) intent.getSerializableExtra("intervals");
 	long now = System.currentTimeMillis();
+	ThreeIntervals intervals = SunriseSunsetDataProvider.getSurroundingTransitions(this, now);
 
 	if (intervals.surrounds(now)) {
 	    Hour hour = Hour.fromInterval(intervals.getMiddleInterval(), now);

@@ -4,12 +4,10 @@ package com.aragaer.jtt.core;
 
 import com.aragaer.jtt.android.SunriseSunsetDataProvider;
 import android.content.Context;
-import java.io.Serializable;
 
 
 public class Clockwork {
     public long start, repeat;
-    public Serializable data;
 
     private final Context _context;
 
@@ -22,6 +20,5 @@ public class Clockwork {
 	Interval currentInterval = intervals.getMiddleInterval();
 	start = currentInterval.start;
 	repeat = Math.round(currentInterval.getLength()/Hour.TICKS_PER_INTERVAL);
-	data = intervals;
     }
 }

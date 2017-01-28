@@ -25,8 +25,7 @@ public class AndroidTicker {
         long now = System.currentTimeMillis();
         _clockwork.setTime(now);
 
-        Intent TickActionInternal = new Intent(_context, Ticker.class)
-            .putExtra("intervals", _clockwork.data);
+        Intent TickActionInternal = new Intent(_context, Ticker.class);
 
         AlarmManager am = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
         am.setRepeating(AlarmManager.RTC, _clockwork.start, _clockwork.repeat,
