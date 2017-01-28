@@ -38,7 +38,6 @@ public class SscCalculator implements IntervalCalculator {
 
     public ThreeIntervals getSurroundingIntervalsForTimestamp(long now) {
         IntervalBuilder builder = new IntervalBuilder(longToJDN(now), this);
-        long timestamp;
 
         // if it is past sunset
         while (now >= builder.getMiddleInterval().end)

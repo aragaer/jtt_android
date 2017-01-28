@@ -52,7 +52,7 @@ public class JTTWidgetProvider {
 
 	private static abstract class JTTWidget extends AppWidgetProvider {
 		protected JTTWidget(final int frequency, final Class<? extends WidgetPainter> painter_class) {
-			int granularity = Hour.QUARTERS * Hour.QUARTER_PARTS / frequency;
+			int granularity = Hour.TICKS_PER_HOUR / frequency;
 
 			final Class<? extends JTTWidget> cls = getClass();
 			if (!classes.containsKey(cls))
@@ -85,11 +85,10 @@ public class JTTWidgetProvider {
 		int wrapped = i.getIntExtra("jtt", 0);
 		final WidgetHolder holder = classes.get(cls);
 		Hour prev = holder.last_update;
-		if (prev == null) {
-			wrapped -= wrapped % holder.granularity;
-			holder.last_update = prev = Hour.fromTickNumber(wrapped, null);
-		} else if (!prev.compareAndUpdate(wrapped, holder.granularity))
-			return; // do nothing
+        Hour hour = Hour.fromTickNumber(wrapped).truncate(holder.granularity);
+        if (hour.equals(prev))
+            return;
+        prev = hour;
 		draw(c, null, holder);
 	}
 
@@ -150,7 +149,7 @@ public class JTTWidgetProvider {
 
 class WidgetPainter1 implements WidgetPainter {
 	private static final float QUARTER_ANGLE = 355f / Hour.QUARTERS,
-        PART_ANGLE = QUARTER_ANGLE / Hour.QUARTER_PARTS;
+        PART_ANGLE = QUARTER_ANGLE / Hour.TICKS_PER_QUARTER;
 
 	@Override
 	public Bitmap get_bmp(Context context, Hour h) {
@@ -168,7 +167,7 @@ class WidgetPainter1 implements WidgetPainter {
 		ta.recycle();
 
 		c.drawArc(outer, 0, 360, false, background);
-		final float angle = 2.5f + QUARTER_ANGLE * h.quarter + PART_ANGLE * h.quarter_parts;
+		final float angle = 2.5f + QUARTER_ANGLE * h.quarter + PART_ANGLE * h.tick;
 
 		Path path1 = new Path();
 		path1.arcTo(inner, angle - 90, -angle);

@@ -18,7 +18,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 
     private final Context context;
     private final StringResources sr;
-    private final Hour h = new Hour(0);
+    private Hour h = new Hour(0);
     private long start, end;
     private final NotificationManager nm;
 
@@ -47,7 +47,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
 
         final ThreeIntervals intervals = (ThreeIntervals) intent.getSerializableExtra("intervals");
         Interval currentInterval = intervals.getMiddleInterval();
-        Hour.fromInterval(currentInterval, System.currentTimeMillis(), h);
+        h = Hour.fromInterval(currentInterval, System.currentTimeMillis());
         final long tr[] = intervals.getTransitions();
         final int lower = Hour.lowerBoundary(h.num),
             upper = Hour.upperBoundary(h.num);
@@ -64,14 +64,14 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
     }
 
     private void show() {
-        final int hf = h.quarter * Hour.QUARTER_PARTS + h.quarter_parts;
+        final int hf = h.quarter * Hour.TICKS_PER_QUARTER + h.tick;
         final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notification);
 
         rv.setTextViewText(R.id.image, Hour.Glyphs[h.num]);
         rv.setTextViewText(R.id.title, sr.getHrOf(h.num));
         rv.setTextViewText(R.id.quarter, sr.getQuarter(h.quarter));
-        rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
-        rv.setProgressBar(R.id.fraction, Hour.HOUR_PARTS, hf, false);
+        rv.setProgressBar(R.id.fraction, Hour.TICKS_PER_HOUR, hf, false);
+        rv.setProgressBar(R.id.fraction, Hour.TICKS_PER_HOUR, hf, false);
         rv.setTextViewText(R.id.start, sr.format_time(start));
         rv.setTextViewText(R.id.end, sr.format_time(end));
 

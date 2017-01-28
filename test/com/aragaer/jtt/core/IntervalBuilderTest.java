@@ -20,6 +20,8 @@ public class IntervalBuilderTest {
     @Test public void testCreate() {
 	assertEquals(_builder.getThreeIntervals(),
 		     new ThreeIntervals(new long[] { -5, 0, 5, 10 }, true));
+	assertEquals(_builder.getMiddleInterval(),
+		     new Interval(0, 5, true));
     }
 
     @Test public void testSlideForward() {

@@ -21,7 +21,7 @@ public class Ticker extends IntentService {
 	long now = System.currentTimeMillis();
 
 	if (intervals.surrounds(now)) {
-	    Hour hour = Hour.fromInterval(intervals.getMiddleInterval(), now, null);
+	    Hour hour = Hour.fromInterval(intervals.getMiddleInterval(), now);
 	    Intent TickAction = new Intent(AndroidTicker.ACTION_JTT_TICK)
 		.putExtra("intervals", intervals)
 		.putExtra("hour", hour.num)

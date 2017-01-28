@@ -44,18 +44,18 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
         final long[] transitions = _intervals.getTransitions();
         clear();
 
-        int h_add = _intervals.isDay() ? 0 : Hour.HOURS;
+        int h_add = _intervals.isDay() ? 0 : Hour.HOURS_PER_INTERVAL;
 
         /* start with first transition */
         add(new HourItem(transitions[0], h_add));
         for (int i = 1; i < transitions.length; i++) {
             final long start = transitions[i - 1];
             final long diff = transitions[i] - start;
-            for (int j = 1; j <= Hour.HOURS; j++) {
-                add(new BoundaryItem(start + (j * 2 - 1) * diff / Hour.HOURS / 2));
-                add(new HourItem(start + j * diff / Hour.HOURS, h_add + j));
+            for (int j = 1; j <= Hour.HOURS_PER_INTERVAL; j++) {
+                add(new BoundaryItem(start + (j * 2 - 1) * diff / Hour.HOURS_PER_INTERVAL / 2));
+                add(new HourItem(start + j * diff / Hour.HOURS_PER_INTERVAL, h_add + j));
             }
-            h_add = Hour.HOURS - h_add;
+            h_add = Hour.HOURS_PER_INTERVAL - h_add;
         }
     }
 
@@ -67,7 +67,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 
         // check that items are built
         // expect 37 items
-        if (getCount() < Hour.HOURS * (intervals.getTransitions().length - 1) * 2 - 1)
+        if (getCount() < Hour.HOURS_PER_INTERVAL * 3 * 2 - 1)
             // transitions are set but items aren't built
             // this means we're currently in the build process
             return;

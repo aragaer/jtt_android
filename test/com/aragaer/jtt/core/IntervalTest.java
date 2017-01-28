@@ -2,10 +2,7 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.core;
 
-import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-
-import java.util.*;
 
 import org.junit.Test;
 
