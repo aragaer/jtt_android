@@ -45,38 +45,36 @@ public class SscCalculator {
             getDayIntervalForJDN(jdn).end,
             getDayIntervalForJDN(jdn + 1).start
 	    };
-	    boolean is_day = true;
+        ThreeIntervals result = new ThreeIntervals(tr, true);
 
-	    // if tr2 is before now
-	    while (now >= tr[2]) {
-            for (int i = 0; i < 3; i++)
-                tr[i] = tr[i + 1];
-            if (is_day)
-                tr[3] = getDayIntervalForJDN(jdn + 1).end;
+	    // if it is past sunset
+	    while (now >= result.getMiddleInterval().end) {
+            long timestamp;
+            if (result.isDay())
+                timestamp = getDayIntervalForJDN(jdn + 1).end;
             else {
                 jdn++;
-                tr[3] = getDayIntervalForJDN(jdn + 1).start;
+                timestamp = getDayIntervalForJDN(jdn + 1).start;
             }
-            is_day = !is_day;
+            result = result.slideToNext(timestamp);
 	    }
 
-	    // (else) if tr1 is after now
-	    while (now < tr[1]) {
-            for (int i = 0; i < 3; i++)
-                tr[i + 1] = tr[i];
-            if (is_day)
-                tr[0] = getDayIntervalForJDN(jdn - 1).start;
+	    // (else) if it is before sunrise
+	    while (now < result.getMiddleInterval().start) {
+            long timestamp;
+            if (result.isDay())
+                timestamp = getDayIntervalForJDN(jdn - 1).start;
             else {
                 jdn--;
-                tr[0] = getDayIntervalForJDN(jdn - 1).end;
+                timestamp = getDayIntervalForJDN(jdn - 1).end;
             }
-            is_day = !is_day;
+            result = result.slideToPrevious(timestamp);
 	    }
 
-	    return new ThreeIntervals(tr, is_day);
+        return result;
 	}
 
-    public static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
+    private static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
 
     private static long longToJDN(long time) {
         return (long) Math.floor(longToJD(time));
@@ -85,6 +83,7 @@ public class SscCalculator {
     private static double longToJD(long time) {
         return time / ((double) ms_per_day) + 2440587.5;
     }
+
     private static long JDToLong(final double jd) {
         return Math.round((jd - 2440587.5) * ms_per_day);
     }

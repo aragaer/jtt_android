@@ -31,6 +31,51 @@ public class ThreeIntervalsTest {
         assertNotEquals(ti1.hashCode(), ti4.hashCode());
     }
 
+    @Test public void testCreateFromIntervals() {
+        ThreeIntervals ti1 = new ThreeIntervals(new Interval(0, 5, false),
+                                                new Interval(5, 10, true),
+                                                new Interval(10, 15, false));
+        ThreeIntervals ti2 = new ThreeIntervals(new Interval(0, 5, true),
+                                                new Interval(5, 10, false),
+                                                new Interval(10, 15, true));
+        assertEquals(ti1, new ThreeIntervals(new long[] {0, 5, 10, 15}, true));
+        assertEquals(ti2, new ThreeIntervals(new long[] {0, 5, 10, 15}, false));
+
+        int exceptions = 0;
+        try {
+            new ThreeIntervals(new Interval(0, 5, true),
+                               new Interval(6, 10, false),
+                               new Interval(10, 15, true));
+        } catch (IllegalArgumentException e) {
+            exceptions++;
+        }
+
+        try {
+            new ThreeIntervals(new Interval(0, 5, true),
+                               new Interval(5, 11, false),
+                               new Interval(10, 15, true));
+        } catch (IllegalArgumentException e) {
+            exceptions++;
+        }
+
+        try {
+            new ThreeIntervals(new Interval(0, 5, true),
+                               new Interval(5, 10, true),
+                               new Interval(10, 15, false));
+        } catch (IllegalArgumentException e) {
+            exceptions++;
+        }
+
+        try {
+            new ThreeIntervals(new Interval(0, 5, false),
+                               new Interval(5, 10, true),
+                               new Interval(10, 15, true));
+        } catch (IllegalArgumentException e) {
+            exceptions++;
+        }
+        assertEquals(exceptions, 4);
+    }
+
     @Test public void testCheckInMiddleInterval() {
         ThreeIntervals ti = new ThreeIntervals(new long[] {0, 5, 10, 15}, true);
         assertFalse(ti.surrounds(0));
@@ -45,5 +90,13 @@ public class ThreeIntervalsTest {
         ThreeIntervals ti = new ThreeIntervals(new long[] {0, 5, 10, 15}, true);
         Interval interval = ti.getMiddleInterval();
         assertEquals(interval, new Interval(5, 10, true));
+    }
+
+    @Test public void testSlide() {
+        ThreeIntervals ti1 = new ThreeIntervals(new long[] {0, 5, 10, 15}, true);
+        ThreeIntervals ti2 = ti1.slideToNext(20);
+        ThreeIntervals ti3 = ti1.slideToPrevious(-5);
+        assertEquals(ti2, new ThreeIntervals(new long[] {5, 10, 15, 20}, false));
+        assertEquals(ti3, new ThreeIntervals(new long[] {-5, 0, 5, 10}, false));
     }
 }

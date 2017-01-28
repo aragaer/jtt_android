@@ -8,13 +8,23 @@ import java.util.Arrays;
 
 public class ThreeIntervals implements Serializable {
     private static final long serialVersionUID = 1;
-    private final long[] _transitions;
+    private final long[] _transitions = new long[4];
     private final boolean _is_day;
 
     public ThreeIntervals(long[] transitions, boolean is_day) {
-        _transitions = new long[4];
         System.arraycopy(transitions, 0, _transitions, 0, 4);
         _is_day = is_day;
+    }
+
+    public ThreeIntervals(Interval first, Interval second, Interval third) {
+        if (first.end != second.start || second.end != third.start
+            || first.is_day == second.is_day || second.is_day == third.is_day)
+            throw new IllegalArgumentException();
+        _transitions[0] = first.start;
+        _transitions[1] = second.start;
+        _transitions[2] = second.end;
+        _transitions[3] = third.end;
+        _is_day = second.is_day;
     }
 
     public long[] getTransitions() {
@@ -31,6 +41,20 @@ public class ThreeIntervals implements Serializable {
 
     public Interval getMiddleInterval() {
         return new Interval(_transitions[1], _transitions[2], _is_day);
+    }
+
+    public ThreeIntervals slideToNext(long timestamp) {
+        long[] tr = new long[4];
+        System.arraycopy(_transitions, 1, tr, 0, 3);
+        tr[3] = timestamp;
+        return new ThreeIntervals(tr, !_is_day);
+    }
+
+    public ThreeIntervals slideToPrevious(long timestamp) {
+        long[] tr = new long[4];
+        System.arraycopy(_transitions, 0, tr, 1, 3);
+        tr[0] = timestamp;
+        return new ThreeIntervals(tr, !_is_day);
     }
 
     @Override public boolean equals(Object o) {
