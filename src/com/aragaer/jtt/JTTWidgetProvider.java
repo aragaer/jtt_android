@@ -84,11 +84,10 @@ public class JTTWidgetProvider {
 	private static void tick(Context c, Intent i, Class<?> cls) {
 		int wrapped = i.getIntExtra("jtt", 0);
 		final WidgetHolder holder = classes.get(cls);
-		Hour prev = holder.last_update;
         Hour hour = Hour.fromTickNumber(wrapped, holder.granularity);
-        if (hour.equals(prev))
+        if (hour.equals(holder.last_update))
             return;
-        prev = hour;
+        holder.last_update = hour;
 		draw(c, null, holder);
 	}
 
