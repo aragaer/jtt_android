@@ -75,8 +75,5 @@
                 <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
         </receiver>
-        <provider android:name=".android.SunriseSunsetDataProvider"
-            android:authorities="com.aragaer.jtt.provider.calculator"
-            android:permission="com.aragaer.jtt.permission.CLOCK" />
     </application>
 </manifest>

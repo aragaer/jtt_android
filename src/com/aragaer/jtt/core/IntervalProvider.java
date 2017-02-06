@@ -3,6 +3,6 @@
 package com.aragaer.jtt.core;
 
 
-public interface IntervalCalculator {
-    public Interval getDayIntervalForJDN(long jdn);
+public interface IntervalProvider {
+    ThreeIntervals getIntervalsForTimestamp(long time);
 }

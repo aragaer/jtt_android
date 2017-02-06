@@ -2,8 +2,7 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.android;
 
-import com.aragaer.jtt.core.Hour;
-import com.aragaer.jtt.core.ThreeIntervals;
+import com.aragaer.jtt.core.*;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -17,8 +16,9 @@ public class Ticker extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+	IntervalProvider intervalProvider = AndroidIntervalProvider.getInstance();
 	long now = System.currentTimeMillis();
-	ThreeIntervals intervals = SunriseSunsetDataProvider.getSurroundingTransitions(this, now);
+	ThreeIntervals intervals = intervalProvider.getIntervalsForTimestamp(now);
 
 	if (intervals.surrounds(now)) {
 	    Hour hour = Hour.fromInterval(intervals.getMiddleInterval(), now);

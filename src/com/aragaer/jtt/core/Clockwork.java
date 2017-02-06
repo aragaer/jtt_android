@@ -2,23 +2,20 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.core;
 
-import com.aragaer.jtt.android.SunriseSunsetDataProvider;
-import android.content.Context;
-
 
 public class Clockwork {
     public long start, repeat;
 
-    private final Context _context;
+    private final IntervalProvider _holder;
 
-    public Clockwork(Context context) {
-	_context = context;
+    public Clockwork(IntervalProvider intervalProvider) {
+        _holder = intervalProvider;
     }
 
     public void setTime(long time) {
-	ThreeIntervals intervals = SunriseSunsetDataProvider.getSurroundingTransitions(_context, time);
-	Interval currentInterval = intervals.getMiddleInterval();
-	start = currentInterval.start;
-	repeat = Math.round(currentInterval.getLength()/Hour.TICKS_PER_INTERVAL);
+        ThreeIntervals intervals = _holder.getIntervalsForTimestamp(time);
+        Interval currentInterval = intervals.getMiddleInterval();
+        start = currentInterval.start;
+        repeat = Math.round(currentInterval.getLength()/Hour.TICKS_PER_INTERVAL);
     }
 }

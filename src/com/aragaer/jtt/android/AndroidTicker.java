@@ -18,7 +18,7 @@ public class AndroidTicker {
 
     public AndroidTicker(Context context) {
         _context = context;
-        _clockwork = new Clockwork(_context);
+        _clockwork = new Clockwork(AndroidIntervalProvider.getInstance());
     }
 
     public void start() {
