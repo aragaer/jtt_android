@@ -9,11 +9,19 @@ import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 
 
-public class SscCalculator implements IntervalCalculator {
+public class SscCalculator implements IntervalCalculator, IntervalProvider {
+    private static SscCalculator instance;
+
+    public static SscCalculator getInstance() {
+        if (instance == null)
+            instance = new SscCalculator();
+        return instance;
+    }
+
     private SunriseSunsetCalculator _calculator;
     private final Map<Long, Interval> cache = new HashMap<Long, Interval>();
 
-    public SscCalculator() {
+    private SscCalculator() {
         setLocation(0, 0);
     }
 
@@ -36,7 +44,7 @@ public class SscCalculator implements IntervalCalculator {
         return result;
     }
 
-    public ThreeIntervals getSurroundingIntervalsForTimestamp(long now) {
+    public ThreeIntervals getIntervalsForTimestamp(long now) {
         IntervalBuilder builder = new IntervalBuilder(longToJDN(now), this);
 
         // if it is past sunset

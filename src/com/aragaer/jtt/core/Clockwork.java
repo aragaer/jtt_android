@@ -6,14 +6,14 @@ package com.aragaer.jtt.core;
 public class Clockwork {
     public long start, repeat;
 
-    private final IntervalProvider _holder;
+    private final IntervalProvider _calculator;
 
-    public Clockwork(IntervalProvider intervalProvider) {
-        _holder = intervalProvider;
+    public Clockwork(IntervalProvider calculator) {
+        _calculator = calculator;
     }
 
     public void setTime(long time) {
-        ThreeIntervals intervals = _holder.getIntervalsForTimestamp(time);
+        ThreeIntervals intervals = _calculator.getIntervalsForTimestamp(time);
         Interval currentInterval = intervals.getMiddleInterval();
         start = currentInterval.start;
         repeat = Math.round(currentInterval.getLength()/Hour.TICKS_PER_INTERVAL);

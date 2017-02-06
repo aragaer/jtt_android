@@ -16,7 +16,7 @@ public class Ticker extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-	IntervalProvider intervalProvider = AndroidIntervalProvider.getInstance();
+	IntervalProvider intervalProvider = SscCalculator.getInstance();
 	long now = System.currentTimeMillis();
 	ThreeIntervals intervals = intervalProvider.getIntervalsForTimestamp(now);
 
