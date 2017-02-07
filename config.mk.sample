@@ -1,5 +1,0 @@
-#TODO: fetch data from manifest
-APP_NAME=com.aragaer.jtt
-MAIN_ACTIVITY=$(APP_NAME)/.JTTMainActivity
-KEYSTORE=PATH_TO_KEYSTORE
-TOOLS=PATH_TO_SDK
