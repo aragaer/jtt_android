@@ -2,50 +2,26 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.core;
 
-import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
-import com.luckycatlabs.sunrisesunset.dto.Location;
 
-
-public class SscCalculator implements IntervalCalculator, IntervalProvider {
+public class SscCalculator implements IntervalProvider {
     private static SscCalculator instance;
 
-    public static SscCalculator getInstance() {
+    public static SscCalculator getInstance(IntervalCalculator calculator) {
         if (instance == null)
-            instance = new SscCalculator();
+            instance = new SscCalculator(calculator);
         return instance;
     }
 
-    private SunriseSunsetCalculator _calculator;
-    private final Map<Long, Interval> cache = new HashMap<Long, Interval>();
+    private IntervalCalculator _calculator;
 
-    private SscCalculator() {
-        setLocation(0, 0);
-    }
-
-    public void setLocation(float latitude, float longitude) {
-        _calculator = new SunriseSunsetCalculator(new Location(latitude, longitude),
-                                                  TimeZone.getDefault());
-        cache.clear();
-    }
-
-    @Override public Interval getDayIntervalForJDN(long jdn) {
-        Interval result = cache.get(jdn);
-        if (result == null) {
-            final Calendar date = Calendar.getInstance();
-            date.setTimeInMillis(JDToLong(jdn));
-            result = new Interval(_calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis(),
-                                  _calculator.getOfficialSunsetCalendarForDate(date).getTimeInMillis(),
-                                  true);
-            cache.put(jdn, result);
-        }
-        return result;
+    private SscCalculator(IntervalCalculator calculator) {
+        _calculator = calculator;
     }
 
     public ThreeIntervals getIntervalsForTimestamp(long now) {
-        IntervalBuilder builder = new IntervalBuilder(longToJDN(now), this);
+        IntervalBuilder builder = new IntervalBuilder(longToJDN(now), _calculator);
 
         // if it is past sunset
         while (now >= builder.getMiddleInterval().end)
@@ -66,9 +42,5 @@ public class SscCalculator implements IntervalCalculator, IntervalProvider {
 
     private static double longToJD(long time) {
         return time / ((double) ms_per_day) + 2440587.5;
-    }
-
-    private static long JDToLong(final double jd) {
-        return Math.round((jd - 2440587.5) * ms_per_day);
     }
 }

@@ -5,4 +5,5 @@ package com.aragaer.jtt.core;
 
 public interface IntervalCalculator {
     public Interval getDayIntervalForJDN(long jdn);
+    public void setLocation(float latitude, float longitude);
 }

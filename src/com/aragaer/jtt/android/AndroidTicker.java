@@ -3,6 +3,7 @@
 package com.aragaer.jtt.android;
 
 import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.core.SscAdapter;
 import com.aragaer.jtt.core.SscCalculator;
 
 import android.app.AlarmManager;
@@ -17,9 +18,9 @@ public class AndroidTicker {
     private final Context _context;
     private final Clockwork _clockwork;
 
-    public AndroidTicker(Context context) {
+    public AndroidTicker(Context context, Clockwork clockwork) {
         _context = context;
-        _clockwork = new Clockwork(SscCalculator.getInstance());
+        _clockwork = clockwork;
     }
 
     public void start() {

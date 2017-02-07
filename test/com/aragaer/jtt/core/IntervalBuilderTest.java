@@ -55,5 +55,8 @@ public class IntervalBuilderTest {
         @Override public Interval getDayIntervalForJDN(long jdn) {
 	    return new Interval(jdn * 10, jdn * 10 + 5, true);
 	}
+
+	@Override public void setLocation(float latitude, float longitude) {
+	}
     }
 }

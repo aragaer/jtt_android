@@ -16,9 +16,10 @@ public class Ticker extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-	IntervalProvider intervalProvider = SscCalculator.getInstance();
+        IntervalCalculator calculator = SscAdapter.getInstance();
+        IntervalProvider provider = SscCalculator.getInstance(calculator);
 	long now = System.currentTimeMillis();
-	ThreeIntervals intervals = intervalProvider.getIntervalsForTimestamp(now);
+	ThreeIntervals intervals = provider.getIntervalsForTimestamp(now);
 
 	if (intervals.surrounds(now)) {
 	    Hour hour = Hour.fromInterval(intervals.getMiddleInterval(), now);
@@ -27,12 +28,14 @@ public class Ticker extends IntentService {
 		.putExtra("hour", hour.num)
 		.putExtra("jtt", hour.wrapped);
 	    sendStickyBroadcast(TickAction);
-	} else
+	} else {
+	    Clockwork clockwork = new Clockwork(provider);
 	    try {
-		new AndroidTicker(this).start();
+		new AndroidTicker(this, clockwork).start();
 	    } catch (IllegalStateException e) {
 		Log.i("JTT CLOCKWORK", "Transition passed while service is not running, ignore");
 	    }
+	}
 
 	stopSelf();
     }
