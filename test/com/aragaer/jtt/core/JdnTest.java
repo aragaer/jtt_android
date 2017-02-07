@@ -4,9 +4,6 @@ package com.aragaer.jtt.core;
 
 import static org.junit.Assert.*;
 
-import com.aragaer.jtt.core.*;
-
-import org.junit.Before;
 import org.junit.Test;
 
 
