@@ -9,6 +9,10 @@ import org.junit.Test;
 
 public class JdnTest {
 
+    @Test public void testHaveToTestConstructor() {
+        Jdn jdn = new Jdn(); // For now this serves only to fix coverage report
+    }
+
     @Test public void testTimestampToJdn() {
         assertEquals(Jdn.fromTimestamp(1486502734000L), 2457792);
     }
