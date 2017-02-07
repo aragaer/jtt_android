@@ -2,8 +2,6 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.core;
 
-import java.util.concurrent.TimeUnit;
-
 
 public class SscCalculator implements IntervalProvider {
     private static SscCalculator instance;
@@ -21,7 +19,7 @@ public class SscCalculator implements IntervalProvider {
     }
 
     public ThreeIntervals getIntervalsForTimestamp(long now) {
-        IntervalBuilder builder = new IntervalBuilder(longToJDN(now), _calculator);
+        IntervalBuilder builder = new IntervalBuilder(Jdn.fromTimestamp(now), _calculator);
 
         // if it is past sunset
         while (now >= builder.getMiddleInterval().end)
@@ -32,15 +30,5 @@ public class SscCalculator implements IntervalProvider {
             builder.slideToPrevious();
 
         return builder.getThreeIntervals();
-    }
-
-    private static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
-
-    private static long longToJDN(long time) {
-        return (long) Math.floor(longToJD(time));
-    }
-
-    private static double longToJD(long time) {
-        return time / ((double) ms_per_day) + 2440587.5;
     }
 }

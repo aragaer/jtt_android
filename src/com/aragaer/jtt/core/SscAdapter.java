@@ -36,16 +36,12 @@ public  class SscAdapter implements IntervalCalculator {
         Interval result = _cache.get(jdn);
         if (result == null) {
             final Calendar date = Calendar.getInstance();
-            date.setTimeInMillis(JDToLong(jdn));
+            date.setTimeInMillis(Jdn.toTimestamp(jdn));
             result = new Interval(_calculator.getOfficialSunriseCalendarForDate(date).getTimeInMillis(),
                                   _calculator.getOfficialSunsetCalendarForDate(date).getTimeInMillis(),
                                   true);
             _cache.put(jdn, result);
         }
         return result;
-    }
-
-    private static long JDToLong(final double jd) {
-        return Math.round((jd - 2440587.5) * ms_per_day);
     }
 }
