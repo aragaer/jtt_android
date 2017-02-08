@@ -14,10 +14,14 @@ public class JdnTest {
     }
 
     @Test public void testTimestampToJdn() {
+        assertEquals(Jdn.fromTimestamp(0), 2440587);
+        assertEquals(Jdn.fromTimestamp(12*60*60*1000-1), 2440587);
+        assertEquals(Jdn.fromTimestamp(12*60*60*1000), 2440588);
         assertEquals(Jdn.fromTimestamp(1486502734000L), 2457792);
     }
 
     @Test public void testJdnToTimestamp() {
+        assertEquals(Jdn.toTimestamp(2440588), 43200000);
         assertEquals(Jdn.toTimestamp(2457792L), 1486468800000L);
     }
 }
