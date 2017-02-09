@@ -14,19 +14,52 @@ import org.junit.*;
 
 public class SscAdapterTest {
 
-    private SscAdapter _adapter;
+    private SscAdapter _calculator;
 
     @Before public void setUp() {
-        _adapter = SscAdapter.getInstance();
+        _calculator = SscAdapter.getInstance();
     }
 
     @Test public void testIsSingleton() {
-        assertTrue(_adapter == SscAdapter.getInstance());
+        assertTrue(_calculator == SscAdapter.getInstance());
     }
 
     @Test public void testCache() {
-        Interval interval = _adapter.getDayIntervalForJDN(0);
-        assertTrue(interval == _adapter.getDayIntervalForJDN(0));
+        Interval interval = _calculator.getDayIntervalForJDN(0);
+        assertTrue(interval == _calculator.getDayIntervalForJDN(0));
+    }
+
+    @Test public void testSunriseLondon01Jan2000() {
+        int offsetMillis = (int) TimeUnit.MINUTES.toMillis(0);
+        TimeZone tz = TimeZone.getTimeZone(TimeZone.getAvailableIDs(offsetMillis)[0]);
+        Calendar calendar = Calendar.getInstance(tz);
+        calendar.set(2000, 0, 1, 12, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        _calculator.setLocation(51.5f, 0f);
+
+        Calendar sunrise = _calculator.getSunriseFor(calendar);
+
+        Calendar expected = Calendar.getInstance(tz);
+        expected.set(2000, 0, 1, 8, 6, 0);
+        expected.set(Calendar.MILLISECOND, 0);
+        assertEquals(sunrise.getTimeInMillis(), expected.getTimeInMillis());
+    }
+
+
+    @Test public void testSunsetCapeVerder01Jan2000() {
+        int offsetMillis = (int) TimeUnit.MINUTES.toMillis(-60);
+        TimeZone tz = TimeZone.getTimeZone(TimeZone.getAvailableIDs(offsetMillis)[0]);
+        Calendar calendar = Calendar.getInstance(tz);
+        calendar.set(2000, 0, 1, 12, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        _calculator.setLocation(15.11f, -23.6f);
+
+        Calendar sunset = _calculator.getSunsetFor(calendar);
+
+        Calendar expected = Calendar.getInstance(tz);
+        expected.set(2000, 0, 1, 18, 16, 0);
+        expected.set(Calendar.MILLISECOND, 0);
+        assertEquals(sunset.getTimeInMillis(), expected.getTimeInMillis());
     }
 
     @Test public void testLondonDay01Jan2000() {
@@ -39,8 +72,8 @@ public class SscAdapterTest {
         long jdn = Jdn.fromTimestamp(timestamp);
         assertEquals("JDN", jdn, 2451545);
 
-        _adapter.setLocation(51.5f, 0f);
-        Interval interval = _adapter.getDayIntervalForJDN(jdn);
+        _calculator.setLocation(51.5f, 0f);
+        Interval interval = _calculator.getDayIntervalForJDN(jdn);
 
         assertTrue(interval.is_day);
 
@@ -70,8 +103,8 @@ public class SscAdapterTest {
         long timestamp = calendar.getTimeInMillis();
         long jdn = Jdn.fromTimestamp(timestamp);
 
-        _adapter.setLocation(55.93f, 37.79f);
-        Interval interval = _adapter.getDayIntervalForJDN(jdn);
+        _calculator.setLocation(55.93f, 37.79f);
+        Interval interval = _calculator.getDayIntervalForJDN(jdn);
 
         assertTrue(interval.is_day);
 

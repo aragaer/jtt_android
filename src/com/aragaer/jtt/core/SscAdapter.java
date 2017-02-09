@@ -3,7 +3,6 @@
 package com.aragaer.jtt.core;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
@@ -18,12 +17,19 @@ public  class SscAdapter implements IntervalCalculator {
         return instance;
     }
 
-    private static final long ms_per_day = TimeUnit.SECONDS.toMillis(60 * 60 * 24);
     private final Map<Long, Interval> _cache = new HashMap<Long, Interval>();
     private SunriseSunsetCalculator _calculator;
 
     private SscAdapter() {
         setLocation(0, 0);
+    }
+
+    public Calendar getSunriseFor(Calendar noon) {
+        return _calculator.getOfficialSunriseCalendarForDate((Calendar) time.clone());
+    }
+
+    public Calendar getSunsetFor(Calendar noon) {
+        return _calculator.getOfficialSunsetCalendarForDate((Calendar) time.clone());
     }
 
     public void setLocation(float latitude, float longitude) {
