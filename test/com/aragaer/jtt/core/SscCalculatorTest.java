@@ -2,6 +2,7 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.core;
 
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -91,6 +92,14 @@ public class SscCalculatorTest {
         }
 
         @Override public void setLocation(float latitude, float longitude) {
+        }
+
+        @Override public Calendar getSunriseFor(Calendar noon) {
+            return null;
+        }
+
+        @Override public Calendar getSunsetFor(Calendar noon) {
+            return null;
         }
     }
 }

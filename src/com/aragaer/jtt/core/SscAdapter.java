@@ -24,12 +24,12 @@ public  class SscAdapter implements IntervalCalculator {
         setLocation(0, 0);
     }
 
-    public Calendar getSunriseFor(Calendar noon) {
-        return _calculator.getOfficialSunriseCalendarForDate((Calendar) time.clone());
+    @Override public Calendar getSunriseFor(Calendar noon) {
+        return _calculator.getOfficialSunriseCalendarForDate((Calendar) noon.clone());
     }
 
-    public Calendar getSunsetFor(Calendar noon) {
-        return _calculator.getOfficialSunsetCalendarForDate((Calendar) time.clone());
+    @Override public Calendar getSunsetFor(Calendar noon) {
+        return _calculator.getOfficialSunsetCalendarForDate((Calendar) noon.clone());
     }
 
     public void setLocation(float latitude, float longitude) {

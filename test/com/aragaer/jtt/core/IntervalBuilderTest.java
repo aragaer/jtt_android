@@ -2,9 +2,9 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.core;
 
-import static org.junit.Assert.*;
+import java.util.Calendar;
 
-import com.aragaer.jtt.core.*;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,47 +16,55 @@ public class IntervalBuilderTest {
     private IntervalBuilder _builder;
 
     @Before public void setUp() {
-	_builder = new IntervalBuilder(0, _calculator);
+        _builder = new IntervalBuilder(0, _calculator);
     }
 
     @Test public void testCreate() {
-	assertEquals(_builder.getThreeIntervals(),
-		     new ThreeIntervals(new long[] { -5, 0, 5, 10 }, true));
-	assertEquals(_builder.getMiddleInterval(),
-		     new Interval(0, 5, true));
+        assertEquals(_builder.getThreeIntervals(),
+                     new ThreeIntervals(new long[] { -5, 0, 5, 10 }, true));
+        assertEquals(_builder.getMiddleInterval(),
+                     new Interval(0, 5, true));
     }
 
     @Test public void testSlideForward() {
-	_builder.slideToNext();
+        _builder.slideToNext();
 
-	assertEquals(_builder.getThreeIntervals(),
-		     new ThreeIntervals(new long[] { 0, 5, 10, 15 }, false));
+        assertEquals(_builder.getThreeIntervals(),
+                     new ThreeIntervals(new long[] { 0, 5, 10, 15 }, false));
 
-	_builder.slideToNext();
+        _builder.slideToNext();
 
-	assertEquals(_builder.getThreeIntervals(),
-		     new ThreeIntervals(new long[] { 5, 10, 15, 20 }, true));
+        assertEquals(_builder.getThreeIntervals(),
+                     new ThreeIntervals(new long[] { 5, 10, 15, 20 }, true));
     }
 
     @Test public void testSlideBack() {
-	_builder.slideToPrevious();
+        _builder.slideToPrevious();
 
-	assertEquals(_builder.getThreeIntervals(),
-		     new ThreeIntervals(new long[] { -10, -5, 0, 5 }, false));
+        assertEquals(_builder.getThreeIntervals(),
+                     new ThreeIntervals(new long[] { -10, -5, 0, 5 }, false));
 
-	_builder.slideToPrevious();
+        _builder.slideToPrevious();
 
-	assertEquals(_builder.getThreeIntervals(),
-		     new ThreeIntervals(new long[] { -15, -10, -5, 0 }, true));
+        assertEquals(_builder.getThreeIntervals(),
+                     new ThreeIntervals(new long[] { -15, -10, -5, 0 }, true));
     }
 
     private static class TestIntervalCalculator implements IntervalCalculator {
 
         @Override public Interval getDayIntervalForJDN(long jdn) {
-	    return new Interval(jdn * 10, jdn * 10 + 5, true);
-	}
+            return new Interval(jdn * 10, jdn * 10 + 5, true);
+        }
 
-	@Override public void setLocation(float latitude, float longitude) {
-	}
+        @Override public void setLocation(float latitude, float longitude) {
+        }
+
+        @Override public Calendar getSunriseFor(Calendar noon) {
+            return null;
+        }
+
+        @Override public Calendar getSunsetFor(Calendar noon) {
+            return null;
+        }
     }
 }
