@@ -2,8 +2,9 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
-import com.aragaer.jtt.core.*;
 import com.aragaer.jtt.android.AndroidTicker;
+import com.aragaer.jtt.astronomy.*;
+import com.aragaer.jtt.core.*;
 
 import android.app.Service;
 import android.content.*;
@@ -58,8 +59,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
     private void move() {
         float l[] = Settings.getLocation(this);
-        IntervalCalculator calculator = SscAdapter.getInstance();
-        IntervalProvider provider = SscCalculator.getInstance(calculator);
+        SolarEventCalculator calculator = SscAdapter.getInstance();
+        IntervalProvider provider = new SscCalculator(calculator);
         Clockwork clockwork = new Clockwork(provider);
         calculator.setLocation(l[0], l[1]);
         new AndroidTicker(this, clockwork).start();

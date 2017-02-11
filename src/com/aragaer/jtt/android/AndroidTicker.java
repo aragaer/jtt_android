@@ -3,8 +3,6 @@
 package com.aragaer.jtt.android;
 
 import com.aragaer.jtt.core.Clockwork;
-import com.aragaer.jtt.core.SscAdapter;
-import com.aragaer.jtt.core.SscCalculator;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

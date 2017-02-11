@@ -2,24 +2,18 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.core;
 
+import com.aragaer.jtt.astronomy.SolarEventCalculator;
+
 
 public class SscCalculator implements IntervalProvider {
-    private static SscCalculator instance;
+    private SolarEventCalculator _calculator;
 
-    public static SscCalculator getInstance(IntervalCalculator calculator) {
-        if (instance == null)
-            instance = new SscCalculator(calculator);
-        return instance;
-    }
-
-    private IntervalCalculator _calculator;
-
-    private SscCalculator(IntervalCalculator calculator) {
+    public SscCalculator(SolarEventCalculator calculator) {
         _calculator = calculator;
     }
 
     public ThreeIntervals getIntervalsForTimestamp(long now) {
-        IntervalBuilder builder = new IntervalBuilder(Jdn.fromTimestamp(now), _calculator);
+        IntervalBuilder builder = new IntervalBuilder(now, _calculator);
 
         // if it is past sunset
         while (now >= builder.getMiddleInterval().end)

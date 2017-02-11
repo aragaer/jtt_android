@@ -3,6 +3,7 @@
 package com.aragaer.jtt.core;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -10,96 +11,99 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.aragaer.jtt.core.test.TestIntervalCalculator;
+
 
 public class SscCalculatorTest {
     static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
-    static final double UNIX_EPOCH_JD = 2440587.5;
 
     private TestIntervalCalculator _intervalCalculator;
     private SscCalculator _calculator;
 
     @Before public void setUp() {
         _intervalCalculator = new TestIntervalCalculator();
-        _calculator = SscCalculator.getInstance(_intervalCalculator);
-    }
-
-    @Test public void testIsSingleton() {
-        assertTrue(_calculator == SscCalculator.getInstance(null));
+        _calculator = new SscCalculator(_intervalCalculator);
     }
 
     @Test public void testCurrentDayAfterNoon() {
-        long timestamp = MS_PER_DAY/2;
-        ThreeIntervals result = _calculator.getIntervalsForTimestamp(timestamp);
-        Interval before = _intervalCalculator.getDayIntervalForJDN((long) UNIX_EPOCH_JD);
-        Interval today = _intervalCalculator.getDayIntervalForJDN((long) UNIX_EPOCH_JD+1);
-        Interval after = _intervalCalculator.getDayIntervalForJDN((long) UNIX_EPOCH_JD+2);
-        assertTrue(today.start <= timestamp);
-        assertTrue(today.end > timestamp);
-        assertEquals(result.getTransitions()[0], before.end);
-        assertEquals(result.getTransitions()[1], today.start);
-        assertEquals(result.getTransitions()[2], today.end);
-        assertEquals(result.getTransitions()[3], after.start);
+        long testTime = MS_PER_DAY*5/8 - TimeZone.getDefault().getOffset(0);
+
+        Calendar noon = Calendar.getInstance();
+        noon.setTimeInMillis(MS_PER_DAY/2 - TimeZone.getDefault().getOffset(testTime));
+        long curSunrise = _intervalCalculator.getSunriseFor(noon).getTimeInMillis();
+        long curSunset = _intervalCalculator.getSunsetFor(noon).getTimeInMillis();
+        noon.add(Calendar.DATE, -1);
+        long prevSunset = _intervalCalculator.getSunsetFor(noon).getTimeInMillis();
+        noon.add(Calendar.DATE, 2);
+        long nextSunrise = _intervalCalculator.getSunriseFor(noon).getTimeInMillis();
+
+        ThreeIntervals result = _calculator.getIntervalsForTimestamp(testTime);
+
+        assertEquals(result.getTransitions()[0], prevSunset);
+        assertEquals(result.getTransitions()[1], curSunrise);
+        assertEquals(result.getTransitions()[2], curSunset);
+        assertEquals(result.getTransitions()[3], nextSunrise);
         assertEquals(result.isDay(), true);
     }
 
     @Test public void testCurrentDayBeforeNoon() {
-        long timestamp = MS_PER_DAY/2-1;
-        ThreeIntervals result = _calculator.getIntervalsForTimestamp(timestamp);
-        Interval before = _intervalCalculator.getDayIntervalForJDN((long) UNIX_EPOCH_JD);
-        Interval today = _intervalCalculator.getDayIntervalForJDN((long) UNIX_EPOCH_JD+1);
-        Interval after = _intervalCalculator.getDayIntervalForJDN((long) UNIX_EPOCH_JD+2);
-        assertTrue(today.start <= timestamp);
-        assertTrue(today.end > timestamp);
-        assertEquals(result.getTransitions()[0], before.end);
-        assertEquals(result.getTransitions()[1], today.start);
-        assertEquals(result.getTransitions()[2], today.end);
-        assertEquals(result.getTransitions()[3], after.start);
+        long testTime = MS_PER_DAY*3/8 - TimeZone.getDefault().getOffset(0);
+
+        Calendar noon = Calendar.getInstance();
+        noon.setTimeInMillis(MS_PER_DAY/2 - TimeZone.getDefault().getOffset(testTime));
+        long curSunrise = _intervalCalculator.getSunriseFor(noon).getTimeInMillis();
+        long curSunset = _intervalCalculator.getSunsetFor(noon).getTimeInMillis();
+        noon.add(Calendar.DATE, -1);
+        long prevSunset = _intervalCalculator.getSunsetFor(noon).getTimeInMillis();
+        noon.add(Calendar.DATE, 2);
+        long nextSunrise = _intervalCalculator.getSunriseFor(noon).getTimeInMillis();
+
+        ThreeIntervals result = _calculator.getIntervalsForTimestamp(testTime);
+
+        assertEquals(result.getTransitions()[0], prevSunset);
+        assertEquals(result.getTransitions()[1], curSunrise);
+        assertEquals(result.getTransitions()[2], curSunset);
+        assertEquals(result.getTransitions()[3], nextSunrise);
         assertEquals(result.isDay(), true);
     }
 
     @Test public void testCurrentNightAfterMidnight() {
-        long timestamp = 0;
-        ThreeIntervals result = _calculator.getIntervalsForTimestamp(timestamp);
-        Interval today = _intervalCalculator.getDayIntervalForJDN((long) UNIX_EPOCH_JD);
-        Interval after = _intervalCalculator.getDayIntervalForJDN((long) UNIX_EPOCH_JD+1);
-        assertTrue(today.end <= timestamp);
-        assertTrue(after.start > timestamp);
-        assertEquals(result.getTransitions()[0], today.start);
-        assertEquals(result.getTransitions()[1], today.end);
-        assertEquals(result.getTransitions()[2], after.start);
-        assertEquals(result.getTransitions()[3], after.end);
+        long testTime = - TimeZone.getDefault().getOffset(0) - 1;
+
+        Calendar noon = Calendar.getInstance();
+        noon.setTimeInMillis(MS_PER_DAY/2 - TimeZone.getDefault().getOffset(testTime));
+        long curSunrise = _intervalCalculator.getSunriseFor(noon).getTimeInMillis();
+        long curSunset = _intervalCalculator.getSunsetFor(noon).getTimeInMillis();
+        noon.add(Calendar.DATE, -1);
+        long prevSunrise = _intervalCalculator.getSunriseFor(noon).getTimeInMillis();
+        long prevSunset = _intervalCalculator.getSunsetFor(noon).getTimeInMillis();
+
+        ThreeIntervals result = _calculator.getIntervalsForTimestamp(testTime);
+
+        assertEquals(result.getTransitions()[0], prevSunrise);
+        assertEquals(result.getTransitions()[1], prevSunset);
+        assertEquals(result.getTransitions()[2], curSunrise);
+        assertEquals(result.getTransitions()[3], curSunset);
         assertEquals(result.isDay(), false);
     }
 
     @Test public void testCurrentNightAfterSunset() {
-        long timestamp = -MS_PER_DAY/4;
-        ThreeIntervals result = _calculator.getIntervalsForTimestamp(timestamp);
-        Interval today = _intervalCalculator.getDayIntervalForJDN((long) UNIX_EPOCH_JD);
-        Interval after = _intervalCalculator.getDayIntervalForJDN((long) UNIX_EPOCH_JD+1);
-        assertTrue(today.end <= timestamp);
-        assertTrue(after.start > timestamp);
-        assertEquals(result.getTransitions()[0], today.start);
-        assertEquals(result.getTransitions()[1], today.end);
-        assertEquals(result.getTransitions()[2], after.start);
-        assertEquals(result.getTransitions()[3], after.end);
+        long testTime = MS_PER_DAY*3/4 - TimeZone.getDefault().getOffset(0) + 1;
+
+        Calendar noon = Calendar.getInstance();
+        noon.setTimeInMillis(MS_PER_DAY/2 - TimeZone.getDefault().getOffset(testTime));
+        long curSunrise = _intervalCalculator.getSunriseFor(noon).getTimeInMillis();
+        long curSunset = _intervalCalculator.getSunsetFor(noon).getTimeInMillis();
+        noon.add(Calendar.DATE, +1);
+        long nextSunrise = _intervalCalculator.getSunriseFor(noon).getTimeInMillis();
+        long nextSunset = _intervalCalculator.getSunsetFor(noon).getTimeInMillis();
+
+        ThreeIntervals result = _calculator.getIntervalsForTimestamp(testTime);
+
+        assertEquals(result.getTransitions()[0], curSunrise);
+        assertEquals(result.getTransitions()[1], curSunset);
+        assertEquals(result.getTransitions()[2], nextSunrise);
+        assertEquals(result.getTransitions()[3], nextSunset);
         assertEquals(result.isDay(), false);
-    }
-
-    private static class TestIntervalCalculator implements IntervalCalculator {
-        @Override public Interval getDayIntervalForJDN(long jdn) {
-            long jdn_noon = Jdn.toTimestamp(jdn);
-            return new Interval(jdn_noon-MS_PER_DAY/4, jdn_noon+MS_PER_DAY/4, true);
-        }
-
-        @Override public void setLocation(float latitude, float longitude) {
-        }
-
-        @Override public Calendar getSunriseFor(Calendar noon) {
-            return null;
-        }
-
-        @Override public Calendar getSunsetFor(Calendar noon) {
-            return null;
-        }
     }
 }
