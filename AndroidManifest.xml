@@ -7,14 +7,9 @@
     <uses-sdk android:minSdkVersion="14"
         android:targetSdkVersion="22"/>
 
-    <permission android:name="com.aragaer.jtt.permission.CLOCK"
-	    android:protectionLevel="signature" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
-    <uses-permission android:name="com.aragaer.jtt.permission.CLOCK" />
 
     <application
         android:allowBackup="true"
