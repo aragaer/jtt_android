@@ -30,6 +30,8 @@ public class Ticker extends IntentService {
                 .putExtra("hour", hour.num)
                 .putExtra("jtt", hour.wrapped);
             sendStickyBroadcast(TickAction);
+
+            Log.d("JTT CLOCKWORK", "Tick: "+hour.num+":"+hour.quarter+":"+hour.tick);
         } else {
             Clockwork clockwork = new Clockwork(provider);
             try {

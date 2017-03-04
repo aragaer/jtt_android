@@ -8,6 +8,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 
 public class AndroidTicker {
@@ -30,6 +31,7 @@ public class AndroidTicker {
         AlarmManager am = (AlarmManager) _context.getSystemService(Context.ALARM_SERVICE);
         am.setRepeating(AlarmManager.RTC, _clockwork.start, _clockwork.repeat,
                         PendingIntent.getService(_context, 0, TickActionInternal, PendingIntent.FLAG_UPDATE_CURRENT));
+        Log.d("JTT CLOCKWORK", "Started regular ticking with tick period "+_clockwork.repeat+"ms");
     }
 
     public void stop() {
