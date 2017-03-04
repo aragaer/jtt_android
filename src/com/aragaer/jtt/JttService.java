@@ -15,6 +15,8 @@ import android.util.Log;
 public class JttService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "JTT_SERVICE";
     private JttStatus status_notify;
+    private AndroidTicker ticker;
+    private Clockwork clockwork;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -61,8 +63,10 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         float l[] = Settings.getLocation(this);
         SolarEventCalculator calculator = SscAdapter.getInstance();
         IntervalProvider provider = new SscCalculator(calculator);
-        Clockwork clockwork = new Clockwork(provider);
+        clockwork = new Clockwork(provider);
         calculator.setLocation(l[0], l[1]);
-        new AndroidTicker(this, clockwork).start();
+        if (ticker == null)
+            ticker = new AndroidTicker(this, clockwork);
+        ticker.start();
     }
 }
