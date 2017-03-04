@@ -46,7 +46,10 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
         if (!action.equals(AndroidTicker.ACTION_JTT_TICK))
             return;
 
-        final ThreeIntervals intervals = (ThreeIntervals) intent.getSerializableExtra("intervals");
+        setIntervals((ThreeIntervals) intent.getSerializableExtra("intervals"));
+    }
+
+    public void setIntervals(ThreeIntervals intervals) {
         Interval currentInterval = intervals.getMiddleInterval();
         h = Hour.fromInterval(currentInterval, System.currentTimeMillis());
         final long tr[] = intervals.getTransitions();
@@ -65,8 +68,12 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
     }
 
     private void show() {
-        final int hf = h.quarter * Hour.TICKS_PER_QUARTER + h.tick;
-        final RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notification);
+        nm.notify(APP_ID, buildNotification());
+    }
+
+    public Notification buildNotification() {
+        int hf = h.quarter * Hour.TICKS_PER_QUARTER + h.tick;
+        RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notification);
 
         rv.setTextViewText(R.id.image, Hour.Glyphs[h.num]);
         rv.setTextViewText(R.id.title, sr.getHrOf(h.num));
@@ -76,15 +83,13 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
         rv.setTextViewText(R.id.start, sr.format_time(start));
         rv.setTextViewText(R.id.end, sr.format_time(end));
 
-        final Notification n = new Notification.Builder(context)
+        return new Notification.Builder(context)
             .setContent(rv)
             .setOngoing(true)
             .setSmallIcon(R.drawable.notification_icon, h.num)
             .setContentIntent(PendingIntent.getActivity(context, 0,
                                                         new Intent(context, JTTMainActivity.class), 0))
             .getNotification();
-
-        nm.notify(APP_ID, n);
     }
 
     public void onStringResourcesChanged(final int changes) {
