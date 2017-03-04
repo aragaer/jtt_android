@@ -26,7 +26,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     @Override
     public int onStartCommand(Intent intent, int flags, int startid) {
         Log.i(TAG, "Service starting");
-        move();
+        if (ticker == null)
+            move();
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);

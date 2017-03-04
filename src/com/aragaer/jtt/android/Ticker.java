@@ -4,9 +4,11 @@ package com.aragaer.jtt.android;
 
 import com.aragaer.jtt.astronomy.*;
 import com.aragaer.jtt.core.*;
+import com.aragaer.jtt.JttService;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 
@@ -30,6 +32,10 @@ public class Ticker extends IntentService {
                 .putExtra("hour", hour.num)
                 .putExtra("jtt", hour.wrapped);
             sendStickyBroadcast(TickAction);
+
+            if (PreferenceManager.getDefaultSharedPreferences(this)
+                    .getBoolean("jtt_notify", true))
+                startService(new Intent(this, JttService.class));
 
             Log.d("JTT CLOCKWORK", "Tick: "+hour.num+":"+hour.quarter+":"+hour.tick);
         } else {
