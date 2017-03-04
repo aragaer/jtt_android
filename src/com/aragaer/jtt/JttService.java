@@ -2,6 +2,8 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
+import java.text.SimpleDateFormat;
+
 import com.aragaer.jtt.android.AndroidTicker;
 import com.aragaer.jtt.astronomy.*;
 import com.aragaer.jtt.core.*;
@@ -28,6 +30,13 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         Log.i(TAG, "Service starting");
         if (ticker == null)
             move();
+        if (clockwork != null) {
+            long s = clockwork.start;
+            long now = System.currentTimeMillis();
+            while (s < now)
+                s += clockwork.repeat;
+            Log.d(TAG, "Next tick scheduled at "+(new SimpleDateFormat("HH:mm:ss.SSS").format(s)));
+        }
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
