@@ -5,12 +5,6 @@
 
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="jtt_bootup"
-            android:summary="@string/bootup_ex"
-            android:title="@string/bootup" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
             android:key="jtt_notify"
             android:summary="@string/notify_ex"
             android:title="@string/notify" />

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">和時計</string>
@@ -9,8 +9,6 @@
     <string name="longitude">経度</string>
     <string name="clock">時計</string>
     <string name="settings">設定</string>
-    <string name="bootup">自動起動</string>
-    <string name="bootup_ex">デバイスを起動時に自動的に開始</string>
     <string name="notify">通知</string>
     <string name="notify_ex">今の刻をステータスバーで表示</string>
     <string name="status">起動と通知</string>

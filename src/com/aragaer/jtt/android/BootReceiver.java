@@ -5,15 +5,12 @@ package com.aragaer.jtt.android;
 import com.aragaer.jtt.JttService;
 
 import android.content.*;
-import android.preference.PreferenceManager;
 
 public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         if (action == null || !action.equals(Intent.ACTION_BOOT_COMPLETED))
             return;
-        if (PreferenceManager.getDefaultSharedPreferences(context)
-            .getBoolean("jtt_bootup", true))
-            context.startService(new Intent(context, JttService.class));
+        context.startService(new Intent(context, JttService.class));
     }
 }

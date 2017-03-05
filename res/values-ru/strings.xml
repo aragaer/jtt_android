@@ -9,8 +9,6 @@
     <string name="longitude">Долгота</string>
     <string name="clock">Часы</string>
     <string name="settings">Настройки</string>
-    <string name="bootup">Автозапуск</string>
-    <string name="bootup_ex">Автоматически запускать сервис при загрузке устройства.</string>
     <string name="notify">Оповещения</string>
     <string name="notify_ex">Показывать иероглиф текущего часа в строке статуса.</string>
     <string name="status">Запуск и оповещения</string>
