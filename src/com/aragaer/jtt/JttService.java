@@ -2,8 +2,6 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
-import java.text.SimpleDateFormat;
-
 import com.aragaer.jtt.android.AndroidTicker;
 import com.aragaer.jtt.astronomy.*;
 import com.aragaer.jtt.core.*;
@@ -30,18 +28,14 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         Log.i(TAG, "Service starting");
         if (ticker == null)
             move();
-        if (clockwork != null) {
-            long s = clockwork.start;
-            long now = System.currentTimeMillis();
-            while (s < now)
-                s += clockwork.repeat;
-            Log.d(TAG, "Next tick scheduled at "+(new SimpleDateFormat("HH:mm:ss.SSS").format(s)));
-        }
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
 
         toggle_notify(pref.getBoolean("jtt_notify", true));
+
+        registerReceiver(on, new IntentFilter(Intent.ACTION_SCREEN_ON));
+        registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
         return START_STICKY;
     }
@@ -57,6 +51,17 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
             }
         }
     }
+
+    private final BroadcastReceiver on = new BroadcastReceiver() {
+            @Override public void onReceive(Context context, Intent intent) {
+                move();
+            }
+        };
+    private final BroadcastReceiver off = new BroadcastReceiver() {
+            @Override public void onReceive(Context context, Intent intent) {
+                ticker.stop();
+            }
+        };
 
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
         if (key.equals(Settings.PREF_NOTIFY))

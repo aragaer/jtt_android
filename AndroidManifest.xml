@@ -5,7 +5,7 @@
     android:versionName="1.6" >
 
     <uses-sdk android:minSdkVersion="14"
-        android:targetSdkVersion="18"/>
+        android:targetSdkVersion="22"/>
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
@@ -33,9 +33,6 @@
 
         <service
             android:name=".JttService"
-            android:exported="false" />
-        <service
-            android:name=".android.Ticker"
             android:exported="false" />
         <receiver android:name=".android.BootReceiver" >
             <intent-filter>
