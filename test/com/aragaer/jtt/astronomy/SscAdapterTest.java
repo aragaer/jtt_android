@@ -9,6 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.*;
 
+import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
+import com.luckycatlabs.sunrisesunset.dto.Location;
+
 
 public class SscAdapterTest {
 
@@ -31,15 +34,11 @@ public class SscAdapterTest {
         _calculator.setLocation(51.5f, 0f);
 
         Calendar sunrise = _calculator.getSunriseFor(calendar);
-
-        Calendar expected = Calendar.getInstance(tz);
-        expected.set(2000, 0, 1, 8, 6, 0);
-        expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(sunrise.getTimeInMillis(), expected.getTimeInMillis());
+        verifyEquals(sunrise, 2000, 0, 1, 8, 6, tz);
     }
 
 
-    @Test public void testSunsetCapeVerder01Jan2000() {
+    @Test public void testSunsetCapeVerde01Jan2000() {
         int offsetMillis = (int) TimeUnit.MINUTES.toMillis(-60);
         TimeZone tz = TimeZone.getTimeZone(TimeZone.getAvailableIDs(offsetMillis)[0]);
         Calendar calendar = Calendar.getInstance(tz);
@@ -48,11 +47,7 @@ public class SscAdapterTest {
         _calculator.setLocation(15.11f, -23.6f);
 
         Calendar sunset = _calculator.getSunsetFor(calendar);
-
-        Calendar expected = Calendar.getInstance(tz);
-        expected.set(2000, 0, 1, 18, 16, 0);
-        expected.set(Calendar.MILLISECOND, 0);
-        assertEquals(sunset.getTimeInMillis(), expected.getTimeInMillis());
+        verifyEquals(sunset, 2000, 0, 1, 18, 16, tz);
     }
 
     @Test public void testLondonDay01Jan2000() {
@@ -64,18 +59,10 @@ public class SscAdapterTest {
         _calculator.setLocation(51.5f, 0f);
 
         Calendar sunrise = _calculator.getSunriseFor(calendar);
-
-        Calendar expectedSunrise = Calendar.getInstance(tz);
-        expectedSunrise.set(2000, 0, 1, 8, 6, 0);
-        expectedSunrise.set(Calendar.MILLISECOND, 0);
-        assertEquals(sunrise.getTimeInMillis(), expectedSunrise.getTimeInMillis());
+        verifyEquals(sunrise, 2000, 0, 1, 8, 6, tz);
 
         Calendar sunset = _calculator.getSunsetFor(calendar);
-
-        Calendar expectedSunset = Calendar.getInstance(tz);
-        expectedSunset.set(2000, 0, 1, 16, 2, 0);
-        expectedSunset.set(Calendar.MILLISECOND, 0);
-        assertEquals(sunset.getTimeInMillis(), expectedSunset.getTimeInMillis());
+        verifyEquals(sunset, 2000, 0, 1, 16, 2, tz);
     }
 
     @Test public void testMoscowDay22Jun2014() {
@@ -84,21 +71,45 @@ public class SscAdapterTest {
         Calendar calendar = Calendar.getInstance(tz);
         calendar.set(2014, 5, 22, 12, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        long timestamp = calendar.getTimeInMillis();
         _calculator.setLocation(55.93f, 37.79f);
 
         Calendar sunrise = _calculator.getSunriseFor(calendar);
-
-        Calendar expectedSunrise = Calendar.getInstance(tz);
-        expectedSunrise.set(2014, 5, 22, 3, 43, 0);
-        expectedSunrise.set(Calendar.MILLISECOND, 0);
-        assertEquals(sunrise.getTimeInMillis(), expectedSunrise.getTimeInMillis());
+        verifyEquals(sunrise, 2014, 5, 22, 3, 43, tz);
 
         Calendar sunset = _calculator.getSunsetFor(calendar);
+        verifyEquals(sunset, 2014, 5, 22, 21, 19, tz);
+    }
 
-        Calendar expectedSunset = Calendar.getInstance(tz);
-        expectedSunset.set(2014, 5, 22, 21, 19, 0);
-        expectedSunset.set(Calendar.MILLISECOND, 0);
-        assertEquals(sunset.getTimeInMillis(), expectedSunset.getTimeInMillis());
+    @Test public void testReykjavikSummerSolstice2017() {
+        int offsetMillis = (int) TimeUnit.MINUTES.toMillis(0);
+        TimeZone tz = getTimeZone(offsetMillis);
+        Calendar calendar = Calendar.getInstance(tz);
+        calendar.set(2017, 5, 22, 12, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        _calculator.setLocation(64.13f, -21.9f);
+
+        Calendar sunrise = _calculator.getSunriseFor(calendar);
+        verifyEquals(sunrise, 2017, 5, 22, 2, 55, tz);
+
+        // Note - next day, after midnight
+        Calendar sunset = _calculator.getSunsetFor(calendar);
+        verifyEquals(sunset, 2017, 5, 23, 0, 4, tz);
+    }
+
+    static void verifyEquals(Calendar actual, int year, int month,
+                             int day, int hour, int minute, TimeZone tz) {
+        Calendar expected = Calendar.getInstance(tz);
+        expected.set(year, month, day, hour, minute, 0);
+        expected.set(Calendar.MILLISECOND, 0);
+        assertEquals(actual.getTimeInMillis(), expected.getTimeInMillis());
+    }
+
+    static TimeZone getTimeZone(int offsetMillis) {
+        for (String tzName : TimeZone.getAvailableIDs(offsetMillis)) {
+            TimeZone tz = TimeZone.getTimeZone(tzName);
+            if (!tz.useDaylightTime())
+                return tz;
+        }
+        throw new RuntimeException("Failed to find timezone for offset "+offsetMillis);
     }
 }

@@ -4,6 +4,7 @@ package com.aragaer.jtt.astronomy;
 
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 import com.luckycatlabs.sunrisesunset.dto.Location;
@@ -33,7 +34,17 @@ public  class SscAdapter implements SolarEventCalculator {
     }
 
     public void setLocation(float latitude, float longitude) {
+        int offsetMillis = (int) TimeUnit.HOURS.toMillis(Math.round(longitude/15));
         _calculator = new SunriseSunsetCalculator(new Location(latitude, longitude),
-                                                  TimeZone.getDefault());
+                                                  getTimeZone(offsetMillis));
+    }
+
+    private static TimeZone getTimeZone(int offsetMillis) {
+        for (String tzName : TimeZone.getAvailableIDs(offsetMillis)) {
+            TimeZone tz = TimeZone.getTimeZone(tzName);
+            if (!tz.useDaylightTime())
+                return tz;
+        }
+        throw new RuntimeException("Failed to find timezone for offset "+offsetMillis);
     }
 }
