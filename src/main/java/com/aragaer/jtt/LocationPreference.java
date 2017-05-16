@@ -1,31 +1,23 @@
+// -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; -*-
+// vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.content.*;
+import android.location.*;
 import android.os.Bundle;
 import android.preference.DialogPreference;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.Spanned;
-import android.text.TextWatcher;
+import android.text.*;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 public class LocationPreference extends DialogPreference implements
-        LocationListener, TextWatcher, DialogInterface.OnClickListener {
+                                                             LocationListener, TextWatcher, DialogInterface.OnClickListener {
     private float accuracy = 0;
     private LocationManager lm;
     private TextView lat, lon;
@@ -47,8 +39,7 @@ public class LocationPreference extends DialogPreference implements
 
     @Override
     protected View onCreateDialogView() {
-        LayoutInflater li = (LayoutInflater) getContext().getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater li = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         locView = (LinearLayout) li.inflate(R.layout.location_picker, null);
 
         lat = (TextView) locView.findViewById(R.id.lat);
@@ -108,12 +99,12 @@ public class LocationPreference extends DialogPreference implements
 	protected void showDialog(Bundle state) {
 		super.showDialog(state);
 		Button pos = ((AlertDialog) getDialog())
-				.getButton(Dialog.BUTTON_NEUTRAL);
+            .getButton(Dialog.BUTTON_NEUTRAL);
 		pos.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				acquireLocation();
-			}
-		});
+                public void onClick(View v) {
+                    acquireLocation();
+                }
+            });
 	}
 
     private void doSet(String l) {
@@ -138,7 +129,7 @@ public class LocationPreference extends DialogPreference implements
 
     private void acquireLocation() {
         lm = (LocationManager) getContext().getSystemService(
-                Context.LOCATION_SERVICE);
+                                                             Context.LOCATION_SERVICE);
 
         if (!lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             Toast.makeText(getContext(), R.string.no_providers, Toast.LENGTH_SHORT).show();
@@ -177,8 +168,7 @@ public class LocationPreference extends DialogPreference implements
             doSet(String.format(fmt2, latt, lont));
     }
 
-    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-            int arg3) {
+    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
     }
 
     public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
@@ -186,16 +176,16 @@ public class LocationPreference extends DialogPreference implements
 
     static private class InputFilterMinMax implements InputFilter {
         private float min, max;
-     
+
         public InputFilterMinMax(float min, float max) {
             this.min = min;
             this.max = max;
         }
-     
+
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             String checkedText = dest.subSequence(0, dstart).toString() +
-                    source.subSequence(start, end) +
-                    dest.subSequence(dend,dest.length()).toString();
+                source.subSequence(start, end) +
+                dest.subSequence(dend,dest.length()).toString();
             if (checkedText.equals("-"))
                 return null;
             try {
@@ -205,7 +195,7 @@ public class LocationPreference extends DialogPreference implements
             } catch (NumberFormatException nfe) { }
             return "";
         }
-     
+
         private boolean isInRange(float a, float b, float c) {
             return c >= a && c <= b; // assume b >= a
         }
