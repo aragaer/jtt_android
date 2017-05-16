@@ -3,18 +3,12 @@
 package com.aragaer.jtt.resources;
 
 import java.text.DateFormat;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import com.aragaer.jtt.Settings;
 import com.aragaer.jtt.R;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
@@ -37,14 +31,14 @@ public class StringResources implements
 
     private static final IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
     private final Context c;
-    private final Resources r;
+    private final Resources resources;
     private String Hours[], HrOf[], Quarters[];
     private DateFormat df;
     private int hour_name_option;
 
     protected StringResources(final Context context) {
         c = context;
-        r = new Resources(c.getAssets(), null, null);
+        resources = new Resources(c.getAssets(), null, null);
         final SharedPreferences pref = PreferenceManager
             .getDefaultSharedPreferences(c);
         hour_name_option = Integer.parseInt(pref.getString(Settings.PREF_HNAME, "0"));
@@ -102,15 +96,14 @@ public class StringResources implements
 
     private final Map<StringResourceChangeListener, Integer> listeners = new HashMap<StringResources.StringResourceChangeListener, Integer>();
 
-    public synchronized void registerStringResourceChangeListener(
-                                                                  final StringResourceChangeListener listener, final int changeMask) {
+    public synchronized void registerStringResourceChangeListener(final StringResourceChangeListener listener,
+                                                                  final int changeMask) {
         if (listeners.size() == 0)
             c.registerReceiver(TZChangeReceiver, filter);
         listeners.put(listener, changeMask);
     }
 
-    public synchronized void unregisterStringResourceChangeListener(
-                                                                    final StringResourceChangeListener listener) {
+    public synchronized void unregisterStringResourceChangeListener(final StringResourceChangeListener listener) {
         listeners.remove(listener);
         if (listeners.size() == 0)
             c.unregisterReceiver(TZChangeReceiver);
@@ -128,9 +121,9 @@ public class StringResources implements
     private static final int q[] = { R.array.quarter, R.array.romaji_quarter, R.array.hiragana_quarter };
 
     private void load_hour_names() {
-        HrOf = r.getStringArray(hnhof[hour_name_option]);
-        Hours = r.getStringArray(hnh[hour_name_option]);
-        Quarters = r.getStringArray(q[hour_name_option]);
+        HrOf = resources.getStringArray(hnhof[hour_name_option]);
+        Hours = resources.getStringArray(hnh[hour_name_option]);
+        Quarters = resources.getStringArray(q[hour_name_option]);
         change_pending |= TYPE_HOUR_NAME;
     }
 

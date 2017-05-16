@@ -35,7 +35,7 @@ public class RuntimeResources {
             ctor = clazz.getDeclaredConstructor(Context.class);
         } catch (NoSuchMethodException e) {
             Log.e("RR", "Failed to find constructor", e);
-            return null;
+            throw new RuntimeException(e);
         }
         E res = (E) singletons.get(clazz);
         if (res == null)
@@ -44,12 +44,16 @@ public class RuntimeResources {
                 singletons.put(clazz, res);
             } catch (IllegalArgumentException e) {
                 Log.e("RR", "Failed to call constructor", e);
+                throw new RuntimeException(e);
             } catch (InstantiationException e) {
                 Log.e("RR", "Failed to call constructor", e);
+                throw new RuntimeException(e);
             } catch (IllegalAccessException e) {
                 Log.e("RR", "Failed to call constructor", e);
+                throw new RuntimeException(e);
             } catch (InvocationTargetException e) {
                 Log.e("RR", "Failed to call constructor", e);
+                throw new RuntimeException(e);
             }
         return res;
     }
