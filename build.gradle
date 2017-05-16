@@ -17,29 +17,16 @@ repositories {
     mavenCentral()
 }
 
-configurations {
-    unitTestCompile.extendsFrom runtime
-    unitTestRuntime.extendsFrom unitTestCompile
-}
-
 dependencies {
     compile 'com.luckycatlabs:SunriseSunsetCalculator:1.1'
     compile 'com.android.support:support-v4:25.1.0'
 
     testCompile 'junit:junit:4.12'
-    unitTestCompile files("$project.buildDir/intermediates/classes/debug")
-    unitTestCompile 'junit:junit:4.12'
-    unitTestCompile 'org.hamcrest:hamcrest-integration:1.3'
-    unitTestCompile 'org.hamcrest:hamcrest-core:1.3'
-    unitTestCompile 'org.hamcrest:hamcrest-library:1.3'
-    unitTestCompile 'com.luckycatlabs:SunriseSunsetCalculator:1.1'
-}
-
-sourceSets {
-    unitTest {
-        java.srcDirs = ['src/test/java']
-        resources.srcDirs = ['res']
-    }
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'org.hamcrest:hamcrest-integration:1.3'
+    testCompile 'org.hamcrest:hamcrest-core:1.3'
+    testCompile 'org.hamcrest:hamcrest-library:1.3'
+    testCompile 'com.luckycatlabs:SunriseSunsetCalculator:1.1'
 }
 
 android {
@@ -87,15 +74,7 @@ android {
     }
 }
 
-task unitTest(type: Test, dependsOn: assembleDebug) {
-    description = "run unit tests"
-    testClassesDir = project.sourceSets.unitTest.output.classesDir
-    classpath = project.sourceSets.unitTest.runtimeClasspath
-}
-
-check.dependsOn unitTest
-
-task jacocoTestReport(type: JacocoReport, dependsOn: "unitTest") {
+task jacocoTestReport(type: JacocoReport, dependsOn: "test") {
     group = "Reporting"
     description = "Generate Jacoco coverage reports after running tests."
     reports {
@@ -110,5 +89,5 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "unitTest") {
                    '**/R$*.class'
     ])
     sourceDirectories = files('src/main/java')
-    executionData = files('build/jacoco/unitTest.exec')
+    executionData = files('build/jacoco/testReleaseUnitTest.exec')
 }
