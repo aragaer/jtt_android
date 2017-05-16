@@ -27,7 +27,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Log.class, Configuration.class, PreferenceManager.class,
             SharedPreferences.class, Resources.class, Context.class,
-            StringResources.class, DateFormat.class})
+            DateFormat.class})
 public class RuntimeResourcesTest {
 
     Context mockContext = mock(Context.class);
@@ -40,7 +40,6 @@ public class RuntimeResourcesTest {
         mockStatic(PreferenceManager.class);
         mockStatic(Resources.class);
         mockStatic(DateFormat.class);
-        whenNew(Resources.class).withAnyArguments().thenReturn(resources);
         when(mockContext.getApplicationContext()).thenReturn(mockContext);
         when(mockContext.getResources()).thenReturn(resources);
         when(PreferenceManager.getDefaultSharedPreferences(mockContext)).thenReturn(sharedPreferences);

@@ -38,7 +38,7 @@ public class StringResources implements
 
     protected StringResources(final Context context) {
         c = context;
-        resources = new Resources(c.getAssets(), null, null);
+        resources = c.getResources();
         final SharedPreferences pref = PreferenceManager
             .getDefaultSharedPreferences(c);
         hour_name_option = Integer.parseInt(pref.getString(Settings.PREF_HNAME, "0"));
