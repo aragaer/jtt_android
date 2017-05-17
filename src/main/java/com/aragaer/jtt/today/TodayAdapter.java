@@ -22,7 +22,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 
     public TodayAdapter(Context c, int layout_id) {
         super(c, layout_id);
-        RuntimeResources.get(c).getInstance(StringResources.class)
+        RuntimeResources.get(c).getStringResources()
             .registerStringResourceChangeListener(this,
                                                   StringResources.TYPE_HOUR_NAME | StringResources.TYPE_TIME_FORMAT);
         HourItem.extras = new String[] { c.getString(R.string.sunset), "", "",

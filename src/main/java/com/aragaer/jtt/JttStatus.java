@@ -27,7 +27,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
         context = ctx;
         nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        sr = RuntimeResources.get(context).getInstance(StringResources.class);
+        sr = RuntimeResources.get(context).getStringResources();
         sr.registerStringResourceChangeListener(this,
                                                 StringResources.TYPE_HOUR_NAME | StringResources.TYPE_TIME_FORMAT);
 

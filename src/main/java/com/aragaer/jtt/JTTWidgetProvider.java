@@ -222,7 +222,7 @@ class WidgetPainter12 implements WidgetPainter {
 
 	@Override
 	public String get_text(Context c, Hour h) {
-		return RuntimeResources.get(c).getInstance(StringResources.class).getHour(h.num);
+		return RuntimeResources.get(c).getStringResources().getHour(h.num);
 	}
 
 	@Override

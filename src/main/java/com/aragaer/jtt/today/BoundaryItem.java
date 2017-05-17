@@ -22,7 +22,7 @@ class BoundaryItem extends TodayItem {
     public View toView(Context c, View v, int sel_p_diff) {
         if (v == null)
             v = View.inflate(c, R.layout.today_boundary_item, null);
-        final StringResources sr = RuntimeResources.get(c).getInstance(StringResources.class);
+        final StringResources sr = RuntimeResources.get(c).getStringResources();
         ((TextView) v.findViewById(R.id.time)).setText(sr.format_time(time));
         int level;
         switch (sel_p_diff) {

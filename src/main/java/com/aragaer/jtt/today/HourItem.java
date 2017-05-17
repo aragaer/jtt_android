@@ -26,7 +26,7 @@ class HourItem extends TodayItem {
     public View toView(Context c, View v, int sel_p_diff) {
         if (v == null)
             v = View.inflate(c, R.layout.today_item, null);
-        final StringResources sr = RuntimeResources.get(c).getInstance(StringResources.class);
+        final StringResources sr = RuntimeResources.get(c).getStringResources();
 
         ((TextView) v.findViewById(R.id.glyph)).setText(Hour.Glyphs[hnum]);
         ((TextView) v.findViewById(R.id.name)).setText(sr.getHrOf(hnum));

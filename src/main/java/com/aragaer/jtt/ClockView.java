@@ -26,7 +26,7 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 
     public ClockView(Context context) {
         super(context);
-        sr = RuntimeResources.get(context).getInstance(StringResources.class);
+        sr = RuntimeResources.get(context).getStringResources();
         sr.registerStringResourceChangeListener(this, StringResources.TYPE_HOUR_NAME);
         wadokei = new WadokeiView(context);
         arrow = new ArrowView(context);

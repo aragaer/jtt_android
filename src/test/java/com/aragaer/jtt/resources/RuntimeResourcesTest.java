@@ -30,8 +30,8 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
             DateFormat.class})
 public class RuntimeResourcesTest {
 
-    Context mockContext = mock(Context.class);
-    SharedPreferences sharedPreferences = mock(SharedPreferences.class);
+    static Context mockContext = mock(Context.class);
+    SharedPreferences mockPref = mock(SharedPreferences.class);
     Resources resources = mock(Resources.class);
     Configuration config = mock(Configuration.class);
 
@@ -42,9 +42,9 @@ public class RuntimeResourcesTest {
         mockStatic(DateFormat.class);
         when(mockContext.getApplicationContext()).thenReturn(mockContext);
         when(mockContext.getResources()).thenReturn(resources);
-        when(PreferenceManager.getDefaultSharedPreferences(mockContext)).thenReturn(sharedPreferences);
-        when(sharedPreferences.getString(Settings.PREF_HNAME, "0")).thenReturn("0");
-        when(sharedPreferences.getString(Settings.PREF_LOCALE, "")).thenReturn("");
+        when(PreferenceManager.getDefaultSharedPreferences(mockContext)).thenReturn(mockPref);
+        when(mockPref.getString(Settings.PREF_HNAME, "0")).thenReturn("0");
+        when(mockPref.getString(Settings.PREF_LOCALE, "")).thenReturn("");
         when(Resources.getSystem()).thenReturn(resources);
         when(resources.getConfiguration()).thenReturn(config);
         when(resources.getStringArray(R.array.hour)).thenReturn(new String[] {""});
@@ -57,7 +57,7 @@ public class RuntimeResourcesTest {
         assertNotNull(rr);
     }
 
-    @Test public void test_sameContextReturnsSameResources() {
+    @Test public void test_isSingleton() {
         RuntimeResources rr = RuntimeResources.get(mockContext);
         RuntimeResources rr2 = RuntimeResources.get(mockContext);
 
@@ -66,7 +66,7 @@ public class RuntimeResourcesTest {
 
     @Test public void test_canGetStringResources() {
         RuntimeResources rr = RuntimeResources.get(mockContext);
-        StringResources sr = rr.getInstance(StringResources.class);
+        StringResources sr = rr.getStringResources();
 
         assertNotNull(sr);
     }
