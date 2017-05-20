@@ -18,3 +18,5 @@ gradle.properties
 \#*\#
 \.\#*
 scratchpad
+.idea/
+JapaneseTraditionalTime.iml

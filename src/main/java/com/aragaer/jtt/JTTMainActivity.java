@@ -77,7 +77,7 @@ public class JTTMainActivity extends Activity implements SharedPreferences.OnSha
 	SharedPreferences pref = PreferenceManager
 	    .getDefaultSharedPreferences(this);
 	if (!pref.contains("jtt_loc")) // location is not set
-	    startActivity(new Intent(this, Settings.class));
+	    openSettings();
     }
 
     @Override
@@ -96,10 +96,17 @@ public class JTTMainActivity extends Activity implements SharedPreferences.OnSha
 	}
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-	MenuItem settings = menu.add(R.string.settings);
-	settings.setIntent(new Intent(this, Settings.class));
+    private void openSettings() {
+	startActivity(new Intent(this, Settings.class));
+    }
+
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+	menu.add(R.string.settings);
 	return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+	openSettings();
+	return true;
     }
 }
