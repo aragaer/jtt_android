@@ -1,65 +1,24 @@
 package com.aragaer.jtt;
 
-import com.aragaer.jtt.android.AndroidTicker;
-import com.aragaer.jtt.core.ThreeIntervals;
 import com.aragaer.jtt.resources.StringResources;
-import com.aragaer.jtt.today.TodayAdapter;
 
 import android.app.Activity;
 import android.content.*;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 
 
 public class JTTMainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private ClockView clock;
-    private TodayAdapter today;
-
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
-	    @Override
-	    public void onReceive(Context context, Intent intent) {
-		if (!intent.getAction().equals(AndroidTicker.ACTION_JTT_TICK))
-		    return;
-		final int wrapped = intent.getIntExtra("jtt", 0);
-
-		clock.setHour(wrapped);
-		ThreeIntervals intervals = (ThreeIntervals) intent.getSerializableExtra("intervals");
-		if (intervals == null) {
-		    Log.w("JTT", "Got null intervals object");
-		    return;
-		}
-		today.tick(intervals);
-	    }
-	};
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
 	setTheme(Settings.getAppTheme(this));
 	super.onCreate(savedInstanceState);
 	startService(new Intent(this, JttService.class));
 	StringResources.setLocaleToContext(this);
-	final ViewPager pager = new ViewPager(this);
-	final ViewPagerAdapter pager_adapter = new ViewPagerAdapter(this, pager);
-
-	clock = new ClockView(this);
-
-	final ListView today_list = new ListView(this);
-	today = new TodayAdapter(this, 0);
-	today_list.setAdapter(today);
-	today_list.setDividerHeight(-getResources().getDimensionPixelSize(R.dimen.today_divider_neg));
-
-	pager_adapter.addView(clock, R.string.clock);
-	pager_adapter.addView(today_list, R.string.today);
-
-	pager.setAdapter(pager_adapter);
-	setContentView(pager);
-
-	registerReceiver(receiver, new IntentFilter(AndroidTicker.ACTION_JTT_TICK));
+	getFragmentManager().beginTransaction()
+	    .replace(android.R.id.content, new MainFragment()).commit();
 	final SharedPreferences pref = PreferenceManager
 	    .getDefaultSharedPreferences(this);
 	pref.registerOnSharedPreferenceChangeListener(this);
@@ -78,12 +37,6 @@ public class JTTMainActivity extends Activity implements SharedPreferences.OnSha
 	    .getDefaultSharedPreferences(this);
 	if (!pref.contains("jtt_loc")) // location is not set
 	    openSettings();
-    }
-
-    @Override
-    protected void onDestroy() {
-	super.onDestroy();
-	unregisterReceiver(receiver);
     }
 
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
