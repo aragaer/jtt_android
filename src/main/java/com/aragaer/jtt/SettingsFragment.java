@@ -33,7 +33,7 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        StringResources.setLocaleToContext(getContext());
+        StringResources.setLocaleToContext(getActivity());
         addPreferencesFromResource(R.xml.preferences);
         ListPreference pref_locale = (ListPreference) findPreference(Settings.PREF_LOCALE);
 
@@ -62,7 +62,7 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 
     @Override public void onStart() {
         super.onStart();
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         if (!settings.contains(Settings.PREF_LOCATION)) // location is not set
             ((LocationPreference) findPreference(Settings.PREF_LOCATION)).showDialog(null);
         ActionBar actionBar = getActivity().getActionBar();

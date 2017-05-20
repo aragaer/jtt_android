@@ -40,14 +40,14 @@ public class MainFragment extends Fragment {
 
     // FIXME: Implement saveInstanceState/restoreInstanceState for all views in this fragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        StringResources.setLocaleToContext(getContext());
-        final ViewPager pager = new ViewPager(getContext());
+        StringResources.setLocaleToContext(getActivity());
+        final ViewPager pager = new ViewPager(getActivity());
         final ViewPagerAdapter pager_adapter = new ViewPagerAdapter(getActivity(), pager);
 
-        clock = new ClockView(getContext());
+        clock = new ClockView(getActivity());
 
-        final ListView today_list = new ListView(getContext());
-        today = new TodayAdapter(getContext(), 0);
+        final ListView today_list = new ListView(getActivity());
+        today = new TodayAdapter(getActivity(), 0);
         today_list.setAdapter(today);
         today_list.setDividerHeight(-getResources().getDimensionPixelSize(R.dimen.today_divider_neg));
 
@@ -55,17 +55,17 @@ public class MainFragment extends Fragment {
         pager_adapter.addView(today_list, R.string.today);
 
         pager.setAdapter(pager_adapter);
-        getContext().registerReceiver(receiver, new IntentFilter(AndroidTicker.ACTION_JTT_TICK));
+        getActivity().registerReceiver(receiver, new IntentFilter(AndroidTicker.ACTION_JTT_TICK));
         return pager;
     }
 
     @Override public void onStart() {
         getActivity().getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        super.onDetach();
+        super.onStart();
     }
 
     @Override public void onDestroyView() {
-        getContext().unregisterReceiver(receiver);
-        super.onDestroy();
+        getActivity().unregisterReceiver(receiver);
+        super.onDestroyView();
     }
 }
