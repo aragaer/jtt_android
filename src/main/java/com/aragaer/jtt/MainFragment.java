@@ -2,6 +2,7 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.*;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class MainFragment extends Fragment {
         };
 
 
+    // FIXME: Implement saveInstanceState/restoreInstanceState for all views in this fragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         StringResources.setLocaleToContext(getContext());
         final ViewPager pager = new ViewPager(getContext());
@@ -57,7 +59,12 @@ public class MainFragment extends Fragment {
         return pager;
     }
 
-    @Override public void onDestroy() {
+    @Override public void onStart() {
+        getActivity().getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        super.onDetach();
+    }
+
+    @Override public void onDestroyView() {
         getContext().unregisterReceiver(receiver);
         super.onDestroy();
     }

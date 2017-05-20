@@ -54,8 +54,6 @@ public class JTTMainActivityTest {
         viewPager.perform(swipeRight());
     }
 
-    // This test works, but breaks the next one
-    @Ignore
     @Test public void testLanguage() {
         onView(withText("Clock")).check(matches(isDisplayed()));
         onView(withText("Today")).check(matches(isDisplayed()));

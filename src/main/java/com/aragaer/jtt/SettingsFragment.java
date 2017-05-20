@@ -6,11 +6,14 @@ import java.util.*;
 
 import com.aragaer.jtt.resources.StringResources;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 
 public class SettingsFragment extends PreferenceFragment implements OnPreferenceChangeListener {
@@ -25,9 +28,6 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
             final ListPreference lp = (ListPreference) preference;
             lp.setSummary(lp.getEntries()[lp.findIndexOfValue((String) newValue)]);
         }
-
-        if (preference.getKey().equals(Settings.PREF_LOCALE))
-            getActivity().finish(); // Main activity will restart us
         return true;
     }
 
@@ -56,6 +56,8 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
                 lp.setSummary(lp.getEntry());
             }
         }
+
+        setHasOptionsMenu(true);
     }
 
     @Override public void onStart() {
@@ -63,5 +65,13 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getContext());
         if (!settings.contains(Settings.PREF_LOCATION)) // location is not set
             ((LocationPreference) findPreference(Settings.PREF_LOCATION)).showDialog(null);
+        ActionBar actionBar = getActivity().getActionBar();
+        actionBar.setTitle(R.string.settings);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
     }
 }
