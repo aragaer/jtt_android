@@ -11,6 +11,7 @@ import android.view.*;
 import android.widget.ListView;
 
 import com.aragaer.jtt.android.AndroidTicker;
+import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.core.ThreeIntervals;
 import com.aragaer.jtt.today.TodayAdapter;
 
@@ -37,6 +38,7 @@ public class MainFragment extends Fragment {
 
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        StringResources.setLocaleToContext(getContext());
         final ViewPager pager = new ViewPager(getContext());
         final ViewPagerAdapter pager_adapter = new ViewPagerAdapter(getActivity(), pager);
 
