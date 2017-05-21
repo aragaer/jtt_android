@@ -20,15 +20,19 @@ import com.aragaer.jtt.today.TodayAdapter;
 public class MainFragment extends Fragment {
     private ClockView clock;
     private TodayAdapter today;
+    private ViewPager pager;
+    private int tickNumber;
+    private int page;
+    private ThreeIntervals intervals;
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override public void onReceive(Context context, Intent intent) {
                 if (!intent.getAction().equals(AndroidTicker.ACTION_JTT_TICK))
                     return;
-                final int wrapped = intent.getIntExtra("jtt", 0);
+                tickNumber = intent.getIntExtra("jtt", 0);
 
-                clock.setHour(wrapped);
-                ThreeIntervals intervals = (ThreeIntervals) intent.getSerializableExtra("intervals");
+                clock.setHour(tickNumber);
+                intervals = (ThreeIntervals) intent.getSerializableExtra("intervals");
                 if (intervals == null) {
                     Log.w("JTT", "Got null intervals object");
                     return;
@@ -37,24 +41,25 @@ public class MainFragment extends Fragment {
             }
         };
 
-
-    // FIXME: Implement saveInstanceState/restoreInstanceState for all views in this fragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         StringResources.setLocaleToContext(getActivity());
-        final ViewPager pager = new ViewPager(getActivity());
+        pager = new ViewPager(getActivity());
         final ViewPagerAdapter pager_adapter = new ViewPagerAdapter(getActivity(), pager);
-
         clock = new ClockView(getActivity());
+        clock.setHour(tickNumber);
 
         final ListView today_list = new ListView(getActivity());
         today = new TodayAdapter(getActivity(), 0);
         today_list.setAdapter(today);
         today_list.setDividerHeight(-getResources().getDimensionPixelSize(R.dimen.today_divider_neg));
+        if (intervals != null)
+            today.tick(intervals);
 
         pager_adapter.addView(clock, R.string.clock);
         pager_adapter.addView(today_list, R.string.today);
 
         pager.setAdapter(pager_adapter);
+        pager.setCurrentItem(page, false);
         getActivity().registerReceiver(receiver, new IntentFilter(AndroidTicker.ACTION_JTT_TICK));
         return pager;
     }
@@ -66,6 +71,7 @@ public class MainFragment extends Fragment {
 
     @Override public void onDestroyView() {
         getActivity().unregisterReceiver(receiver);
+        page = pager.getCurrentItem();
         super.onDestroyView();
     }
 }
