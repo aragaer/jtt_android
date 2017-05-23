@@ -46,6 +46,10 @@ public class MainFragment extends Fragment {
         pager = new ViewPager(getActivity());
         final ViewPagerAdapter pager_adapter = new ViewPagerAdapter(getActivity(), pager);
         clock = new ClockView(getActivity());
+        if (savedInstanceState != null) {
+            tickNumber = savedInstanceState.getInt("tickNumber", 0);
+            page = savedInstanceState.getInt("page", 0);
+        }
         clock.setHour(tickNumber);
 
         final ListView today_list = new ListView(getActivity());
@@ -67,6 +71,12 @@ public class MainFragment extends Fragment {
     @Override public void onStart() {
         getActivity().getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         super.onStart();
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("tickNumber", tickNumber);
+        outState.putInt("page", page);
     }
 
     @Override public void onDestroyView() {
