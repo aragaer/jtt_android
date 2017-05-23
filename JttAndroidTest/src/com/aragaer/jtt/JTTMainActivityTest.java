@@ -17,13 +17,13 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
-import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.*;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 
 @LargeTest
@@ -61,12 +61,8 @@ public class JTTMainActivityTest {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
         onView(allOf(withId(android.R.id.title), withText("Settings"), isDisplayed())).perform(click());
-
-        ViewInteraction languageItem = onView(allOf(childAtPosition(withId(android.R.id.list), 5), isDisplayed()));
-        languageItem.perform(click());
-
-        ViewInteraction nihongo = onView(allOf(withId(android.R.id.text1), withText("日本語"), isDisplayed()));
-        nihongo.perform(click());
+        onData(hasToString(startsWith("Language"))).perform(click());
+        onView(allOf(withId(android.R.id.text1), withText("日本語"), isDisplayed())).perform(click());
         android.support.test.espresso.Espresso.pressBack();
 
         onView(withText("今日")).check(matches(isDisplayed()));
@@ -74,17 +70,13 @@ public class JTTMainActivityTest {
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(allOf(withId(android.R.id.title), withText("設定"), isDisplayed())).perform(click());
+        onData(hasToString(startsWith("言語"))).perform(click());
 
-        languageItem = onView(allOf(childAtPosition(withId(android.R.id.list), 5), isDisplayed()));
-        languageItem.perform(click());
-
-        ViewInteraction russian = onView(allOf(withId(android.R.id.text1), withText("Русский"), isDisplayed()));
-        russian.perform(click());
+        onView(allOf(withId(android.R.id.text1), withText("Русский"), isDisplayed())).perform(click());
         android.support.test.espresso.Espresso.pressBack();
 
         onView(withText("Часы")).check(matches(isDisplayed()));
         onView(withText("Сегодня")).check(matches(isDisplayed()));
-
     }
 
     @Test public void testSetStyle() {
@@ -100,17 +92,10 @@ public class JTTMainActivityTest {
     @Test public void testSetLocation() {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(allOf(withId(android.R.id.title), withText("Settings"), isDisplayed())).perform(click());
-        ViewInteraction locationItem = onView(allOf(childAtPosition(withId(android.R.id.list), 3), isDisplayed()));
-        locationItem.perform(click());
-
-        ViewInteraction editTextLat = onView(allOf(withId(R.id.lat), withText("0.0"), isDisplayed()));
-        editTextLat.perform(replaceText("55.78"));
-
-        ViewInteraction editTextLon = onView(allOf(withId(R.id.lon), withText("0.0"), isDisplayed()));
-        editTextLon.perform(replaceText("37.65"));
-
+        onData(hasToString(startsWith("Change stored location"))).perform(click());
+        onView(allOf(withId(R.id.lat), withText("0.0"), isDisplayed())).perform(replaceText("55.78"));
+        onView(allOf(withId(R.id.lon), withText("0.0"), isDisplayed())).perform(replaceText("37.65"));
         onView(allOf(withId(android.R.id.button1), withText("OK"), isDisplayed())).perform(click());
-
         android.support.test.espresso.Espresso.pressBack();
     }
 

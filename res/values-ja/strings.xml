@@ -11,7 +11,6 @@
     <string name="settings">設定</string>
     <string name="notify">通知</string>
     <string name="notify_ex">今の刻をステータスバーで表示</string>
-    <string name="status">起動と通知</string>
     <string name="today">今日</string>
     <string name="sunrise">日出</string>
     <string name="sunset">日没</string>

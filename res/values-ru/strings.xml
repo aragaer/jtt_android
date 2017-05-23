@@ -11,7 +11,6 @@
     <string name="settings">Настройки</string>
     <string name="notify">Оповещения</string>
     <string name="notify_ex">Показывать иероглиф текущего часа в строке статуса.</string>
-    <string name="status">Запуск и оповещения</string>
     <string name="today">Сегодня</string>
     <string name="sunrise">Рассвет</string>
     <string name="sunset">Закат</string>

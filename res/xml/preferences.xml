@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/status" >
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="jtt_notify"
-            android:summary="@string/notify_ex"
-            android:title="@string/notify" />
-
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/location" >
 
         <com.aragaer.jtt.LocationPreference
@@ -38,6 +28,12 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/appearance" >
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="jtt_notify"
+            android:summary="@string/notify_ex"
+            android:title="@string/notify" />
 
         <ListPreference
             android:defaultValue="@string/theme_default"
