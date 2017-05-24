@@ -15,9 +15,12 @@ public class InputFilterMinMax implements InputFilter {
     }
 
     @Override public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-        String checkedText = dest.subSequence(0, dstart).toString() +
-            source.subSequence(start, end) +
-            dest.subSequence(dend,dest.length()).toString();
+        if (source.subSequence(start, end).toString().isEmpty())
+            return null;
+        String before = dest.subSequence(0, dstart).toString();
+        String insert = source.subSequence(start, end).toString();
+        String after = dest.subSequence(dend, dest.length()).toString();
+        String checkedText = before + insert + after;
         if (checkedText.equals("-"))
             return null;
         try {
@@ -25,7 +28,7 @@ public class InputFilterMinMax implements InputFilter {
             if (isInRange(min, max, input))
                 return null;
         } catch (NumberFormatException nfe) { }
-        return "";
+        return dest.subSequence(dstart, dend);
     }
 
     private static boolean isInRange(float a, float b, float c) {
