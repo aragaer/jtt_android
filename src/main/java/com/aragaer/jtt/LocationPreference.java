@@ -8,48 +8,53 @@ import android.content.*;
 import android.location.*;
 import android.os.Bundle;
 import android.preference.DialogPreference;
-import android.text.*;
+import android.text.InputFilter;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.*;
 
 import com.aragaer.jtt.location.android.JttLocationListener;
 import com.aragaer.jtt.ui.android.InputFilterMinMax;
+import com.aragaer.jtt.ui.android.LocationTextWatcher;
 
 
-public class LocationPreference extends DialogPreference implements
-                                                             TextWatcher, DialogInterface.OnClickListener {
+public class LocationPreference extends DialogPreference implements DialogInterface.OnClickListener {
     private float accuracy = 0;
     private LocationManager lm;
     private TextView lat, lon;
-    private LinearLayout locView;
     private String latlon;
     public static final String DEFAULT = "0.0:0.0";
 
     private final static String fmt1 = "%.2f";
-    private final static String fmt2 = "%s:%s";
     private final static String fmt3 = "%.2f:%.2f";
 
     private final JttLocationListener locationListener;
+    private final LocationTextWatcher textWatcher;
 
     public LocationPreference(Context ctx, AttributeSet attrs) {
         super(ctx, attrs);
         locationListener = new JttLocationListener(this);
+        textWatcher = new LocationTextWatcher(this);
+        latlon = getPersistedString(DEFAULT);
     }
 
-    @Override
-    protected View onCreateDialogView() {
+    public CharSequence getLatText() {
+        return lat.getText();
+    }
+
+    public CharSequence getLonText() {
+        return lon.getText();
+    }
+
+    @Override protected View onCreateDialogView() {
         LayoutInflater li = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        locView = (LinearLayout) li.inflate(R.layout.location_picker, null);
+        View locView = li.inflate(R.layout.location_picker, null);
 
         lat = (TextView) locView.findViewById(R.id.lat);
         lon = (TextView) locView.findViewById(R.id.lon);
 
-        if (latlon == null)
-            latlon = getPersistedString(DEFAULT);
         String[] ll = latlon.split(":");
         lat.setText(ll[0]);
         // 66.562222 is the latitude of arctic circle
@@ -58,8 +63,8 @@ public class LocationPreference extends DialogPreference implements
         lon.setText(ll[1]);
         lon.setFilters(new InputFilter[]{ new InputFilterMinMax(-180.0f, 180.0f) });
 
-        lat.addTextChangedListener(this);
-        lon.addTextChangedListener(this);
+        lat.addTextChangedListener(textWatcher);
+        lon.addTextChangedListener(textWatcher);
         return locView;
     }
 
@@ -92,6 +97,9 @@ public class LocationPreference extends DialogPreference implements
             callChangeListener(new String(latlon));
             setSummary(latlon);
             break;
+        case Dialog.BUTTON_NEUTRAL:
+            acquireLocation();
+            break;
         default:
             latlon = getPersistedString("0.0:0.0");
             break;
@@ -101,16 +109,9 @@ public class LocationPreference extends DialogPreference implements
     @Override
     protected void showDialog(Bundle state) {
         super.showDialog(state);
-        Button pos = ((AlertDialog) getDialog())
-            .getButton(Dialog.BUTTON_NEUTRAL);
-        pos.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    acquireLocation();
-                }
-            });
     }
 
-    private void doSet(String l) {
+    public void doSet(String l) {
         latlon = l.replace(',', '.'); // force dot as a separator
     }
 
@@ -131,8 +132,7 @@ public class LocationPreference extends DialogPreference implements
     }
 
     private void acquireLocation() {
-        lm = (LocationManager) getContext().getSystemService(
-                                                             Context.LOCATION_SERVICE);
+        lm = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
 
         if (!lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
             Toast.makeText(getContext(), R.string.no_providers, Toast.LENGTH_SHORT).show();
@@ -149,18 +149,5 @@ public class LocationPreference extends DialogPreference implements
         } catch (IllegalArgumentException e) {
             Log.d("LocationPref", "No network provider");
         }
-    }
-
-    public void afterTextChanged(Editable arg0) {
-        CharSequence latt = lat.getText();
-        CharSequence lont = lon.getText();
-        if (latt != null && lont != null)
-            doSet(String.format(fmt2, latt, lont));
-    }
-
-    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-    }
-
-    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
     }
 }
