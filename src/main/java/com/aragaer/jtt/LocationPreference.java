@@ -35,13 +35,9 @@ public class LocationPreference extends DialogPreference implements
 
     private final JttLocationListener locationListener;
 
-    public LocationPreference(Context ctx, AttributeSet attrs, int defStyle) {
-        super(ctx, attrs, defStyle);
-        locationListener = new JttLocationListener(this);
-    }
-
     public LocationPreference(Context ctx, AttributeSet attrs) {
-        this(ctx, attrs, 0);
+        super(ctx, attrs);
+        locationListener = new JttLocationListener(this);
     }
 
     @Override

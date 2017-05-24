@@ -95,7 +95,9 @@ public class JTTMainActivityTest {
         onData(hasToString(startsWith("Change stored location"))).perform(click());
         onView(allOf(withId(R.id.lat), withText("0.0"), isDisplayed())).perform(replaceText("55.78"));
         onView(allOf(withId(R.id.lon), withText("0.0"), isDisplayed())).perform(replaceText("37.65"));
-        onView(allOf(withId(android.R.id.button1), withText("OK"), isDisplayed())).perform(click());
+        onView(withText("Cancel")).check(matches(isDisplayed()));
+        onView(withText("Use current location")).check(matches(isDisplayed()));
+        onView(withText("OK")).perform(click());
         android.support.test.espresso.Espresso.pressBack();
     }
 
