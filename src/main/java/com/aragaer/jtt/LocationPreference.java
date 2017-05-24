@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.*;
 
 import com.aragaer.jtt.location.android.JttLocationListener;
+import com.aragaer.jtt.ui.android.InputFilterMinMax;
 
 
 public class LocationPreference extends DialogPreference implements
@@ -165,32 +166,5 @@ public class LocationPreference extends DialogPreference implements
     }
 
     public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-    }
-
-    static private class InputFilterMinMax implements InputFilter {
-        private float min, max;
-
-        public InputFilterMinMax(float min, float max) {
-            this.min = min;
-            this.max = max;
-        }
-
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            String checkedText = dest.subSequence(0, dstart).toString() +
-                source.subSequence(start, end) +
-                dest.subSequence(dend,dest.length()).toString();
-            if (checkedText.equals("-"))
-                return null;
-            try {
-                float input = Float.parseFloat(checkedText);
-                if (isInRange(min, max, input))
-                    return null;
-            } catch (NumberFormatException nfe) { }
-            return "";
-        }
-
-        private boolean isInRange(float a, float b, float c) {
-            return c >= a && c <= b; // assume b >= a
-        }
     }
 }
