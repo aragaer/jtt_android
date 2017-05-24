@@ -16,8 +16,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.*;
 
+import com.aragaer.jtt.location.android.JttLocationListener;
+
+
 public class LocationPreference extends DialogPreference implements
-                                                             LocationListener, TextWatcher, DialogInterface.OnClickListener {
+                                                             TextWatcher, DialogInterface.OnClickListener {
     private float accuracy = 0;
     private LocationManager lm;
     private TextView lat, lon;
@@ -29,12 +32,15 @@ public class LocationPreference extends DialogPreference implements
     private final static String fmt2 = "%s:%s";
     private final static String fmt3 = "%.2f:%.2f";
 
+    private final JttLocationListener locationListener;
+
     public LocationPreference(Context ctx, AttributeSet attrs, int defStyle) {
         super(ctx, attrs, defStyle);
+        locationListener = new JttLocationListener(this);
     }
 
     public LocationPreference(Context ctx, AttributeSet attrs) {
-        super(ctx, attrs);
+        this(ctx, attrs, 0);
     }
 
     @Override
@@ -111,7 +117,7 @@ public class LocationPreference extends DialogPreference implements
         latlon = l.replace(',', '.'); // force dot as a separator
     }
 
-    private void makeUseOfNewLocation(Location l, boolean stopLocating) {
+    public void makeUseOfNewLocation(Location l, boolean stopLocating) {
         if (l.hasAccuracy()) {
             final float new_acc = l.getAccuracy();
             if (accuracy > 0 && accuracy < new_acc)
@@ -124,7 +130,7 @@ public class LocationPreference extends DialogPreference implements
         doSet(String.format(fmt3, l.getLatitude(), l.getLongitude()));
 
         if (stopLocating)
-            lm.removeUpdates(this);
+            lm.removeUpdates(locationListener);
     }
 
     private void acquireLocation() {
@@ -142,23 +148,10 @@ public class LocationPreference extends DialogPreference implements
             makeUseOfNewLocation(last, false);
 
         try {
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         } catch (IllegalArgumentException e) {
             Log.d("LocationPref", "No network provider");
         }
-    }
-
-    public void onLocationChanged(Location location) {
-        makeUseOfNewLocation(location, true);
-    }
-
-    public void onProviderDisabled(String provider) {
-    }
-
-    public void onProviderEnabled(String provider) {
-    }
-
-    public void onStatusChanged(String provider, int status, Bundle extras) {
     }
 
     public void afterTextChanged(Editable arg0) {
