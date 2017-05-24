@@ -82,10 +82,10 @@ public class JTTMainActivityTest {
     @Test public void testSetStyle() {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(allOf(withId(android.R.id.title), withText("Settings"), isDisplayed())).perform(click());
-        ViewInteraction styleItem = onView(allOf(childAtPosition(withId(android.R.id.list), 8), isDisplayed()));
-        styleItem.perform(click());
-        ViewInteraction darkStyle = onView(allOf(withId(android.R.id.text1), withText("Dark"), isDisplayed()));
-        darkStyle.perform(click());
+        onData(hasToString(startsWith("Theme"))).perform(click());
+        onView(allOf(withId(android.R.id.text1), withText("Translucent"))).check(matches(isDisplayed()));
+        onView(allOf(withId(android.R.id.text1), withText("Light"))).check(matches(isDisplayed()));
+        onView(allOf(withId(android.R.id.text1), withText("Dark"), isDisplayed())).perform(click());
         android.support.test.espresso.Espresso.pressBack();
     }
 
