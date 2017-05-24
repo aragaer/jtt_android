@@ -60,13 +60,13 @@ public class LocationPreference extends DialogPreference implements
         return locView;
     }
 
-	@Override
-	protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
-		builder.setNeutralButton(R.string.auto_lat_long, this);
-	}
+    @Override
+    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
+        builder.setNeutralButton(R.string.auto_lat_long, this);
+    }
 
-	@Override
-	protected void onSetInitialValue(boolean restoreValue, Object def) {
+    @Override
+    protected void onSetInitialValue(boolean restoreValue, Object def) {
         if (restoreValue) {
             latlon = getPersistedString(DEFAULT);
             persistString(latlon);
@@ -80,32 +80,32 @@ public class LocationPreference extends DialogPreference implements
         }
     }
 
-	@Override
-	public void onClick(DialogInterface dialog, int id) {
-		switch (id) {
-		case Dialog.BUTTON_POSITIVE:
-			doSet(latlon);
-			persistString(latlon);
-			callChangeListener(new String(latlon));
-			setSummary(latlon);
-			break;
-		default:
-			latlon = getPersistedString("0.0:0.0");
-			break;
-		}
-	}
+    @Override
+    public void onClick(DialogInterface dialog, int id) {
+        switch (id) {
+        case Dialog.BUTTON_POSITIVE:
+            doSet(latlon);
+            persistString(latlon);
+            callChangeListener(new String(latlon));
+            setSummary(latlon);
+            break;
+        default:
+            latlon = getPersistedString("0.0:0.0");
+            break;
+        }
+    }
 
-	@Override
-	protected void showDialog(Bundle state) {
-		super.showDialog(state);
-		Button pos = ((AlertDialog) getDialog())
+    @Override
+    protected void showDialog(Bundle state) {
+        super.showDialog(state);
+        Button pos = ((AlertDialog) getDialog())
             .getButton(Dialog.BUTTON_NEUTRAL);
-		pos.setOnClickListener(new OnClickListener() {
+        pos.setOnClickListener(new OnClickListener() {
                 public void onClick(View v) {
                     acquireLocation();
                 }
             });
-	}
+    }
 
     private void doSet(String l) {
         latlon = l.replace(',', '.'); // force dot as a separator
