@@ -4,14 +4,22 @@ package com.aragaer.jtt.location.android;
 
 import com.aragaer.jtt.LocationPreference;
 
+import android.content.Context;
+import android.content.Intent;
 import android.location.*;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.aragaer.jtt.R;
 
 
 public class JttLocationListener implements LocationListener {
-    private final LocationPreference pref;
+    private final Context context;
+    public final LocationPreference pref;
 
-    public JttLocationListener(LocationPreference pref) {
+    public JttLocationListener(Context context, LocationPreference pref) {
+        this.context = context;
         this.pref = pref;
     }
 
@@ -26,5 +34,25 @@ public class JttLocationListener implements LocationListener {
     }
 
     @Override public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
+    public void acquireLocation() {
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        if (!lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            Toast.makeText(context, R.string.no_providers, Toast.LENGTH_SHORT).show();
+            context.startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            return;
+        }
+
+        Location last = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if (last != null)
+            pref.makeUseOfNewLocation(last, false);
+
+        try {
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+        } catch (IllegalArgumentException e) {
+            Log.d("LocationPref", "No network provider");
+        }
     }
 };

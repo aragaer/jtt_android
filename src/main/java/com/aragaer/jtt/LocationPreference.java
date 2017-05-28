@@ -5,7 +5,8 @@ package com.aragaer.jtt;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.*;
-import android.location.*;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.text.InputFilter;
@@ -13,7 +14,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.*;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aragaer.jtt.location.android.JttLocationListener;
 import com.aragaer.jtt.ui.android.InputFilterMinMax;
@@ -30,12 +32,14 @@ public class LocationPreference extends DialogPreference implements DialogInterf
     private final static String fmt1 = "%.2f";
     private final static String fmt3 = "%.2f:%.2f";
 
-    private final JttLocationListener locationListener;
+    public final JttLocationListener locationListener;
     private final LocationTextWatcher textWatcher;
+    private final Context context;
 
     public LocationPreference(Context ctx, AttributeSet attrs) {
         super(ctx, attrs);
-        locationListener = new JttLocationListener(this);
+        context = ctx;
+        locationListener = new JttLocationListener(ctx, this);
         textWatcher = new LocationTextWatcher(this);
         latlon = getPersistedString(DEFAULT);
     }
@@ -49,7 +53,7 @@ public class LocationPreference extends DialogPreference implements DialogInterf
     }
 
     @Override protected View onCreateDialogView() {
-        LayoutInflater li = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View locView = li.inflate(R.layout.location_picker, null);
 
         lat = (TextView) locView.findViewById(R.id.lat);
@@ -75,17 +79,9 @@ public class LocationPreference extends DialogPreference implements DialogInterf
 
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object def) {
-        if (restoreValue) {
-            latlon = getPersistedString(DEFAULT);
-            persistString(latlon);
-            setSummary(latlon);
-        } else {
-            boolean wasNull = latlon == null;
-            latlon = (String) def;
-            if (!wasNull)
-                persistString(latlon);
-            setSummary(latlon == null ? latlon : "");
-        }
+        latlon = restoreValue ? getPersistedString(DEFAULT) : (String) def;
+        persistString(latlon);
+        setSummary(latlon == null ? "" : latlon);
     }
 
     @Override
@@ -101,7 +97,7 @@ public class LocationPreference extends DialogPreference implements DialogInterf
             acquireLocation();
             break;
         default:
-            latlon = getPersistedString("0.0:0.0");
+            latlon = getPersistedString(DEFAULT);
             break;
         }
     }
@@ -123,6 +119,10 @@ public class LocationPreference extends DialogPreference implements DialogInterf
             accuracy = new_acc;
         }
 
+        if (lat == null)
+            throw new RuntimeException("Latitude field is not created");
+        if (lon == null)
+            throw new RuntimeException("Longitude field is not created");
         lat.setText(String.format(fmt1, l.getLatitude()).replace(',', '.'));
         lon.setText(String.format(fmt1, l.getLongitude()).replace(',', '.'));
         doSet(String.format(fmt3, l.getLatitude(), l.getLongitude()));
@@ -132,22 +132,6 @@ public class LocationPreference extends DialogPreference implements DialogInterf
     }
 
     private void acquireLocation() {
-        lm = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-
-        if (!lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            Toast.makeText(getContext(), R.string.no_providers, Toast.LENGTH_SHORT).show();
-            getContext().startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            return;
-        }
-
-        Location last = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if (last != null)
-            makeUseOfNewLocation(last, false);
-
-        try {
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        } catch (IllegalArgumentException e) {
-            Log.d("LocationPref", "No network provider");
-        }
+        locationListener.acquireLocation();
     }
 }
