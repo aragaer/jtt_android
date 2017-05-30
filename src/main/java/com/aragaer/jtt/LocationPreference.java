@@ -94,7 +94,7 @@ public class LocationPreference extends DialogPreference implements DialogInterf
             setSummary(latlon);
             break;
         case Dialog.BUTTON_NEUTRAL:
-            acquireLocation();
+            locationListener.acquireLocation();
             break;
         default:
             latlon = getPersistedString(DEFAULT);
@@ -119,19 +119,11 @@ public class LocationPreference extends DialogPreference implements DialogInterf
             accuracy = new_acc;
         }
 
-        if (lat == null)
-            throw new RuntimeException("Latitude field is not created");
-        if (lon == null)
-            throw new RuntimeException("Longitude field is not created");
         lat.setText(String.format(fmt1, l.getLatitude()).replace(',', '.'));
         lon.setText(String.format(fmt1, l.getLongitude()).replace(',', '.'));
         doSet(String.format(fmt3, l.getLatitude(), l.getLongitude()));
 
         if (stopLocating)
             lm.removeUpdates(locationListener);
-    }
-
-    private void acquireLocation() {
-        locationListener.acquireLocation();
     }
 }

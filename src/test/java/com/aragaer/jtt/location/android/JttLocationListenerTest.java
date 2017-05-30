@@ -7,19 +7,25 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
+import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
-import android.content.Context;
 import android.view.View;
+import android.widget.Toast;
 
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import com.aragaer.jtt.LocationPreference;
+import com.aragaer.jtt.R;
 
 
 @RunWith(PowerMockRunner.class)
+@PrepareForTest(Toast.class)
 public class JttLocationListenerTest {
     private JttLocationListener listener;
     private TestLocationPreference pref;
@@ -57,6 +63,32 @@ public class JttLocationListenerTest {
                                               eq(listener));
         assertEquals(pref.location, mockLocation);
         assertFalse(pref.stop);
+    }
+
+    @Test public void testShowToastIfProviderIsNotEnabled() throws Exception {
+        mockStatic(Toast.class);
+        Toast mockToast = mock(Toast.class);
+        when(Toast.makeText(mockContext, R.string.no_providers, Toast.LENGTH_SHORT)).thenReturn(mockToast);
+        when(mockLM.isProviderEnabled(LocationManager.NETWORK_PROVIDER)).thenReturn(false);
+
+        listener.acquireLocation();
+
+        verify(mockToast).show();
+    }
+
+    @PrepareForTest({Toast.class, JttLocationListener.class})
+    @Test public void testOpenLocationSettingsIfProviderIsNotEnabled() throws Exception {
+        Intent mockIntent = mock(Intent.class);
+        whenNew(Intent.class)
+            .withArguments(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            .thenReturn(mockIntent);
+        mockStatic(Toast.class);
+        when(Toast.makeText(mockContext, R.string.no_providers, Toast.LENGTH_SHORT)).thenReturn(mock(Toast.class));
+        when(mockLM.isProviderEnabled(LocationManager.NETWORK_PROVIDER)).thenReturn(false);
+
+        listener.acquireLocation();
+
+        verify(mockContext).startActivity(mockIntent);
     }
 
     private static class TestLocationPreference extends LocationPreference {
