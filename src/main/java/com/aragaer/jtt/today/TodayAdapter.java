@@ -20,16 +20,14 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
     private ThreeIntervals _intervals;
     private int selected;
 
-    public TodayAdapter(Context c, int layout_id) {
+    public TodayAdapter(Context c, int layout_id, StringResources sr) {
         super(c, layout_id);
-        RuntimeResources.get(c).getStringResources()
-            .registerStringResourceChangeListener(this,
-                                                  StringResources.TYPE_HOUR_NAME | StringResources.TYPE_TIME_FORMAT);
+        sr.registerStringResourceChangeListener(this,
+                                                StringResources.TYPE_HOUR_NAME | StringResources.TYPE_TIME_FORMAT);
         HourItem.extras = new String[] { c.getString(R.string.sunset), "", "",
                                          c.getString(R.string.midnight), "", "",
                                          c.getString(R.string.sunrise), "", "",
                                          c.getString(R.string.noon), "", "" };
-        setNotifyOnChange(false);
     }
 
     @Override
@@ -40,7 +38,7 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
     /* takes a sublist of hours
      * creates a list to display by adding day names
      */
-    private void buildItems() {
+    private synchronized void buildItems() {
         final long[] transitions = _intervals.getTransitions();
         clear();
 
@@ -60,6 +58,10 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
     }
 
     public void tick(ThreeIntervals intervals) {
+        long now = System.currentTimeMillis();
+        if (!intervals.surrounds(now))
+            return;
+
         if (!intervals.equals(_intervals)) {
             _intervals = intervals;
             buildItems();
@@ -74,7 +76,6 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
 
         // odd items - boundaries
         selected = 0;
-        long now = System.currentTimeMillis();
         while (getItem(selected + 1).time < now)
             selected += 2;
 
