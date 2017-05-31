@@ -67,6 +67,10 @@ android {
         }
     }
 
+    testOptions {
+        animationsDisabled = true
+    }
+
     buildTypes {
         debug {
             testCoverageEnabled true

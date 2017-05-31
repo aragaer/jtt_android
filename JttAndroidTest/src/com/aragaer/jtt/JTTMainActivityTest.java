@@ -119,7 +119,7 @@ public class JTTMainActivityTest {
         };
     }
 
-    private static ViewAction waitFor(final long millis) {
+    static ViewAction waitFor(final long millis) {
         return new ViewAction() {
             @Override public Matcher<View> getConstraints() {
                 return isRoot();
