@@ -32,6 +32,7 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
 }
 
 android {
@@ -99,4 +100,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "test") {
     ])
     sourceDirectories = files('src/main/java')
     executionData = files('build/jacoco/testReleaseUnitTest.exec')
+}
+
+tasks.withType(Test) {
+    testLogging.exceptionFormat = 'full'
 }

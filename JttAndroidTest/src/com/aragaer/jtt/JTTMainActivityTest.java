@@ -2,8 +2,10 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.*;
+import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.support.test.espresso.*;
 import android.support.test.rule.ActivityTestRule;
@@ -15,6 +17,8 @@ import android.view.*;
 import org.hamcrest.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
+
+import android.support.test.uiautomator.*;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
@@ -33,13 +37,21 @@ public class JTTMainActivityTest {
     @Rule
     public ActivityTestRule<JTTMainActivity> mActivityRule = new ActivityTestRule<>(JTTMainActivity.class, true, false);
 
-    @Before public void setInitialLocation() {
-        Context context = getInstrumentation().getTargetContext();
+    private static final int LAUNCH_TIMEOUT = 5000;
+
+    public void setInitialLocation(Context context) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putString(Settings.PREF_LOCATION, "0.0:0.0");
         editor.putString(Settings.PREF_LOCALE, "1");
         editor.commit();
+    }
+
+    @Before public void setUp() {
+        Context context = getInstrumentation().getTargetContext();
+        setInitialLocation(context);
         mActivityRule.launchActivity(new Intent());
+        UiDevice device = UiDevice.getInstance(getInstrumentation());
+        device.wait(Until.hasObject(By.pkg("com.aragaer.jtt").depth(0)), LAUNCH_TIMEOUT);
     }
 
     @Test public void testSwiping() {

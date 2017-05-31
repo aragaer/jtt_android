@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	  xmlns:tools="http://schemas.android.com/tools"
     package="com.aragaer.jtt.test"
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="18" />
+    <uses-sdk tools:overrideLibrary="android.support.test.uiautomator.v18"/>
 
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
