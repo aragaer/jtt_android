@@ -12,7 +12,6 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.runner.MonitoringInstrumentation;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.util.Log;
 import android.view.*;
 
 import org.hamcrest.*;
@@ -68,33 +67,28 @@ public class JTTMainActivityTest {
     }
 
     @Test public void testLanguage() {
-        try {
-            onView(withText("Clock")).check(matches(isDisplayed()));
-            onView(withText("Today")).check(matches(isDisplayed()));
+        onView(withText("Clock")).check(matches(isDisplayed()));
+        onView(withText("Today")).check(matches(isDisplayed()));
 
-            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
-            onView(allOf(withId(android.R.id.title), withText("Settings"), isDisplayed())).perform(click());
-            onData(hasToString(startsWith("Language"))).perform(click());
-            onData(hasToString(startsWith("日本語"))).perform(click());
-            android.support.test.espresso.Espresso.pressBack();
+        onView(allOf(withId(android.R.id.title), withText("Settings"), isDisplayed())).perform(click());
+        onData(hasToString(startsWith("Language"))).perform(click());
+        onData(hasToString(startsWith("日本語"))).perform(click());
+        android.support.test.espresso.Espresso.pressBack();
 
-            onView(withText("今日")).check(matches(isDisplayed()));
-            onView(withText("時計")).check(matches(isDisplayed()));
+        onView(withText("今日")).check(matches(isDisplayed()));
+        onView(withText("時計")).check(matches(isDisplayed()));
 
-            openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-            onView(allOf(withId(android.R.id.title), withText("設定"), isDisplayed())).perform(click());
-            onData(hasToString(startsWith("言語"))).perform(click());
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+        onView(allOf(withId(android.R.id.title), withText("設定"), isDisplayed())).perform(click());
+        onData(hasToString(startsWith("言語"))).perform(click());
 
-            onData(hasToString(startsWith("Русский"))).perform(click());
-            android.support.test.espresso.Espresso.pressBack();
+        onData(hasToString(startsWith("Русский"))).perform(click());
+        android.support.test.espresso.Espresso.pressBack();
 
-            onView(withText("Часы")).check(matches(isDisplayed()));
-            onView(withText("Сегодня")).check(matches(isDisplayed()));
-        } catch (RuntimeException e) {
-            Log.e("JTT", "exception", e);
-            throw e;
-        }
+        onView(withText("Часы")).check(matches(isDisplayed()));
+        onView(withText("Сегодня")).check(matches(isDisplayed()));
     }
 
     @Test public void testSetStyle() {
