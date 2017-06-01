@@ -76,7 +76,7 @@ public class JTTMainActivityTest {
 
             onView(allOf(withId(android.R.id.title), withText("Settings"), isDisplayed())).perform(click());
             onData(hasToString(startsWith("Language"))).perform(click());
-            onView(allOf(withId(android.R.id.text1), withText("日本語"), isDisplayed())).perform(click());
+            onData(hasToString(startsWith("日本語"))).perform(click());
             android.support.test.espresso.Espresso.pressBack();
 
             onView(withText("今日")).check(matches(isDisplayed()));
@@ -86,7 +86,7 @@ public class JTTMainActivityTest {
             onView(allOf(withId(android.R.id.title), withText("設定"), isDisplayed())).perform(click());
             onData(hasToString(startsWith("言語"))).perform(click());
 
-            onView(allOf(withId(android.R.id.text1), withText("Русский"), isDisplayed())).perform(click());
+            onData(hasToString(startsWith("Русский"))).perform(click());
             android.support.test.espresso.Espresso.pressBack();
 
             onView(withText("Часы")).check(matches(isDisplayed()));
