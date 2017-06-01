@@ -33,6 +33,7 @@ before_script:
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - export QEMU_AUDIO_DRV=none
   - emulator -avd test -no-window &
+  - (adb logcat -s JTT:E > logcat.log) & echo $! > logcat.pid
 
 script:
   - set -e
@@ -46,5 +47,9 @@ script:
   - adb shell setprop dalvik.vm.dexopt-flags v=n,o=v
   - adb shell input keyevent 82
   - ./gradlew connectedCheck
+
+after_script:
+  - pkill `cat logcat.pid`
+  - cat logcat.log
 
 after_success: bash <(curl -s https://codecov.io/bash)
