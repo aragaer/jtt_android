@@ -11,14 +11,13 @@ import android.support.test.espresso.*;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.runner.MonitoringInstrumentation;
+import android.support.test.uiautomator.*;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.*;
 
 import org.hamcrest.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
-
-import android.support.test.uiautomator.*;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
