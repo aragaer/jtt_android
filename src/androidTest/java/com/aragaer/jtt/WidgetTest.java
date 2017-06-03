@@ -55,9 +55,8 @@ public class WidgetTest {
         UiScrollable scrollable = new UiScrollable(new UiSelector().scrollable(true));
         scrollable.setAsHorizontalList();
         scrollable.flingToEnd(10);
-        UiObject widget = scrollable.getChildByText(new UiSelector().className("android.widget.TextView"), widgetName);
+        UiObject widget = scrollable.getChildByText(new UiSelector().className(TextView.class), widgetName);
 
-        int speed = Math.min(device.getDisplayWidth(), device.getDisplayHeight());
         widget.dragTo(device.getDisplayWidth()/2, device.getDisplayHeight()/2, 40);
         device.pressHome();
         device.wait(Until.hasObject(By.pkg(launcherPackageName).depth(0)), LAUNCH_TIMEOUT);
