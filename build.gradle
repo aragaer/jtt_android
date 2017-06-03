@@ -44,12 +44,6 @@ android {
         }
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
-
-        androidTest.setRoot('JttAndroidTest')
-        androidTest {
-           java.srcDirs = ['JttAndroidTest/src']
-           res.srcDirs = ['JttAndroidTest/res']
-        }
     }
     compileSdkVersion 'android-25'
     buildToolsVersion '25.0.3'
