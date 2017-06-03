@@ -5,10 +5,10 @@ package com.aragaer.jtt;
 import android.content.*;
 import android.graphics.Point;
 import android.preference.PreferenceManager;
-import android.support.test.runner.AndroidJUnit4;
 import android.support.test.espresso.*;
+import android.support.test.filters.LargeTest;
+import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.*;
-import android.test.suitebuilder.annotation.LargeTest;
 import android.view.*;
 import android.widget.*;
 
