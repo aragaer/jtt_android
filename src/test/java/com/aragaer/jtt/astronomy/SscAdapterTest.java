@@ -18,11 +18,7 @@ public class SscAdapterTest {
     private SscAdapter _calculator;
 
     @Before public void setUp() {
-        _calculator = SscAdapter.getInstance();
-    }
-
-    @Test public void testIsSingleton() {
-        assertTrue(_calculator == SscAdapter.getInstance());
+        _calculator = new SscAdapter();
     }
 
     @Test public void testSunriseLondon01Jan2000() {

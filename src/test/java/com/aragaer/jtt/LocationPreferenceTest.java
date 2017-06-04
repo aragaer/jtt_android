@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
-import com.aragaer.jtt.R;
 import com.aragaer.jtt.location.android.JttLocationListener;
 
 

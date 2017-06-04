@@ -2,6 +2,7 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.android;
 
+import com.aragaer.jtt.*;
 import com.aragaer.jtt.astronomy.*;
 import com.aragaer.jtt.core.*;
 
@@ -17,7 +18,8 @@ public class TimeChangeReceiver extends BroadcastReceiver {
         if (action.equals(Intent.ACTION_TIME_CHANGED)
             || action.equals(Intent.ACTION_DATE_CHANGED))
             try {
-                SolarEventCalculator calculator = SscAdapter.getInstance();
+                JttComponent jttComponent = Jtt.getJttComponent();
+                SolarEventCalculator calculator = jttComponent.provideSolarEventCalculator();
                 IntervalProvider provider = new SscCalculator(calculator);
                 Clockwork clockwork = new Clockwork(provider);
                 new AndroidTicker(context, clockwork).start();

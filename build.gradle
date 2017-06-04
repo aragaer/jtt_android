@@ -20,6 +20,8 @@ repositories {
 dependencies {
     compile 'com.luckycatlabs:SunriseSunsetCalculator:1.1'
     compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.google.dagger:dagger:2.10'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
@@ -86,7 +88,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "test") {
     classDirectories = fileTree(
         dir: './build/intermediates/classes/debug',
         excludes: ['**/R.class',
-                   '**/R$*.class'
+                   '**/R$*.class',
+                   '**/Dagger*.class'
     ])
     sourceDirectories = files('src/main/java')
     executionData = files('build/jacoco/testReleaseUnitTest.exec')

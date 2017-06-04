@@ -76,7 +76,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
     private void move() {
         float l[] = Settings.getLocation(this);
-        SolarEventCalculator calculator = SscAdapter.getInstance();
+        JttComponent jttComponent = Jtt.getJttComponent();
+        SolarEventCalculator calculator = jttComponent.provideSolarEventCalculator();
         IntervalProvider provider = new SscCalculator(calculator);
         clockwork = new Clockwork(provider);
         calculator.setLocation(l[0], l[1]);

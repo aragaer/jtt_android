@@ -11,17 +11,9 @@ import com.luckycatlabs.sunrisesunset.dto.Location;
 
 
 public  class SscAdapter implements SolarEventCalculator {
-    private static SscAdapter instance;
-
-    public static SscAdapter getInstance() {
-        if (instance == null)
-            instance = new SscAdapter();
-        return instance;
-    }
-
     private SunriseSunsetCalculator _calculator;
 
-    private SscAdapter() {
+    /* package private */ SscAdapter() {
         setLocation(0, 0);
     }
 

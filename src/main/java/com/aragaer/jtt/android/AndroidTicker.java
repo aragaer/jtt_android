@@ -4,9 +4,9 @@ package com.aragaer.jtt.android;
 
 import java.text.SimpleDateFormat;
 
+import com.aragaer.jtt.*;
 import com.aragaer.jtt.core.*;
 import com.aragaer.jtt.astronomy.*;
-import com.aragaer.jtt.JttService;
 
 import android.content.Context;
 import android.content.Intent;
@@ -52,7 +52,8 @@ public class AndroidTicker extends Handler {
     }
 
     private void handle(long now) {
-        SolarEventCalculator calculator = SscAdapter.getInstance();
+        JttComponent jttComponent = Jtt.getJttComponent();
+        SolarEventCalculator calculator = jttComponent.provideSolarEventCalculator();
         IntervalProvider provider = new SscCalculator(calculator);
         ThreeIntervals intervals = provider.getIntervalsForTimestamp(now);
 
