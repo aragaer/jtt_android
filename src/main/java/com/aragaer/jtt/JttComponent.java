@@ -4,6 +4,7 @@ package com.aragaer.jtt;
 
 import com.aragaer.jtt.astronomy.AstronomyModule;
 import com.aragaer.jtt.astronomy.SolarEventCalculator;
+import com.aragaer.jtt.core.*;
 
 import javax.inject.Singleton;
 
@@ -11,7 +12,9 @@ import dagger.Component;
 
 
 @Singleton
-@Component(modules=AstronomyModule.class)
+@Component(modules={AstronomyModule.class, CoreModule.class})
 public interface JttComponent {
+    public Clockwork provideClockwork();
+    public IntervalProvider provideIntervalProvider();
     public SolarEventCalculator provideSolarEventCalculator();
 }

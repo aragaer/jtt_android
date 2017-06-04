@@ -3,8 +3,7 @@
 package com.aragaer.jtt;
 
 import com.aragaer.jtt.android.AndroidTicker;
-import com.aragaer.jtt.astronomy.*;
-import com.aragaer.jtt.core.*;
+import com.aragaer.jtt.astronomy.SolarEventCalculator;
 
 import android.app.Service;
 import android.content.*;
@@ -16,7 +15,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     private static final String TAG = "JTT_SERVICE";
     private JttStatus status_notify;
     private AndroidTicker ticker;
-    private Clockwork clockwork;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -78,11 +76,9 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         float l[] = Settings.getLocation(this);
         JttComponent jttComponent = Jtt.getJttComponent();
         SolarEventCalculator calculator = jttComponent.provideSolarEventCalculator();
-        IntervalProvider provider = new SscCalculator(calculator);
-        clockwork = new Clockwork(provider);
         calculator.setLocation(l[0], l[1]);
         if (ticker == null)
-            ticker = new AndroidTicker(this, clockwork);
+            ticker = new AndroidTicker(this);
         ticker.start();
     }
 }

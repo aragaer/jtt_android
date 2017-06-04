@@ -8,7 +8,7 @@ public class Clockwork {
 
     private final IntervalProvider _calculator;
 
-    public Clockwork(IntervalProvider calculator) {
+    /* package private */ Clockwork(IntervalProvider calculator) {
         _calculator = calculator;
     }
 

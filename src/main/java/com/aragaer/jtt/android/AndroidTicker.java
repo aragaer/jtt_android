@@ -22,9 +22,9 @@ public class AndroidTicker extends Handler {
     private final Context _context;
     private final Clockwork _clockwork;
 
-    public AndroidTicker(Context context, Clockwork clockwork) {
+    public AndroidTicker(Context context) {
         _context = context;
-        _clockwork = clockwork;
+        _clockwork = Jtt.getJttComponent().provideClockwork();
     }
 
     public void start() {
@@ -53,8 +53,7 @@ public class AndroidTicker extends Handler {
 
     private void handle(long now) {
         JttComponent jttComponent = Jtt.getJttComponent();
-        SolarEventCalculator calculator = jttComponent.provideSolarEventCalculator();
-        IntervalProvider provider = new SscCalculator(calculator);
+        IntervalProvider provider = jttComponent.provideIntervalProvider();
         ThreeIntervals intervals = provider.getIntervalsForTimestamp(now);
 
         if (intervals.surrounds(now)) {
@@ -71,10 +70,6 @@ public class AndroidTicker extends Handler {
 
             Log.d("JTT CLOCKWORK", "Tick: "+hour.num+":"+hour.quarter+":"+hour.tick);
         } else
-            try {
-                start();
-            } catch (IllegalStateException e) {
-                Log.i("JTT CLOCKWORK", "Transition passed while service is not running, ignore");
-            }
+            start();
     }
 }
