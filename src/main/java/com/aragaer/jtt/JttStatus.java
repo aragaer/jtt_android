@@ -43,7 +43,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
     @Override
     public void onReceive(Context ctx, Intent intent) {
         final String action = intent.getAction();
-        if (!action.equals(AndroidTicker.ACTION_JTT_TICK))
+        if (!AndroidTicker.ACTION_JTT_TICK.equals(action))
             return;
 
         setIntervals((ThreeIntervals) intent.getSerializableExtra("intervals"));
