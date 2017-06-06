@@ -21,19 +21,22 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         return null;
     }
 
+    @Override public void onCreate() {
+        super.onCreate();
+        ticker = new AndroidTicker(this);
+        registerReceiver(on, new IntentFilter(Intent.ACTION_SCREEN_ON));
+        registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startid) {
         Log.i(TAG, "Service starting");
-        if (ticker == null)
-            move();
+        move();
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
 
         toggle_notify(pref.getBoolean("jtt_notify", true));
-
-        registerReceiver(on, new IntentFilter(Intent.ACTION_SCREEN_ON));
-        registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
 
         return START_STICKY;
     }
@@ -77,8 +80,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         JttComponent jttComponent = Jtt.getJttComponent();
         SolarEventCalculator calculator = jttComponent.provideSolarEventCalculator();
         calculator.setLocation(l[0], l[1]);
-        if (ticker == null)
-            ticker = new AndroidTicker(this);
         ticker.start();
     }
 }

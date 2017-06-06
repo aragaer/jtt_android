@@ -63,11 +63,6 @@ public class AndroidTicker extends Handler {
                 .putExtra("hour", hour.num)
                 .putExtra("jtt", hour.wrapped);
             _context.sendStickyBroadcast(TickAction);
-
-            if (PreferenceManager.getDefaultSharedPreferences(_context)
-                .getBoolean("jtt_notify", true))
-                _context.startService(new Intent(_context, JttService.class));
-
             Log.d("JTT CLOCKWORK", "Tick: "+hour.num+":"+hour.quarter+":"+hour.tick);
         } else
             start();

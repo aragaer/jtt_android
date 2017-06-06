@@ -7,6 +7,8 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
+import java.util.LinkedList;
+
 import android.app.Service;
 import android.content.*;
 import android.preference.PreferenceManager;
@@ -22,7 +24,8 @@ import com.aragaer.jtt.android.AndroidTicker;
 
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({AndroidTicker.class, Log.class, Service.class, PreferenceManager.class})
+@PrepareForTest({AndroidTicker.class, Log.class, Service.class,
+            PreferenceManager.class})
 public class JttServiceTest {
 
     private static Context mockContext = mock(Context.class);
@@ -34,29 +37,48 @@ public class JttServiceTest {
     @Before public void setUp() throws Exception {
         mockStatic(Log.class);
         mockStatic(PreferenceManager.class);
-        when(PreferenceManager.getDefaultSharedPreferences(any(Context.class))).thenReturn(mockPref);
-        when(mockPref.getString(Settings.PREF_LOCATION, "0.0:0.0")).thenReturn("0.0:0.0");
+        when(PreferenceManager.getDefaultSharedPreferences(any(Context.class)))
+            .thenReturn(mockPref);
+        when(mockPref.getString(Settings.PREF_LOCATION, "0.0:0.0"))
+            .thenReturn("0.0:0.0");
         suppress(method(Handler.class, "sendEmptyMessage"));
         suppress(method(Service.class, "onCreate"));
 
         service = spy(new TestJttService());
     }
 
+    @Test public void testCreate() {
+        service.onCreate();
+        verify((Service) service).onCreate();
+        assertEquals("Two receivers registered in onCreate",
+                     2, service.receivers.size());
+    }
+
     @Test public void testStart() {
+        service.onCreate();
+        service.resetReceivers();
         int result = service.onStartCommand(null, 0, 0);
         assertEquals("onStartCommand returns START_STICKY",
                      Service.START_STICKY, result);
-        assertEquals("Two recievers registered in onStartCommand",
-                     2, service.receiversRegistered);
+        assertEquals("No receivers registered in onStartCommand",
+                     0, service.receivers.size());
     }
 
     private class TestJttService extends JttService {
-        int receiversRegistered = 0;
+        LinkedList<BroadcastReceiver> receivers
+            = new LinkedList<BroadcastReceiver>();
+        LinkedList<IntentFilter> filters = new LinkedList<IntentFilter>();
 
         @Override public Intent registerReceiver(BroadcastReceiver receiver,
                                                  IntentFilter intentFilter) {
-            receiversRegistered++;
+            receivers.add(receiver);
+            filters.add(intentFilter);
             return null;
+        }
+
+        public void resetReceivers() {
+            receivers.clear();
+            filters.clear();
         }
     }
 }
