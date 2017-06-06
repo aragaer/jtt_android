@@ -30,7 +30,6 @@ public class JttServiceTest {
 
     private static Context mockContext = mock(Context.class);
     private static SharedPreferences mockPref = mock(SharedPreferences.class);
-    private static Handler mockHandler = mock(Handler.class);
 
     private TestJttService service;
 
