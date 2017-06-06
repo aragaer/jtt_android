@@ -4,6 +4,8 @@ package com.aragaer.jtt.android;
 
 import android.content.*;
 
+import com.aragaer.jtt.JttService;
+
 
 public class TimeChangeReceiver extends BroadcastReceiver {
 
@@ -12,6 +14,6 @@ public class TimeChangeReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         if (Intent.ACTION_TIME_CHANGED.equals(action)
             || Intent.ACTION_DATE_CHANGED.equals(action))
-            new AndroidTicker(context).start();
+            context.startService(new Intent(context, JttService.class));
     }
 }
