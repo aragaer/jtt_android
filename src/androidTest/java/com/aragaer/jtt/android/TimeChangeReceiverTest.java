@@ -23,54 +23,54 @@ public class TimeChangeReceiverTest {
     private MyReceiver receiver;
 
     @Before public void setUp() {
-	context = getTargetContext();
-	receiver = new MyReceiver();
-	context.registerReceiver(receiver, new IntentFilter(AndroidTicker.ACTION_JTT_TICK));
+        context = getTargetContext();
+        receiver = new MyReceiver();
+        context.registerReceiver(receiver, new IntentFilter(AndroidTicker.ACTION_JTT_TICK));
     }
 
     @Test public void testListensForTimeChange() {
-	Intent intent = new Intent(Intent.ACTION_TIME_CHANGED);
-	PackageManager pm = context.getPackageManager();
-	for (ResolveInfo ri : pm.queryBroadcastReceivers(intent, 0)) {
-	    ActivityInfo ai = ri.activityInfo;
-	    if (ai.name.equals("com.aragaer.jtt.android.TimeChangeReceiver"))
-		return;
-	}
-	fail("Not listening for time change event");
+        Intent intent = new Intent(Intent.ACTION_TIME_CHANGED);
+        PackageManager pm = context.getPackageManager();
+        for (ResolveInfo ri : pm.queryBroadcastReceivers(intent, 0)) {
+            ActivityInfo ai = ri.activityInfo;
+            if (ai.name.equals("com.aragaer.jtt.android.TimeChangeReceiver"))
+                return;
+        }
+        fail("Not listening for time change event");
     }
 
     @Test public void testListensForDateChange() {
-	Intent intent = new Intent(Intent.ACTION_DATE_CHANGED);
-	PackageManager pm = context.getPackageManager();
-	for (ResolveInfo ri : pm.queryBroadcastReceivers(intent, 0)) {
-	    ActivityInfo ai = ri.activityInfo;
-	    if (ai.name.equals("com.aragaer.jtt.android.TimeChangeReceiver"))
-		return;
-	}
-	fail("Not listening for date change event");
+        Intent intent = new Intent(Intent.ACTION_DATE_CHANGED);
+        PackageManager pm = context.getPackageManager();
+        for (ResolveInfo ri : pm.queryBroadcastReceivers(intent, 0)) {
+            ActivityInfo ai = ri.activityInfo;
+            if (ai.name.equals("com.aragaer.jtt.android.TimeChangeReceiver"))
+                return;
+        }
+        fail("Not listening for date change event");
     }
 
     @Test public void testTriggersTick() throws Exception {
-	new TimeChangeReceiver().onReceive(context, new Intent(Intent.ACTION_DATE_CHANGED));
-	synchronized (receiver) {
-	    receiver.wait();
-	}
-	assertEquals("Actually got correct event",
-		     AndroidTicker.ACTION_JTT_TICK, receiver.triggered.getAction());
+        new TimeChangeReceiver().onReceive(context, new Intent(Intent.ACTION_DATE_CHANGED));
+        synchronized (receiver) {
+            receiver.wait();
+        }
+        assertEquals("Actually got correct event",
+                     AndroidTicker.ACTION_JTT_TICK, receiver.triggered.getAction());
     }
 
     @After public void tearDown() {
-	context.unregisterReceiver(receiver);
+        context.unregisterReceiver(receiver);
     }
 
     private class MyReceiver extends BroadcastReceiver {
-	Intent triggered;
+        Intent triggered;
 
-	@Override public void onReceive(Context context, Intent intent) {
-	    triggered = intent;
-	    synchronized (this) {
-		this.notify();
-	    }
-	}
+        @Override public void onReceive(Context context, Intent intent) {
+            triggered = intent;
+            synchronized (this) {
+                this.notify();
+            }
+        }
     }
 }
