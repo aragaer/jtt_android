@@ -12,6 +12,6 @@ import dagger.Provides;
 public class AstronomyModule {
 
     @Provides @Singleton public SolarEventCalculator provideSolarEventCalculator() {
-	return new SscAdapter();
+        return new SscAdapter();
     }
 }

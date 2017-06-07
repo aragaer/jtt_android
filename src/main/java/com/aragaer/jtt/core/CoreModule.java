@@ -12,10 +12,10 @@ import dagger.Provides;
 public class CoreModule {
 
     @Provides public IntervalProvider provideIntervalProvider(SolarEventCalculator calculator) {
-	return new SscCalculator(calculator);
+        return new SscCalculator(calculator);
     }
 
     @Provides public Clockwork provideClockwork(IntervalProvider intervalProvider) {
-	return new Clockwork(intervalProvider);
+        return new Clockwork(intervalProvider);
     }
 }
