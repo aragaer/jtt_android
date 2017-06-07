@@ -4,6 +4,7 @@ package com.aragaer.jtt;
 
 import com.aragaer.jtt.android.AndroidTicker;
 import com.aragaer.jtt.astronomy.SolarEventCalculator;
+import com.aragaer.jtt.mechanics.*;
 
 import android.app.Service;
 import android.content.*;
@@ -14,7 +15,7 @@ import android.util.Log;
 public class JttService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "JTT_SERVICE";
     private JttStatus status_notify;
-    private AndroidTicker ticker;
+    private Ticker ticker;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -23,9 +24,14 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
     @Override public void onCreate() {
         super.onCreate();
-        ticker = new AndroidTicker(this);
+        ServiceComponent component = DaggerServiceComponent
+            .builder()
+            .mechanicsModule(new MechanicsModule(this))
+            .build();
+        ticker = component.getTicker();
         registerReceiver(on, new IntentFilter(Intent.ACTION_SCREEN_ON));
         registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));
+        Log.i(TAG, "Service created");
     }
 
     @Override

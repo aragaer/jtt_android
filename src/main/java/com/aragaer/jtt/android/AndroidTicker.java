@@ -5,8 +5,9 @@ package com.aragaer.jtt.android;
 import java.text.SimpleDateFormat;
 
 import com.aragaer.jtt.*;
-import com.aragaer.jtt.core.*;
 import com.aragaer.jtt.astronomy.*;
+import com.aragaer.jtt.core.*;
+import com.aragaer.jtt.mechanics.Ticker;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +17,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 
-public class AndroidTicker extends Handler {
+public class AndroidTicker extends Handler implements Ticker {
     public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
 
     private final Context _context;
