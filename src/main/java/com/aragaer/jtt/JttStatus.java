@@ -2,8 +2,8 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
-import com.aragaer.jtt.android.AndroidTicker;
 import com.aragaer.jtt.core.*;
+import com.aragaer.jtt.mechanics.AndroidTicker;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;

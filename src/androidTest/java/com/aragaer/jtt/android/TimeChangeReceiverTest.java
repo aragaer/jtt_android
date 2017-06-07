@@ -9,7 +9,7 @@ import android.content.*;
 import android.content.pm.*;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.aragaer.jtt.JttService;
+import com.aragaer.jtt.mechanics.AndroidTicker;
 
 import static org.junit.Assert.*;
 

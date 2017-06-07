@@ -11,10 +11,10 @@ import android.util.Log;
 import android.view.*;
 import android.widget.ListView;
 
-import com.aragaer.jtt.android.AndroidTicker;
+import com.aragaer.jtt.core.ThreeIntervals;
+import com.aragaer.jtt.mechanics.AndroidTicker;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
-import com.aragaer.jtt.core.ThreeIntervals;
 import com.aragaer.jtt.today.TodayAdapter;
 
 

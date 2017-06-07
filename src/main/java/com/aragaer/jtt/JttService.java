@@ -2,7 +2,6 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
-import com.aragaer.jtt.android.AndroidTicker;
 import com.aragaer.jtt.astronomy.SolarEventCalculator;
 import com.aragaer.jtt.mechanics.*;
 

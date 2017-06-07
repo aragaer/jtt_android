@@ -9,8 +9,6 @@ import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 
-import com.aragaer.jtt.android.AndroidTicker;
-
 
 @Module
 public class MechanicsModule {

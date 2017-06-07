@@ -1,19 +1,17 @@
 // -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; -*-
 // vim: et ts=4 sts=4 sw=4 syntax=java
-package com.aragaer.jtt.android;
+package com.aragaer.jtt.mechanics;
 
 import java.text.SimpleDateFormat;
 
 import com.aragaer.jtt.*;
 import com.aragaer.jtt.astronomy.*;
 import com.aragaer.jtt.core.*;
-import com.aragaer.jtt.mechanics.Ticker;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 

@@ -18,6 +18,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import com.aragaer.jtt.JttService;
+import com.aragaer.jtt.mechanics.AndroidTicker;
 
 
 @RunWith(PowerMockRunner.class)

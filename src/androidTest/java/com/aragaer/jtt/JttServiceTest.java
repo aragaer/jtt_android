@@ -11,7 +11,7 @@ import android.util.Log;
 import org.junit.*;
 import org.junit.runner.RunWith;
 
-import com.aragaer.jtt.android.AndroidTicker;
+import com.aragaer.jtt.mechanics.AndroidTicker;
 
 import static org.junit.Assert.*;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;

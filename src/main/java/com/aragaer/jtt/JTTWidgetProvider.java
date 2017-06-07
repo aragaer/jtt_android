@@ -5,10 +5,10 @@ package com.aragaer.jtt;
 import java.util.Map;
 import java.util.HashMap;
 
-import com.aragaer.jtt.android.AndroidTicker;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.graphics.Paints;
 import com.aragaer.jtt.graphics.WadokeiDraw;
+import com.aragaer.jtt.mechanics.AndroidTicker;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
