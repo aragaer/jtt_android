@@ -6,12 +6,22 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
+import com.aragaer.jtt.astronomy.AstronomyModule;
+import com.aragaer.jtt.astronomy.SolarEventCalculator;
+import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.core.CoreModule;
+import com.aragaer.jtt.core.IntervalProvider;
 import com.aragaer.jtt.mechanics.Ticker;
 import com.aragaer.jtt.mechanics.MechanicsModule;
 
 
 @Singleton
-@Component(modules=MechanicsModule.class)
+@Component(modules={AstronomyModule.class,
+                    CoreModule.class,
+                    MechanicsModule.class})
 public interface ServiceComponent {
     public Ticker getTicker();
+    public Clockwork provideClockwork();
+    public IntervalProvider provideIntervalProvider();
+    public SolarEventCalculator provideSolarEventCalculator();
 }

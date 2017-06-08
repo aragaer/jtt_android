@@ -9,6 +9,9 @@ import android.content.Context;
 import dagger.Module;
 import dagger.Provides;
 
+import com.aragaer.jtt.core.Clockwork;
+import com.aragaer.jtt.core.IntervalProvider;
+
 
 @Module
 public class MechanicsModule {
@@ -19,7 +22,8 @@ public class MechanicsModule {
         _context = context;
     }
 
-    @Singleton @Provides public Ticker provideTicker() {
-        return new AndroidTicker(_context);
+    @Singleton @Provides public Ticker provideTicker(Clockwork clockwork,
+                                                     IntervalProvider provider) {
+        return new AndroidTicker(_context, clockwork, provider);
     }
 }

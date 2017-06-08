@@ -15,6 +15,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     private static final String TAG = "JTT_SERVICE";
     private JttStatus status_notify;
     private Ticker ticker;
+    private ServiceComponent component;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -23,7 +24,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
     @Override public void onCreate() {
         super.onCreate();
-        ServiceComponent component = DaggerServiceComponent
+        component = DaggerServiceComponent
             .builder()
             .mechanicsModule(new MechanicsModule(this))
             .build();
@@ -82,8 +83,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
     private void move() {
         float l[] = Settings.getLocation(this);
-        JttComponent jttComponent = Jtt.getJttComponent();
-        SolarEventCalculator calculator = jttComponent.provideSolarEventCalculator();
+        SolarEventCalculator calculator = component.provideSolarEventCalculator();
         calculator.setLocation(l[0], l[1]);
         ticker.start();
     }

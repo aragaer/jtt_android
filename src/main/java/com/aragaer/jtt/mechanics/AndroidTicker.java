@@ -20,10 +20,12 @@ public class AndroidTicker extends Handler implements Ticker {
 
     private final Context _context;
     private final Clockwork _clockwork;
+    private final IntervalProvider _provider;
 
-    public AndroidTicker(Context context) {
+    public AndroidTicker(Context context, Clockwork clockwork, IntervalProvider provider) {
         _context = context;
-        _clockwork = Jtt.getJttComponent().provideClockwork();
+        _clockwork = clockwork;
+        _provider = provider;
     }
 
     public void start() {
@@ -51,9 +53,7 @@ public class AndroidTicker extends Handler implements Ticker {
     }
 
     private void handle(long now) {
-        JttComponent jttComponent = Jtt.getJttComponent();
-        IntervalProvider provider = jttComponent.provideIntervalProvider();
-        ThreeIntervals intervals = provider.getIntervalsForTimestamp(now);
+        ThreeIntervals intervals = _provider.getIntervalsForTimestamp(now);
 
         if (intervals.surrounds(now)) {
             Hour hour = Hour.fromInterval(intervals.getMiddleInterval(), now);
