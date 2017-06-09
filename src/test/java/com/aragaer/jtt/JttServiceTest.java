@@ -4,7 +4,6 @@ package com.aragaer.jtt;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
 import java.util.LinkedList;
@@ -43,12 +42,11 @@ public class JttServiceTest {
         suppress(method(Handler.class, "sendEmptyMessage"));
         suppress(method(Service.class, "onCreate"));
 
-        service = spy(new TestJttService());
+        service = new TestJttService();
     }
 
     @Test public void testCreate() {
         service.onCreate();
-        verify((Service) service).onCreate();
         assertEquals("Two receivers registered in onCreate",
                      2, service.receivers.size());
     }
@@ -63,21 +61,21 @@ public class JttServiceTest {
                      0, service.receivers.size());
     }
 
-    private class TestJttService extends JttService {
-        LinkedList<BroadcastReceiver> receivers
-            = new LinkedList<BroadcastReceiver>();
-        LinkedList<IntentFilter> filters = new LinkedList<IntentFilter>();
+}
 
-        @Override public Intent registerReceiver(BroadcastReceiver receiver,
-                                                 IntentFilter intentFilter) {
-            receivers.add(receiver);
-            filters.add(intentFilter);
-            return null;
-        }
+class TestJttService extends JttService {
+    LinkedList<BroadcastReceiver> receivers = new LinkedList<BroadcastReceiver>();
+    LinkedList<IntentFilter> filters = new LinkedList<IntentFilter>();
 
-        public void resetReceivers() {
-            receivers.clear();
-            filters.clear();
-        }
+    @Override public Intent registerReceiver(BroadcastReceiver receiver,
+                                             IntentFilter intentFilter) {
+        receivers.add(receiver);
+        filters.add(intentFilter);
+        return null;
+    }
+
+    public void resetReceivers() {
+        receivers.clear();
+        filters.clear();
     }
 }
