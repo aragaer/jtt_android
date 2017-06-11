@@ -11,14 +11,14 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+
 public class JttService extends Service implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "JTT_SERVICE";
     private JttStatus status_notify;
     private Ticker ticker;
     private ServiceComponent component;
 
-    @Override
-    public IBinder onBind(Intent intent) {
+    @Override public IBinder onBind(Intent intent) {
         return null;
     }
 
@@ -34,8 +34,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         Log.i(TAG, "Service created");
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startid) {
+    @Override public int onStartCommand(Intent intent, int flags, int startid) {
         Log.i(TAG, "Service starting");
         move();
 

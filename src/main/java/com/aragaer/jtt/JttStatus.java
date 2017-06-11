@@ -10,7 +10,6 @@ import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
 
 import android.app.*;
 import android.content.*;
-import android.graphics.Color;
 import android.widget.RemoteViews;
 
 
@@ -40,18 +39,19 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
         context.unregisterReceiver(this);
     }
 
-    @Override
-    public void onReceive(Context ctx, Intent intent) {
+    @Override public void onReceive(Context ctx, Intent intent) {
         final String action = intent.getAction();
         if (!AndroidTicker.ACTION_JTT_TICK.equals(action))
             return;
 
-        setIntervals((ThreeIntervals) intent.getSerializableExtra("intervals"));
+        ThreeIntervals data = (ThreeIntervals) intent.getSerializableExtra("intervals");
+        Hour hour = Hour.fromTickNumber(intent.getIntExtra("jtt", 0));
+        setIntervals(data, hour);
     }
 
-    public void setIntervals(ThreeIntervals intervals) {
+    public void setIntervals(ThreeIntervals intervals, Hour hour) {
         Interval currentInterval = intervals.getMiddleInterval();
-        h = Hour.fromInterval(currentInterval, System.currentTimeMillis());
+        h = hour;
         final long tr[] = intervals.getTransitions();
         final int lower = Hour.lowerBoundary(h.num),
             upper = Hour.upperBoundary(h.num);
