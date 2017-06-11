@@ -90,7 +90,7 @@ class TestMechanicsModule extends MechanicsModule {
     }
 
     @Override public Ticker provideTicker(Clockwork clockwork,
-                                          IntervalProvider provider) {
+                                          Announcer announcer) {
         return testTicker;
     }
 }

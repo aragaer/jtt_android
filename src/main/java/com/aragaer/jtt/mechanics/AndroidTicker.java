@@ -5,8 +5,7 @@ package com.aragaer.jtt.mechanics;
 import java.text.SimpleDateFormat;
 
 import com.aragaer.jtt.*;
-import com.aragaer.jtt.astronomy.*;
-import com.aragaer.jtt.core.*;
+import com.aragaer.jtt.core.Clockwork;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,12 +19,12 @@ public class AndroidTicker extends Handler implements Ticker {
 
     private final Context _context;
     private final Clockwork _clockwork;
-    private final IntervalProvider _provider;
+    private final Announcer _announcer;
 
-    public AndroidTicker(Context context, Clockwork clockwork, IntervalProvider provider) {
+    public AndroidTicker(Context context, Clockwork clockwork, Announcer announcer) {
         _context = context;
         _clockwork = clockwork;
-        _provider = provider;
+        _announcer = announcer;
     }
 
     public void start() {
@@ -49,21 +48,6 @@ public class AndroidTicker extends Handler implements Ticker {
         sendEmptyMessageDelayed(0, delay);
         Log.d("JTT CLOCKWORK", "Tick delay " + delay);
         Log.d("JTT CLOCKWORK", "Next tick scheduled at "+(new SimpleDateFormat("HH:mm:ss.SSS").format(next_tick)));
-        handle(now);
-    }
-
-    private void handle(long now) {
-        ThreeIntervals intervals = _provider.getIntervalsForTimestamp(now);
-
-        if (intervals.surrounds(now)) {
-            Hour hour = Hour.fromInterval(intervals.getMiddleInterval(), now);
-            Intent TickAction = new Intent(AndroidTicker.ACTION_JTT_TICK)
-                .putExtra("intervals", intervals)
-                .putExtra("hour", hour.num)
-                .putExtra("jtt", hour.wrapped);
-            _context.sendStickyBroadcast(TickAction);
-            Log.d("JTT CLOCKWORK", "Tick: "+hour.num+":"+hour.quarter+":"+hour.tick);
-        } else
-            start();
+        _announcer.announce(now);
     }
 }

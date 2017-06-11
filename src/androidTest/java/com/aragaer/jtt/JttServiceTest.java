@@ -27,7 +27,13 @@ public class JttServiceTest {
     @Before public void setUp() {
         context = getTargetContext();
         receiver = new MyReceiver();
+        context.removeStickyBroadcast(new Intent(AndroidTicker.ACTION_JTT_TICK));
         context.registerReceiver(receiver, new IntentFilter(AndroidTicker.ACTION_JTT_TICK));
+    }
+
+    @After public void cleanUp() {
+        context.stopService(new Intent(context, JttService.class));
+        context.removeStickyBroadcast(new Intent(AndroidTicker.ACTION_JTT_TICK));
     }
 
     @Test public void testTicksOnStart() throws Exception {
