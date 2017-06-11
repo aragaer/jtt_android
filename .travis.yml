@@ -37,7 +37,6 @@ before_script:
 script:
   - set -e
   - ./gradlew test
-  - ./gradlew jacocoTestReport
   - ./gradlew assembleDebug assembleAndroidTest
   - adb shell setprop ro.test_harness true
   - android-wait-for-emulator
@@ -47,5 +46,6 @@ script:
   - adb shell setprop dalvik.vm.dexopt-flags v=n,o=v
   - adb shell input keyevent 82
   - ./gradlew connectedCheck
+  - ./gradlew jacocoTestReport
 
 after_success: bash <(curl -s https://codecov.io/bash)
