@@ -97,6 +97,12 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "test") {
     executionData = files('build/jacoco/testReleaseUnitTest.exec')
 }
 
+gradle.taskGraph.whenReady { graph ->
+    if (graph.hasTask(createDebugAndroidTestCoverageReport)) {
+        android.defaultConfig.testInstrumentationRunnerArgument "notAnnotation", "android.support.test.filters.LargeTest"
+    }
+}
+
 tasks.withType(Test) {
     testLogging.exceptionFormat = 'full'
 }
