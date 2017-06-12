@@ -44,7 +44,6 @@ script:
   - adb shell settings put global transition_animation_scale 0
   - adb shell settings put global animator_duration_scale 0
   - adb shell setprop dalvik.vm.dexopt-flags v=n,o=v
-  - ./gradlew connectedCheck
   - ./gradlew jacocoTestReport
 
 after_success: bash <(curl -s https://codecov.io/bash)
