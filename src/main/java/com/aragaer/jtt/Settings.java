@@ -5,6 +5,8 @@ package com.aragaer.jtt;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
+import com.aragaer.jtt.astronomy.AndroidLocationHandler;
+
 
 public class Settings {
     public static final String PREF_LOCATION = "jtt_loc",
@@ -15,14 +17,7 @@ public class Settings {
         PREF_WIDGET = "jtt_widget_theme";
 
     public static float[] getLocation(final Context context) {
-        String[] ll = PreferenceManager.getDefaultSharedPreferences(context)
-            .getString(PREF_LOCATION, LocationPreference.DEFAULT)
-            .split(":");
-        try {
-            return new float[] { Float.parseFloat(ll[0]), Float.parseFloat(ll[1]) };
-        } catch (NumberFormatException e) {
-            return new float[] { 0, 0 };
-        }
+        return new AndroidLocationHandler(context).getLocation();
     }
 
     static final int app_themes[] = {R.style.JTTTheme, R.style.DarkTheme, R.style.LightTheme};

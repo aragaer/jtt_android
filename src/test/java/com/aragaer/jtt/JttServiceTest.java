@@ -37,7 +37,7 @@ public class JttServiceTest {
         mockStatic(PreferenceManager.class);
         when(PreferenceManager.getDefaultSharedPreferences(any(Context.class)))
             .thenReturn(mockPref);
-        when(mockPref.getString(Settings.PREF_LOCATION, "0.0:0.0"))
+        when(mockPref.getString(eq(Settings.PREF_LOCATION), anyString()))
             .thenReturn("0.0:0.0");
         suppress(method(Handler.class, "sendEmptyMessage"));
         suppress(method(Service.class, "onCreate"));
