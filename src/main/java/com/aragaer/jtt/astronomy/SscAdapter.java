@@ -18,20 +18,17 @@ public  class SscAdapter implements SolarEventCalculator {
     }
 
     @Override public Calendar getSunriseFor(Calendar noon) {
-        float[] location = _locationHandler.getLocation();
-        SunriseSunsetCalculator calculator = getCalculatorForLocation(location[0], location[1]);
-        return calculator.getOfficialSunriseCalendarForDate((Calendar) noon.clone());
+        return getCalculator().getOfficialSunriseCalendarForDate((Calendar) noon.clone());
     }
 
     @Override public Calendar getSunsetFor(Calendar noon) {
-        float[] location = _locationHandler.getLocation();
-        SunriseSunsetCalculator calculator = getCalculatorForLocation(location[0], location[1]);
-        return calculator.getOfficialSunsetCalendarForDate((Calendar) noon.clone());
+        return getCalculator().getOfficialSunsetCalendarForDate((Calendar) noon.clone());
     }
 
-    private SunriseSunsetCalculator getCalculatorForLocation(float latitude, float longitude) {
-        int offsetMillis = (int) TimeUnit.HOURS.toMillis(Math.round(longitude/15));
-        return new SunriseSunsetCalculator(new Location(latitude, longitude),
+    private SunriseSunsetCalculator getCalculator() {
+        float[] location = _locationHandler.getLocation();
+        int offsetMillis = (int) TimeUnit.HOURS.toMillis(Math.round(location[1]/15));
+        return new SunriseSunsetCalculator(new Location(location[0], location[1]),
                                            getTimeZone(offsetMillis));
     }
 
