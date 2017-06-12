@@ -12,9 +12,6 @@ import com.aragaer.jtt.core.Interval;
 public class TestIntervalCalculator implements SolarEventCalculator {
     static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
 
-    @Override public void setLocation(float latitude, float longitude) {
-    }
-
     @Override public Calendar getSunriseFor(Calendar noon) {
         long millis = noon.getTimeInMillis();
         Calendar result = Calendar.getInstance();

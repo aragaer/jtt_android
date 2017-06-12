@@ -19,7 +19,7 @@ import static android.support.test.InstrumentationRegistry.getTargetContext;
 @RunWith(AndroidJUnit4.class)
 public class AndroidLocationHandlerTest {
 
-    private AndroidLocationHandler locationHandler;
+    private LocationHandler locationHandler;
     private Context context;
 
     @Before public void setUp() {

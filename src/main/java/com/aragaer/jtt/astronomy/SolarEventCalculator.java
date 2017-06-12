@@ -6,7 +6,6 @@ import java.util.Calendar;
 
 
 public interface SolarEventCalculator {
-    public void setLocation(float latitude, float longitude);
     public Calendar getSunriseFor(Calendar noon);
     public Calendar getSunsetFor(Calendar noon);
 }

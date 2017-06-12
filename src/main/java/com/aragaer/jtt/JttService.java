@@ -2,8 +2,9 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
-import com.aragaer.jtt.astronomy.SolarEventCalculator;
-import com.aragaer.jtt.mechanics.*;
+import com.aragaer.jtt.astronomy.AstronomyModule;
+import com.aragaer.jtt.mechanics.MechanicsModule;
+import com.aragaer.jtt.mechanics.Ticker;
 
 import android.app.Service;
 import android.content.*;
@@ -26,6 +27,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         super.onCreate();
         component = DaggerServiceComponent
             .builder()
+            .astronomyModule(new AstronomyModule(this))
             .mechanicsModule(new MechanicsModule(this))
             .build();
         ticker = component.getTicker();
@@ -36,7 +38,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
     @Override public int onStartCommand(Intent intent, int flags, int startid) {
         Log.i(TAG, "Service starting");
-        move();
+        ticker.start();
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
@@ -60,7 +62,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
     private final BroadcastReceiver on = new BroadcastReceiver() {
             @Override public void onReceive(Context context, Intent intent) {
-                move();
+                ticker.start();
             }
         };
     private final BroadcastReceiver off = new BroadcastReceiver() {
@@ -73,17 +75,10 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         if (key.equals(Settings.PREF_NOTIFY))
             toggle_notify(pref.getBoolean("jtt_notify", true));
         else if (key.equals(Settings.PREF_LOCATION))
-            move();
+            ticker.start();
         else if (key.equals(Settings.PREF_WIDGET)
                  || key.equals(Settings.PREF_LOCALE)
                  || key.equals(Settings.PREF_HNAME))
             JTTWidgetProvider.draw_all(this);
-    }
-
-    private void move() {
-        float l[] = Settings.getLocation(this);
-        SolarEventCalculator calculator = component.provideSolarEventCalculator();
-        calculator.setLocation(l[0], l[1]);
-        ticker.start();
     }
 }

@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.*;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 import com.aragaer.jtt.astronomy.*;
 import com.aragaer.jtt.core.*;
@@ -41,9 +42,6 @@ public class ServiceComponentTest {
 
     @Test public void testSolarEventCalculator() {
         SolarEventCalculator calculator = serviceComponent.provideSolarEventCalculator();
-        // TODO: Remove once calculator gets location data from some other dependency
-        assertEquals("There is only one solar event calculator",
-                     calculator, serviceComponent.provideSolarEventCalculator());
     }
 
     // TODO: IntervalProvider/IntervalBuilder should not calculate TzOffset itself
@@ -66,8 +64,6 @@ public class ServiceComponentTest {
 }
 
 class TestSolarEventCalculator implements SolarEventCalculator {
-    @Override public void setLocation(float latitude, float longitude) {
-    }
     @Override public Calendar getSunriseFor(Calendar noon) {
         Calendar result = (Calendar) noon.clone();
         result.add(Calendar.HOUR_OF_DAY, -6);
@@ -97,8 +93,16 @@ class TestMechanicsModule extends MechanicsModule {
 
 class TestAstronomyModule extends AstronomyModule {
 
-    @Override public SolarEventCalculator provideSolarEventCalculator() {
+    public TestAstronomyModule() {
+        super(null);
+    }
+
+    @Override public SolarEventCalculator provideSolarEventCalculator(LocationHandler locationHandler) {
         return new TestSolarEventCalculator();
+    }
+
+    @Override public LocationHandler provideLocationHandler() {
+        return new TestLocationHandler();
     }
 }
 

@@ -11,24 +11,28 @@ import com.luckycatlabs.sunrisesunset.dto.Location;
 
 
 public  class SscAdapter implements SolarEventCalculator {
-    private SunriseSunsetCalculator _calculator;
+    private final LocationHandler _locationHandler;
 
-    /* package private */ SscAdapter() {
-        setLocation(0, 0);
+    public SscAdapter(LocationHandler locationHandler) {
+        _locationHandler = locationHandler;
     }
 
     @Override public Calendar getSunriseFor(Calendar noon) {
-        return _calculator.getOfficialSunriseCalendarForDate((Calendar) noon.clone());
+        float[] location = _locationHandler.getLocation();
+        SunriseSunsetCalculator calculator = getCalculatorForLocation(location[0], location[1]);
+        return calculator.getOfficialSunriseCalendarForDate((Calendar) noon.clone());
     }
 
     @Override public Calendar getSunsetFor(Calendar noon) {
-        return _calculator.getOfficialSunsetCalendarForDate((Calendar) noon.clone());
+        float[] location = _locationHandler.getLocation();
+        SunriseSunsetCalculator calculator = getCalculatorForLocation(location[0], location[1]);
+        return calculator.getOfficialSunsetCalendarForDate((Calendar) noon.clone());
     }
 
-    public void setLocation(float latitude, float longitude) {
+    private SunriseSunsetCalculator getCalculatorForLocation(float latitude, float longitude) {
         int offsetMillis = (int) TimeUnit.HOURS.toMillis(Math.round(longitude/15));
-        _calculator = new SunriseSunsetCalculator(new Location(latitude, longitude),
-                                                  getTimeZone(offsetMillis));
+        return new SunriseSunsetCalculator(new Location(latitude, longitude),
+                                           getTimeZone(offsetMillis));
     }
 
     private static TimeZone getTimeZone(int offsetMillis) {

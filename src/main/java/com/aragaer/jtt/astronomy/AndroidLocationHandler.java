@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 import com.aragaer.jtt.Settings;
 
 
-public class AndroidLocationHandler {
+public class AndroidLocationHandler implements LocationHandler {
 
     private final Context _context;
     private final SharedPreferences _pref;
