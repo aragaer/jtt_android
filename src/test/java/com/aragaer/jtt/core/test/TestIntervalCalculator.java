@@ -16,16 +16,16 @@ public class TestIntervalCalculator implements SolarEventCalculator {
     }
 
     @Override public Calendar getSunriseFor(Calendar noon) {
-	long millis = noon.getTimeInMillis();
-	Calendar result = Calendar.getInstance();
-	result.setTimeInMillis(millis - MS_PER_DAY/4);
-	return result;
+        long millis = noon.getTimeInMillis();
+        Calendar result = Calendar.getInstance();
+        result.setTimeInMillis(millis - MS_PER_DAY/4);
+        return result;
     }
 
     @Override public Calendar getSunsetFor(Calendar noon) {
-	long millis = noon.getTimeInMillis();
-	Calendar result = Calendar.getInstance();
-	result.setTimeInMillis(millis + MS_PER_DAY/4);
-	return result;
+        long millis = noon.getTimeInMillis();
+        Calendar result = Calendar.getInstance();
+        result.setTimeInMillis(millis + MS_PER_DAY/4);
+        return result;
     }
 }
