@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="@string/location" >
+  <PreferenceCategory android:title="@string/location" >
 
-        <com.aragaer.jtt.LocationPreference
-            android:defaultValue="0.0:0.0"
-            android:key="jtt_loc"
-            android:title="@string/location_ex" />
-    </PreferenceCategory>
+    <com.aragaer.jtt.LocationPreference
+        android:defaultValue="0.0:0.0"
+        android:key="jtt_loc"
+        android:title="@string/location_ex" />
+  </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/language" >
+  <PreferenceCategory android:title="@string/language" >
 
-        <ListPreference
-            android:defaultValue=""
-            android:entries="@array/locales"
-            android:entryValues="@array/locales"
-            android:key="jtt_locale"
-            android:title="@string/locale" />
+    <ListPreference
+        android:defaultValue=""
+        android:entries="@array/locales"
+        android:entryValues="@array/locales"
+        android:key="jtt_locale"
+        android:title="@string/locale" />
 
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/hour_name_option_names"
-            android:entryValues="@array/array_of_3"
-            android:key="jtt_hname"
-            android:title="@string/hour_names" />
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/hour_name_option_names"
+        android:entryValues="@array/array_of_3"
+        android:key="jtt_hname"
+        android:title="@string/hour_names" />
 
-    </PreferenceCategory>
+  </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/appearance" >
+  <PreferenceCategory android:title="@string/appearance" >
 
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="jtt_notify"
-            android:summary="@string/notify_ex"
-            android:title="@string/notify" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="jtt_notify"
+        android:summary="@string/notify_ex"
+        android:title="@string/notify" />
 
-        <ListPreference
-            android:defaultValue="@string/theme_default"
-            android:entries="@array/theme_names"
-            android:entryValues="@array/array_of_3"
-            android:key="jtt_theme"
-            android:title="@string/pref_theme" />
+    <ListPreference
+        android:defaultValue="@string/theme_default"
+        android:entries="@array/theme_names"
+        android:entryValues="@array/array_of_3"
+        android:key="jtt_theme"
+        android:title="@string/pref_theme" />
 
-        <ListPreference
-            android:defaultValue="@string/theme_default"
-            android:entries="@array/widget_theme_names"
-            android:entryValues="@array/array_of_3"
-            android:key="jtt_widget_theme"
-            android:title="@string/pref_widget" />
+    <ListPreference
+        android:defaultValue="@string/theme_default"
+        android:entries="@array/widget_theme_names"
+        android:entryValues="@array/array_of_3"
+        android:key="jtt_widget_theme"
+        android:title="@string/pref_widget" />
 
-	</PreferenceCategory>
+  </PreferenceCategory>
 
 </PreferenceScreen>
