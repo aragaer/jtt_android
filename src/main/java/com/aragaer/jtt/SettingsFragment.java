@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -62,9 +63,6 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 
     @Override public void onStart() {
         super.onStart();
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        if (!settings.contains(Settings.PREF_LOCATION)) // location is not set
-            ((LocationPreference) findPreference(Settings.PREF_LOCATION)).showDialog(null);
         ActionBar actionBar = getActivity().getActionBar();
         actionBar.setTitle(R.string.settings);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
@@ -73,5 +71,17 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
+    }
+
+    @Override public boolean onPreferenceTreeClick(PreferenceScreen screen,
+                                                   Preference preference) {
+        if (preference.getKey().equals(Settings.PREF_LOCATION)) {
+            getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new LocationFragment())
+                .addToBackStack("location")
+                .commit();
+            return true;
+        }
+        return super.onPreferenceTreeClick(screen, preference);
     }
 }

@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+		  android:key="settings_screen">
 
-  <PreferenceCategory android:title="@string/location" >
-
-    <com.aragaer.jtt.LocationPreference
-        android:defaultValue="0.0:0.0"
-        android:key="jtt_loc"
-        android:title="@string/location_ex" />
-  </PreferenceCategory>
+  <Preference
+      android:key="jtt_loc"
+      android:title="@string/location" />
 
   <PreferenceCategory android:title="@string/language" >
 
