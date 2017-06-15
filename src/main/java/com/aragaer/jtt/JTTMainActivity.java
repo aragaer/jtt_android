@@ -18,12 +18,15 @@ public class JTTMainActivity extends Activity implements SharedPreferences.OnSha
 	startService(new Intent(this, JttService.class));
 	final SharedPreferences pref = PreferenceManager .getDefaultSharedPreferences(this);
 	pref.registerOnSharedPreferenceChangeListener(this);
-	if (savedInstanceState == null) { // Otherwise we think that fragments are saved/restored
+	if (savedInstanceState == null) { // Otherwise we assume that fragments are saved/restored
 	    getFragmentManager().popBackStackImmediate("settings", FragmentManager.POP_BACK_STACK_INCLUSIVE);
 	    getFragmentManager().beginTransaction()
 		.replace(android.R.id.content, new MainFragment()).commit();
 	    if (!pref.contains(Settings.PREF_LOCATION)) // location is not set
-		openSettings();
+		getFragmentManager().beginTransaction()
+		    .replace(android.R.id.content, new LocationFragment())
+		    .addToBackStack("location")
+		    .commit();
 	}
     }
 
@@ -36,21 +39,17 @@ public class JTTMainActivity extends Activity implements SharedPreferences.OnSha
 	super.onSaveInstanceState(outState);
     }
 
-    private void openSettings() {
-	getFragmentManager().popBackStackImmediate("settings", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-	getFragmentManager().beginTransaction()
-	    .replace(android.R.id.content, new SettingsFragment())
-	    .addToBackStack("settings")
-	    .commit();
-    }
-
     @Override public boolean onCreateOptionsMenu(Menu menu) {
 	menu.add(R.string.settings);
 	return super.onCreateOptionsMenu(menu);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item) {
-	openSettings();
+	getFragmentManager().popBackStackImmediate("settings", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+	getFragmentManager().beginTransaction()
+	    .replace(android.R.id.content, new SettingsFragment())
+	    .addToBackStack("settings")
+	    .commit();
 	return true;
     }
 }
