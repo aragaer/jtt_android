@@ -10,6 +10,7 @@ import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
 
 import android.app.*;
 import android.content.*;
+import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 
@@ -83,12 +84,13 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
         rv.setTextViewText(R.id.start, sr.format_time(start));
         rv.setTextViewText(R.id.end, sr.format_time(end));
 
-        return new Notification.Builder(context)
+        return new NotificationCompat.Builder(context)
             .setContent(rv)
             .setOngoing(true)
             .setSmallIcon(R.drawable.notification_icon, h.num)
             .setContentIntent(PendingIntent.getActivity(context, 0,
                                                         new Intent(context, JTTMainActivity.class), 0))
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .getNotification();
     }
 
