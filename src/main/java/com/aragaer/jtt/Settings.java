@@ -14,7 +14,8 @@ public class Settings {
         PREF_HNAME = "jtt_hname",
         PREF_NOTIFY = "jtt_notify",
         PREF_THEME = "jtt_theme",
-        PREF_WIDGET = "jtt_widget_theme";
+        PREF_WIDGET = "jtt_widget_theme",
+        PREF_EMOJI_WIDGET = "jtt_emoji_widget";
 
     public static float[] getLocation(final Context context) {
         return new AndroidLocationHandler(context).getLocation();

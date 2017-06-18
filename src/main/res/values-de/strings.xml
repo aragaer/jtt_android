@@ -11,6 +11,8 @@
     <string name="settings">Einstellungen</string>
     <string name="notify">Benachrichtigungen</string>
     <string name="notify_ex">Das aktuelle Stundensymbol in der Statusleiste anzeigen</string>
+    <string name="emoji_widget">Emoji im Widget</string>
+    <string name="emoji_widget_ex">Den Namen der Stunde im Widget als Emoji anzeigen</string>
     <string name="today">Heute</string>
     <string name="sunrise">Sonnenaufgang</string>
     <string name="sunset">Sonnenuntergang</string>

@@ -7,7 +7,6 @@ import java.util.*;
 import com.aragaer.jtt.resources.StringResources;
 
 import android.app.ActionBar;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
@@ -19,7 +18,8 @@ import android.view.MenuInflater;
 public class SettingsFragment extends PreferenceFragment implements OnPreferenceChangeListener {
     private static final String prefcodes[] = {Settings.PREF_LOCATION, Settings.PREF_NOTIFY,
                                                Settings.PREF_LOCALE, Settings.PREF_HNAME,
-                                               Settings.PREF_THEME, Settings.PREF_WIDGET};
+                                               Settings.PREF_THEME, Settings.PREF_WIDGET,
+                                               Settings.PREF_EMOJI_WIDGET};
 
     private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 

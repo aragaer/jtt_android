@@ -15,6 +15,20 @@
         <item>2</item>
     </string-array>
 
+    <string-array name="emoji_hour">
+        <item>🐓</item>
+        <item>🐕</item>
+        <item>🐖</item>
+        <item>🐀</item>
+        <item>🐂</item>
+        <item>🐅</item>
+        <item>🐇</item>
+        <item>🐉</item>
+        <item>🐍</item>
+        <item>🐎</item>
+        <item>🐏</item>
+        <item>🐒</item>
+    </string-array>
     <string-array name="romaji_hour">
         <item>Tori</item>
         <item>Inu</item>

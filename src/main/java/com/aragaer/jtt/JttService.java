@@ -78,7 +78,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
             ticker.start();
         else if (key.equals(Settings.PREF_WIDGET)
                  || key.equals(Settings.PREF_LOCALE)
-                 || key.equals(Settings.PREF_HNAME))
+                 || key.equals(Settings.PREF_HNAME)
+                 || key.equals(Settings.PREF_EMOJI_WIDGET))
             JTTWidgetProvider.draw_all(this);
     }
 }

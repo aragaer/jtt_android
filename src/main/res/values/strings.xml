@@ -11,6 +11,8 @@
     <string name="settings">Settings</string>
     <string name="notify">Display notifications</string>
     <string name="notify_ex">Display current hour glyph in status bar.</string>
+    <string name="emoji_widget">Emoji in widget</string>
+    <string name="emoji_widget_ex">Display hour name in widget as emoji</string>
     <string name="today">Today</string>
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>

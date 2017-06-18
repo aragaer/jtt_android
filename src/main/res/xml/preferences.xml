@@ -25,6 +25,12 @@
             android:key="jtt_hname"
             android:title="@string/hour_names" />
 
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="jtt_emoji_widget"
+            android:summary="@string/emoji_widget_ex"
+            android:title="@string/emoji_widget" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/appearance" >
