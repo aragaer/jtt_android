@@ -35,10 +35,6 @@ public class JTTMainActivity extends Activity implements SharedPreferences.OnSha
 	    recreate();
     }
 
-    @Override public void onSaveInstanceState(Bundle outState) {
-	super.onSaveInstanceState(outState);
-    }
-
     @Override public boolean onCreateOptionsMenu(Menu menu) {
 	menu.add(R.string.settings);
 	return super.onCreateOptionsMenu(menu);
