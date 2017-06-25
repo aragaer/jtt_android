@@ -103,6 +103,7 @@ public class JTTMainActivityTest {
     @Test public void testSetLocation() {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(allOf(withId(android.R.id.title), withText("Settings"), isDisplayed())).perform(click());
+        onData(hasToString(startsWith("Location"))).perform(click());
         onData(hasToString(startsWith("Change stored location"))).perform(click());
         onView(allOf(withId(R.id.lat), withText("0.0"), isDisplayed())).perform(replaceText("55.78"));
         onView(allOf(withId(R.id.lon), withText("0.0"), isDisplayed())).perform(replaceText("37.65"));
@@ -110,6 +111,10 @@ public class JTTMainActivityTest {
         onView(withText("Use current location")).check(matches(isDisplayed()));
         onView(withText("OK")).perform(click());
         android.support.test.espresso.Espresso.pressBack();
+        String locationValue = PreferenceManager
+            .getDefaultSharedPreferences(getInstrumentation().getTargetContext())
+            .getString(Settings.PREF_LOCATION, "XXX");
+        assertThat(locationValue, equalTo("55.78:37.65"));
     }
 
     private static Matcher<View> childAtPosition(final Matcher<View> parentMatcher, final int position) {
