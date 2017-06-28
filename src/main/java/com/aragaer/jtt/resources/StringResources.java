@@ -13,6 +13,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
+
 public class StringResources implements
                                  SharedPreferences.OnSharedPreferenceChangeListener {
     public static final int TYPE_HOUR_NAME = 0x1;
@@ -74,10 +75,8 @@ public class StringResources implements
         else if (key.equals(Settings.PREF_HNAME)) {
             hour_name_option = Integer.parseInt(pref.getString(key, "0"));
             load_hour_names();
-        }
-        else if (key.equals(Settings.PREF_EMOJI_WIDGET)) {
+        } else if (key.equals(Settings.PREF_EMOJI_WIDGET))
             load_hour_names();
-        }
         notifyChange();
     }
 
