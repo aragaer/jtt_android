@@ -4,8 +4,8 @@
     <string name="abbr_app_name">JTT</string>
     <string-array name="locales">
         <item></item>
-        <item>de</item>
         <item>en</item>
+        <item>de</item>
         <item>ru</item>
         <item>ja</item>
     </string-array>
