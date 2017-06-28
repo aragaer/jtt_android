@@ -127,7 +127,7 @@ public class StringResources implements
         HrOf = resources.getStringArray(hnhof[hour_name_option]);
         if (PreferenceManager.getDefaultSharedPreferences(c)
                 .getBoolean(Settings.PREF_EMOJI_WIDGET, true))
-            Hours = resources.getStringArray(R.array.emoji_hour);
+            Hours = "🐓🐕🐖🐀🐂🐅🐇🐉🐍🐏🐎🐒".split("(?!^)");
         else
             Hours = resources.getStringArray(hnh[hour_name_option]);
         Quarters = resources.getStringArray(q[hour_name_option]);
