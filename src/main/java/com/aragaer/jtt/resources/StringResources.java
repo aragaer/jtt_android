@@ -18,6 +18,7 @@ public class StringResources implements
                                  SharedPreferences.OnSharedPreferenceChangeListener {
     public static final int TYPE_HOUR_NAME = 0x1;
     public static final int TYPE_TIME_FORMAT = 0x2;
+    public static final int TYPE_WIDGET_FORMAT = 0x4;
     private int change_pending;
 
     private final BroadcastReceiver TZChangeReceiver = new BroadcastReceiver() {
@@ -36,6 +37,7 @@ public class StringResources implements
     private String Hours[], HrOf[], Quarters[];
     private DateFormat df;
     private int hour_name_option;
+    private static final String[] HourEmoji = "🐓🐕🐖🐀🐂🐅🐇🐉🐍🐏🐎🐒".split("(?!^)");
 
     protected StringResources(final Context context) {
         c = context;
@@ -76,7 +78,7 @@ public class StringResources implements
             hour_name_option = Integer.parseInt(pref.getString(key, "0"));
             load_hour_names();
         } else if (key.equals(Settings.PREF_EMOJI_WIDGET))
-            load_hour_names();
+            change_pending = TYPE_WIDGET_FORMAT;
         notifyChange();
     }
 
@@ -124,13 +126,17 @@ public class StringResources implements
 
     private void load_hour_names() {
         HrOf = resources.getStringArray(hnhof[hour_name_option]);
+        Hours = resources.getStringArray(hnh[hour_name_option]);
+        Quarters = resources.getStringArray(q[hour_name_option]);
+        change_pending |= TYPE_HOUR_NAME | TYPE_WIDGET_FORMAT;
+    }
+
+    public String formatHourForWidget(int hourNumber) {
         if (PreferenceManager.getDefaultSharedPreferences(c)
                 .getBoolean(Settings.PREF_EMOJI_WIDGET, true))
-            Hours = "🐓🐕🐖🐀🐂🐅🐇🐉🐍🐏🐎🐒".split("(?!^)");
+            return HourEmoji[hourNumber];
         else
-            Hours = resources.getStringArray(hnh[hour_name_option]);
-        Quarters = resources.getStringArray(q[hour_name_option]);
-        change_pending |= TYPE_HOUR_NAME;
+            return Hours[hourNumber];
     }
 
     public String format_time(final long timestamp) {

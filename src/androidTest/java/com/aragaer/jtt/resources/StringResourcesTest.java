@@ -36,7 +36,8 @@ public class StringResourcesTest {
         editor.putBoolean(Settings.PREF_EMOJI_WIDGET, false);
         editor.commit();
 	stringResources = new StringResources(context);
-	stringResources.registerStringResourceChangeListener(changeListener, StringResources.TYPE_HOUR_NAME);
+	stringResources.registerStringResourceChangeListener(changeListener,
+							     StringResources.TYPE_HOUR_NAME | StringResources.TYPE_WIDGET_FORMAT);
     }
 
     @Test public void testEnglishHourNames() throws Exception {
@@ -59,6 +60,26 @@ public class StringResourcesTest {
 	}
     }
 
+    @Test public void testTextWidget() throws Exception {
+	setWidgetHourFormat(true);
+	setWidgetHourFormat(false);
+	String shortNames[] = "Cock Dog Boar Rat Ox Tiger Hare Dragon Serpent Horse Ram Monkey".split(" ");
+	for (int i = 0; i < 12; i++) {
+	    assertThat(stringResources.getHour(i), equalTo("The " + shortNames[i]));
+	    assertThat(stringResources.formatHourForWidget(i), equalTo("The " + shortNames[i]));
+	}
+    }
+
+    @Test public void testEmojiWidget() throws Exception {
+	setWidgetHourFormat(true);
+	String shortNames[] = "Cock Dog Boar Rat Ox Tiger Hare Dragon Serpent Horse Ram Monkey".split(" ");
+	String emoji[] = "🐓🐕🐖🐀🐂🐅🐇🐉🐍🐏🐎🐒".split("(?!^)");
+	for (int i = 0; i < 12; i++) {
+	    assertThat(stringResources.getHour(i), equalTo("The " + shortNames[i]));
+	    assertThat(stringResources.formatHourForWidget(i), equalTo(emoji[i]));
+	}
+    }
+
     private void setLocale(String locale) throws Exception {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putString(Settings.PREF_LOCALE, locale);
@@ -66,7 +87,21 @@ public class StringResourcesTest {
 	synchronized (changeListener) {
 	    changeListener.wait(1000);
 	}
-	assertThat(changeListener.triggered, not(equalTo(0)));
+	assertThat("StringResources hour name changed",
+		   changeListener.triggered & StringResources.TYPE_HOUR_NAME,
+		   equalTo(StringResources.TYPE_HOUR_NAME));
+    }
+
+    private void setWidgetHourFormat(boolean value) throws Exception {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putBoolean(Settings.PREF_EMOJI_WIDGET, value);
+        editor.commit();
+	synchronized (changeListener) {
+	    changeListener.wait(1000);
+	}
+	assertThat("StringResources hour name changed",
+		   changeListener.triggered,
+		   equalTo(StringResources.TYPE_WIDGET_FORMAT));
     }
 
     private class ChangeListener implements StringResources.StringResourceChangeListener {
