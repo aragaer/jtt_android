@@ -2,7 +2,10 @@
 
 Japanese Traditional Time application for android.
 
-[JTT in Google Play](https://play.google.com/store/apps/details?id=com.aragaer.jtt)
+<a href="https://f-droid.org/packages/com.aragaer.jtt/" target="_blank">
+<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80"/></a>
+<a href="https://play.google.com/store/apps/details?id=com.aragaer.jtt" target="_blank">
+<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80"/></a>
 
 #### What it does
 The application shows the time using the [traditional japanese time system][] and builds some additional services around it:
