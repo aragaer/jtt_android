@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">HeureJaponaiseTraditionelle</string>
+    <string name="auto_lat_long">Utiliser la localisation actuelle</string>
+    <string name="location">Localisation</string>
+    <string name="location_ex">Modifier la localisation sauvegardée</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="clock">Horloge</string>
+    <string name="settings">Réglages</string>
+    <string name="notify">Afficher les notifications</string>
+    <string name="notify_ex">Afficher le symbole d\'heure dans la barre de statut.</string>
+    <string name="emoji_widget">Emoji dans le widget</string>
+    <string name="emoji_widget_ex">Afficher l\'heure en tant qu\'emoji dans le widget</string>
+    <string name="today">Aujourd\'hui</string>
+    <string name="sunrise">Lever du soleil</string>
+    <string name="sunset">Coucher du soleil</string>
+    <string name="noon">Midi</string>
+    <string name="midnight">Minuit</string>
+    <string name="hour_names">Nom des heures</string>
+    <string name="no_providers">Impossible de déterminer l\'emplacement. Activez la localisation, SVP.</string>
+
+
+
+    <string name="language">Noms et langues</string>
+    <string name="appearance">Habillage</string>
+    <string name="widget1">HJT: Heure simple</string>
+    <string name="widget12">HJT: Horloge</string>
+    <string name="locale">Langue</string>
+    <string name="locale_default">Par défaut</string>
+
+
+
+    <string name="pref_theme">Thème</string>
+    <string name="pref_widget">Thème du widget</string>
+
+</resources>
