@@ -2,13 +2,12 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
-import android.app.Activity;
 import android.content.*;
 import android.preference.PreferenceManager;
-import android.support.test.espresso.*;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.test.runner.MonitoringInstrumentation;
+import androidx.test.espresso.*;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
+import androidx.test.runner.MonitoringInstrumentation;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.view.*;
 
@@ -16,12 +15,12 @@ import org.hamcrest.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
-import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
+import static androidx.test.InstrumentationRegistry.getInstrumentation;
+import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.*;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 
@@ -67,7 +66,7 @@ public class JTTMainActivityTest {
 
         ViewInteraction nihongo = onView(allOf(withId(android.R.id.text1), withText("日本語"), isDisplayed()));
         nihongo.perform(click());
-        android.support.test.espresso.Espresso.pressBack();
+        androidx.test.espresso.Espresso.pressBack();
 
         onView(withText("今日")).check(matches(isDisplayed()));
         onView(withText("時計")).check(matches(isDisplayed()));
@@ -80,7 +79,7 @@ public class JTTMainActivityTest {
 
         ViewInteraction russian = onView(allOf(withId(android.R.id.text1), withText("Русский"), isDisplayed()));
         russian.perform(click());
-        android.support.test.espresso.Espresso.pressBack();
+        androidx.test.espresso.Espresso.pressBack();
 
         onView(withText("Часы")).check(matches(isDisplayed()));
         onView(withText("Сегодня")).check(matches(isDisplayed()));
@@ -94,7 +93,7 @@ public class JTTMainActivityTest {
         styleItem.perform(click());
         ViewInteraction darkStyle = onView(allOf(withId(android.R.id.text1), withText("Dark"), isDisplayed()));
         darkStyle.perform(click());
-        android.support.test.espresso.Espresso.pressBack();
+        androidx.test.espresso.Espresso.pressBack();
     }
 
     @Test public void testSetLocation() {
@@ -111,7 +110,7 @@ public class JTTMainActivityTest {
 
         onView(allOf(withId(android.R.id.button1), withText("OK"), isDisplayed())).perform(click());
 
-        android.support.test.espresso.Espresso.pressBack();
+        androidx.test.espresso.Espresso.pressBack();
     }
 
     private static Matcher<View> childAtPosition(final Matcher<View> parentMatcher, final int position) {
