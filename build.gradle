@@ -16,6 +16,7 @@ apply plugin: 'jacoco'
 repositories {
     mavenCentral()
     jcenter()
+    google()
 }
 
 dependencies {
@@ -60,6 +61,8 @@ android {
     defaultConfig {
         testApplicationId "com.aragaer.jtt.test"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion 14
+        targetSdkVersion 29
     }
 
     signingConfigs {
