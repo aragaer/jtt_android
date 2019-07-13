@@ -35,7 +35,7 @@ before_script:
   - set -e
   - gradle -b wrapper.gradle wrapper
   - cp travis.gradle.properties gradle.properties
-  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+  - echo no | android create avd --force -n test --abi $ANDROID_ABI -k "system-images;${ANDROID_TARGET};default;${ANDROID_ABI}"
   - export QEMU_AUDIO_DRV=none
   - emulator -avd test -no-window -no-accel &
 
