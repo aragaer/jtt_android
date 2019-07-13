@@ -33,15 +33,13 @@ install:
   - echo yes | sdkmanager "system-images;${ANDROID_TARGET};default;${ANDROID_ABI}"
 
 before_script:
-  - set -e
   - gradle -b wrapper.gradle wrapper
   - cp travis.gradle.properties gradle.properties
-  - echo no | android create avd --force -n test --abi $ANDROID_ABI -k "system-images;${ANDROID_TARGET};default;${ANDROID_ABI}"
+  - (cd $(dirname $(which android)) && echo no | ./android create avd --force -n test --abi $ANDROID_ABI -k "system-images;${ANDROID_TARGET};default;${ANDROID_ABI}")
   - export QEMU_AUDIO_DRV=none
-  - emulator -avd test -no-window -no-accel &
+  - (cd $(dirname $(which emulator)) && ./emulator -avd test -no-window -no-accel -no-audio &)
 
 script:
-  - set -e
   - ./gradlew test
   - ./gradlew jacocoTestReport
   - ./gradlew assembleDebug assembleAndroidTest
