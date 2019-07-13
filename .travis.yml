@@ -1,5 +1,5 @@
 # vim: et ts=2 sts=2 sw=2
-
+dist: trusty
 language: android
 jdk: oraclejdk8
 
@@ -13,35 +13,24 @@ cache:
 
 env:
   matrix:
-    - ANDROID_TARGET=android-22  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-28
 
 android:
   components:
     - tools
     - platform-tools
-    - tools
-    - build-tools-25.0.3
-    - android-25
-    - android-22
-    - extra-android-m2repository
-    - sys-img-${ANDROID_ABI}-${ANDROID_TARGET}
+    - build-tools-29.0.1
+    - ${ANDROID_TARGET}
+
+install:
+  - echo yes | sdkmanager "tools"
 
 before_script:
-  - set -e
-  - gradle wrapper -b wrapper.gradle
+  - gradle -b wrapper.gradle wrapper
   - cp travis.gradle.properties gradle.properties
-  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
-  - export QEMU_AUDIO_DRV=none
-  - emulator -avd test -no-window &
 
 script:
-  - set -e
   - ./gradlew test
   - ./gradlew jacocoTestReport
-  - ./gradlew assembleDebug assembleAndroidTest
-  - android-wait-for-emulator
-  - adb shell setprop dalvik.vm.dexopt-flags v=n,o=v
-  - adb shell input keyevent 82
-  - ./gradlew connectedCheck
 
 after_success: bash <(curl -s https://codecov.io/bash)

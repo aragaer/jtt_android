@@ -6,16 +6,13 @@ import android.content.*;
 import android.preference.PreferenceManager;
 import androidx.test.espresso.*;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
-import androidx.test.runner.MonitoringInstrumentation;
-import android.test.suitebuilder.annotation.LargeTest;
+import androidx.test.filters.LargeTest;
 import android.view.*;
 
 import org.hamcrest.*;
 import org.junit.*;
-import org.junit.runner.RunWith;
 
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.*;
@@ -26,7 +23,6 @@ import static org.hamcrest.Matchers.is;
 
 
 @LargeTest
-@RunWith(AndroidJUnit4.class)
 public class JTTMainActivityTest {
 
     @Rule
@@ -42,7 +38,7 @@ public class JTTMainActivityTest {
     }
 
     @Test public void testSwiping() {
-        ViewInteraction viewPager = onView(allOf(withClassName(is("android.support.v4.view.ViewPager")),
+        ViewInteraction viewPager = onView(allOf(withClassName(is("androidx.viewpager.widget.ViewPager")),
                                                  isDisplayed()));
         viewPager.perform(swipeLeft());
         viewPager.perform(swipeRight());
