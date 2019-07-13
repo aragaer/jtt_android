@@ -84,7 +84,7 @@ android {
     }
 }
 
-task jacocoTestReport(type: JacocoReport, dependsOn: ["testDebugUnitTest", "createDebugCoverageReport"]) {
+task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
     group = "Reporting"
     description = "Generate Jacoco coverage reports after running tests."
     reports {
@@ -102,10 +102,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ["testDebugUnitTest", "crea
                    '**/*Module_*Factory.class'
     ])
     sourceDirectories = files('src/main/java')
-    executionData = fileTree(dir: "$buildDir", includes: [
-        'jacoco/testDebugUnitTest.exec',
-        "outputs/code-coverage/connected/*coverage.ec"
-    ])
+    executionData = files('jacoco/testDebugUnitTest.exec')
 }
 
 task jacocoTestReportQuick(type: JacocoReport, dependsOn: "test") {
@@ -118,7 +115,7 @@ task jacocoTestReportQuick(type: JacocoReport, dependsOn: "test") {
 
 gradle.taskGraph.whenReady { graph ->
     if (graph.hasTask(createDebugAndroidTestCoverageReport)) {
-        android.defaultConfig.testInstrumentationRunnerArgument "notAnnotation", "android.support.test.filters.LargeTest"
+        android.defaultConfig.testInstrumentationRunnerArgument "notAnnotation", "androidx.test.filters.LargeTest"
     }
 }
 
