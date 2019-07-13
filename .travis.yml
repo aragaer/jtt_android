@@ -26,6 +26,11 @@ android:
     - ${ANDROID_TARGET}
     - sys-img-${ANDROID_ABI}-${ANDROID_TARGET}
 
+install:
+  - echo yes | sdkmanager "tools"
+  - echo yes | sdkmanager "platforms;${ANDROID_TARGET}"
+  - echo yes | sdkmanager "system-images;${ANDROID_TARGET};default;${ANDROID_ABI}"
+
 before_script:
   - set -e
   - gradle -b wrapper.gradle wrapper
