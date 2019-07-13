@@ -25,7 +25,7 @@ android:
   components:
     - tools
     - platform-tools
-    - tools
+    - tools-26.1.1
     - build-tools-29.0.1
     - android-${ANDROID_ABI}
     - sys-img-${ANDROID_ABI}-${ANDROID_TARGET}
