@@ -24,7 +24,7 @@ android:
     - platform-tools
     - tools-26.1.1
     - build-tools-29.0.1
-    - android-${ANDROID_ABI}
+    - ${ANDROID_TARGET}
     - sys-img-${ANDROID_ABI}-${ANDROID_TARGET}
 
 before_script:
