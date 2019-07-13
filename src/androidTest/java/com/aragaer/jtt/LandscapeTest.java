@@ -2,20 +2,18 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
-import android.support.test.filters.LargeTest;
-import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
 
 import android.support.test.uiautomator.UiDevice;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
+import androidx.test.filters.LargeTest;
+
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 
 @LargeTest
-@RunWith(AndroidJUnit4.class)
 public class LandscapeTest extends JTTMainActivityTest {
 
     @BeforeClass public static void rotate() throws Exception {

@@ -2,28 +2,25 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.android;
 
-import org.junit.*;
-import org.junit.runner.RunWith;
-
 import android.content.*;
 import android.content.pm.*;
-import android.support.test.runner.AndroidJUnit4;
 
 import com.aragaer.jtt.mechanics.AndroidTicker;
 
-import static org.junit.Assert.*;
+import org.junit.*;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 
-@RunWith(AndroidJUnit4.class)
 public class TimeChangeReceiverTest {
 
     private Context context;
     private MyReceiver receiver;
 
     @Before public void setUp() {
-        context = getTargetContext();
+        context = getInstrumentation().getTargetContext();
         receiver = new MyReceiver();
         context.registerReceiver(receiver, new IntentFilter(AndroidTicker.ACTION_JTT_TICK));
     }

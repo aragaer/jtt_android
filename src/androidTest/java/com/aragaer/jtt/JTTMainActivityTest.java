@@ -2,35 +2,32 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
-import android.Manifest;
-import android.app.Activity;
+
 import android.content.*;
-import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
-import android.support.test.espresso.*;
-import android.support.test.filters.LargeTest;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.test.runner.MonitoringInstrumentation;
 import android.support.test.uiautomator.*;
 import android.view.*;
 
-import org.hamcrest.*;
+import androidx.test.espresso.*;
+import androidx.test.filters.LargeTest;
+import androidx.test.rule.ActivityTestRule;
+
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.*;
-import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
-import static android.support.test.espresso.Espresso.onData;
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
-import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static org.hamcrest.Matchers.*;
-
+import static androidx.test.espresso.Espresso.*;
+import static androidx.test.espresso.action.ViewActions.*;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasToString;
+import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.core.AllOf.allOf;
 
 @LargeTest
-@RunWith(AndroidJUnit4.class)
 public class JTTMainActivityTest {
 
     @Rule
@@ -54,7 +51,7 @@ public class JTTMainActivityTest {
     }
 
     @Test public void testSwiping() {
-        ViewInteraction viewPager = onView(allOf(withClassName(is("android.support.v4.view.ViewPager")),
+        ViewInteraction viewPager = onView(allOf(withClassName(is("androidx.viewpager.widget.ViewPager")),
                                                  isDisplayed()));
         viewPager.perform(swipeLeft());
         viewPager.perform(swipeRight());
@@ -72,9 +69,10 @@ public class JTTMainActivityTest {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
         onView(allOf(withId(android.R.id.title), withText("Settings"), isDisplayed())).perform(click());
+
         onData(hasToString(startsWith("Language"))).perform(click());
         onData(hasToString(startsWith("日本語"))).perform(click());
-        android.support.test.espresso.Espresso.pressBack();
+        androidx.test.espresso.Espresso.pressBack();
 
         onView(withText("今日")).check(matches(isDisplayed()));
         onView(withText("時計")).check(matches(isDisplayed()));
@@ -84,7 +82,7 @@ public class JTTMainActivityTest {
         onData(hasToString(startsWith("言語"))).perform(click());
 
         onData(hasToString(startsWith("Русский"))).perform(click());
-        android.support.test.espresso.Espresso.pressBack();
+        androidx.test.espresso.Espresso.pressBack();
 
         onView(withText("Часы")).check(matches(isDisplayed()));
         onView(withText("Сегодня")).check(matches(isDisplayed()));
@@ -97,7 +95,7 @@ public class JTTMainActivityTest {
         onView(allOf(withId(android.R.id.text1), withText("Translucent"))).check(matches(isDisplayed()));
         onView(allOf(withId(android.R.id.text1), withText("Light"))).check(matches(isDisplayed()));
         onView(allOf(withId(android.R.id.text1), withText("Dark"), isDisplayed())).perform(click());
-        android.support.test.espresso.Espresso.pressBack();
+        androidx.test.espresso.Espresso.pressBack();
     }
 
     @Test public void testSetLocation() {
@@ -109,7 +107,7 @@ public class JTTMainActivityTest {
         onView(withText("Cancel")).check(matches(isDisplayed()));
         onView(withText("Use current location")).check(matches(isDisplayed()));
         onView(withText("OK")).perform(click());
-        android.support.test.espresso.Espresso.pressBack();
+        androidx.test.espresso.Espresso.pressBack();
     }
 
     private static Matcher<View> childAtPosition(final Matcher<View> parentMatcher, final int position) {

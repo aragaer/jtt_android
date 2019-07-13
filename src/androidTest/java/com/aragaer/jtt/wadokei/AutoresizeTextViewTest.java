@@ -3,18 +3,16 @@
 package com.aragaer.jtt.wadokei;
 
 import android.content.Context;
-import android.support.test.runner.AndroidJUnit4;
 import android.widget.TextView;
+
 
 import org.junit.*;
 import org.junit.runner.RunWith;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.junit.Assert.*;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
 
-
-@RunWith(AndroidJUnit4.class)
 public class AutoresizeTextViewTest {
 
     private Context context;
@@ -22,7 +20,7 @@ public class AutoresizeTextViewTest {
     private float scale;
 
     @Before public void setUp() {
-        context = getTargetContext();
+        context = getInstrumentation().getTargetContext();
         view = new AutoresizeTextView(context);
         scale = context.getResources().getDisplayMetrics().density;
     }

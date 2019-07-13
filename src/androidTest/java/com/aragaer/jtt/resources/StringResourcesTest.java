@@ -6,22 +6,18 @@ import android.content.*;
 import android.content.pm.*;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
-import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 
 import org.junit.*;
-import org.junit.runner.RunWith;
 
 import com.aragaer.jtt.R;
 import com.aragaer.jtt.Settings;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
 
-@RunWith(AndroidJUnit4.class)
 public class StringResourcesTest {
 
     private Context context;
@@ -29,7 +25,7 @@ public class StringResourcesTest {
     private ChangeListener changeListener;
 
     @Before public void setUp() {
-	context = getTargetContext();
+	context = getInstrumentation().getTargetContext();
 	changeListener = new ChangeListener();
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putString(Settings.PREF_LOCALE, "");

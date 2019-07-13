@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:jtt="http://schemas.android.com/apk/res/com.aragaer.jtt">
+    xmlns:jtt="http://schemas.android.com/apk/res-auto"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://schemas.android.com/apk/res-auto ">
 
     <style name="BaseTheme" parent="@android:style/Theme.Holo">
         <item name="android:actionBarStyle">@style/DarkActionBar</item>
@@ -22,7 +24,7 @@
         <item name="wadokei_fill">@color/wadokei_fill</item>
         <item name="text_stroke">@color/wadokei_fill</item>
         <item name="item_boundary">@drawable/today_border</item>
-     </style>
+    </style>
 
     <style name="JTTTheme" parent="DarkTheme">
         <item name="android:windowBackground">@color/window_background</item>
@@ -100,8 +102,10 @@
     </style>
 
     <style name="NotificationText" parent="android:TextAppearance.StatusBar.EventContent" />
+
     <style name="NotificationTitle" parent="android:TextAppearance.StatusBar.EventContent.Title" />
-    <style name="NotificationGlyph" parent="android:TextAppearance.StatusBar.EventContent.Title" >
+
+    <style name="NotificationGlyph" parent="android:TextAppearance.StatusBar.EventContent.Title">
         <item name="android:textSize">25dp</item>
     </style>
 

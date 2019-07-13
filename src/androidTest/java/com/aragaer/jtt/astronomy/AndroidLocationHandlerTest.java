@@ -4,26 +4,24 @@ package com.aragaer.jtt.astronomy;
 
 import android.content.*;
 import android.preference.PreferenceManager;
-import android.support.test.runner.AndroidJUnit4;
+
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 import org.junit.*;
-import org.junit.runner.RunWith;
 
 import com.aragaer.jtt.Settings;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
 
 
-@RunWith(AndroidJUnit4.class)
 public class AndroidLocationHandlerTest {
 
     private LocationHandler locationHandler;
     private Context context;
 
     @Before public void setUp() {
-        context = getTargetContext();
+        context = getInstrumentation().getTargetContext();
         locationHandler = new AndroidLocationHandler(context);
     }
 

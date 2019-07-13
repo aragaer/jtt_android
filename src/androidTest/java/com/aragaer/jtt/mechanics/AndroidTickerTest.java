@@ -5,22 +5,18 @@ package com.aragaer.jtt.mechanics;
 import java.util.Calendar;
 
 import org.junit.*;
-import org.junit.runner.RunWith;
 
 import android.content.*;
 import android.os.*;
-import android.support.test.runner.AndroidJUnit4;
 
 import com.aragaer.jtt.core.*;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 
-@RunWith(AndroidJUnit4.class)
 public class AndroidTickerTest {
 
     private Context context;
@@ -37,7 +33,7 @@ public class AndroidTickerTest {
     }
 
     @Before public void setUp() {
-        context = getTargetContext();
+        context = getInstrumentation().getTargetContext();
         clockwork = new TestClockwork();
         announcer = new TestAnnouncer();
         ticker = new AndroidTicker(context, clockwork, announcer);

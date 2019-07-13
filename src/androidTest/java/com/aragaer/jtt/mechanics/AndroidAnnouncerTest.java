@@ -3,19 +3,15 @@
 package com.aragaer.jtt.mechanics;
 
 import org.junit.*;
-import org.junit.runner.RunWith;
 
 import android.content.*;
-import android.support.test.runner.AndroidJUnit4;
 
 import com.aragaer.jtt.core.*;
 
 import static org.junit.Assert.*;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
 
-
-@RunWith(AndroidJUnit4.class)
 public class AndroidAnnouncerTest {
 
     private static IntentFilter filter = new IntentFilter(AndroidTicker.ACTION_JTT_TICK);
@@ -24,7 +20,7 @@ public class AndroidAnnouncerTest {
     private TestIntervalProvider intervalProvider;
 
     @Before public void setUp() {
-        context = getTargetContext();
+        context = getInstrumentation().getTargetContext();
         intervalProvider = new TestIntervalProvider();
         announcer = new AndroidAnnouncer(context, intervalProvider);
         context.removeStickyBroadcast(new Intent(AndroidTicker.ACTION_JTT_TICK));

@@ -4,28 +4,24 @@ package com.aragaer.jtt;
 
 import android.content.*;
 import android.content.pm.*;
-import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 import android.util.Log;
 
 import org.junit.*;
-import org.junit.runner.RunWith;
 
 import com.aragaer.jtt.mechanics.AndroidTicker;
 
 import static org.junit.Assert.*;
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 
-@RunWith(AndroidJUnit4.class)
 public class JttServiceTest {
 
     private Context context;
     private MyReceiver receiver;
 
     @Before public void setUp() {
-        context = getTargetContext();
+        context = getInstrumentation().getTargetContext();
         receiver = new MyReceiver();
         context.removeStickyBroadcast(new Intent(AndroidTicker.ACTION_JTT_TICK));
         context.registerReceiver(receiver, new IntentFilter(AndroidTicker.ACTION_JTT_TICK));

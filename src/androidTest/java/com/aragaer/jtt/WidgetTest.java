@@ -3,24 +3,18 @@
 package com.aragaer.jtt;
 
 import android.content.*;
-import android.graphics.Point;
 import android.preference.PreferenceManager;
-import android.support.test.espresso.*;
-import android.support.test.filters.LargeTest;
-import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.*;
 import android.view.*;
 import android.widget.*;
 
-import org.junit.*;
-import org.junit.runner.RunWith;
+import androidx.test.filters.LargeTest;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
-import static android.support.test.InstrumentationRegistry.*;
-import static org.junit.Assert.*;
+import org.junit.*;
 
 
 @LargeTest
-@RunWith(AndroidJUnit4.class)
 public class WidgetTest {
 
     private static final int LAUNCH_TIMEOUT = 5000;
@@ -35,7 +29,7 @@ public class WidgetTest {
     @Before public void setUp() {
         Context context = getInstrumentation().getTargetContext();
         setInitialLocation(context);
-        context.startService(new Intent(getTargetContext(), JttService.class));
+        context.startService(new Intent(getInstrumentation().getTargetContext(), JttService.class));
     }
 
     private void putWidgetOnHome(String widgetName) throws Exception {
