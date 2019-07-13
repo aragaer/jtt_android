@@ -1,5 +1,5 @@
 # vim: et ts=2 sts=2 sw=2
-
+dist: trusty
 language: android
 jdk: oraclejdk8
 
@@ -28,6 +28,7 @@ android:
 
 install:
   - echo yes | sdkmanager "tools"
+  - echo yes | sdkmanager "emulator"
   - echo yes | sdkmanager "platforms;${ANDROID_TARGET}"
   - echo yes | sdkmanager "system-images;${ANDROID_TARGET};default;${ANDROID_ABI}"
 
