@@ -32,7 +32,7 @@ android:
 
 before_script:
   - set -e
-  - gradle wrapper
+  - gradle -b wrapper.gradle wrapper
   - cp travis.gradle.properties gradle.properties
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - export QEMU_AUDIO_DRV=none
