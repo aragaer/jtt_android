@@ -13,10 +13,7 @@ cache:
 
 env:
   matrix:
-    - ANDROID_TARGET=android-24  ANDROID_ABI=armeabi-v7a
-    - ANDROID_TARGET=android-25  ANDROID_ABI=x86
-    - ANDROID_TARGET=android-27  ANDROID_ABI=x86
-    - ANDROID_TARGET=android-28  ANDROID_ABI=x86
+    - ANDROID_TARGET=android-28
 
 android:
   components:
@@ -24,32 +21,16 @@ android:
     - platform-tools
     - build-tools-29.0.1
     - ${ANDROID_TARGET}
-    - sys-img-${ANDROID_ABI}-${ANDROID_TARGET}
 
 install:
   - echo yes | sdkmanager "tools"
-  - echo yes | sdkmanager "emulator"
-  - echo yes | sdkmanager "platforms;${ANDROID_TARGET}"
-  - echo yes | sdkmanager "system-images;${ANDROID_TARGET};default;${ANDROID_ABI}"
 
 before_script:
   - gradle -b wrapper.gradle wrapper
   - cp travis.gradle.properties gradle.properties
-  - (cd $(dirname $(which android)) && echo no | ./android create avd --force -n test --abi $ANDROID_ABI -k "system-images;${ANDROID_TARGET};default;${ANDROID_ABI}")
-  - export QEMU_AUDIO_DRV=none
-  - (cd $(dirname $(which emulator))/../emulator && ./emulator -avd test -no-window -no-accel -no-audio &)
 
 script:
   - ./gradlew test
   - ./gradlew jacocoTestReport
-  - ./gradlew assembleDebug assembleAndroidTest
-  - adb shell setprop ro.test_harness true
-  - android-wait-for-emulator
-  - adb shell settings put global window_animation_scale 0
-  - adb shell settings put global transition_animation_scale 0
-  - adb shell settings put global animator_duration_scale 0
-  - adb shell setprop dalvik.vm.dexopt-flags v=n,o=v
-  - adb shell input keyevent 82
-  - ./gradlew connectedCheck
 
 after_success: bash <(curl -s https://codecov.io/bash)
