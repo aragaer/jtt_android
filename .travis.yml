@@ -14,21 +14,25 @@ cache:
 env:
   matrix:
     - ANDROID_TARGET=android-22  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-23  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-24  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-25  ANDROID_ABI=x86
+    - ANDROID_TARGET=android-26  ANDROID_ABI=x86
+    - ANDROID_TARGET=android-27  ANDROID_ABI=x86
+    - ANDROID_TARGET=android-28  ANDROID_ABI=x86
 
 android:
   components:
     - tools
     - platform-tools
     - tools
-    - build-tools-25.0.3
-    - android-25
-    - android-22
-    - extra-android-m2repository
+    - build-tools-29.0.1
+    - android-${ANDROID_ABI}
     - sys-img-${ANDROID_ABI}-${ANDROID_TARGET}
 
 before_script:
   - set -e
-  - gradle wrapper -b wrapper.gradle
+  - gradle wrapper
   - cp travis.gradle.properties gradle.properties
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - export QEMU_AUDIO_DRV=none
