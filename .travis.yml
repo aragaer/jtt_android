@@ -13,11 +13,8 @@ cache:
 
 env:
   matrix:
-    - ANDROID_TARGET=android-22  ANDROID_ABI=armeabi-v7a
-    - ANDROID_TARGET=android-23  ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-24  ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-25  ANDROID_ABI=x86
-    - ANDROID_TARGET=android-26  ANDROID_ABI=x86
     - ANDROID_TARGET=android-27  ANDROID_ABI=x86
     - ANDROID_TARGET=android-28  ANDROID_ABI=x86
 
