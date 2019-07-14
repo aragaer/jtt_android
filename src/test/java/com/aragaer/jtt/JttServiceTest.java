@@ -64,7 +64,7 @@ public class JttServiceTest {
 
 class TestJttService extends JttService {
     final LinkedList<BroadcastReceiver> receivers = new LinkedList<>();
-    final LinkedList<IntentFilter> filters = new LinkedList<>();
+    private final LinkedList<IntentFilter> filters = new LinkedList<>();
 
     @Override public Intent registerReceiver(BroadcastReceiver receiver,
                                              IntentFilter intentFilter) {

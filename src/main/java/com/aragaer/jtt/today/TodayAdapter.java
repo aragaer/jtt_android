@@ -11,6 +11,9 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.System;
 
 public class TodayAdapter extends ArrayAdapter<TodayItem> implements
@@ -29,8 +32,11 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
     }
 
     @Override
-    public View getView(int position, View v, ViewGroup parent) {
-        return getItem(position).toView(parent.getContext(), v, selected - position);
+    public @NotNull View getView(int position, View v, @NotNull ViewGroup parent) {
+        TodayItem item = getItem(position);
+        if (item == null)
+            return v;
+        return item.toView(parent.getContext(), v, selected - position);
     }
 
     /* takes a sublist of hours
@@ -73,9 +79,11 @@ public class TodayAdapter extends ArrayAdapter<TodayItem> implements
             return;
 
         // odd items - boundaries
-        selected = 0;
-        while (getItem(selected + 1).time < now)
-            selected += 2;
+        for (selected = 0; selected < getCount() - 1; selected += 2) {
+            TodayItem item = getItem(selected + 1);
+            if (item == null || item.time >= now)
+                break;
+        }
 
         notifyDataSetChanged();
     }

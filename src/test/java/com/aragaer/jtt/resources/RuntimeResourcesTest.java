@@ -28,10 +28,10 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
             DateFormat.class})
 public class RuntimeResourcesTest {
 
-    static final Context mockContext = mock(Context.class);
-    final SharedPreferences mockPref = mock(SharedPreferences.class);
-    final Resources resources = mock(Resources.class);
-    final Configuration config = mock(Configuration.class);
+    private static final Context mockContext = mock(Context.class);
+    private final SharedPreferences mockPref = mock(SharedPreferences.class);
+    private final Resources resources = mock(Resources.class);
+    private final Configuration config = mock(Configuration.class);
 
     @Before public void setUp() {
         mockStatic(Log.class);

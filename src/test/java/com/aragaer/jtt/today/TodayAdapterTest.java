@@ -163,7 +163,7 @@ public class TodayAdapterTest {
     }
 
     private static class FakeTodayAdapter extends TodayAdapter {
-        public final ArrayList<TodayItem> items = new ArrayList<>();
+        final ArrayList<TodayItem> items = new ArrayList<>();
         boolean datasetChanged;
         boolean clearCalled;
 

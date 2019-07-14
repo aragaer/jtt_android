@@ -13,9 +13,9 @@ import android.view.View;
 
 /* Hour item in TodayList */
 class HourItem extends TodayItem {
-    public final int hnum;
+    /* package private */ final int hnum;
 
-    public HourItem(long t, int h) {
+    /* package private */ HourItem(long t, int h) {
         super(t);
         hnum = h % 12;
     }

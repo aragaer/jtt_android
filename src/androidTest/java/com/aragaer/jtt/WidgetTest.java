@@ -18,9 +18,9 @@ public class WidgetTest {
 
     private static final int LAUNCH_TIMEOUT = 5000;
 
-    public void setInitialLocation(Context context) {
+    private void setInitialLocation(Context context) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putString(Settings.PREF_LOCATION, "0.0:0.0");
+        editor.putString(Settings.PREF_LOCATION, LocationPreference.DEFAULT);
         editor.putString(Settings.PREF_LOCALE, "1");
         editor.commit();
     }

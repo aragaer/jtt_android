@@ -4,7 +4,6 @@ package com.aragaer.jtt.mechanics;
 
 import org.junit.*;
 
-import android.content.*;
 import android.os.*;
 
 import com.aragaer.jtt.core.*;
@@ -12,12 +11,9 @@ import com.aragaer.jtt.core.*;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-
 
 public class AndroidTickerTest {
 
-    private Context context;
     private TestClockwork clockwork;
     private AndroidTicker ticker;
     private TestAnnouncer announcer;
@@ -27,11 +23,12 @@ public class AndroidTickerTest {
     }
 
     @AfterClass public static void tearDownClass() {
-        Looper.myLooper().quit();
+        Looper looper = Looper.myLooper();
+        if (looper != null)
+            looper.quit();
     }
 
     @Before public void setUp() {
-        context = getInstrumentation().getTargetContext();
         clockwork = new TestClockwork();
         announcer = new TestAnnouncer();
         ticker = new AndroidTicker(clockwork, announcer);
@@ -65,7 +62,7 @@ public class AndroidTickerTest {
     }
 
     // TODO: Extract the next tick calculation to Clockwork
-    @Ignore
+    @Ignore("Next tick calculation should be extracted to Clockwork")
     @Test public void testQueueNext() {
         TestTicker ticker = new TestTicker(clockwork, announcer);
         long realBefore = SystemClock.uptimeMillis();
@@ -120,7 +117,9 @@ class TestTicker extends AndroidTicker {
         if (msg != null) {
             removeMessages(0);
             handled = msg;
-            Looper.myLooper().quitSafely();
+            Looper looper = Looper.myLooper();
+            assertNotNull(looper);
+            looper.quitSafely();
             assertNotNull(handled);
             when = handled.getWhen();
         }

@@ -11,7 +11,7 @@ public abstract class TodayItem {
 	abstract public View toView(Context c, View convert,
                                 int sel_p_diff /* difference from selected position */);
 
-	public TodayItem(long t) {
+	/* package private */ TodayItem(long t) {
 		time = t;
 	}
 }

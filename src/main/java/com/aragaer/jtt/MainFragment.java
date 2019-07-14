@@ -28,7 +28,7 @@ public class MainFragment extends Fragment {
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override public void onReceive(Context context, Intent intent) {
-                if (!intent.getAction().equals(AndroidTicker.ACTION_JTT_TICK))
+                if (!AndroidTicker.ACTION_JTT_TICK.equals(intent.getAction()))
                     return;
                 tickNumber = intent.getIntExtra("jtt", 0);
 
@@ -70,7 +70,9 @@ public class MainFragment extends Fragment {
     }
 
     @Override public void onStart() {
-        getActivity().getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        ActionBar actionBar = getActivity().getActionBar();
+        if (actionBar != null)
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         super.onStart();
     }
 

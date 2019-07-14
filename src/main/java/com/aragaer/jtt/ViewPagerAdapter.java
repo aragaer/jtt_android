@@ -13,20 +13,24 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.LayoutParams;
 
-public class ViewPagerAdapter extends PagerAdapter implements RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener {
+import org.jetbrains.annotations.NotNull;
 
-	final ArrayList<View> views = new ArrayList<>();
+/* package private */ class ViewPagerAdapter extends PagerAdapter implements RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener {
+
+	private final ArrayList<View> views = new ArrayList<>();
 	private final ViewPager pager;
 	private final RadioGroup tablist;
 	private final Activity context;
 
-	public ViewPagerAdapter(final Activity ctx, final ViewPager pager) {
+	/* package private */ ViewPagerAdapter(final Activity ctx, final ViewPager pager) {
 		this.pager = pager;
 		context = ctx;
 		tablist = new RadioGroup(ctx);
 		tablist.setOnCheckedChangeListener(this);
 		tablist.setOrientation(LinearLayout.HORIZONTAL);
-		ctx.getActionBar().setCustomView(tablist, new ActionBar.LayoutParams(
+		ActionBar actionBar = ctx.getActionBar();
+		if (actionBar != null)
+			actionBar.setCustomView(tablist, new ActionBar.LayoutParams(
 		        ViewGroup.LayoutParams.MATCH_PARENT,
 		        ViewGroup.LayoutParams.MATCH_PARENT));
 		pager.setOnPageChangeListener(this);
@@ -38,11 +42,11 @@ public class ViewPagerAdapter extends PagerAdapter implements RadioGroup.OnCheck
 	}
 
 	@Override
-	public boolean isViewFromObject(View view, Object object) {
+	public boolean isViewFromObject(@NotNull View view, @NotNull Object object) {
 		return view == object;
 	}
 
-	public void addView(View view, int resid) {
+	/* package private */ void addView(View view, int resid) {
 		final int id = tablist.getChildCount();
 		final RadioButton b = new RadioButton(context, null);
 		final LayoutParams btnlp = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -56,7 +60,7 @@ public class ViewPagerAdapter extends PagerAdapter implements RadioGroup.OnCheck
 	}
 
 	@Override
-	public Object instantiateItem(ViewGroup container, int position) {
+	public @NotNull Object instantiateItem(@NotNull ViewGroup container, int position) {
 		container.addView(views.get(position));
 		return views.get(position);
 	}

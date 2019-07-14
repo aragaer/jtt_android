@@ -9,7 +9,7 @@ import com.aragaer.jtt.astronomy.SolarEventCalculator;
 
 
 public class TestIntervalCalculator implements SolarEventCalculator {
-    static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
+    private static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
 
     @Override public Calendar getSunriseFor(Calendar noon) {
         long millis = noon.getTimeInMillis();

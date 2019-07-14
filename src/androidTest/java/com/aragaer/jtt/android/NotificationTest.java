@@ -22,8 +22,8 @@ import static org.junit.Assert.assertNull;
 @LargeTest
 public class NotificationTest {
 
-    UiDevice device;
-    Context context;
+    private UiDevice device;
+    private Context context;
 
     @Before public void setUp() {
         Instrumentation instrumentation = getInstrumentation();

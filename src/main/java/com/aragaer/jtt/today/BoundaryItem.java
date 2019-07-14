@@ -25,9 +25,15 @@ class BoundaryItem extends TodayItem {
         ((TextView) v.findViewById(R.id.time)).setText(sr.format_time(time));
         int level;
         switch (sel_p_diff) {
-        case 1: level = 1; break;
-        case -1: level = 2; break;
-        default: level = 0; break;
+            case 1:
+                level = 1;
+                break;
+            case -1:
+                level = 2;
+                break;
+            default:
+                level = 0;
+                break;
         }
         ((ImageView) v.findViewById(R.id.border)).setImageLevel(level);
         return v;

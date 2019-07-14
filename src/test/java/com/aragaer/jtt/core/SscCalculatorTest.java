@@ -15,7 +15,7 @@ import com.aragaer.jtt.core.test.TestIntervalCalculator;
 
 
 public class SscCalculatorTest {
-    static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
+    private static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
 
     private TestIntervalCalculator _intervalCalculator;
     private SscCalculator _calculator;

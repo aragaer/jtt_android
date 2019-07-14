@@ -39,9 +39,9 @@ public class WadokeiDraw {
 		glyphs = Bitmap.createBitmap(unit * 16, unit * 16, Bitmap.Config.ARGB_4444);
 	}
 
-	final static int arc_start = -90 - Math.round(step / 2f - gap);
-	final static int arc_end = -90 + Math.round(step / 2f - gap);
-	final static int arc_len = arc_end - arc_start;
+	private final static int arc_start = -90 - Math.round(step / 2f - gap);
+	private final static int arc_end = -90 + Math.round(step / 2f - gap);
+	private final static int arc_len = arc_end - arc_start;
 
 	private void prepare_sun_stages() {
 		final RectF sun = new RectF(0, 0, unit * 2.5f, unit * 2.5f);
@@ -74,7 +74,7 @@ public class WadokeiDraw {
 		canvas.rotate(-45, sun.centerX(), sun.centerY());
 	}
 
-	public void prepare_dial() {
+	private void prepare_dial() {
 		// with extra couple pixels on the edge
 		final RectF outer = new RectF(0, 0, unit * 18, unit * 18),
 				inner = new RectF(0, 0, unit * 9, unit * 9),

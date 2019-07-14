@@ -51,6 +51,8 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
             return;
 
         ThreeIntervals data = (ThreeIntervals) intent.getSerializableExtra("intervals");
+        if (data == null)
+            return;
         Hour hour = Hour.fromTickNumber(intent.getIntExtra("jtt", 0));
         setIntervals(data, hour);
     }

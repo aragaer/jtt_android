@@ -7,7 +7,6 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 import com.aragaer.jtt.astronomy.AstronomyModule;
-import com.aragaer.jtt.astronomy.LocationHandler;
 import com.aragaer.jtt.astronomy.SolarEventCalculator;
 import com.aragaer.jtt.core.Clockwork;
 import com.aragaer.jtt.core.CoreModule;
@@ -24,6 +23,5 @@ interface ServiceComponent {
     Ticker getTicker();
     Clockwork provideClockwork();
     IntervalProvider provideIntervalProvider();
-    LocationHandler provideLocationHandler();
     SolarEventCalculator provideSolarEventCalculator();
 }

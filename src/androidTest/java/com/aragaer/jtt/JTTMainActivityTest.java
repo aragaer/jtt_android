@@ -34,7 +34,7 @@ public class JTTMainActivityTest {
 
     private void setInitialLocation(Context context) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putString(Settings.PREF_LOCATION, "0.0:0.0");
+        editor.putString(Settings.PREF_LOCATION, LocationPreference.DEFAULT);
         editor.putString(Settings.PREF_LOCALE, "1");
         editor.commit();
     }

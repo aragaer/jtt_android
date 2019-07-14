@@ -25,7 +25,7 @@ public class LocationPreference extends DialogPreference implements DialogInterf
     private float accuracy = 0;
     private TextView lat, lon;
     private String latlon;
-    private static final String DEFAULT = "0.0:0.0";
+    static final String DEFAULT = "0.0:0.0";
 
     private final static String fmt1 = "%.2f";
     private final static String fmt3 = "%.2f:%.2f";

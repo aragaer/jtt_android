@@ -91,15 +91,15 @@ public class SscAdapterTest {
         verifyEquals(sunset, 2017, 5, 23, 0, 4, tz);
     }
 
-    static void verifyEquals(Calendar actual, int year, int month,
-                             int day, int hour, int minute, TimeZone tz) {
+    private static void verifyEquals(Calendar actual, int year, int month,
+                                     int day, int hour, int minute, TimeZone tz) {
         Calendar expected = Calendar.getInstance(tz);
         expected.set(year, month, day, hour, minute, 0);
         expected.set(Calendar.MILLISECOND, 0);
         assertEquals(actual.getTimeInMillis(), expected.getTimeInMillis());
     }
 
-    static TimeZone getTimeZone(int offsetMillis) {
+    private static TimeZone getTimeZone(int offsetMillis) {
         for (String tzName : TimeZone.getAvailableIDs(offsetMillis)) {
             TimeZone tz = TimeZone.getTimeZone(tzName);
             if (!tz.useDaylightTime())
