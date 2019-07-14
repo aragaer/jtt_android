@@ -11,11 +11,14 @@ import com.aragaer.jtt.resources.StringResources.StringResourceChangeListener;
 import android.app.*;
 import android.content.*;
 import androidx.core.app.NotificationCompat;
+
+import android.os.Build;
 import android.widget.RemoteViews;
 
 
 public class JttStatus extends BroadcastReceiver implements StringResourceChangeListener {
     private static final int APP_ID = 0;
+    private static final String CHANNEL_ID = "jtt_notification_channel";
 
     private final Context context;
     private final StringResources sr;
@@ -26,6 +29,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
     public JttStatus(final Context ctx) {
         context = ctx;
         nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        createNotificationChannel();
 
         sr = RuntimeResources.get(context).getStringResources();
         sr.registerStringResourceChangeListener(this,
@@ -38,6 +42,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
         nm.cancel(APP_ID);
         sr.unregisterStringResourceChangeListener(this);
         context.unregisterReceiver(this);
+        deleteNotificationChannel();
     }
 
     @Override public void onReceive(Context ctx, Intent intent) {
@@ -72,6 +77,20 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
         nm.notify(APP_ID, buildNotification());
     }
 
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
+            return;
+        CharSequence name = context.getString(R.string.app_name);
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+        nm.createNotificationChannel(channel);
+    }
+
+    private void deleteNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            nm.deleteNotificationChannel(CHANNEL_ID);
+    }
+
     public Notification buildNotification() {
         int hf = h.quarter * Hour.TICKS_PER_QUARTER + h.tick;
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notification);
@@ -91,6 +110,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
             .setContentIntent(PendingIntent.getActivity(context, 0,
                                                         new Intent(context, JTTMainActivity.class), 0))
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setChannelId(CHANNEL_ID)
             .getNotification();
     }
 

@@ -36,6 +36,13 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         Log.i(TAG, "Service created");
     }
 
+    @Override public void onDestroy() {
+        if (status_notify != null)
+            status_notify.release();
+        unregisterReceiver(on);
+        unregisterReceiver(off);
+    }
+
     @Override public int onStartCommand(Intent intent, int flags, int startid) {
         Log.i(TAG, "Service starting");
         ticker.start();
@@ -58,6 +65,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
                 status_notify = null;
             }
         }
+        Log.i("jtt", "Toggle notify to "+status_notify);
     }
 
     private final BroadcastReceiver on = new BroadcastReceiver() {
@@ -73,7 +81,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
         if (key.equals(Settings.PREF_NOTIFY))
-            toggle_notify(pref.getBoolean("jtt_notify", true));
+            toggle_notify(pref.getBoolean(Settings.PREF_NOTIFY, true));
         else if (key.equals(Settings.PREF_LOCATION))
             ticker.start();
         else if (key.equals(Settings.PREF_WIDGET)
