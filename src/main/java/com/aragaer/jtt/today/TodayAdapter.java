@@ -5,7 +5,6 @@ package com.aragaer.jtt.today;
 import com.aragaer.jtt.R;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.core.ThreeIntervals;
-import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
 import android.content.Context;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import java.lang.System;
-import java.util.Arrays;
 
 public class TodayAdapter extends ArrayAdapter<TodayItem> implements
                                                               StringResources.StringResourceChangeListener {

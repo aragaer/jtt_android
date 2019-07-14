@@ -30,8 +30,8 @@ public class WadokeiDraw {
 	public void setUnit(final int new_unit) {
 		unit = new_unit;
 
-		paints.glyph_stroke.setTextSize(unit * 3 / 2);
-		paints.glyph_fill.setTextSize(unit * 3 / 2);
+		paints.glyph_stroke.setTextSize(unit * 3 / 2f);
+		paints.glyph_fill.setTextSize(unit * 3 / 2f);
 
 		prepare_sun_stages();
 		prepare_dial();
@@ -39,8 +39,8 @@ public class WadokeiDraw {
 		glyphs = Bitmap.createBitmap(unit * 16, unit * 16, Bitmap.Config.ARGB_4444);
 	}
 
-	final static int arc_start = -90 - Math.round(step / 2 - gap);
-	final static int arc_end = -90 + Math.round(step / 2 - gap);
+	final static int arc_start = -90 - Math.round(step / 2f - gap);
+	final static int arc_end = -90 + Math.round(step / 2f - gap);
 	final static int arc_len = arc_end - arc_start;
 
 	private void prepare_sun_stages() {
@@ -131,7 +131,7 @@ public class WadokeiDraw {
 			PART_ANGLE = QUARTER_ANGLE / Hour.TICKS_PER_QUARTER;
 
 	public void draw_dial(final Hour hour, final Canvas canvas) {
-		final float clock_angle = step / 2 - gap
+		final float clock_angle = step / 2f - gap
 				- QUARTER_ANGLE * hour.quarter
 				- PART_ANGLE * hour.tick;
 		final float angle = clock_angle - hour.num * step;
@@ -140,10 +140,10 @@ public class WadokeiDraw {
 		canvas.drawBitmap(clock, matrix, cache_paint);
 
 		matrix.setTranslate(unit * 5.5f, unit * 6.5f);
-		matrix.preRotate(angle - 45, unit * 7 / 2, unit * 7 / 2);
+		matrix.preRotate(angle - 45, unit * 7 / 2f, unit * 7 / 2f);
 		canvas.drawBitmap(sun_stages, matrix, cache_paint);
 
-		matrix.setTranslate(unit * 1, unit * 2);
+		matrix.setTranslate(unit, unit * 2);
 		matrix.preRotate(angle, unit * 8, unit * 8);
 		canvas.drawBitmap(glyphs, matrix, cache_paint);
 	}

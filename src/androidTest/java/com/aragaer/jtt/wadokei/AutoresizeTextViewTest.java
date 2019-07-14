@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 
 import org.junit.*;
-import org.junit.runner.RunWith;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.junit.Assert.*;

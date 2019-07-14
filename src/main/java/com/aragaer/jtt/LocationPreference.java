@@ -11,11 +11,9 @@ import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.text.InputFilter;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.aragaer.jtt.location.android.JttLocationListener;
 import com.aragaer.jtt.ui.android.InputFilterMinMax;

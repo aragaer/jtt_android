@@ -15,9 +15,9 @@ import android.widget.RadioGroup.LayoutParams;
 
 public class ViewPagerAdapter extends PagerAdapter implements RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener {
 
-	ArrayList<View> views = new ArrayList<View>();
+	final ArrayList<View> views = new ArrayList<>();
 	private final ViewPager pager;
-	private RadioGroup tablist;
+	private final RadioGroup tablist;
 	private final Activity context;
 
 	public ViewPagerAdapter(final Activity ctx, final ViewPager pager) {

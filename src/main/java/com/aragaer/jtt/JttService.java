@@ -82,14 +82,19 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         };
 
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-        if (key.equals(Settings.PREF_NOTIFY))
-            toggle_notify(pref.getBoolean(Settings.PREF_NOTIFY, true));
-        else if (key.equals(Settings.PREF_LOCATION))
-            ticker.start();
-        else if (key.equals(Settings.PREF_WIDGET)
-                 || key.equals(Settings.PREF_LOCALE)
-                 || key.equals(Settings.PREF_HNAME)
-                 || key.equals(Settings.PREF_EMOJI_WIDGET))
-            JTTWidgetProvider.draw_all(this);
+        switch (key) {
+            case Settings.PREF_NOTIFY:
+                toggle_notify(pref.getBoolean(Settings.PREF_NOTIFY, true));
+                break;
+            case Settings.PREF_LOCATION:
+                ticker.start();
+                break;
+            case Settings.PREF_WIDGET:
+            case Settings.PREF_LOCALE:
+            case Settings.PREF_HNAME:
+            case Settings.PREF_EMOJI_WIDGET:
+                JTTWidgetProvider.draw_all(this);
+                break;
+        }
     }
 }

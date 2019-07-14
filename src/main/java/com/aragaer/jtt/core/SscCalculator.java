@@ -6,7 +6,7 @@ import com.aragaer.jtt.astronomy.SolarEventCalculator;
 
 
 public class SscCalculator implements IntervalProvider {
-    private SolarEventCalculator _calculator;
+    private final SolarEventCalculator _calculator;
 
     /* package private */ SscCalculator(SolarEventCalculator calculator) {
         _calculator = calculator;

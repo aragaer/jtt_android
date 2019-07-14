@@ -43,7 +43,7 @@ public class SscCalculatorTest {
         assertEquals(result.getTransitions()[1], curSunrise);
         assertEquals(result.getTransitions()[2], curSunset);
         assertEquals(result.getTransitions()[3], nextSunrise);
-        assertEquals(result.isDay(), true);
+        assertTrue(result.isDay());
     }
 
     @Test public void testCurrentDayBeforeNoon() {
@@ -64,7 +64,7 @@ public class SscCalculatorTest {
         assertEquals(result.getTransitions()[1], curSunrise);
         assertEquals(result.getTransitions()[2], curSunset);
         assertEquals(result.getTransitions()[3], nextSunrise);
-        assertEquals(result.isDay(), true);
+        assertTrue(result.isDay());
     }
 
     @Test public void testCurrentNightAfterMidnight() {
@@ -84,7 +84,7 @@ public class SscCalculatorTest {
         assertEquals(result.getTransitions()[1], prevSunset);
         assertEquals(result.getTransitions()[2], curSunrise);
         assertEquals(result.getTransitions()[3], curSunset);
-        assertEquals(result.isDay(), false);
+        assertFalse(result.isDay());
     }
 
     @Test public void testCurrentNightAfterSunset() {
@@ -104,6 +104,6 @@ public class SscCalculatorTest {
         assertEquals(result.getTransitions()[1], curSunset);
         assertEquals(result.getTransitions()[2], nextSunrise);
         assertEquals(result.getTransitions()[3], nextSunset);
-        assertEquals(result.isDay(), false);
+        assertFalse(result.isDay());
     }
 }

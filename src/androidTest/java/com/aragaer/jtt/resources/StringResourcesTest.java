@@ -3,14 +3,10 @@
 package com.aragaer.jtt.resources;
 
 import android.content.*;
-import android.content.pm.*;
-import android.content.res.Resources;
 import android.preference.PreferenceManager;
-import android.support.test.uiautomator.UiDevice;
 
 import org.junit.*;
 
-import com.aragaer.jtt.R;
 import com.aragaer.jtt.Settings;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;

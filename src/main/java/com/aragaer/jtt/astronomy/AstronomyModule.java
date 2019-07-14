@@ -4,8 +4,6 @@ package com.aragaer.jtt.astronomy;
 
 import android.content.Context;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 

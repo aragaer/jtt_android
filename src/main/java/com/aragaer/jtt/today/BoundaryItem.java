@@ -3,7 +3,6 @@
 package com.aragaer.jtt.today;
 
 import com.aragaer.jtt.R;
-import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 

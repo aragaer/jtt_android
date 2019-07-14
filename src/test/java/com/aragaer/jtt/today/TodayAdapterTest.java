@@ -7,13 +7,11 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import com.aragaer.jtt.core.ThreeIntervals;
 import com.aragaer.jtt.resources.StringResources;
@@ -27,8 +25,8 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @RunWith(PowerMockRunner.class)
 public class TodayAdapterTest {
 
-    private static Context mockContext = mock(Context.class);
-    private static StringResources mockSR = mock(StringResources.class);
+    private static final Context mockContext = mock(Context.class);
+    private static final StringResources mockSR = mock(StringResources.class);
 
     private FakeTodayAdapter adapter;
     private ArrayList<TodayItem> initial;
@@ -36,7 +34,7 @@ public class TodayAdapterTest {
     @Before public void setUp() {
         adapter = new FakeTodayAdapter();
 
-        initial = new ArrayList<TodayItem>();
+        initial = new ArrayList<>();
         initial.add(new HourItem(System.currentTimeMillis()-2000, 0));
         adapter.items.addAll(initial);
     }
@@ -101,7 +99,7 @@ public class TodayAdapterTest {
         long now = System.currentTimeMillis();
         ThreeIntervals intervals = new ThreeIntervals(new long[]{now-360, now-120, now+120, now+360}, false);
         adapter.tick(intervals);
-        ArrayList<TodayItem> saved = new ArrayList<TodayItem>(adapter.items);
+        ArrayList<TodayItem> saved = new ArrayList<>(adapter.items);
         adapter.datasetChanged = false;
         adapter.clearCalled = false;
 
@@ -165,7 +163,7 @@ public class TodayAdapterTest {
     }
 
     private static class FakeTodayAdapter extends TodayAdapter {
-        public ArrayList<TodayItem> items = new ArrayList<TodayItem>();
+        public final ArrayList<TodayItem> items = new ArrayList<>();
         boolean datasetChanged;
         boolean clearCalled;
 

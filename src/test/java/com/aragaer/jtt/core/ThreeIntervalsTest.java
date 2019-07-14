@@ -12,7 +12,7 @@ public class ThreeIntervalsTest {
     @Test public void testCreate() {
         ThreeIntervals ti = new ThreeIntervals(new long[] {0, 1, 2, 3}, true);
         assertArrayEquals(ti.getTransitions(), new long[] {0, 1, 2, 3});
-        assertEquals(ti.isDay(), true);
+        assertTrue(ti.isDay());
     }
 
     @Test public void testCanBeCompared() {

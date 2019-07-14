@@ -2,8 +2,6 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.resources;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.powermock.api.mockito.PowerMockito.*;
 
@@ -30,12 +28,12 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
             DateFormat.class})
 public class RuntimeResourcesTest {
 
-    static Context mockContext = mock(Context.class);
-    SharedPreferences mockPref = mock(SharedPreferences.class);
-    Resources resources = mock(Resources.class);
-    Configuration config = mock(Configuration.class);
+    static final Context mockContext = mock(Context.class);
+    final SharedPreferences mockPref = mock(SharedPreferences.class);
+    final Resources resources = mock(Resources.class);
+    final Configuration config = mock(Configuration.class);
 
-    @Before public void setUp() throws Exception {
+    @Before public void setUp() {
         mockStatic(Log.class);
         mockStatic(PreferenceManager.class);
         mockStatic(Resources.class);

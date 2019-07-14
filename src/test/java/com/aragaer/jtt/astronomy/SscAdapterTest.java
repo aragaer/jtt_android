@@ -9,9 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.*;
 
-import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
-import com.luckycatlabs.sunrisesunset.dto.Location;
-
 
 public class SscAdapterTest {
 

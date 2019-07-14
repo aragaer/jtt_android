@@ -23,7 +23,7 @@ public class ArrowView extends View {
 		path.reset();
 		path.moveTo(0, 1);
 		path.rLineTo(w, 1);
-		path.rLineTo(-w / 2, h);
+		path.rLineTo(-w / 2f, h);
 		path.close();
 	}
 

@@ -7,7 +7,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.util.Log;
+
+import org.jetbrains.annotations.NotNull;
 
 
 public class JTTMainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -43,7 +44,7 @@ public class JTTMainActivity extends Activity implements SharedPreferences.OnSha
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NotNull final MenuItem item) {
         getFragmentManager().popBackStackImmediate("settings", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())

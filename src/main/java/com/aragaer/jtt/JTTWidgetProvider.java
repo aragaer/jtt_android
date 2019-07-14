@@ -10,7 +10,6 @@ import com.aragaer.jtt.graphics.Paints;
 import com.aragaer.jtt.graphics.WadokeiDraw;
 import com.aragaer.jtt.mechanics.AndroidTicker;
 import com.aragaer.jtt.resources.RuntimeResources;
-import com.aragaer.jtt.resources.StringResources;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -44,7 +43,7 @@ public class JTTWidgetProvider {
 		}
 	}
 
-	static private final Map<Class<?>, WidgetHolder> classes = new HashMap<Class<?>, WidgetHolder>();
+	static private final Map<Class<?>, WidgetHolder> classes = new HashMap<>();
 	static void draw_all(final Context c) {
 		for (WidgetHolder holder : classes.values())
 			draw(c, null, holder);
@@ -119,7 +118,7 @@ public class JTTWidgetProvider {
 
 			text_paint.setTextSize(holder.painter.get_text_size(c) * c.getResources().getDisplayMetrics().density);
 
-			canvas.drawText(text, canvas.getWidth() / 2, (canvas.getHeight() - text_paint.ascent() - text_paint.descent()) / 2, text_paint);
+			canvas.drawText(text, canvas.getWidth() / 2f, (canvas.getHeight() - text_paint.ascent() - text_paint.descent()) / 2f, text_paint);
 			rv.setImageViewBitmap(R.id.clock, bmp);
 		}
 		PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, new Intent(c, JTTMainActivity.class), 0);

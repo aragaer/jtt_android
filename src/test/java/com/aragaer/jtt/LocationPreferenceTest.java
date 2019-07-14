@@ -2,7 +2,6 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -13,7 +12,6 @@ import android.app.Dialog;
 import android.location.Location;
 import android.location.LocationManager;
 import android.content.Context;
-import android.preference.Preference;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -21,7 +19,6 @@ import android.widget.TextView;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import com.aragaer.jtt.location.android.JttLocationListener;
 
@@ -29,10 +26,10 @@ import com.aragaer.jtt.location.android.JttLocationListener;
 @RunWith(PowerMockRunner.class)
 public class LocationPreferenceTest {
 
-    private static Context mockContext = mock(Context.class);
+    private static final Context mockContext = mock(Context.class);
     private static AlertDialog mockDialog = mock(AlertDialog.class);
-    private static LayoutInflater layoutInflater = mock(LayoutInflater.class);
-    private static View view = mock(View.class);
+    private static final LayoutInflater layoutInflater = mock(LayoutInflater.class);
+    private static final View view = mock(View.class);
 
     private TestLocationPreference pref;
     private LocationManager mockLM;

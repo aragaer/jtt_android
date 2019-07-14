@@ -60,7 +60,7 @@ public class InputFilterMinMaxTest {
     }
 
     private static class FakeSpanned implements Spanned {
-        private CharSequence data;
+        private final CharSequence data;
 
         FakeSpanned(CharSequence data) {
             this.data = data;

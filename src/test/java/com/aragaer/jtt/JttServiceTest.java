@@ -28,11 +28,11 @@ import com.aragaer.jtt.mechanics.AndroidTicker;
 public class JttServiceTest {
 
     private static Context mockContext = mock(Context.class);
-    private static SharedPreferences mockPref = mock(SharedPreferences.class);
+    private static final SharedPreferences mockPref = mock(SharedPreferences.class);
 
     private TestJttService service;
 
-    @Before public void setUp() throws Exception {
+    @Before public void setUp() {
         mockStatic(Log.class);
         mockStatic(PreferenceManager.class);
         when(PreferenceManager.getDefaultSharedPreferences(any(Context.class)))
@@ -64,8 +64,8 @@ public class JttServiceTest {
 }
 
 class TestJttService extends JttService {
-    LinkedList<BroadcastReceiver> receivers = new LinkedList<BroadcastReceiver>();
-    LinkedList<IntentFilter> filters = new LinkedList<IntentFilter>();
+    final LinkedList<BroadcastReceiver> receivers = new LinkedList<>();
+    final LinkedList<IntentFilter> filters = new LinkedList<>();
 
     @Override public Intent registerReceiver(BroadcastReceiver receiver,
                                              IntentFilter intentFilter) {

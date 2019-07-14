@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import org.junit.*;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
@@ -30,7 +29,7 @@ public class JttLocationListenerTest {
     private JttLocationListener listener;
     private TestLocationPreference pref;
 
-    private static Context mockContext = mock(Context.class);
+    private static final Context mockContext = mock(Context.class);
 
     private LocationManager mockLM;
 
@@ -65,7 +64,7 @@ public class JttLocationListenerTest {
         assertFalse(pref.stop);
     }
 
-    @Test public void testShowToastIfProviderIsNotEnabled() throws Exception {
+    @Test public void testShowToastIfProviderIsNotEnabled() {
         mockStatic(Toast.class);
         Toast mockToast = mock(Toast.class);
         when(Toast.makeText(mockContext, R.string.no_providers, Toast.LENGTH_SHORT)).thenReturn(mockToast);

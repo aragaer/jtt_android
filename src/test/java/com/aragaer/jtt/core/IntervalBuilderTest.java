@@ -2,14 +2,12 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.core;
 
-import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.aragaer.jtt.core.test.TestIntervalCalculator;
@@ -19,7 +17,7 @@ public class IntervalBuilderTest {
     static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
 
 
-    private TestIntervalCalculator _calculator = new TestIntervalCalculator();
+    private final TestIntervalCalculator _calculator = new TestIntervalCalculator();
     private IntervalBuilder _builder;
     private long _noon;
 

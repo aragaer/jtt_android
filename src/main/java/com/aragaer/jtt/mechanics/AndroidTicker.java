@@ -4,11 +4,9 @@ package com.aragaer.jtt.mechanics;
 
 import java.text.SimpleDateFormat;
 
-import com.aragaer.jtt.*;
 import com.aragaer.jtt.core.Clockwork;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;

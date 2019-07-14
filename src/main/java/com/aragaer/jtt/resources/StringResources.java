@@ -74,13 +74,18 @@ public class StringResources implements
     }
 
     public void onSharedPreferenceChanged(SharedPreferences pref, String key) {
-        if (key.equals(Settings.PREF_LOCALE))
-            setLocale(pref.getString(key, ""));
-        else if (key.equals(Settings.PREF_HNAME)) {
-            hour_name_option = Integer.parseInt(pref.getString(key, "0"));
-            load_hour_names();
-        } else if (key.equals(Settings.PREF_EMOJI_WIDGET))
-            change_pending = TYPE_WIDGET_FORMAT;
+        switch (key) {
+            case Settings.PREF_LOCALE:
+                setLocale(pref.getString(key, ""));
+                break;
+            case Settings.PREF_HNAME:
+                hour_name_option = Integer.parseInt(pref.getString(key, "0"));
+                load_hour_names();
+                break;
+            case Settings.PREF_EMOJI_WIDGET:
+                change_pending = TYPE_WIDGET_FORMAT;
+                break;
+        }
         notifyChange();
     }
 
@@ -100,7 +105,7 @@ public class StringResources implements
         void onStringResourcesChanged(final int changes);
     }
 
-    private final Map<StringResourceChangeListener, Integer> listeners = new HashMap<StringResources.StringResourceChangeListener, Integer>();
+    private final Map<StringResourceChangeListener, Integer> listeners = new HashMap<>();
 
     public synchronized void registerStringResourceChangeListener(final StringResourceChangeListener listener,
                                                                   final int changeMask) {

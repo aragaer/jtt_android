@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.*;
 
 import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
 
 import com.aragaer.jtt.astronomy.*;
 import com.aragaer.jtt.core.*;
@@ -78,7 +77,7 @@ class TestSolarEventCalculator implements SolarEventCalculator {
 
 class TestMechanicsModule extends MechanicsModule {
 
-    TestTicker testTicker;
+    final TestTicker testTicker;
 
     TestMechanicsModule() {
         super(null);

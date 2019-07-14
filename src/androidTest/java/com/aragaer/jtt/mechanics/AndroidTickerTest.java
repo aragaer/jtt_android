@@ -2,8 +2,6 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.mechanics;
 
-import java.util.Calendar;
-
 import org.junit.*;
 
 import android.content.*;

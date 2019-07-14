@@ -3,7 +3,6 @@ package com.aragaer.jtt.android;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.test.uiautomator.*;
@@ -47,7 +46,7 @@ public class NotificationTest {
         settings.edit().putBoolean(Settings.PREF_NOTIFY, value).commit();
     }
 
-    @Test public void testHasNotificationIfEnabled() throws Exception {
+    @Test public void testHasNotificationIfEnabled() {
         setNotificationPreference(true);
         device.openNotification();
         device.wait(Until.hasObject(By.textContains("Hour of the")), 1000);
@@ -55,7 +54,7 @@ public class NotificationTest {
         assertNotNull("Notification can be found", notification);
     }
 
-    @Test public void testNoNotificationIfDisabled() throws Exception {
+    @Test public void testNoNotificationIfDisabled() {
         setNotificationPreference(false);
         device.openNotification();
         device.wait(Until.hasObject(By.textContains("Hour of the")), 1000);

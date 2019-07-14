@@ -45,13 +45,11 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
         }
         pref_locale.setEntries(lnames);
 
-        for (int i = 0; i < prefcodes.length; i++) {
-            final Preference pref = findPreference(prefcodes[i]);
+        for (String code : prefcodes) {
+            final Preference pref = findPreference(code);
             pref.setOnPreferenceChangeListener(this);
-            if (pref instanceof ListPreference) {
-                final ListPreference lp = (ListPreference) pref;
-                lp.setSummary(lp.getEntry());
-            }
+            if (pref instanceof ListPreference)
+                pref.setSummary(((ListPreference) pref).getEntry());
         }
 
         final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());

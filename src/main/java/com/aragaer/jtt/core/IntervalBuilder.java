@@ -14,7 +14,7 @@ import com.aragaer.jtt.astronomy.SolarEventCalculator;
 
     private final SolarEventCalculator _calculator;
     private Interval _current;
-    private Calendar _noon;
+    private final Calendar _noon;
 
     IntervalBuilder(long timestamp, SolarEventCalculator calculator) {
         _calculator = calculator;

@@ -28,7 +28,7 @@ import static org.hamcrest.core.AllOf.allOf;
 public class JTTMainActivityTest {
 
     @Rule
-    public ActivityTestRule<JTTMainActivity> mActivityRule = new ActivityTestRule<>(JTTMainActivity.class, true, false);
+    public final ActivityTestRule<JTTMainActivity> mActivityRule = new ActivityTestRule<>(JTTMainActivity.class, true, false);
 
     private static final int LAUNCH_TIMEOUT = 5000;
 

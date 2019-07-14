@@ -14,7 +14,7 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 
 public class AndroidAnnouncerTest {
 
-    private static IntentFilter filter = new IntentFilter(AndroidTicker.ACTION_JTT_TICK);
+    private static final IntentFilter filter = new IntentFilter(AndroidTicker.ACTION_JTT_TICK);
     private Context context;
     private Announcer announcer;
     private TestIntervalProvider intervalProvider;
@@ -30,14 +30,14 @@ public class AndroidAnnouncerTest {
         context.removeStickyBroadcast(new Intent(AndroidTicker.ACTION_JTT_TICK));
     }
 
-    @Test public void testStickyBroadcast() throws Exception {
+    @Test public void testStickyBroadcast() {
         assertNull(context.registerReceiver(null, filter));
         announcer.announce(0);
         Intent sticky = context.registerReceiver(null, filter);
         assertNotNull(sticky);
     }
 
-    @Test public void testSendsData() throws Exception {
+    @Test public void testSendsData() {
         long timestamp = 0;
         announcer.announce(timestamp);
         Intent sticky = context.registerReceiver(null, filter);

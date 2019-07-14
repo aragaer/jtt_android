@@ -13,7 +13,7 @@ public class IntervalTest {
         Interval interval = new Interval(0, 1, true);
         assertEquals(interval.start, 0);
         assertEquals(interval.end, 1);
-        assertEquals(interval.is_day, true);
+        assertTrue(interval.is_day);
     }
 
     @Test(expected=IllegalArgumentException.class)

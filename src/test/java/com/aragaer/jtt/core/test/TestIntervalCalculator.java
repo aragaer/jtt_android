@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import com.aragaer.jtt.astronomy.SolarEventCalculator;
-import com.aragaer.jtt.core.Interval;
 
 
 public class TestIntervalCalculator implements SolarEventCalculator {

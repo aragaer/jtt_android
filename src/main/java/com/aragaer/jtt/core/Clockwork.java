@@ -16,6 +16,6 @@ public class Clockwork {
         ThreeIntervals intervals = _calculator.getIntervalsForTimestamp(time);
         Interval currentInterval = intervals.getMiddleInterval();
         start = currentInterval.start;
-        repeat = Math.round(currentInterval.getLength()/Hour.TICKS_PER_INTERVAL);
+        repeat = Math.round(1f*currentInterval.getLength()/Hour.TICKS_PER_INTERVAL);
     }
 }
