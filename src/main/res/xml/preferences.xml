@@ -12,7 +12,7 @@
     <PreferenceCategory android:title="@string/language" >
 
         <ListPreference
-            android:defaultValue=""
+            android:defaultValue=" "
             android:entries="@array/locales"
             android:entryValues="@array/locales"
             android:key="jtt_locale"

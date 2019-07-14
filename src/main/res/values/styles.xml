@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:jtt="http://schemas.android.com/apk/res-auto"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://schemas.android.com/apk/res-auto ">
+<resources>
 
     <style name="BaseTheme" parent="@android:style/Theme.Holo">
         <item name="android:actionBarStyle">@style/DarkActionBar</item>
