@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+		  android:key="settings_screen">
 
-    <PreferenceCategory android:title="@string/location" >
+  <Preference
+      android:key="jtt_loc"
+      android:title="@string/location" />
 
-        <com.aragaer.jtt.LocationPreference
-            android:defaultValue="0.0:0.0"
-            android:key="jtt_loc"
-            android:title="@string/location_ex" />
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/language" >
+  <PreferenceCategory android:title="@string/language" >
 
         <ListPreference
             android:defaultValue=" "
@@ -33,28 +30,28 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/appearance" >
+  <PreferenceCategory android:title="@string/appearance" >
 
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="jtt_notify"
-            android:summary="@string/notify_ex"
-            android:title="@string/notify" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="jtt_notify"
+        android:summary="@string/notify_ex"
+        android:title="@string/notify" />
 
-        <ListPreference
-            android:defaultValue="@string/theme_default"
-            android:entries="@array/theme_names"
-            android:entryValues="@array/array_of_3"
-            android:key="jtt_theme"
-            android:title="@string/pref_theme" />
+    <ListPreference
+        android:defaultValue="@string/theme_default"
+        android:entries="@array/theme_names"
+        android:entryValues="@array/array_of_3"
+        android:key="jtt_theme"
+        android:title="@string/pref_theme" />
 
-        <ListPreference
-            android:defaultValue="@string/theme_default"
-            android:entries="@array/widget_theme_names"
-            android:entryValues="@array/array_of_3"
-            android:key="jtt_widget_theme"
-            android:title="@string/pref_widget" />
+    <ListPreference
+        android:defaultValue="@string/theme_default"
+        android:entries="@array/widget_theme_names"
+        android:entryValues="@array/array_of_3"
+        android:key="jtt_widget_theme"
+        android:title="@string/pref_widget" />
 
-	</PreferenceCategory>
+  </PreferenceCategory>
 
 </PreferenceScreen>

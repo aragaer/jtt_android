@@ -21,8 +21,6 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
             Settings.PREF_THEME, Settings.PREF_WIDGET,
             Settings.PREF_EMOJI_WIDGET};
 
-    private final Map<String, Integer> listeners = new HashMap<String, Integer>();
-
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (preference instanceof ListPreference) {
             final ListPreference lp = (ListPreference) preference;
@@ -48,7 +46,6 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
         pref_locale.setEntries(lnames);
 
         for (int i = 0; i < prefcodes.length; i++) {
-            listeners.put(prefcodes[i], i);
             final Preference pref = findPreference(prefcodes[i]);
             pref.setOnPreferenceChangeListener(this);
             if (pref instanceof ListPreference) {
@@ -57,21 +54,38 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
             }
         }
 
+        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        if (pref.contains(Settings.PREF_LOCATION)) {
+            Preference pref_location = findPreference(Settings.PREF_LOCATION);
+            pref_location.setSummary(pref.getString(Settings.PREF_LOCATION, ""));
+        }
+
         setHasOptionsMenu(true);
     }
 
     @Override public void onStart() {
         super.onStart();
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        if (!settings.contains(Settings.PREF_LOCATION)) // location is not set
-            ((LocationPreference) findPreference(Settings.PREF_LOCATION)).showDialog(null);
         ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setTitle(R.string.settings);
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
+        if (actionBar != null) {
+            actionBar.setTitle(R.string.settings);
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
+    }
+
+    @Override public boolean onPreferenceTreeClick(PreferenceScreen screen,
+                                                   Preference preference) {
+        if (preference.getKey().equals(Settings.PREF_LOCATION)) {
+            getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new LocationFragment())
+                .addToBackStack("location")
+                .commit();
+            return true;
+        }
+        return super.onPreferenceTreeClick(screen, preference);
     }
 }

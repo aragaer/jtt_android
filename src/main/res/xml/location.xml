@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+		  android:key="location_screen">
+
+  <com.aragaer.jtt.LocationPreference
+      android:defaultValue="0.0:0.0"
+      android:key="jtt_loc"
+      android:title="@string/location_ex" />
+
+</PreferenceScreen>
