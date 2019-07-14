@@ -24,7 +24,7 @@ public class MechanicsModule {
 
     @Singleton @Provides public Ticker provideTicker(Clockwork clockwork,
                                                      Announcer announcer) {
-        return new AndroidTicker(_context, clockwork, announcer);
+        return new AndroidTicker(clockwork, announcer);
     }
 
     @Provides public Announcer provideAnnouncer(IntervalProvider provider) {

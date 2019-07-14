@@ -8,10 +8,6 @@ import org.junit.Test;
 
 public class ClockworkTest {
 
-    @Test public void testCreate() {
-        Clockwork clockwork = new Clockwork(new TestIntervalProvider());
-    }
-
     @Test public void testTimer() {
         Clockwork clockwork = new Clockwork(new TestIntervalProvider());
         clockwork.setTime(1000);

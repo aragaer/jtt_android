@@ -17,7 +17,6 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     private static final String TAG = "JTT_SERVICE";
     private JttStatus status_notify;
     private Ticker ticker;
-    private ServiceComponent component;
 
     @Override public IBinder onBind(Intent intent) {
         return null;
@@ -25,11 +24,11 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
 
     @Override public void onCreate() {
         super.onCreate();
-        component = DaggerServiceComponent
-            .builder()
-            .astronomyModule(new AstronomyModule(this))
-            .mechanicsModule(new MechanicsModule(this))
-            .build();
+        ServiceComponent component = DaggerServiceComponent
+                .builder()
+                .astronomyModule(new AstronomyModule(this))
+                .mechanicsModule(new MechanicsModule(this))
+                .build();
         ticker = component.getTicker();
         registerReceiver(on, new IntentFilter(Intent.ACTION_SCREEN_ON));
         registerReceiver(off, new IntentFilter(Intent.ACTION_SCREEN_OFF));

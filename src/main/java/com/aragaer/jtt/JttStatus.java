@@ -55,7 +55,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
         setIntervals(data, hour);
     }
 
-    public void setIntervals(ThreeIntervals intervals, Hour hour) {
+    private void setIntervals(ThreeIntervals intervals, Hour hour) {
         Interval currentInterval = intervals.getMiddleInterval();
         h = hour;
         final long[] tr = intervals.getTransitions();
@@ -91,7 +91,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
             nm.deleteNotificationChannel(CHANNEL_ID);
     }
 
-    public Notification buildNotification() {
+    private Notification buildNotification() {
         int hf = h.quarter * Hour.TICKS_PER_QUARTER + h.tick;
         RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.notification);
 

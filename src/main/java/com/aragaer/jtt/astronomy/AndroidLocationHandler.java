@@ -8,24 +8,24 @@ import android.preference.PreferenceManager;
 
 import com.aragaer.jtt.Settings;
 
+import java.util.Locale;
+
 
 public class AndroidLocationHandler implements LocationHandler {
 
-    private final Context _context;
     private final SharedPreferences _pref;
     private final static String SEPARATOR = ":";
     private final static String FORMAT = "%.2f"+SEPARATOR+"%.2f";
 
-    public AndroidLocationHandler(Context context) {
-        _context = context;
-        _pref = PreferenceManager.getDefaultSharedPreferences(_context);
+    /* package private */ AndroidLocationHandler(Context context) {
+        _pref = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public void setLocation(float latitude, float longitude) {
         _pref.edit()
             .putString(Settings.PREF_LOCATION,
-                       String.format(FORMAT, latitude, longitude))
-            .commit();
+                       String.format(Locale.US, FORMAT, latitude, longitude))
+            .apply();
     }
 
     public float[] getLocation() {

@@ -34,7 +34,7 @@ public class AndroidTickerTest {
         context = getInstrumentation().getTargetContext();
         clockwork = new TestClockwork();
         announcer = new TestAnnouncer();
-        ticker = new AndroidTicker(context, clockwork, announcer);
+        ticker = new AndroidTicker(clockwork, announcer);
     }
 
     @Test public void testStart() {
@@ -67,7 +67,7 @@ public class AndroidTickerTest {
     // TODO: Extract the next tick calculation to Clockwork
     @Ignore
     @Test public void testQueueNext() {
-        TestTicker ticker = new TestTicker(context, clockwork, announcer);
+        TestTicker ticker = new TestTicker(clockwork, announcer);
         long realBefore = SystemClock.uptimeMillis();
         long timestampToElapsed = System.currentTimeMillis() - realBefore;
         long realAfter = SystemClock.uptimeMillis();
@@ -111,8 +111,8 @@ class TestTicker extends AndroidTicker {
     Message handled;
     long when;
 
-    TestTicker(Context context, Clockwork clockwork, Announcer announcer) {
-        super(context, clockwork, announcer);
+    TestTicker(Clockwork clockwork, Announcer announcer) {
+        super(clockwork, announcer);
     }
 
     @Override public void handleMessage(Message msg) {

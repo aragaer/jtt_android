@@ -10,7 +10,7 @@ import com.aragaer.jtt.astronomy.SolarEventCalculator;
 
 
 /* protected */ class IntervalBuilder {
-    static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
+    private static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
 
     private final SolarEventCalculator _calculator;
     private Interval _current;

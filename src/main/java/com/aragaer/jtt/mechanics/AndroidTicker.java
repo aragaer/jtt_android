@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 
 import com.aragaer.jtt.core.Clockwork;
 
-import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -15,12 +14,10 @@ import android.util.Log;
 public class AndroidTicker extends Handler implements Ticker {
     public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
 
-    private final Context _context;
     private final Clockwork _clockwork;
     private final Announcer _announcer;
 
-    public AndroidTicker(Context context, Clockwork clockwork, Announcer announcer) {
-        _context = context;
+    public AndroidTicker(Clockwork clockwork, Announcer announcer) {
         _clockwork = clockwork;
         _announcer = announcer;
     }

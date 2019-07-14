@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.*;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.text.InputFilter;
@@ -19,18 +18,19 @@ import com.aragaer.jtt.location.android.JttLocationListener;
 import com.aragaer.jtt.ui.android.InputFilterMinMax;
 import com.aragaer.jtt.ui.android.LocationTextWatcher;
 
+import java.util.Locale;
+
 
 public class LocationPreference extends DialogPreference implements DialogInterface.OnClickListener {
     private float accuracy = 0;
-    private LocationManager lm;
     private TextView lat, lon;
     private String latlon;
-    public static final String DEFAULT = "0.0:0.0";
+    private static final String DEFAULT = "0.0:0.0";
 
     private final static String fmt1 = "%.2f";
     private final static String fmt3 = "%.2f:%.2f";
 
-    public final JttLocationListener locationListener;
+    private final JttLocationListener locationListener;
     private final LocationTextWatcher textWatcher;
     private final Context context;
 
@@ -52,6 +52,8 @@ public class LocationPreference extends DialogPreference implements DialogInterf
 
     @Override protected View onCreateDialogView() {
         LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (li == null)
+            return null;
         View locView = li.inflate(R.layout.location_picker, null);
 
         lat = locView.findViewById(R.id.lat);
@@ -117,11 +119,11 @@ public class LocationPreference extends DialogPreference implements DialogInterf
             accuracy = new_acc;
         }
 
-        lat.setText(String.format(fmt1, l.getLatitude()).replace(',', '.'));
-        lon.setText(String.format(fmt1, l.getLongitude()).replace(',', '.'));
-        doSet(String.format(fmt3, l.getLatitude(), l.getLongitude()));
+        lat.setText(String.format(Locale.US, fmt1, l.getLatitude()));
+        lon.setText(String.format(Locale.US, fmt1, l.getLongitude()));
+        doSet(String.format(Locale.US, fmt3, l.getLatitude(), l.getLongitude()));
 
         if (stopLocating)
-            lm.removeUpdates(locationListener);
+            locationListener.stopLocating();
     }
 }

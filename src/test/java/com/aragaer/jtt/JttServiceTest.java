@@ -27,7 +27,6 @@ import com.aragaer.jtt.mechanics.AndroidTicker;
             PreferenceManager.class})
 public class JttServiceTest {
 
-    private static Context mockContext = mock(Context.class);
     private static final SharedPreferences mockPref = mock(SharedPreferences.class);
 
     private TestJttService service;

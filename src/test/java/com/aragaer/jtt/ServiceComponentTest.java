@@ -20,10 +20,9 @@ public class ServiceComponentTest {
     private static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
 
     private ServiceComponent serviceComponent;
-    private TestMechanicsModule mechanicsModule;
 
     @Before public void setUp() {
-        mechanicsModule = new TestMechanicsModule();
+        TestMechanicsModule mechanicsModule = new TestMechanicsModule();
         serviceComponent = DaggerServiceComponent
             .builder()
             .mechanicsModule(mechanicsModule)
@@ -41,6 +40,7 @@ public class ServiceComponentTest {
 
     @Test public void testSolarEventCalculator() {
         SolarEventCalculator calculator = serviceComponent.provideSolarEventCalculator();
+        assertNotNull(calculator);
     }
 
     // TODO: IntervalProvider/IntervalBuilder should not calculate TzOffset itself
@@ -77,7 +77,7 @@ class TestSolarEventCalculator implements SolarEventCalculator {
 
 class TestMechanicsModule extends MechanicsModule {
 
-    final TestTicker testTicker;
+    private final TestTicker testTicker;
 
     TestMechanicsModule() {
         super(null);
@@ -92,7 +92,7 @@ class TestMechanicsModule extends MechanicsModule {
 
 class TestAstronomyModule extends AstronomyModule {
 
-    public TestAstronomyModule() {
+    TestAstronomyModule() {
         super(null);
     }
 
@@ -106,9 +106,6 @@ class TestAstronomyModule extends AstronomyModule {
 }
 
 class TestTicker implements Ticker {
-    @Override public void start() {
-    }
-
-    @Override public void stop() {
-    }
+    @Override public void start() { }
+    @Override public void stop() { }
 }

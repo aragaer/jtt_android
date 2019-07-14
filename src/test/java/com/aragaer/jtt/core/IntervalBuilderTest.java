@@ -14,7 +14,7 @@ import com.aragaer.jtt.core.test.TestIntervalCalculator;
 
 
 public class IntervalBuilderTest {
-    static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
+    private static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
 
 
     private final TestIntervalCalculator _calculator = new TestIntervalCalculator();
@@ -27,7 +27,6 @@ public class IntervalBuilderTest {
     }
 
     @Test public void testCreate() {
-        Interval middle = _builder.getMiddleInterval();
         assertEquals(_builder.getThreeIntervals(),
                      new ThreeIntervals(new long[] { _noon - MS_PER_DAY*3/4, _noon - MS_PER_DAY/4,
                                                      _noon + MS_PER_DAY/4, _noon + MS_PER_DAY*3/4 }, true));

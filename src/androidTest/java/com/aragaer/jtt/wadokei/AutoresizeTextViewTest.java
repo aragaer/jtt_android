@@ -14,12 +14,11 @@ import static org.junit.Assert.*;
 
 public class AutoresizeTextViewTest {
 
-    private Context context;
     private TextView view;
     private float scale;
 
     @Before public void setUp() {
-        context = getInstrumentation().getTargetContext();
+        Context context = getInstrumentation().getTargetContext();
         view = new AutoresizeTextView(context);
         scale = context.getResources().getDisplayMetrics().density;
     }

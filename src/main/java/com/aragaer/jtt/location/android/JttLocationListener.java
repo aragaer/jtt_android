@@ -16,7 +16,7 @@ import com.aragaer.jtt.R;
 
 public class JttLocationListener implements LocationListener {
     private final Context context;
-    public final LocationPreference pref;
+    private final LocationPreference pref;
 
     public JttLocationListener(Context context, LocationPreference pref) {
         this.context = context;
@@ -54,5 +54,10 @@ public class JttLocationListener implements LocationListener {
         } catch (IllegalArgumentException e) {
             Log.d("LocationPref", "No network provider");
         }
+    }
+
+    public void stopLocating() {
+        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        lm.removeUpdates(this);
     }
 }

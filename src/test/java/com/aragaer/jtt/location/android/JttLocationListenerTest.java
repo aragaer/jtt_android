@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
-import android.view.View;
 import android.widget.Toast;
 
 import org.junit.*;
@@ -91,18 +90,14 @@ public class JttLocationListenerTest {
     }
 
     private static class TestLocationPreference extends LocationPreference {
-        public Location location;
-        public boolean stop;
+        Location location;
+        boolean stop;
 
-        public String getPersistedString(String value) {
+        @Override public String getPersistedString(String value) {
             return value;
         }
 
-        public View createDialogView() {
-            return super.onCreateDialogView();
-        }
-
-        public TestLocationPreference() {
+        TestLocationPreference() {
             super(null, null);
         }
 

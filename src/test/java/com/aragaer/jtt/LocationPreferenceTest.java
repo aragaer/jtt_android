@@ -7,7 +7,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.*;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.location.Location;
 import android.location.LocationManager;
@@ -27,7 +26,6 @@ import com.aragaer.jtt.location.android.JttLocationListener;
 public class LocationPreferenceTest {
 
     private static final Context mockContext = mock(Context.class);
-    private static AlertDialog mockDialog = mock(AlertDialog.class);
     private static final LayoutInflater layoutInflater = mock(LayoutInflater.class);
     private static final View view = mock(View.class);
 
@@ -82,11 +80,11 @@ public class LocationPreferenceTest {
             return value;
         }
 
-        public View createDialogView() {
-            return super.onCreateDialogView();
+        void createDialogView() {
+            super.onCreateDialogView();
         }
 
-        public TestLocationPreference() {
+        TestLocationPreference() {
             super(mockContext, null);
         }
     }

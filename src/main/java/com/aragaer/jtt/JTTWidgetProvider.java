@@ -24,7 +24,7 @@ import android.widget.RemoteViews;
 interface WidgetPainter {
 	Bitmap get_bmp(final Context c, final Hour h);
 	String get_text(final Context c, final Hour h);
-	int get_text_size(final Context c);
+	int get_text_size();
 }
 
 public class JTTWidgetProvider {
@@ -66,6 +66,8 @@ public class JTTWidgetProvider {
 
 		public void onReceive(Context c, Intent i) {
 			final String action = i.getAction();
+			if (action == null)
+				return;
 			if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
 				update(c, i);
 			else if (action.equals(AndroidTicker.ACTION_JTT_TICK))
@@ -75,6 +77,7 @@ public class JTTWidgetProvider {
 		}
 
 		private void update(Context c, Intent i) {
+			c.startService(new Intent(c, JttService.class));
 			int[] ids = i.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
 			draw(c, ids, classes.get(getClass()));
 		}
@@ -116,7 +119,7 @@ public class JTTWidgetProvider {
 			text_paint.setShadowLayer(3, 0, 0, ta.getColor(R.styleable.Widget_text_shadow, 0));
 			ta.recycle();
 
-			text_paint.setTextSize(holder.painter.get_text_size(c) * c.getResources().getDisplayMetrics().density);
+			text_paint.setTextSize(holder.painter.get_text_size() * c.getResources().getDisplayMetrics().density);
 
 			canvas.drawText(text, canvas.getWidth() / 2f, (canvas.getHeight() - text_paint.ascent() - text_paint.descent()) / 2f, text_paint);
 			rv.setImageViewBitmap(R.id.clock, bmp);
@@ -189,7 +192,7 @@ class WidgetPainter1 implements WidgetPainter {
 	}
 
 	@Override
-	public int get_text_size(Context c) {
+	public int get_text_size() {
 		return 40;
 	}
 }
@@ -225,7 +228,7 @@ class WidgetPainter12 implements WidgetPainter {
 	}
 
 	@Override
-	public int get_text_size(Context c) {
+	public int get_text_size() {
 		return 33;
 	}
 }
