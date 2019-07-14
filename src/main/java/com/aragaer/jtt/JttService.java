@@ -37,8 +37,10 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
     }
 
     @Override public void onDestroy() {
-        if (status_notify != null)
+        if (status_notify != null) {
             status_notify.release();
+            status_notify = null;
+        }
         unregisterReceiver(on);
         unregisterReceiver(off);
     }
