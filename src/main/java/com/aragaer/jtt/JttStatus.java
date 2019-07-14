@@ -58,7 +58,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
     public void setIntervals(ThreeIntervals intervals, Hour hour) {
         Interval currentInterval = intervals.getMiddleInterval();
         h = hour;
-        final long tr[] = intervals.getTransitions();
+        final long[] tr = intervals.getTransitions();
         final int lower = Hour.lowerBoundary(h.num),
             upper = Hour.upperBoundary(h.num);
         start = Hour.getHourBoundary(currentInterval.start, currentInterval.end, lower);

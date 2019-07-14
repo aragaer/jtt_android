@@ -49,7 +49,7 @@ public class AndroidLocationHandlerTest {
 
     @Test public void testGetLocation() {
         setPreference("1.00:0.00");
-        float location[] = locationHandler.getLocation();
+        float[] location = locationHandler.getLocation();
         assertThat("Should be same location that was stored",
                    location, equalTo(new float[] { 1f, 0f }));
     }
@@ -57,7 +57,7 @@ public class AndroidLocationHandlerTest {
     @Test public void testSetFromAnother() {
         AndroidLocationHandler another = new AndroidLocationHandler(context);
         another.setLocation(1f, 1f);
-        float location[] = locationHandler.getLocation();
+        float[] location = locationHandler.getLocation();
         assertThat("Should be same location that was stored",
                    location, equalTo(new float[] { 1f, 1f }));
     }

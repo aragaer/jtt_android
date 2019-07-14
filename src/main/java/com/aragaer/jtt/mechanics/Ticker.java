@@ -4,6 +4,6 @@ package com.aragaer.jtt.mechanics;
 
 
 public interface Ticker {
-    public void start();
-    public void stop();
+    void start();
+    void stop();
 }

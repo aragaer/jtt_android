@@ -38,7 +38,7 @@ public class StringResourcesTest {
 
     @Test public void testEnglishHourNames() throws Exception {
 	setLocale("en");
-	String shortNames[] = "Cock Dog Boar Rat Ox Tiger Hare Dragon Serpent Horse Ram Monkey".split(" ");
+        String[] shortNames = "Cock Dog Boar Rat Ox Tiger Hare Dragon Serpent Horse Ram Monkey".split(" ");
 	for (int i = 0; i < 12; i++) {
 	    assertThat(stringResources.getHour(i), equalTo("The " + shortNames[i]));
 	    assertThat(stringResources.getHrOf(i), equalTo("Hour of the " + shortNames[i]));
@@ -47,9 +47,9 @@ public class StringResourcesTest {
 
     @Test public void testRussianHourNames() throws Exception {
 	setLocale("ru");
-	String shortNames[] = "Петух Собака Кабан Крыса Бык Тигр Заяц Дракон Змея Лошадь Овца Обезьяна".split(" ");
-	String longNames[] = ("Час Петуха/Час Собаки/Час Кабана/Час Крысы/Час Быка/Час Тигра/"+
-			      "Час Зайца/Час Дракона/Час Змеи/Час Лошади/Час Овцы/Час Обезьяны").split("/");
+        String[] shortNames = "Петух Собака Кабан Крыса Бык Тигр Заяц Дракон Змея Лошадь Овца Обезьяна".split(" ");
+        String[] longNames = ("Час Петуха/Час Собаки/Час Кабана/Час Крысы/Час Быка/Час Тигра/" +
+                "Час Зайца/Час Дракона/Час Змеи/Час Лошади/Час Овцы/Час Обезьяны").split("/");
 	for (int i = 0; i < 12; i++) {
 	    assertThat(stringResources.getHour(i), equalTo(shortNames[i]));
 	    assertThat(stringResources.getHrOf(i), equalTo(longNames[i]));
@@ -59,7 +59,7 @@ public class StringResourcesTest {
     @Test public void testTextWidget() throws Exception {
 	setWidgetHourFormat(true);
 	setWidgetHourFormat(false);
-	String shortNames[] = "Cock Dog Boar Rat Ox Tiger Hare Dragon Serpent Horse Ram Monkey".split(" ");
+        String[] shortNames = "Cock Dog Boar Rat Ox Tiger Hare Dragon Serpent Horse Ram Monkey".split(" ");
 	for (int i = 0; i < 12; i++) {
 	    assertThat(stringResources.getHour(i), equalTo("The " + shortNames[i]));
 	    assertThat(stringResources.formatHourForWidget(i), equalTo("The " + shortNames[i]));
@@ -68,8 +68,8 @@ public class StringResourcesTest {
 
     @Test public void testEmojiWidget() throws Exception {
 	setWidgetHourFormat(true);
-	String shortNames[] = "Cock Dog Boar Rat Ox Tiger Hare Dragon Serpent Horse Ram Monkey".split(" ");
-	String emoji[] = "🐓🐕🐖🐀🐂🐅🐇🐉🐍🐏🐎🐒".split("(?!^)");
+        String[] shortNames = "Cock Dog Boar Rat Ox Tiger Hare Dragon Serpent Horse Ram Monkey".split(" ");
+        String[] emoji = "🐓🐕🐖🐀🐂🐅🐇🐉🐍🐏🐎🐒".split("(?!^)");
 	for (int i = 0; i < 12; i++) {
 	    assertThat(stringResources.getHour(i), equalTo("The " + shortNames[i]));
 	    assertThat(stringResources.formatHourForWidget(i), equalTo(emoji[i]));

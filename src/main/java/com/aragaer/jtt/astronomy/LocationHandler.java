@@ -4,6 +4,6 @@ package com.aragaer.jtt.astronomy;
 
 
 public interface LocationHandler {
-    public void setLocation(float latitude, float longitude);
-    public float[] getLocation();
+    void setLocation(float latitude, float longitude);
+    float[] getLocation();
 }

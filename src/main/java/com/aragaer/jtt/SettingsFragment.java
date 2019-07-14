@@ -16,10 +16,10 @@ import android.view.MenuInflater;
 
 
 public class SettingsFragment extends PreferenceFragment implements OnPreferenceChangeListener {
-    private static final String prefcodes[] = {Settings.PREF_LOCATION, Settings.PREF_NOTIFY,
-                                               Settings.PREF_LOCALE, Settings.PREF_HNAME,
-                                               Settings.PREF_THEME, Settings.PREF_WIDGET,
-                                               Settings.PREF_EMOJI_WIDGET};
+    private static final String[] prefcodes = {Settings.PREF_LOCATION, Settings.PREF_NOTIFY,
+            Settings.PREF_LOCALE, Settings.PREF_HNAME,
+            Settings.PREF_THEME, Settings.PREF_WIDGET,
+            Settings.PREF_EMOJI_WIDGET};
 
     private final Map<String, Integer> listeners = new HashMap<String, Integer>();
 
@@ -49,7 +49,7 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
 
         for (int i = 0; i < prefcodes.length; i++) {
             listeners.put(prefcodes[i], i);
-            final Preference pref = (Preference) findPreference(prefcodes[i]);
+            final Preference pref = findPreference(prefcodes[i]);
             pref.setOnPreferenceChangeListener(this);
             if (pref instanceof ListPreference) {
                 final ListPreference lp = (ListPreference) pref;

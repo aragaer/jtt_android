@@ -4,5 +4,5 @@ package com.aragaer.jtt.mechanics;
 
 
 public interface Announcer {
-    public void announce(long timestamp);
+    void announce(long timestamp);
 }

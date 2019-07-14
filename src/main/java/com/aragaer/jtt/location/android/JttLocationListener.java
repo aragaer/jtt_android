@@ -55,4 +55,4 @@ public class JttLocationListener implements LocationListener {
             Log.d("LocationPref", "No network provider");
         }
     }
-};
+}

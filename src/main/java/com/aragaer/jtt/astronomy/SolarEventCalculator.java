@@ -6,6 +6,6 @@ import java.util.Calendar;
 
 
 public interface SolarEventCalculator {
-    public Calendar getSunriseFor(Calendar noon);
-    public Calendar getSunsetFor(Calendar noon);
+    Calendar getSunriseFor(Calendar noon);
+    Calendar getSunsetFor(Calendar noon);
 }

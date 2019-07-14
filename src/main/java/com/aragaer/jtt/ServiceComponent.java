@@ -21,9 +21,9 @@ import com.aragaer.jtt.mechanics.MechanicsModule;
                     CoreModule.class,
                     MechanicsModule.class})
 public interface ServiceComponent {
-    public Ticker getTicker();
-    public Clockwork provideClockwork();
-    public IntervalProvider provideIntervalProvider();
-    public LocationHandler provideLocationHandler();
-    public SolarEventCalculator provideSolarEventCalculator();
+    Ticker getTicker();
+    Clockwork provideClockwork();
+    IntervalProvider provideIntervalProvider();
+    LocationHandler provideLocationHandler();
+    SolarEventCalculator provideSolarEventCalculator();
 }

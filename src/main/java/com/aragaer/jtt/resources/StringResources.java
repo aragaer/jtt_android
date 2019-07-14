@@ -34,7 +34,9 @@ public class StringResources implements
     private static final IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
     private final Context c;
     private final Resources resources;
-    private String Hours[], HrOf[], Quarters[];
+    private String[] Hours;
+    private String[] HrOf;
+    private String[] Quarters;
     private DateFormat df;
     private int hour_name_option;
     private static final String[] HourEmoji = "🐓🐕🐖🐀🐂🐅🐇🐉🐍🐏🐎🐒".split("(?!^)");
@@ -95,7 +97,7 @@ public class StringResources implements
     }
 
     public interface StringResourceChangeListener {
-        public void onStringResourcesChanged(final int changes);
+        void onStringResourcesChanged(final int changes);
     }
 
     private final Map<StringResourceChangeListener, Integer> listeners = new HashMap<StringResources.StringResourceChangeListener, Integer>();
@@ -120,9 +122,9 @@ public class StringResources implements
         change_pending = 0;
     }
 
-    private static final int hnh[] = { R.array.hour, R.array.romaji_hour, R.array.hiragana_hour };
-    private static final int hnhof[] = { R.array.hour_of, R.array.romaji_hour_of, R.array.hiragana_hour_of };
-    private static final int q[] = { R.array.quarter, R.array.romaji_quarter, R.array.hiragana_quarter };
+    private static final int[] hnh = {R.array.hour, R.array.romaji_hour, R.array.hiragana_hour};
+    private static final int[] hnhof = {R.array.hour_of, R.array.romaji_hour_of, R.array.hiragana_hour_of};
+    private static final int[] q = {R.array.quarter, R.array.romaji_quarter, R.array.hiragana_quarter};
 
     private void load_hour_names() {
         HrOf = resources.getStringArray(hnhof[hour_name_option]);

@@ -9,7 +9,7 @@ public class Hour {
         TICKS_PER_HOUR = QUARTERS * TICKS_PER_QUARTER,
         TICKS_PER_INTERVAL = HOURS_PER_INTERVAL * TICKS_PER_HOUR,
         TICKS_PER_DAY = TICKS_PER_INTERVAL * 2;
-    public static final String Glyphs[] = "酉戌亥子丑寅卯辰巳午未申".split("(?!^)");
+    public static final String[] Glyphs = "酉戌亥子丑寅卯辰巳午未申".split("(?!^)");
 
     public final int num, // 0 to 11, where 0 is hour of Cock and 11 is hour of Monkey
         quarter, // 0 to 3

@@ -56,8 +56,8 @@ public class LocationPreference extends DialogPreference implements DialogInterf
         LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View locView = li.inflate(R.layout.location_picker, null);
 
-        lat = (TextView) locView.findViewById(R.id.lat);
-        lon = (TextView) locView.findViewById(R.id.lon);
+        lat = locView.findViewById(R.id.lat);
+        lon = locView.findViewById(R.id.lon);
 
         String[] ll = latlon.split(":");
         lat.setText(ll[0]);
@@ -90,7 +90,7 @@ public class LocationPreference extends DialogPreference implements DialogInterf
         case Dialog.BUTTON_POSITIVE:
             doSet(latlon);
             persistString(latlon);
-            callChangeListener(new String(latlon));
+            callChangeListener(latlon);
             setSummary(latlon);
             break;
         case Dialog.BUTTON_NEUTRAL:
