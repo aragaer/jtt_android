@@ -36,6 +36,6 @@ public class Interval implements Serializable {
         int result = 0;
         result = 31*result + (int) (start ^ (start >>> 32));
         result = 31*result + (int) (end ^ (end >>> 32));
-        return is_day ? result : result ^ 0xffffffff;
+        return is_day ? result : ~result;
     }
 }

@@ -43,7 +43,7 @@ public class WadokeiDraw {
 	final static int arc_end = -90 + Math.round(step / 2 - gap);
 	final static int arc_len = arc_end - arc_start;
 
-	final private void prepare_sun_stages() {
+	private void prepare_sun_stages() {
 		final RectF sun = new RectF(0, 0, unit * 2.5f, unit * 2.5f);
 		sun.inset(2, 2);
 		int iR = unit * 7 / 2;

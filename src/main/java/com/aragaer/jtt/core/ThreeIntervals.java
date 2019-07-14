@@ -57,6 +57,6 @@ public class ThreeIntervals implements Serializable {
         int result = 0;
         for (long transition : _transitions)
             result = 31*result + (int) (transition ^ (transition >>> 32));
-        return _is_day ? result : result ^ 0xffffffff;
+        return _is_day ? result : ~result;
     }
 }

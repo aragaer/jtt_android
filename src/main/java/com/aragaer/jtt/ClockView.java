@@ -58,7 +58,7 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
         final int h = MeasureSpec.getSize(hms);
         vertical = h > w;
         text.setText(vertical ? sr.getHrOf(hour.num) : sr.getHour(hour.num));
-        text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, vertical ? w / 20 : w / 15);
+        text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, vertical ? w / 20f : w / 15f);
         text.measure(vertical ? w : w - h / 2, 0);
         setMeasuredDimension(w, h);
     }

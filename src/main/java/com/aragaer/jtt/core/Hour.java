@@ -47,12 +47,12 @@ public class Hour {
     }
 
     /* 0, 6 -> 5; 1-5, 7-11 -> 0-4 */
-    public static final int lowerBoundary(final int hour) {
+    public static int lowerBoundary(final int hour) {
         return (hour + HOURS_PER_INTERVAL - 1) % HOURS_PER_INTERVAL;
     }
 
     /* 0-11 -> 0-5 */
-    public static final int upperBoundary(final int hour) {
+    public static int upperBoundary(final int hour) {
         return hour % HOURS_PER_INTERVAL;
     }
 
