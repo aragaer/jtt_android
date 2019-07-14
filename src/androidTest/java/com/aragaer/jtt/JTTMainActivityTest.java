@@ -45,8 +45,9 @@ public class JTTMainActivityTest {
     @Before public void setUp() {
         Context context = getInstrumentation().getTargetContext();
         setInitialLocation(context);
-        mActivityRule.launchActivity(new Intent());
         UiDevice device = UiDevice.getInstance(getInstrumentation());
+        device.pressHome();
+        mActivityRule.launchActivity(new Intent());
         device.wait(Until.hasObject(By.pkg("com.aragaer.jtt").depth(0)), LAUNCH_TIMEOUT);
     }
 

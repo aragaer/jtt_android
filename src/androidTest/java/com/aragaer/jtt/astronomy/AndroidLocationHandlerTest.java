@@ -19,10 +19,22 @@ public class AndroidLocationHandlerTest {
 
     private LocationHandler locationHandler;
     private Context context;
+    private String savedValue;
 
     @Before public void setUp() {
         context = getInstrumentation().getTargetContext();
         locationHandler = new AndroidLocationHandler(context);
+        savedValue = PreferenceManager
+                .getDefaultSharedPreferences(context)
+                .getString(Settings.PREF_LOCATION, "");
+    }
+
+    @After public void tearDown() {
+        PreferenceManager
+                .getDefaultSharedPreferences(context)
+                .edit()
+                .putString(Settings.PREF_LOCATION, savedValue)
+                .commit();
     }
 
     @Test public void testSetLocation() {
