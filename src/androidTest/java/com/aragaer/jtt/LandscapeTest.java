@@ -6,7 +6,7 @@ package com.aragaer.jtt;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import android.support.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiDevice;
 
 import androidx.test.filters.LargeTest;
 

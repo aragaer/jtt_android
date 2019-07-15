@@ -3,7 +3,7 @@
 package com.aragaer.jtt;
 
 import android.content.*;
-import android.support.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiDevice;
 
 import org.junit.*;
 

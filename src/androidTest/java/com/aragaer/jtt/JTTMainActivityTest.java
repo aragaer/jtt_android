@@ -5,7 +5,7 @@ package com.aragaer.jtt;
 
 import android.content.*;
 import android.preference.PreferenceManager;
-import android.support.test.uiautomator.*;
+import androidx.test.uiautomator.*;
 
 import androidx.test.espresso.*;
 import androidx.test.filters.LargeTest;

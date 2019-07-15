@@ -5,10 +5,10 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk tools:overrideLibrary="android.support.test.uiautomator.v18"/>
+    <uses-sdk tools:overrideLibrary="android_libs.ub_uiautomator"/>
 
     <instrumentation
-        android:name="android.support.test.runner.AndroidJUnitRunner"
+        android:name="androidx.test.runner.AndroidJUnitRunner"
         android:targetPackage="com.aragaer.jtt" />
 
     <application
