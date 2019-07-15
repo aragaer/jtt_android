@@ -18,12 +18,12 @@ public class StringResources implements
                                  SharedPreferences.OnSharedPreferenceChangeListener {
     public static final int TYPE_HOUR_NAME = 0x1;
     public static final int TYPE_TIME_FORMAT = 0x2;
-    public static final int TYPE_WIDGET_FORMAT = 0x4;
+    /* package private */ static final int TYPE_WIDGET_FORMAT = 0x4;
     private int change_pending;
 
     private final BroadcastReceiver TZChangeReceiver = new BroadcastReceiver() {
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
+                if (Intent.ACTION_TIMEZONE_CHANGED.equals(intent.getAction())) {
                     df = android.text.format.DateFormat.getTimeFormat(c);
                     change_pending |= TYPE_TIME_FORMAT;
                     notifyChange();

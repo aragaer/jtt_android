@@ -2,6 +2,7 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt.ui.android;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -87,10 +88,10 @@ public class InputFilterMinMaxTest {
         @Override public int length() {
             return data.length();
         }
-        @Override public CharSequence subSequence(int start, int end) {
+        @Override public @NotNull CharSequence subSequence(int start, int end) {
             return data.subSequence(start, end);
         }
-        @Override public String toString() {
+        @Override public @NotNull String toString() {
             return data.toString();
         }
     }
