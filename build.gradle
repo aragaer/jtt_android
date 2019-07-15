@@ -24,7 +24,7 @@ dependencies {
         google()
     }
     implementation 'com.luckycatlabs:SunriseSunsetCalculator:1.1'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.viewpager:viewpager:1.0.0'
     implementation 'com.google.dagger:dagger:2.10'
     implementation 'org.jetbrains:annotations-java5:15.0'
 
@@ -82,6 +82,7 @@ android {
             minifyEnabled true
             proguardFile 'proguard.cfg'
             signingConfig signingConfigs.release
+            shrinkResources true
         }
     }
 }
