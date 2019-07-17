@@ -12,12 +12,6 @@ cache:
 stages:
 - build
 - test
-- coverage
-
-lintDebug:
-  stage: build
-  script:
-  - ./gradlew -Pci --console=plain :lintDebug -PbuildDir=lint
 
 assembleDebug:
   stage: build
@@ -34,8 +28,3 @@ testDebug:
   script:
   - ./gradlew -Pci --console=plain :test
   - ./gradlew -Pci --console=plain :jacocoTestReport
-
-coverageReport:
-  stage: coverage
-  script:
-  - bash <(curl -s https://codecov.io/bash)
