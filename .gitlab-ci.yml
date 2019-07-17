@@ -1,0 +1,41 @@
+image: thyrlian/android-sdk
+
+before_script:
+- gradle -b wrapper.gradle wrapper
+- cp travis.gradle.properties gradle.properties
+
+cache:
+  key: ${CI_PROJECT_ID}
+  paths:
+  - .gradle/
+
+stages:
+- build
+- test
+- coverage
+
+lintDebug:
+  stage: build
+  script:
+  - ./gradlew -Pci --console=plain :lintDebug -PbuildDir=lint
+
+assembleDebug:
+  stage: build
+  script:
+  - ./gradlew assembleDebug
+
+assembleTest:
+  stage: build
+  script:
+  - ./gradlew assembleAndroidTest
+
+testDebug:
+  stage: test
+  script:
+  - ./gradlew -Pci --console=plain :test
+  - ./gradlew -Pci --console=plain :jacocoTestReport
+
+coverageReport:
+  stage: coverage
+  script:
+  - bash <(curl -s https://codecov.io/bash)
