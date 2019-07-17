@@ -3,15 +3,22 @@ image: thyrlian/android-sdk
 before_script:
 - gradle -b wrapper.gradle wrapper
 - cp travis.gradle.properties gradle.properties
+# temporarily disable checking for EPIPE error and use yes to accept all licenses
+- sdkmanager --update
+- set +o pipefail
+- yes | sdkmanager --licenses
+- set -o pipefail
 
 cache:
   key: ${CI_PROJECT_ID}
   paths:
+  - .m2/
   - .gradle/
 
 stages:
 - build
 - test
+- instrumented
 
 assembleDebug:
   stage: build
@@ -22,9 +29,36 @@ assembleTest:
   stage: build
   script:
   - ./gradlew assembleAndroidTest
+  artifacts:
+    paths:
+    - build/outputs
 
 testDebug:
   stage: test
   script:
   - ./gradlew -Pci --console=plain :test
   - ./gradlew -Pci --console=plain :jacocoTestReport
+
+instrumentedTest:
+  stage: instrumented
+  script:
+  - export ANDROID_HOME=/opt/android-sdk
+  - export ANDROID_SDK_HOME=/opt/android-sdk
+  - export ANDROID_SDK_ROOT=/opt/android-sdk
+  - sdkmanager "tools" > /dev/null
+  - sdkmanager "platform-tools" > /dev/null
+  - sdkmanager "emulator" > /dev/null
+  - sdkmanager "platforms;android-28" > /dev/null
+  - sdkmanager "system-images;android-28;default;x86" > /dev/null
+  - echo no | avdmanager create avd --force -n test --abi x86 -k "system-images;android-28;default;x86"
+  - ${ANDROID_HOME}/emulator/emulator -avd test -no-window -no-accel -no-audio &
+  - wget --quiet --output-document=android-wait-for-emulator https://raw.githubusercontent.com/travis-ci/travis-cookbooks/0f497eb71291b52a703143c5cd63a217c8766dc9/community-cookbooks/android-sdk/files/default/android-wait-for-emulator
+  - chmod +x android-wait-for-emulator
+  - echo adb shell setprop ro.test_harness true
+  - ./android-wait-for-emulator
+  - echo adb shell setprop dalvik.vm.dexopt-flags v=n,o=v
+  - adb shell input keyevent 82
+  - ./gradlew connectedCheck
+  artifacts:
+    paths:
+    - build/outputs
