@@ -33,7 +33,7 @@ import org.jetbrains.annotations.NotNull;
 			actionBar.setCustomView(tablist, new ActionBar.LayoutParams(
 		        ViewGroup.LayoutParams.MATCH_PARENT,
 		        ViewGroup.LayoutParams.MATCH_PARENT));
-		pager.setOnPageChangeListener(this);
+		pager.addOnPageChangeListener(this);
 	}
 
 	@Override
