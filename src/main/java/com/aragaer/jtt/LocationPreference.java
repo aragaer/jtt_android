@@ -2,11 +2,9 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.*;
 import android.location.Location;
-import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.text.InputFilter;
 import android.util.AttributeSet;
@@ -14,44 +12,43 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.aragaer.jtt.location.android.JttLocationListener;
 import com.aragaer.jtt.ui.android.InputFilterMinMax;
-import com.aragaer.jtt.ui.android.LocationTextWatcher;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
 
 public class LocationPreference extends DialogPreference implements DialogInterface.OnClickListener {
-    private float accuracy = 0;
     private TextView lat, lon;
     private String latlon;
     static final String DEFAULT = "0.0:0.0";
 
-    private final static String fmt1 = "%.2f";
     private final static String fmt3 = "%.2f:%.2f";
-
-    private final JttLocationListener locationListener;
-    private final LocationTextWatcher textWatcher;
-    private final Context context;
 
     public LocationPreference(Context ctx, AttributeSet attrs) {
         super(ctx, attrs);
-        context = ctx;
-        locationListener = new JttLocationListener(ctx, this);
-        textWatcher = new LocationTextWatcher(this);
         latlon = getPersistedString(DEFAULT);
     }
 
-    public CharSequence getLatText() {
-        return lat.getText();
+    public float getLat() {
+        try {
+            return Float.parseFloat(lat.getText().toString());
+        } catch (NumberFormatException ex) {
+            return 0f;
+        }
     }
 
-    public CharSequence getLonText() {
-        return lon.getText();
+    public float getLon() {
+        try {
+            return Float.parseFloat(lon.getText().toString());
+        } catch (NumberFormatException ex) {
+            return 0f;
+        }
     }
 
     @Override protected View onCreateDialogView() {
-        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater li = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (li == null)
             return null;
         View locView = li.inflate(R.layout.location_picker, null);
@@ -66,15 +63,7 @@ public class LocationPreference extends DialogPreference implements DialogInterf
 
         lon.setText(ll[1]);
         lon.setFilters(new InputFilter[]{ new InputFilterMinMax(-180.0f, 180.0f) });
-
-        lat.addTextChangedListener(textWatcher);
-        lon.addTextChangedListener(textWatcher);
         return locView;
-    }
-
-    @Override
-    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
-        builder.setNeutralButton(R.string.auto_lat_long, this);
     }
 
     @Override
@@ -86,44 +75,20 @@ public class LocationPreference extends DialogPreference implements DialogInterf
 
     @Override
     public void onClick(DialogInterface dialog, int id) {
-        switch (id) {
-        case Dialog.BUTTON_POSITIVE:
-            doSet(latlon);
-            persistString(latlon);
-            callChangeListener(latlon);
-            setSummary(latlon);
-            break;
-        case Dialog.BUTTON_NEUTRAL:
-            locationListener.acquireLocation();
-            break;
-        default:
+        if (id == Dialog.BUTTON_POSITIVE)
+            setNewLocation(getLat(), getLon());
+        else
             latlon = getPersistedString(DEFAULT);
-            break;
-        }
     }
 
-    @Override
-    protected void showDialog(Bundle state) {
-        super.showDialog(state);
+    public void setNewLocation(@NotNull Location location) {
+        setNewLocation((float) location.getLatitude(), (float) location.getLongitude());
     }
 
-    public void doSet(String l) {
-        latlon = l.replace(',', '.'); // force dot as a separator
-    }
-
-    public void makeUseOfNewLocation(Location l, boolean stopLocating) {
-        if (l.hasAccuracy()) {
-            final float new_acc = l.getAccuracy();
-            if (accuracy > 0 && accuracy < new_acc)
-                return; // this one doesn't have the best accuracy
-            accuracy = new_acc;
-        }
-
-        lat.setText(String.format(Locale.US, fmt1, l.getLatitude()));
-        lon.setText(String.format(Locale.US, fmt1, l.getLongitude()));
-        doSet(String.format(Locale.US, fmt3, l.getLatitude(), l.getLongitude()));
-
-        if (stopLocating)
-            locationListener.stopLocating();
+    public void setNewLocation(float latitude, float longitude) {
+        String formatted = String.format(Locale.US, fmt3, latitude, longitude);
+        persistString(formatted);
+        callChangeListener(formatted);
+        setSummary(formatted);
     }
 }

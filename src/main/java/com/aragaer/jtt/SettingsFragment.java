@@ -4,6 +4,7 @@ package com.aragaer.jtt;
 
 import java.util.*;
 
+import com.aragaer.jtt.android.fragments.LocationFragment;
 import com.aragaer.jtt.resources.StringResources;
 
 import android.app.ActionBar;
@@ -25,6 +26,8 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
         if (preference instanceof ListPreference) {
             final ListPreference lp = (ListPreference) preference;
             lp.setSummary(lp.getEntries()[lp.findIndexOfValue((String) newValue)]);
+        } else if (preference.getKey().equals(Settings.PREF_LOCATION)) {
+            findPreference(Settings.PREF_LOCATION).setSummary((String) newValue);
         }
         return true;
     }
@@ -78,8 +81,10 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
     @Override public boolean onPreferenceTreeClick(PreferenceScreen screen,
                                                    Preference preference) {
         if (preference.getKey().equals(Settings.PREF_LOCATION)) {
+            LocationFragment f = new LocationFragment();
+            f.setChangeListener(this);
             getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new LocationFragment())
+                .replace(android.R.id.content, f)
                 .addToBackStack("location")
                 .commit();
             return true;

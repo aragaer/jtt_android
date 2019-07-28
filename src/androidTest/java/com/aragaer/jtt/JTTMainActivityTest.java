@@ -100,11 +100,11 @@ public class JTTMainActivityTest {
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(allOf(withId(android.R.id.title), withText("Settings"), isDisplayed())).perform(click());
         onData(hasToString(startsWith("Location"))).perform(click());
+        onView(withText("Use current location")).check(matches(isDisplayed()));
         onData(hasToString(startsWith("Change stored location"))).perform(click());
         onView(allOf(withId(R.id.lat), withText("0.0"), isDisplayed())).perform(replaceText("55.78"));
         onView(allOf(withId(R.id.lon), withText("0.0"), isDisplayed())).perform(replaceText("37.65"));
         onView(withText("Cancel")).check(matches(isDisplayed()));
-        onView(withText("Use current location")).check(matches(isDisplayed()));
         onView(withText("OK")).perform(click());
         String locationValue = PreferenceManager
             .getDefaultSharedPreferences(getInstrumentation().getTargetContext())

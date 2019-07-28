@@ -8,6 +8,8 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.aragaer.jtt.android.fragments.LocationFragment;
+
 import org.jetbrains.annotations.NotNull;
 
 
