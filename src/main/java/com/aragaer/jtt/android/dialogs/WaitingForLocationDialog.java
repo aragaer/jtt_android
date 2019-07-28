@@ -43,7 +43,8 @@ public class WaitingForLocationDialog extends ProgressDialog implements Location
 
     @Override public void onDismiss(DialogInterface dialogInterface) {
         Log.d("JTT LOCATION", "Stop getting location");
-        ((LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE))
-                .removeUpdates(this);
+        LocationManager lm = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+        if (lm != null)
+            lm.removeUpdates(this);
     }
 }

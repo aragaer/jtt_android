@@ -3,12 +3,15 @@
 package com.aragaer.jtt.mechanics;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import com.aragaer.jtt.core.Clockwork;
 
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 
 public class AndroidTicker extends Handler implements Ticker {
@@ -30,7 +33,7 @@ public class AndroidTicker extends Handler implements Ticker {
         removeMessages(0);
     }
 
-    @Override public void handleMessage(Message msg) {
+    @Override public void handleMessage(@NonNull Message msg) {
         removeMessages(0);
         Log.d("JTT CLOCKWORK", "Handler ticked");
         long now = System.currentTimeMillis();
@@ -42,7 +45,7 @@ public class AndroidTicker extends Handler implements Ticker {
         long delay = next_tick - now;
         sendEmptyMessageDelayed(0, delay);
         Log.d("JTT CLOCKWORK", "Tick delay " + delay);
-        Log.d("JTT CLOCKWORK", "Next tick scheduled at "+(new SimpleDateFormat("HH:mm:ss.SSS").format(next_tick)));
+        Log.d("JTT CLOCKWORK", "Next tick scheduled at "+(new SimpleDateFormat("HH:mm:ss.SSS", Locale.US).format(next_tick)));
         _announcer.announce(now);
     }
 }

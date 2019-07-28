@@ -6,6 +6,8 @@ import org.junit.*;
 
 import android.os.*;
 
+import androidx.annotation.NonNull;
+
 import com.aragaer.jtt.core.*;
 
 import static org.junit.Assert.*;
@@ -112,7 +114,7 @@ class TestTicker extends AndroidTicker {
         super(clockwork, announcer);
     }
 
-    @Override public void handleMessage(Message msg) {
+    @Override public void handleMessage(@NonNull Message msg) {
         super.handleMessage(msg);
         if (msg != null) {
             removeMessages(0);
