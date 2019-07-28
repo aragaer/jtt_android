@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.TimeUnit;
+
 
 public class LocationFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
     private Preference.OnPreferenceChangeListener _listener;
@@ -112,7 +114,7 @@ public class LocationFragment extends PreferenceFragment implements Preference.O
         Location last = lm.getLastKnownLocation(provider);
 
         LocationPreference pref = (LocationPreference) findPreference(Settings.PREF_LOCATION);
-        if (last != null) {
+        if (last != null && last.getTime() > System.currentTimeMillis() - TimeUnit.SECONDS.toMillis(5)) {
             Log.d("JTT LOCATION", "Got last location, that's good enough");
             pref.setNewLocation(last);
             return;

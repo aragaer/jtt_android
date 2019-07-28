@@ -21,6 +21,7 @@ public class WaitingForLocationDialog extends ProgressDialog implements Location
         setIndeterminate(true);
         setCancelable(true);
         setProgressStyle(STYLE_SPINNER);
+        setOnDismissListener(this);
     }
 
     public void setPreference(LocationPreference pref) {
@@ -29,6 +30,7 @@ public class WaitingForLocationDialog extends ProgressDialog implements Location
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d("JTT LOCATION", "Location changed");
         _pref.setNewLocation(location);
         dismiss();
     }
