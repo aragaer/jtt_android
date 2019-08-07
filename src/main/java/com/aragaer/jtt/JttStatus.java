@@ -17,20 +17,19 @@ import android.widget.RemoteViews;
 
 
 public class JttStatus extends BroadcastReceiver implements StringResourceChangeListener {
-    private static final int APP_ID = 0;
+    private static final int APP_ID = 1;
     private static final String CHANNEL_ID = "jtt_notification_channel";
 
-    private final Context context;
+    private final JttService context;
     private final StringResources sr;
     private Hour h = new Hour(0);
     private long start, end;
     private final NotificationManager nm;
 
-    public JttStatus(final Context ctx) {
+    public JttStatus(final JttService ctx) {
         context = ctx;
         nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         createNotificationChannel();
-
         sr = RuntimeResources.get(context).getStringResources();
         sr.registerStringResourceChangeListener(this,
                                                 StringResources.TYPE_HOUR_NAME | StringResources.TYPE_TIME_FORMAT);
@@ -39,7 +38,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
     }
 
     public void release() {
-        nm.cancel(APP_ID);
+        context.stopForeground(true);
         sr.unregisterStringResourceChangeListener(this);
         context.unregisterReceiver(this);
         deleteNotificationChannel();
@@ -76,7 +75,7 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
     }
 
     private void show() {
-        nm.notify(APP_ID, buildNotification());
+        context.startForeground(APP_ID, buildNotification());
     }
 
     private void createNotificationChannel() {
