@@ -39,7 +39,7 @@ public class StringResources implements
     private String[] Quarters;
     private DateFormat df;
     private int hour_name_option;
-    private static final String[] HourEmoji = "🐓🐕🐖🐀🐂🐅🐇🐉🐍🐏🐎🐒".split("(?!^)");
+    private static final String[] HourEmoji = "🐓🐕🐖🐀🐂🐅🐇🐉🐍🐎🐏🐒".split("(?!^)");
 
     protected StringResources(final Context context) {
         c = context;
