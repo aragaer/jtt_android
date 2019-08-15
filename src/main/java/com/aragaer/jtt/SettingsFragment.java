@@ -61,6 +61,11 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
             pref_location.setSummary(pref.getString(Settings.PREF_LOCATION, ""));
         }
 
+        // FIXME: notification must be shown for application to work properly
+        CheckBoxPreference notify = (CheckBoxPreference) findPreference(Settings.PREF_NOTIFY);
+        notify.setEnabled(false);
+        notify.setChecked(true);
+
         setHasOptionsMenu(true);
     }
 

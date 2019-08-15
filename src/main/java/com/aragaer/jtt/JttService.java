@@ -56,7 +56,8 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
         return START_STICKY;
     }
 
-    private void toggle_notify(final boolean notify) {
+    private void toggle_notify(boolean notify) {
+        notify = true; // FIXME: This is a "hotfix" for "Background execution not allowed"
         if (status_notify == null) {
             if (notify)
                 status_notify = new JttStatus(this);
