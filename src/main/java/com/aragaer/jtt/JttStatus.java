@@ -49,6 +49,13 @@ public class JttStatus extends BroadcastReceiver implements StringResourceChange
         if (!AndroidTicker.ACTION_JTT_TICK.equals(action))
             return;
 
+        // FIXME: kicking widgets from here
+        Intent widgetIntent = new Intent(intent);
+        widgetIntent.setClass(ctx, JTTWidgetProvider.Widget1.class);
+        ctx.sendBroadcast(widgetIntent);
+        widgetIntent.setClass(ctx, JTTWidgetProvider.Widget12.class);
+        ctx.sendBroadcast(widgetIntent);
+
         ThreeIntervals data = (ThreeIntervals) intent.getSerializableExtra("intervals");
         if (data == null)
             return;
