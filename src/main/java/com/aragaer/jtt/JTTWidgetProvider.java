@@ -18,6 +18,7 @@ import android.content.*;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.*;
+import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -77,7 +78,11 @@ public class JTTWidgetProvider {
 		}
 
 		private void update(Context c, Intent i) {
-			c.startService(new Intent(c, JttService.class));
+		    Intent intent = new Intent(c, JttService.class);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                c.startForegroundService(intent);
+            else
+			    c.startService(intent);
 			int[] ids = i.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
 			draw(c, ids, classes.get(getClass()));
 		}

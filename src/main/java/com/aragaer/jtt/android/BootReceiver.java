@@ -13,10 +13,11 @@ public class BootReceiver extends BroadcastReceiver {
         if (action == null)
             return;
         if (action.equals(Intent.ACTION_BOOT_COMPLETED)) {
+            Intent serviceIntent = new Intent(context, JttService.class);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                context.startForegroundService(new Intent(context, JttService.class));
+                context.startForegroundService(serviceIntent);
             else
-                context.startService(new Intent(context, JttService.class));
+                context.startService(serviceIntent);
         }
     }
 }

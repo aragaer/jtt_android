@@ -3,6 +3,7 @@ package com.aragaer.jtt;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.*;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -19,7 +20,11 @@ public class JTTMainActivity extends Activity implements SharedPreferences.OnSha
     public void onCreate(Bundle savedInstanceState) {
         setTheme(Settings.getAppTheme(this));
         super.onCreate(savedInstanceState);
-        startService(new Intent(this, JttService.class));
+        Intent serviceIntent = new Intent(this, JttService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            startForegroundService(serviceIntent);
+        else
+            startService(serviceIntent);
         final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         pref.registerOnSharedPreferenceChangeListener(this);
         if (savedInstanceState == null) { // Otherwise we assume that fragments are saved/restored
