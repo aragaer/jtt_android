@@ -3,8 +3,8 @@
 package com.aragaer.jtt.today;
 
 import com.aragaer.jtt.R;
+import com.aragaer.jtt.android.JttApplication;
 import com.aragaer.jtt.core.Hour;
-import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 
 import android.content.Context;
@@ -26,7 +26,7 @@ class HourItem extends TodayItem {
     public View toView(Context c, View v, int sel_p_diff) {
         if (v == null)
             v = View.inflate(c, R.layout.today_item, null);
-        final StringResources sr = RuntimeResources.get(c).getStringResources();
+        final StringResources sr = ((JttApplication) c.getApplicationContext()).getStringResources();
 
         ((TextView) v.findViewById(R.id.glyph)).setText(Hour.Glyphs[hnum]);
         ((TextView) v.findViewById(R.id.name)).setText(sr.getHrOf(hnum));

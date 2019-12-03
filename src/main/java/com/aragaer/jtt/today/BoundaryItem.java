@@ -3,7 +3,7 @@
 package com.aragaer.jtt.today;
 
 import com.aragaer.jtt.R;
-import com.aragaer.jtt.resources.RuntimeResources;
+import com.aragaer.jtt.android.JttApplication;
 import com.aragaer.jtt.resources.StringResources;
 
 import android.content.Context;
@@ -21,7 +21,7 @@ class BoundaryItem extends TodayItem {
     public View toView(Context c, View v, int sel_p_diff) {
         if (v == null)
             v = View.inflate(c, R.layout.today_boundary_item, null);
-        final StringResources sr = RuntimeResources.get(c).getStringResources();
+        final StringResources sr = ((JttApplication) c.getApplicationContext()).getStringResources();
         ((TextView) v.findViewById(R.id.time)).setText(sr.format_time(time));
         int level;
         switch (sel_p_diff) {

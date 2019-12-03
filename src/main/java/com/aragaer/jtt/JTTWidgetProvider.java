@@ -5,11 +5,10 @@ package com.aragaer.jtt;
 import java.util.Map;
 import java.util.HashMap;
 
+import com.aragaer.jtt.android.JttApplication;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.graphics.Paints;
 import com.aragaer.jtt.graphics.WadokeiDraw;
-import com.aragaer.jtt.mechanics.AndroidTicker;
-import com.aragaer.jtt.resources.RuntimeResources;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -18,7 +17,6 @@ import android.content.*;
 import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.*;
-import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -45,7 +43,7 @@ public class JTTWidgetProvider {
 	}
 
 	static private final Map<Class<?>, WidgetHolder> classes = new HashMap<>();
-	static void draw_all(final Context c) {
+	public static void draw_all(final Context c) {
 		for (WidgetHolder holder : classes.values())
 			draw(c, null, holder);
 	}
@@ -65,37 +63,21 @@ public class JTTWidgetProvider {
 				}
 		}
 
-		public void onReceive(Context c, Intent i) {
-			final String action = i.getAction();
-			if (action == null)
-				return;
-			if (action.equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE))
-				update(c, i);
-			else if (action.equals(AndroidTicker.ACTION_JTT_TICK))
-				tick(c, i, getClass());
-			else
-				Log.d("Widgets", "Got action "+action);
-		}
-
-		private void update(Context c, Intent i) {
-		    Intent intent = new Intent(c, JttService.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                c.startForegroundService(intent);
-            else
-			    c.startService(intent);
-			int[] ids = i.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
-			draw(c, ids, classes.get(getClass()));
+		@Override public void onUpdate(Context context, AppWidgetManager manager, int[] ids) {
+			((JttApplication) context.getApplicationContext()).startTicker();
+			draw(context, ids, classes.get(getClass()));
 		}
 	}
 
-	private static void tick(Context c, Intent i, Class<?> cls) {
-		int wrapped = i.getIntExtra("jtt", 0);
-		final WidgetHolder holder = classes.get(cls);
-        Hour hour = Hour.fromTickNumber(wrapped, holder.granularity);
-        if (hour.equals(holder.last_update))
-            return;
-        holder.last_update = hour;
-		draw(c, null, holder);
+	public static void tick(Context context, Intent intent) {
+		int wrapped = intent.getIntExtra("jtt", 0);
+		for (WidgetHolder holder : classes.values()) {
+			Hour hour = Hour.fromTickNumber(wrapped, holder.granularity);
+			if (hour.equals(holder.last_update))
+				continue;
+			holder.last_update = hour;
+			draw(context, null, holder);
+		}
 	}
 
 	private static void draw(Context c, int[] ids, final WidgetHolder holder) {
@@ -229,7 +211,7 @@ class WidgetPainter12 implements WidgetPainter {
 
 	@Override
 	public String get_text(Context c, Hour h) {
-		return RuntimeResources.get(c).getStringResources().formatHourForWidget(h.num);
+		return ((JttApplication) c.getApplicationContext()).getStringResources().formatHourForWidget(h.num);
 	}
 
 	@Override
