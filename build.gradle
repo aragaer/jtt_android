@@ -13,6 +13,11 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'jacoco'
 
+wrapper {
+    gradleVersion = '5.1.1'
+    distributionType = Wrapper.DistributionType.ALL
+}
+
 repositories {
     mavenCentral()
     jcenter()

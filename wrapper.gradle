@@ -1,8 +1,0 @@
-// vim: et ts=4 sts=4 sw=4 syntax=groovy
-repositories {
-    mavenCentral()
-}
-
-wrapper {
-   gradleVersion = '5.1.1'
-}
