@@ -9,8 +9,6 @@ deploy
 tags
 build/
 .gradle/
-gradle/
-gradlew*
 local.properties
 gradle.properties
 
