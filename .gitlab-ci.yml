@@ -1,7 +1,7 @@
 image: thyrlian/android-sdk
 
 before_script:
-- gradle -b wrapper.gradle wrapper
+- ./gradlew wrapper
 - cp travis.gradle.properties gradle.properties
 # temporarily disable checking for EPIPE error and use yes to accept all licenses
 - sdkmanager --update
