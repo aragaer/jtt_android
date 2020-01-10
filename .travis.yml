@@ -26,8 +26,8 @@ install:
   - echo yes | sdkmanager "tools"
 
 before_script:
-  - ./gradlew wrapper
   - cp travis.gradle.properties gradle.properties
+  - ./gradlew wrapper
 
 script:
   - ./gradlew test
