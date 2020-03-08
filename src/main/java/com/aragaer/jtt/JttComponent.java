@@ -19,7 +19,7 @@ import com.aragaer.jtt.mechanics.MechanicsModule;
 @Component(modules={AstronomyModule.class,
                     CoreModule.class,
                     MechanicsModule.class})
-interface ServiceComponent {
+public interface JttComponent {
     Ticker getTicker();
     Clockwork provideClockwork();
     IntervalProvider provideIntervalProvider();
