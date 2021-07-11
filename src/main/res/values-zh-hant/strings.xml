@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">日本古代時刻</string>
+    <string name="auto_lat_long">使用現在位置</string>
+    <string name="location">位置</string>
+    <string name="location_ex">改變位置</string>
+    <string name="latitude">緯度</string>
+    <string name="longitude">經度</string>
+    <string name="clock">時鐘</string>
+    <string name="settings">設定</string>
+    <string name="notify">通知</string>
+    <string name="notify_ex">在通知欄顯示現在時刻</string>
+    <string name="emoji_widget">在小工具使用十二支獸Emoji</string>
+    <string name="emoji_widget_ex">把作為各時辰名稱的十二地支在日語所對應的動物，作為Emoji顯示在小工具內</string>
+    <string name="today">今日</string>
+    <string name="sunrise">日出</string>
+    <string name="sunset">日落</string>
+    <string name="noon">正午</string>
+    <string name="midnight">半夜</string>
+    <string name="hour_names">時刻標記</string>
+    <string name="no_providers">未能獲取所在位置。\n請開啟定位服務。</string>
+
+    <string-array name="hour_name_option_names">
+        <item>預設</item>
+        <item>羅馬拼音</item>
+        <item>平假名</item>
+    </string-array>
+
+    <string-array name="hour">
+        <item>酉</item>
+        <item>戌</item>
+        <item>亥</item>
+        <item>子</item>
+        <item>丑</item>
+        <item>寅</item>
+        <item>卯</item>
+        <item>辰</item>
+        <item>巳</item>
+        <item>午</item>
+        <item>未</item>
+        <item>申</item>
+    </string-array>
+    <string-array name="hour_of">
+        <item>酉時</item>
+        <item>戌時</item>
+        <item>亥時</item>
+        <item>子時</item>
+        <item>丑時</item>
+        <item>寅時</item>
+        <item>卯時</item>
+        <item>辰時</item>
+        <item>巳時</item>
+        <item>午時</item>
+        <item>未時</item>
+        <item>申時</item>
+    </string-array>
+    <string-array name="quarter">
+        <item>一刻</item>
+        <item>二刻</item>
+        <item>三刻</item>
+        <item>四刻</item>
+    </string-array>
+
+    <string name="language">標記與語言</string>
+    <string name="appearance">外觀</string>
+    <string name="widget1">日本古代時刻：單一時辰</string>
+    <string name="widget12">日本古代時刻：鐘面</string>
+    <string name="locale">語言</string>
+    <string name="locale_default">預設</string>
+
+    <string-array name="theme_names">
+        <item>半透明</item>
+        <item>深色調</item>
+        <item>淺色調</item>
+    </string-array>
+
+    <string-array name="widget_theme_names">
+        <item>半透明</item>
+        <item>深色調</item>
+        <item>淺色調</item>
+    </string-array>
+
+    <string name="pref_theme">樣式</string>
+    <string name="pref_widget">小工具的樣式</string>
+
+</resources>
