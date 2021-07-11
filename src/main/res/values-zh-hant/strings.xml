@@ -11,8 +11,8 @@
     <string name="settings">設定</string>
     <string name="notify">通知</string>
     <string name="notify_ex">在通知欄顯示現在時刻</string>
-    <string name="emoji_widget">Emoji in widget</string>
-    <string name="emoji_widget_ex">Display hour name in widget as emoji</string>
+    <string name="emoji_widget">在小工具使用十二支獸Emoji</string>
+    <string name="emoji_widget_ex">把作為各時辰名稱的十二地支所對應的動物，作為Emoji顯示在小工具內</string>
     <string name="today">今日</string>
     <string name="sunrise">日出</string>
     <string name="sunset">日落</string>
