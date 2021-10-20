@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import com.aragaer.jtt.core.Clockwork;
 
+import android.content.BroadcastReceiver;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 
 
 public class AndroidTicker extends Handler implements Ticker {
+    private static final int WHAT = 1;
     public static final String ACTION_JTT_TICK = "com.aragaer.jtt.action.TICK";
 
     private final Clockwork _clockwork;
@@ -26,15 +28,16 @@ public class AndroidTicker extends Handler implements Ticker {
     }
 
     public void start() {
-        sendEmptyMessage(0);
+        sendEmptyMessage(WHAT);
     }
 
     public void stop() {
-        removeMessages(0);
+        removeMessages(WHAT);
     }
 
     @Override public void handleMessage(@NonNull Message msg) {
-        removeMessages(0);
+        if (hasMessages(WHAT))
+            removeMessages(WHAT);
         Log.d("JTT CLOCKWORK", "Handler ticked");
         long now = System.currentTimeMillis();
         _clockwork.setTime(now);
@@ -43,7 +46,7 @@ public class AndroidTicker extends Handler implements Ticker {
         int ticks_passed = (int) (ms_passed / _clockwork.repeat);
         long next_tick = (ticks_passed + 1) * _clockwork.repeat + _clockwork.start;
         long delay = next_tick - now;
-        sendEmptyMessageDelayed(0, delay);
+        sendEmptyMessageDelayed(WHAT, delay);
         Log.d("JTT CLOCKWORK", "Tick delay " + delay);
         Log.d("JTT CLOCKWORK", "Next tick scheduled at "+(new SimpleDateFormat("HH:mm:ss.SSS", Locale.US).format(next_tick)));
         _announcer.announce(now);

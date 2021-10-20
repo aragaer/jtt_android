@@ -41,7 +41,7 @@ public class StringResources implements
     private int hour_name_option;
     private static final String[] HourEmoji = "🐓🐕🐖🐀🐂🐅🐇🐉🐍🐎🐏🐒".split("(?!^)");
 
-    protected StringResources(final Context context) {
+    public StringResources(final Context context) {
         c = context;
         resources = c.getResources();
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(c);

@@ -14,17 +14,17 @@ public class AndroidAnnouncer implements Announcer {
     private final IntervalProvider _intervalProvider;
 
     public AndroidAnnouncer(Context context, IntervalProvider intervalProvider) {
-	_context = context;
-	_intervalProvider = intervalProvider;
+        _context = context;
+        _intervalProvider = intervalProvider;
     }
 
     @Override public void announce(long timestamp) {
-	ThreeIntervals intervals = _intervalProvider.getIntervalsForTimestamp(timestamp);
-	Hour hour = Hour.fromInterval(intervals.getMiddleInterval(), timestamp);
-	Intent intent = new Intent(AndroidTicker.ACTION_JTT_TICK)
-	    .putExtra("intervals", intervals)
-	    .putExtra("hour", hour.num)
-	    .putExtra("jtt", hour.wrapped);
-	_context.sendStickyBroadcast(intent);
+        ThreeIntervals intervals = _intervalProvider.getIntervalsForTimestamp(timestamp);
+        Hour hour = Hour.fromInterval(intervals.getMiddleInterval(), timestamp);
+        Intent intent = new Intent(AndroidTicker.ACTION_JTT_TICK)
+                .putExtra("intervals", intervals)
+                .putExtra("hour", hour.num)
+                .putExtra("jtt", hour.wrapped);
+        _context.sendStickyBroadcast(intent);
     }
 }

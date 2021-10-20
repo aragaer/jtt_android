@@ -9,7 +9,6 @@ import androidx.test.uiautomator.*;
 
 import androidx.test.filters.LargeTest;
 
-import com.aragaer.jtt.JttService;
 import com.aragaer.jtt.Settings;
 import com.aragaer.jtt.mechanics.AndroidTicker;
 
@@ -31,12 +30,9 @@ public class NotificationTest {
         context = instrumentation.getTargetContext();
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         settings.edit().putString(Settings.PREF_LOCALE, "1").commit();
-        Intent intent = new Intent(context, JttService.class);
-        context.startService(intent);
     }
 
     @After public void cleanUp() {
-        context.stopService(new Intent(context, JttService.class));
         context.removeStickyBroadcast(new Intent(AndroidTicker.ACTION_JTT_TICK));
         device.pressHome();
     }

@@ -28,7 +28,6 @@ public class WidgetTest {
     @Before public void setUp() {
         Context context = getInstrumentation().getTargetContext();
         setInitialLocation(context);
-        context.startService(new Intent(getInstrumentation().getTargetContext(), JttService.class));
     }
 
     private void putWidgetOnHome(String widgetName) throws Exception {

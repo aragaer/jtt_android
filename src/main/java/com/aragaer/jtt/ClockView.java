@@ -2,10 +2,10 @@
 // vim: et ts=4 sts=4 sw=4 syntax=java
 package com.aragaer.jtt;
 
+import com.aragaer.jtt.android.JttApplication;
 import com.aragaer.jtt.core.Hour;
 import com.aragaer.jtt.graphics.ArrowView;
 import com.aragaer.jtt.graphics.WadokeiView;
-import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.wadokei.AutoresizeTextView;
 
@@ -26,7 +26,7 @@ public class ClockView extends ViewGroup implements StringResources.StringResour
 
     public ClockView(Context context) {
         super(context);
-        sr = RuntimeResources.get(context).getStringResources();
+        sr = ((JttApplication) context.getApplicationContext()).getStringResources();
         sr.registerStringResourceChangeListener(this, StringResources.TYPE_HOUR_NAME);
         wadokei = new WadokeiView(context);
         arrow = new ArrowView(context);

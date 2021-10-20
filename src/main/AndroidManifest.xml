@@ -13,7 +13,8 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:name=".android.JttApplication">
         <activity
             android:name=".JTTMainActivity"
             android:label="@string/app_name"
@@ -28,11 +29,13 @@
         </activity>
 
         <service
-            android:name=".JttService"
+            android:name=".JttStatus"
             android:exported="false" />
-        <receiver android:name=".android.BootReceiver" >
+        <receiver android:name=".android.TickerStart" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
         </receiver>
         <receiver android:name="JTTWidgetProvider$Widget1"
@@ -54,12 +57,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget12" />
-        </receiver>
-        <receiver android:name=".android.TimeChangeReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.DATE_CHANGED" />
-                <action android:name="android.intent.action.TIME_SET" />
-            </intent-filter>
         </receiver>
     </application>
 </manifest>

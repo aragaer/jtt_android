@@ -15,15 +15,15 @@ import com.aragaer.jtt.core.*;
 import com.aragaer.jtt.mechanics.*;
 
 
-public class ServiceComponentTest {
+public class JttComponentTest {
 
     private static final long MS_PER_DAY = TimeUnit.DAYS.toMillis(1);
 
-    private ServiceComponent serviceComponent;
+    private JttComponent jttComponent;
 
     @Before public void setUp() {
         TestMechanicsModule mechanicsModule = new TestMechanicsModule();
-        serviceComponent = DaggerServiceComponent
+        jttComponent = DaggerJttComponent
             .builder()
             .mechanicsModule(mechanicsModule)
             .astronomyModule(new TestAstronomyModule())
@@ -31,15 +31,15 @@ public class ServiceComponentTest {
     }
 
     @Test public void testGetTicker() {
-        Ticker ticker = serviceComponent.getTicker();
+        Ticker ticker = jttComponent.getTicker();
         ticker.start();
         ticker.stop();
         assertEquals("There is only one ticker ever",
-                     ticker, serviceComponent.getTicker());
+                     ticker, jttComponent.getTicker());
     }
 
     @Test public void testSolarEventCalculator() {
-        SolarEventCalculator calculator = serviceComponent.provideSolarEventCalculator();
+        SolarEventCalculator calculator = jttComponent.provideSolarEventCalculator();
         assertNotNull(calculator);
     }
 
@@ -47,7 +47,7 @@ public class ServiceComponentTest {
     @Test public void testGetIntervalProvider() {
         long timestamp = 0;
         long tzOffset = TimeZone.getDefault().getOffset(timestamp);
-        IntervalProvider intervalProvider = serviceComponent.provideIntervalProvider();
+        IntervalProvider intervalProvider = jttComponent.provideIntervalProvider();
         ThreeIntervals intervals = intervalProvider.getIntervalsForTimestamp(0);
         assertFalse("Is night", intervals.isDay());
         assertEquals("Previous sunrise", -MS_PER_DAY*3/4-tzOffset, intervals.getTransitions()[0]);
@@ -57,7 +57,7 @@ public class ServiceComponentTest {
     }
 
     @Test public void testGetClockwork() {
-        Clockwork clockwork = serviceComponent.provideClockwork();
+        Clockwork clockwork = jttComponent.provideClockwork();
         clockwork.setTime(System.currentTimeMillis());
     }
 }

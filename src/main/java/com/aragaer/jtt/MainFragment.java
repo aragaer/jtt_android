@@ -11,9 +11,9 @@ import android.util.Log;
 import android.view.*;
 import android.widget.ListView;
 
+import com.aragaer.jtt.android.JttApplication;
 import com.aragaer.jtt.core.ThreeIntervals;
 import com.aragaer.jtt.mechanics.AndroidTicker;
-import com.aragaer.jtt.resources.RuntimeResources;
 import com.aragaer.jtt.resources.StringResources;
 import com.aragaer.jtt.today.TodayAdapter;
 
@@ -54,7 +54,7 @@ public class MainFragment extends Fragment {
         clock.setHour(tickNumber);
 
         final ListView today_list = new ListView(getActivity());
-        today = new TodayAdapter(getActivity(), 0, RuntimeResources.get(getActivity()).getStringResources());
+        today = new TodayAdapter(getActivity(), 0, ((JttApplication) getActivity().getApplicationContext()).getStringResources());
         today_list.setAdapter(today);
         today_list.setDividerHeight(-getResources().getDimensionPixelSize(R.dimen.today_divider_neg));
         if (intervals != null)

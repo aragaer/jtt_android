@@ -12,7 +12,7 @@ public class Settings {
     public static final String PREF_HNAME = "jtt_hname";
     public static final String PREF_NOTIFY = "jtt_notify";
     /* package private */ static final String PREF_THEME = "jtt_theme";
-    /* package private */ static final String PREF_WIDGET = "jtt_widget_theme";
+    public static final String PREF_WIDGET = "jtt_widget_theme";
     public static final String PREF_EMOJI_WIDGET = "jtt_emoji_widget";
 
     private static final int[] app_themes = {R.style.JTTTheme, R.style.DarkTheme, R.style.LightTheme};
