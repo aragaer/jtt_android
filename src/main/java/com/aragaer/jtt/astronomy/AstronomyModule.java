@@ -17,8 +17,13 @@ public class AstronomyModule {
         _context = context;
     }
 
-    @Provides public SolarEventCalculator provideSolarEventCalculator(LocationHandler locationHandler) {
-        return new SscAdapter(locationHandler);
+    @Provides public SolarEventCalculator provideSolarEventCalculator(LocationHandler locationHandler,
+                                                                      DayBoundaryHandler boundaryHandler) {
+        return new SscAdapter(locationHandler, boundaryHandler);
+    }
+
+    @Provides public DayBoundaryHandler provideDayBoundaryHandler() {
+        return new AndroidDayBoundaryHandler(_context);
     }
 
     @Provides public LocationHandler provideLocationHandler() {

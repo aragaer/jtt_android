@@ -21,6 +21,14 @@
     <string name="hour_names">Hour names</string>
     <string name="no_providers">Unable to determine location.\nPlease enable location service.</string>
 
+    <string name="day_boundary">Day boundary</string>
+
+    <string-array name="day_boundary_names">
+        <item>Sunrise and sunset</item>
+        <item>Civil twilight (sun 6\u00b0 below horizon)</item>
+        <item>Edo convention (sun 7\u00b022\u2032 below horizon)</item>
+    </string-array>
+
     <string-array name="hour_name_option_names">
         <item>Default</item>
         <item>Romaji</item>

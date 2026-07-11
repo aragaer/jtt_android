@@ -14,10 +14,12 @@ public class SscAdapterTest {
 
     private SscAdapter _calculator;
     private TestLocationHandler _locationHandler;
+    private TestDayBoundaryHandler _boundaryHandler;
 
     @Before public void setUp() {
         _locationHandler = new TestLocationHandler();
-        _calculator = new SscAdapter(_locationHandler);
+        _boundaryHandler = new TestDayBoundaryHandler();
+        _calculator = new SscAdapter(_locationHandler, _boundaryHandler);
     }
 
     @Test public void testSunriseLondon01Jan2000() {
@@ -89,6 +91,32 @@ public class SscAdapterTest {
         // Note - next day, after midnight
         Calendar sunset = _calculator.getSunsetFor(calendar);
         verifyEquals(sunset, 2017, 5, 23, 0, 4, tz);
+    }
+
+    @Test public void testCivilTwilightWidensTheDay() {
+        _locationHandler.setLocation(51.5f, 0f);
+        int offsetMillis = (int) TimeUnit.MINUTES.toMillis(0);
+        TimeZone tz = TimeZone.getTimeZone(TimeZone.getAvailableIDs(offsetMillis)[0]);
+        Calendar calendar = Calendar.getInstance(tz);
+        calendar.set(2000, 0, 1, 12, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        Calendar officialSunrise = _calculator.getSunriseFor(calendar);
+        Calendar officialSunset = _calculator.getSunsetFor(calendar);
+
+        _boundaryHandler.setDepression(6);
+        Calendar civilSunrise = _calculator.getSunriseFor(calendar);
+        Calendar civilSunset = _calculator.getSunsetFor(calendar);
+
+        long dawnShift = officialSunrise.getTimeInMillis() - civilSunrise.getTimeInMillis();
+        long duskShift = civilSunset.getTimeInMillis() - officialSunset.getTimeInMillis();
+
+        // Civil dawn precedes official sunrise (and dusk follows sunset)
+        // by roughly half an hour at London's latitude in January.
+        assertTrue("civil dawn should precede sunrise", dawnShift > TimeUnit.MINUTES.toMillis(20));
+        assertTrue("civil dawn shift should be sane", dawnShift < TimeUnit.MINUTES.toMillis(60));
+        assertTrue("civil dusk should follow sunset", duskShift > TimeUnit.MINUTES.toMillis(20));
+        assertTrue("civil dusk shift should be sane", duskShift < TimeUnit.MINUTES.toMillis(60));
     }
 
     private static void verifyEquals(Calendar actual, int year, int month,

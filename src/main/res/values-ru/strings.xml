@@ -21,6 +21,14 @@
     <string name="hour_names">Названия часов</string>
     <string name="no_providers">Не удается определить координаты. Пожалуйста, включите сервис определения местоположения.</string>
 
+    <string name="day_boundary">Граница дня</string>
+
+    <string-array name="day_boundary_names">
+        <item>Восход и закат</item>
+        <item>Гражданские сумерки (солнце 6\u00b0 под горизонтом)</item>
+        <item>Конвенция Эдо (7\u00b022\u2032 под горизонтом)</item>
+    </string-array>
+
     <string-array name="hour_name_option_names">
         <item>По умолчанию</item>
         <item>Ромадзи</item>

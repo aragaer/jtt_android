@@ -96,8 +96,13 @@ class TestAstronomyModule extends AstronomyModule {
         super(null);
     }
 
-    @Override public SolarEventCalculator provideSolarEventCalculator(LocationHandler locationHandler) {
+    @Override public SolarEventCalculator provideSolarEventCalculator(LocationHandler locationHandler,
+                                                                      DayBoundaryHandler boundaryHandler) {
         return new TestSolarEventCalculator();
+    }
+
+    @Override public DayBoundaryHandler provideDayBoundaryHandler() {
+        return new TestDayBoundaryHandler();
     }
 
     @Override public LocationHandler provideLocationHandler() {

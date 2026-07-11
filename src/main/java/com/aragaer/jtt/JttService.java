@@ -87,6 +87,7 @@ public class JttService extends Service implements SharedPreferences.OnSharedPre
                 toggle_notify(pref.getBoolean(Settings.PREF_NOTIFY, true));
                 break;
             case Settings.PREF_LOCATION:
+            case Settings.PREF_BOUNDARY:
                 ticker.start();
                 break;
             case Settings.PREF_WIDGET:

@@ -21,6 +21,14 @@
     <string name="hour_names">刻の名前</string>
     <string name="no_providers">場所の取得に失敗しました。位置情報サービスを有効ください</string>
 
+    <string name="day_boundary">昼夜の境界</string>
+
+    <string-array name="day_boundary_names">
+        <item>日の出・日の入り</item>
+        <item>市民薄明（太陽が地平線下6\u00b0）</item>
+        <item>明け六つ・暮れ六つ（地平線下7\u00b022\u2032）</item>
+    </string-array>
+
     <string-array name="hour_name_option_names">
         <item>デフォルト</item>
         <item>ローマ字</item>

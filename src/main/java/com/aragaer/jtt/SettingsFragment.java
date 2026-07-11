@@ -20,7 +20,7 @@ public class SettingsFragment extends PreferenceFragment implements OnPreference
     private static final String[] prefcodes = {Settings.PREF_LOCATION, Settings.PREF_NOTIFY,
             Settings.PREF_LOCALE, Settings.PREF_HNAME,
             Settings.PREF_THEME, Settings.PREF_WIDGET,
-            Settings.PREF_EMOJI_WIDGET};
+            Settings.PREF_EMOJI_WIDGET, Settings.PREF_BOUNDARY};
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         if (preference instanceof ListPreference) {

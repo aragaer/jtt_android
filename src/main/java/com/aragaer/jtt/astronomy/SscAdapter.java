@@ -6,30 +6,39 @@ import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
+import com.luckycatlabs.sunrisesunset.Zenith;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 
 
 public  class SscAdapter implements SolarEventCalculator {
     private final LocationHandler _locationHandler;
+    private final DayBoundaryHandler _boundaryHandler;
 
-    public SscAdapter(LocationHandler locationHandler) {
+    public SscAdapter(LocationHandler locationHandler, DayBoundaryHandler boundaryHandler) {
         _locationHandler = locationHandler;
+        _boundaryHandler = boundaryHandler;
     }
 
     @Override public Calendar getSunriseFor(Calendar noon) {
-        return getCalculator().getOfficialSunriseCalendarForDate((Calendar) noon.clone());
+        return getCalculator().computeSunriseCalendar(getZenith(), (Calendar) noon.clone());
     }
 
     @Override public Calendar getSunsetFor(Calendar noon) {
-        return getCalculator().getOfficialSunsetCalendarForDate((Calendar) noon.clone());
+        return getCalculator().computeSunsetCalendar(getZenith(), (Calendar) noon.clone());
     }
 
-    private SunriseSunsetCalculator getCalculator() {
+    private Zenith getZenith() {
+        /* Note: SunriseSunsetCalculator.getSunrise(..., degrees) statics are
+         * not used here because they construct Zenith(90 - degrees),
+         * contradicting their own javadoc. */
+        return new Zenith(90 + _boundaryHandler.getDepression());
+    }
+
+    private com.luckycatlabs.sunrisesunset.calculator.SolarEventCalculator getCalculator() {
         float[] location = _locationHandler.getLocation();
         int offsetMillis = (int) TimeUnit.HOURS.toMillis(Math.round(location[1]/15));
-        return new SunriseSunsetCalculator(new Location(location[0], location[1]),
-                                           getTimeZone(offsetMillis));
+        return new com.luckycatlabs.sunrisesunset.calculator.SolarEventCalculator(
+                new Location(location[0], location[1]), getTimeZone(offsetMillis));
     }
 
     private static TimeZone getTimeZone(int offsetMillis) {

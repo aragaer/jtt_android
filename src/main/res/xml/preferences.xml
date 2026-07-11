@@ -6,6 +6,13 @@
       android:key="jtt_loc"
       android:title="@string/location" />
 
+  <ListPreference
+      android:defaultValue="0"
+      android:entries="@array/day_boundary_names"
+      android:entryValues="@array/array_of_3"
+      android:key="jtt_day_boundary"
+      android:title="@string/day_boundary" />
+
   <PreferenceCategory android:title="@string/language" >
 
         <ListPreference

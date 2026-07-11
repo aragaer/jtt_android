@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 
 public class Settings {
     public static final String PREF_LOCATION = "jtt_loc";
+    public static final String PREF_BOUNDARY = "jtt_day_boundary";
     public static final String PREF_LOCALE = "jtt_locale";
     public static final String PREF_HNAME = "jtt_hname";
     public static final String PREF_NOTIFY = "jtt_notify";
